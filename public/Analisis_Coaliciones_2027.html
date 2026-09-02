@@ -117,6 +117,23 @@ tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
  #resumen td[data-l="Riesgo"]{font-size:12px;}
 }
 
+
+/* --- alineacion y separadores de columna --- */
+table.data{border-collapse:collapse;}
+table.data th.num{text-align:right;}
+table.data th,table.data td{border-right:1px solid #edf0f6;}
+table.data th:last-child,table.data td:last-child{border-right:none;}
+table.data td.num,table.data th.num{white-space:nowrap;font-variant-numeric:tabular-nums;width:1%;padding-left:16px;}
+table.data th{padding:9px 8px;border-bottom:2px solid #d4dbe9;}
+table.data tbody tr:hover{background:#f6f9fe;}
+#resumen th,#resumen td{border-right:1px solid #eceff5;}
+#resumen th:last-child,#resumen td:last-child{border-right:none;}
+#resumen th{border-right-color:rgba(255,255,255,.18);}
+#resumen tr.det>td{border-right:none;}
+@media (max-width:900px){
+ #resumen th,#resumen td,#resumen td:last-child{border-right:none;}
+}
+
 </style>
 </head>
 <body>
@@ -290,7 +307,7 @@ tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
 <div class="card">
 <p>El análisis parte de <b>VOTOS_CONSOLIDADOS.xlsx</b> (358 753 registros, ubicación <i>NACIONAL</i>), agregado por jurisdicción de voto asignado.</p>
 <table class="data">
-<thead><tr><th>Escrutinio 2024</th><th class="num">Votos válidos</th><th class="num">NI</th><th class="num">2.ª fuerza</th></tr></thead>
+<thead><tr><th>Escrutinio 2024</th><th class="num num">Votos válidos</th><th class="num num">NI</th><th class="num">2.ª fuerza</th></tr></thead>
 <tbody>
 <tr><td>Presidente</td><td class="num">2 861 965</td><td class="num">83.13%</td><td class="num">FMLN 7.03%</td></tr>
 <tr><td>Diputados</td><td class="num">2 815 927</td><td class="num">67.93%</td><td class="num">ARENA 7.97%</td></tr>
@@ -302,7 +319,7 @@ tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
 <h2>3. Efecto directo de las coaliciones legislativas: nulo</h2>
 <p class="lead">Para cada pacto se calculó, por búsqueda binaria sobre D'Hondt, el número exacto de votos que necesitaría para arrebatar un escaño en su departamento.</p>
 <div class="scroll"><table class="data">
-<thead><tr><th>Departamento</th><th>Coalición</th><th class="num">Votos 2024</th><th class="num">%</th><th class="num">Umbral 1 escaño</th><th class="num">%</th><th class="num">Faltan</th><th class="num">Factor</th></tr></thead>
+<thead><tr><th>Departamento</th><th>Coalición</th><th class="num num">Votos 2024</th><th class="num num">%</th><th class="num num">Umbral 1 escaño</th><th class="num num">%</th><th class="num num">Faltan</th><th class="num">Factor</th></tr></thead>
 <tbody>
 <tr><td>San Miguel</td><td>PDC + FS</td><td class="num">42 769</td><td class="num">23.67</td><td class="num">20 977</td><td class="num">11.61</td><td class="num pos">ya lo tiene</td><td class="num">0.49×</td></tr>
 <tr><td>Ahuachapán</td><td>PCN + DS</td><td class="num">34 787</td><td class="num">21.26</td><td class="num">33 447</td><td class="num">20.44</td><td class="num pos">ya lo tiene</td><td class="num">0.96×</td></tr>
@@ -331,7 +348,7 @@ tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
 <h3>4.2 La reserva: cuánto voto municipal tiene cada bloque por encima de su voto legislativo</h3>
 <p class="lead">Para cada departamento se comparó el porcentaje que los partidos del pacto obtuvieron en la papeleta legislativa (febrero 2024) contra el que obtuvieron en la papeleta municipal (marzo 2024) en ese mismo territorio.</p>
 <div class="scroll"><table class="data">
-<thead><tr><th>Departamento</th><th>Bloque</th><th class="num">% legislativo</th><th class="num">% municipal</th><th class="num">Ratio arrastre</th><th class="num">NI legisl.</th><th class="num">NI munic.</th><th class="num">Desacople NI</th></tr></thead>
+<thead><tr><th>Departamento</th><th>Bloque</th><th class="num num">% legislativo</th><th class="num num">% municipal</th><th class="num num">Ratio arrastre</th><th class="num num">NI legisl.</th><th class="num num">NI munic.</th><th class="num">Desacople NI</th></tr></thead>
 <tbody>
 <tr><td>La Libertad</td><td>GANA + FS</td><td class="num">3.21</td><td class="num">22.91</td><td class="num neg">7.14×</td><td class="num">68.80</td><td class="num">34.82</td><td class="num neg">−33.98</td></tr>
 <tr><td>La Paz</td><td>GANA + FS</td><td class="num">9.41</td><td class="num">51.38</td><td class="num neg">5.46×</td><td class="num">66.87</td><td class="num">32.87</td><td class="num neg">−34.00</td></tr>
@@ -350,7 +367,7 @@ tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
 <h3>4.3 Simulación: qué pasa si el voto municipal se traslada a la papeleta legislativa</h3>
 <p class="lead">Escenarios sobre los <b>54 escaños departamentales</b> vigentes para 2027 (reforma del 14 de mayo de 2026: San Salvador baja de 16 a 11, La Libertad de 7 a 6, y se crea la circunscripción Exterior con 6). Se mantiene el voto legislativo de NI en su nivel de febrero 2024 y se eleva el del bloque coaligado hacia su nivel municipal en la proporción T.</p>
 <div class="scroll"><table class="data">
-<thead><tr><th>Escenario de traslado (T)</th><th class="num">NI</th><th class="num">Coaliciones</th><th class="num">ARENA</th><th class="num">VAMOS</th><th>Departamentos donde el pacto obtiene escaño</th></tr></thead>
+<thead><tr><th>Escenario de traslado (T)</th><th class="num num">NI</th><th class="num num">Coaliciones</th><th class="num num">ARENA</th><th class="num">VAMOS</th><th>Departamentos donde el pacto obtiene escaño</th></tr></thead>
 <tbody>
 <tr><td><b>T = 0%</b> — comportamiento idéntico a 2024</td><td class="num">49</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td>San Miguel, Ahuachapán, Chalatenango</td></tr>
 <tr><td><b>T = 25%</b></td><td class="num">48</td><td class="num">4</td><td class="num">1</td><td class="num">1</td><td>+ 2.º escaño en San Miguel</td></tr>
@@ -381,7 +398,7 @@ tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
 
 <h2>5. Los concejos que sí están en juego</h2>
 <div class="scroll"><table class="data">
-<thead><tr><th>Categoría</th><th>Municipio</th><th class="num">NI 2024</th><th>Coalición 2027 sobre voto 2024</th><th class="num">%</th><th class="num">Saldo para NI</th></tr></thead>
+<thead><tr><th>Categoría</th><th>Municipio</th><th class="num">NI 2024</th><th>Coalición 2027 sobre voto 2024</th><th class="num num">%</th><th class="num">Saldo para NI</th></tr></thead>
 <tbody>
 <tr class="r-crit"><td><b>Vuelca</b></td><td>Usulután Oeste</td><td class="num">6 121 (29.91%)</td><td>GANA 5 520 + FS 5 500 = 11 020</td><td class="num">53.85</td><td class="num neg">−4 899</td></tr>
 <tr class="r-crit"><td><b>Vuelca</b></td><td>Cuscatlán Sur</td><td class="num">16 035 (40.89%)</td><td>GANA 13 989 + PCN 4 356 = 18 345</td><td class="num">46.78</td><td class="num neg">−2 310</td></tr>
@@ -400,7 +417,7 @@ tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
 <div class="card">
 <p>La Ley de Partidos Políticos manda cancelar al partido que en la elección legislativa no obtenga al menos <b>50 000 votos válidos</b> corriendo solo. Para coaliciones con símbolo único los mínimos son <b>100 000</b> con dos partidos, <b>150 000</b> con tres y 50 000 adicionales por cada partido por encima de tres. Ningún partido puede ser cancelado si conserva al menos un diputado electo.</p>
 <table class="data">
-<thead><tr><th>Partido</th><th class="num">Legislativa 2024</th><th class="num">%</th><th class="num">Margen sobre 50 000</th><th>Red de protección</th></tr></thead>
+<thead><tr><th>Partido</th><th class="num num">Legislativa 2024</th><th class="num num">%</th><th class="num">Margen sobre 50 000</th><th>Red de protección</th></tr></thead>
 <tbody>
 <tr><td>PCN</td><td class="num">100 902</td><td class="num">3.58</td><td class="num pos">+50 902</td><td>Escaño en Ahuachapán / Chalatenango</td></tr>
 <tr><td>PDC (incl. PDC-PCN Morazán)</td><td class="num">97 132</td><td class="num">3.45</td><td class="num pos">+47 132</td><td>Escaño en San Miguel</td></tr>
@@ -410,7 +427,7 @@ tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
 </tbody></table>
 <p style="margin-top:12px">FS sobrevivió a 2024 por <b>617 votos</b>. Por eso aparece en 5 de los 6 pactos legislativos y en 11 de los 15 municipales. No está buscando alcaldías: está buscando volumen. Y ahí aparece la contradicción del diseño.</p>
 <table class="data">
-<thead><tr><th>Pacto</th><th>Departamentos</th><th class="num">Votos 2024</th><th class="num">Umbral de coalición</th><th class="num">Brecha</th></tr></thead>
+<thead><tr><th>Pacto</th><th>Departamentos</th><th class="num num">Votos 2024</th><th class="num num">Umbral de coalición</th><th class="num">Brecha</th></tr></thead>
 <tbody>
 <tr><td>PCN + DS</td><td>Ahuachapán, Chalatenango</td><td class="num">64 181</td><td class="num">100 000</td><td class="num neg">−35 819</td></tr>
 <tr><td>PDC + FS</td><td>San Miguel, San Salvador, La Unión</td><td class="num">62 468</td><td class="num">100 000</td><td class="num neg">−37 532</td></tr>
