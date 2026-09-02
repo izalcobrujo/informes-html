@@ -1,0 +1,5685 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Calendario Electoral 2027 · Eje Espejo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --papel:#FFFFFF; --papel2:#FAFAFB; --papel3:#F4F5F7;
+  --tinta:#14161A; --gris:#6B7280; --gris2:#9AA1AC;
+  --linea:#E5E7EB; --linea2:#EFF0F3;
+  --sn:#0B3FA8; --sn-t:#E7EDF9;
+  --se:#B4700A; --se-t:#FBF1DF;
+  --alerta:#C81E4A;
+  --cian:var(--sn); --ambar:var(--se);
+  --lbl:300px;
+  --font:'Montserrat',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'Courier New',monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{background:var(--papel);color:var(--tinta);font-family:var(--font);font-size:14px;line-height:1.45;
+  -webkit-font-smoothing:antialiased}
+button{font-family:inherit;color:inherit;cursor:pointer;border:0;background:none}
+::-webkit-scrollbar{height:10px;width:10px}
+::-webkit-scrollbar-track{background:var(--papel3)}
+::-webkit-scrollbar-thumb{background:#CFD3DA}
+::-webkit-scrollbar-thumb:hover{background:#B4B9C2}
+:focus-visible{outline:2px solid var(--sn);outline-offset:2px}
+
+/* ───────── cabecera ───────── */
+.wrap{max-width:1720px;margin:0 auto;padding:0 24px 48px}
+header.top{display:flex;gap:28px;align-items:flex-end;justify-content:space-between;
+  padding:34px 0 20px;flex-wrap:wrap}
+.brand .eyebrow{font-family:var(--mono);font-size:10px;letter-spacing:.3em;color:var(--gris);
+  text-transform:uppercase;margin-bottom:10px}
+.brand h1{margin:0;font-size:clamp(26px,3vw,40px);font-weight:800;letter-spacing:-.03em;line-height:1}
+.brand h1 em{font-style:normal;color:var(--gris2);font-weight:300}
+.brand .sub{margin-top:10px;color:var(--gris);font-size:12.5px;max-width:620px}
+
+.cuenta{display:flex;align-items:center;gap:14px}
+.ring{position:relative;width:88px;height:88px;flex:none}
+.ring svg{transform:rotate(-90deg)}
+.ring .mid{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .n{font-family:var(--mono);font-size:22px;font-weight:500;letter-spacing:-.03em;line-height:1}
+.ring .u{font-size:8px;letter-spacing:.22em;color:var(--gris2);margin-top:4px}
+.cuenta .txt{font-size:11px;color:var(--gris);max-width:160px;line-height:1.4}
+.cuenta .txt b{display:block;color:var(--tinta);font-size:13.5px;font-weight:700;margin-bottom:2px}
+
+.kpis{display:flex;flex-wrap:wrap;border-top:1px solid var(--tinta);border-bottom:1px solid var(--linea)}
+.kpi{flex:1 1 128px;padding:14px 18px 13px;border-right:1px solid var(--linea)}
+.kpi:last-child{border-right:0}
+.kpi .v{font-family:var(--mono);font-size:21px;font-weight:500;letter-spacing:-.02em}
+.kpi .k{font-size:9px;letter-spacing:.16em;color:var(--gris);text-transform:uppercase;margin-top:4px}
+.kpi.sn .v{color:var(--sn)} .kpi.se .v{color:var(--se)} .kpi.now .v{color:var(--alerta)}
+
+/* ───────── controles ───────── */
+.tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:16px 0 12px}
+.seg{display:flex;border:1px solid var(--linea);background:var(--papel)}
+.seg button{padding:8px 15px;font-size:11.5px;font-weight:600;letter-spacing:.03em;color:var(--gris);
+  border-right:1px solid var(--linea)}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--tinta);background:var(--papel3)}
+.seg button.on{background:var(--tinta);color:#fff}
+.seg.amb button.on[data-v="SN"]{background:var(--sn);color:#fff}
+.seg.amb button.on[data-v="SE"]{background:var(--se);color:#fff}
+.busca{position:relative;flex:1 1 240px;max-width:340px}
+.busca input{width:100%;padding:9px 12px 9px 32px;background:var(--papel);border:1px solid var(--linea);
+  color:var(--tinta);font-size:12.5px;font-family:inherit;border-radius:0}
+.busca input::placeholder{color:var(--gris2)}
+.busca svg{position:absolute;left:11px;top:50%;transform:translateY(-50%);color:var(--gris2)}
+select.filtro{padding:9px 11px;background:var(--papel);border:1px solid var(--linea);color:var(--tinta);
+  font-size:12px;font-family:inherit;border-radius:0}
+.zoom{display:flex;align-items:center;gap:9px;padding:7px 13px;border:1px solid var(--linea)}
+.zoom label{font-size:9px;letter-spacing:.16em;color:var(--gris)}
+.zoom input[type=range]{width:104px;accent-color:var(--sn)}
+.btn{padding:8px 14px;border:1px solid var(--linea);font-size:11.5px;font-weight:600;letter-spacing:.03em;
+  color:var(--gris);background:var(--papel)}
+.btn:hover{color:var(--tinta);border-color:var(--gris2)}
+.btn.hoy{color:var(--alerta);border-color:#F0C6D1}
+.btn.hoy:hover{background:#FDF2F5;border-color:var(--alerta)}
+.conteo{font-family:var(--mono);font-size:11px;color:var(--gris2);margin-left:auto}
+.conteo b{color:var(--tinta)}
+
+/* ───────── línea de tiempo ───────── */
+.tlbox{border:1px solid var(--linea);background:var(--papel)}
+.tl{overflow:auto;max-height:calc(100vh - 150px);position:relative}
+.tlin{position:relative;width:max-content;min-width:100%}
+
+.axis{position:sticky;top:0;z-index:26;background:var(--papel);border-bottom:1px solid var(--tinta)}
+.axis .r{display:flex}
+.axis .pad{position:sticky;left:0;z-index:24;width:var(--lbl);flex:none;background:var(--papel);
+  border-right:1px solid var(--linea)}
+.axis .lane{position:relative;flex:none;height:100%}
+.axis .flg{overflow:visible}
+.yrs{height:22px} .mos{height:24px} .flg{height:24px}
+.yr{position:absolute;top:0;height:22px;display:flex;align-items:center;padding-left:9px;
+  font-family:var(--mono);font-size:10.5px;font-weight:500;letter-spacing:.18em;color:var(--tinta);
+  border-left:1px solid var(--gris2)}
+.mo{position:absolute;top:0;height:24px;display:flex;align-items:center;padding-left:7px;
+  font-size:9px;letter-spacing:.12em;color:var(--gris2);border-left:1px solid var(--linea2);
+  text-transform:uppercase;overflow:hidden;white-space:nowrap}
+.mo.q{color:var(--gris);border-left-color:var(--linea)}
+
+.track{position:relative}
+.row{display:flex;height:25px;align-items:center;position:relative}
+.row.mic{height:22px}
+.row:hover .lbl{background:var(--papel3)}
+.lbl{position:sticky;left:0;z-index:14;width:var(--lbl);flex:none;height:100%;
+  display:flex;align-items:center;gap:7px;padding:0 10px 0 12px;background:var(--papel);
+  border-right:1px solid var(--linea);border-bottom:1px solid var(--linea2);
+  font-size:11px;overflow:hidden;cursor:pointer}
+.lbl .tx{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}
+.row.mac .lbl .tx{font-weight:700;font-size:11.5px}
+.row.mic .lbl{padding-left:30px;font-size:10.5px;color:var(--gris);cursor:default}
+.row.mic .lbl::before{content:"";position:absolute;left:19px;top:0;bottom:0;width:1px;background:var(--linea)}
+.fno{flex:none;font-family:var(--mono);font-size:9px;color:var(--gris2)}
+.chev{flex:none;width:13px;font-family:var(--mono);font-size:8px;color:var(--gris2);transition:transform .16s}
+.row.open .chev{transform:rotate(90deg);color:var(--tinta)}
+.lbl .num{font-family:var(--mono);font-size:9px;color:var(--gris2);flex:none;width:26px;text-align:right}
+.lane{position:relative;flex:none;height:100%;border-bottom:1px solid var(--linea2)}
+
+.bar{position:absolute;top:50%;transform:translateY(-50%);cursor:pointer;transition:opacity .15s}
+.bar:hover{opacity:.72;z-index:9}
+.bar .cap{position:absolute;left:calc(100% + 8px);top:50%;transform:translateY(-50%);white-space:nowrap;
+  font-family:var(--mono);font-size:9px;color:var(--gris);pointer-events:none;opacity:0;transition:.15s}
+.bar:hover .cap{opacity:1}
+
+.mac-bar{height:13px}
+.sn .mac-bar{background:var(--sn-t);border:1px solid var(--sn)}
+.se .mac-bar{background:var(--se-t);border:1px solid var(--se)}
+.mic-bar{height:7px}
+.sn .mic-bar{background:var(--sn)}
+.se .mic-bar{background:var(--se)}
+.tick{position:absolute;top:50%;width:1px;height:13px;transform:translate(0,-50%);pointer-events:none}
+.sn .tick{background:rgba(11,63,168,.45)} .se .tick{background:rgba(180,112,10,.45)}
+
+.hito{position:absolute;top:50%;width:9px;height:9px;transform:translate(-4.5px,-50%) rotate(45deg);
+  cursor:pointer;transition:transform .15s}
+.sn .hito{background:var(--sn)} .se .hito{background:var(--se)}
+.hito:hover{transform:translate(-5.5px,-50%) rotate(45deg) scale(1.3);z-index:9}
+
+.st-fin{background:#DFE2E7 !important;border-color:#CBD0D8 !important}
+.sn .st-fin.mac-bar,.se .st-fin.mac-bar{background:#F2F3F5 !important}
+.st-curso{outline:1.5px solid var(--tinta);outline-offset:1px}
+.row.at .bar,.row.at .hito{opacity:.18}
+.row.at .lbl{color:var(--gris2)}
+.row.hide{display:none}
+
+/* eje central */
+.spine{position:relative;height:84px;background:var(--papel2);
+  border-top:1px solid var(--tinta);border-bottom:1px solid var(--tinta)}
+.spine .lbl{background:var(--papel2);position:sticky;left:0;z-index:16;width:var(--lbl);height:100%;
+  flex:none;display:flex;flex-direction:column;justify-content:center;gap:4px;padding:0 12px;
+  border-right:1px solid var(--linea);border-bottom:0;cursor:default}
+.spine .lbl .t{font-size:9px;letter-spacing:.2em;color:var(--tinta);text-transform:uppercase;font-weight:700}
+.spine .lbl .d{font-size:10px;color:var(--gris);line-height:1.35}
+.spine .r{display:flex;height:100%}
+.spine .lane{border-bottom:0}
+.ridge{position:absolute;inset:0;pointer-events:none}
+
+.hoyline{position:absolute;top:0;bottom:0;width:0;border-left:1px solid var(--alerta);z-index:12;pointer-events:none}
+.hoyflag{position:absolute;top:4px;transform:translateX(-50%);background:var(--alerta);color:#fff;
+  font-family:var(--mono);font-size:9px;font-weight:500;letter-spacing:.09em;padding:3px 8px;
+  white-space:nowrap;z-index:21;pointer-events:none}
+.elec{position:absolute;top:0;bottom:0;z-index:6;pointer-events:none;min-width:3px;background:rgba(20,22,26,.07);
+  border-left:1px solid var(--tinta);border-right:1px solid var(--tinta)}
+.elecflag{position:absolute;top:4px;transform:translateX(-50%);background:var(--tinta);color:#fff;
+  font-size:9px;font-weight:700;letter-spacing:.12em;padding:4px 10px;white-space:nowrap;z-index:22;pointer-events:none}
+.vday{position:absolute;top:0;bottom:0;width:1px;background:var(--linea2);z-index:1;pointer-events:none}
+.vday.q{background:var(--linea)}
+
+.trackhdr{display:flex;align-items:center;position:sticky;left:0;z-index:18;height:25px;background:var(--papel);
+  border-bottom:1px solid var(--linea);width:var(--lbl);padding:0 12px;gap:8px;font-size:9px;
+  letter-spacing:.2em;text-transform:uppercase;font-weight:700}
+.trackhdr.sn{color:var(--sn);border-left:2px solid var(--sn)}
+.trackhdr.se{color:var(--se);border-left:2px solid var(--se)}
+.trackhdr .c{font-family:var(--mono);color:var(--gris2);letter-spacing:.04em;margin-left:auto;font-weight:400}
+
+/* ───────── agenda ───────── */
+.agenda{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:0;
+  border-top:1px solid var(--linea);border-left:1px solid var(--linea)}
+.card{border-right:1px solid var(--linea);border-bottom:1px solid var(--linea);padding:15px 16px;
+  cursor:pointer;transition:background .14s;position:relative}
+.card:hover{background:var(--papel3)}
+.card::before{content:"";position:absolute;left:0;top:0;bottom:0;width:2px}
+.card.sn::before{background:var(--sn)} .card.se::before{background:var(--se)}
+.card .hd{display:flex;align-items:center;gap:7px;margin-bottom:9px;flex-wrap:wrap}
+.tag{font-family:var(--mono);font-size:8.5px;font-weight:500;letter-spacing:.1em;padding:2px 6px;
+  border:1px solid currentColor}
+.tag.ini{color:var(--sn)} .tag.ven{color:var(--alerta)} .tag.hit{color:var(--tinta)} .tag.amb{color:var(--gris)}
+.card .dcount{margin-left:auto;font-family:var(--mono);font-size:10px;color:var(--gris2)}
+.card .dcount b{color:var(--tinta);font-size:15px;font-weight:500}
+.card h4{margin:0 0 9px;font-size:12.5px;font-weight:600;line-height:1.4}
+.card .meta{font-size:10.5px;color:var(--gris);display:flex;flex-direction:column;gap:3px}
+.card .meta .f{font-family:var(--mono);font-size:10px;color:var(--tinta)}
+.agsplit{margin:26px 0 10px;display:flex;align-items:baseline;gap:12px}
+.agsplit h3{margin:0;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--tinta);font-weight:700}
+.agsplit .ln{flex:1;height:1px;background:var(--linea)}
+
+/* ───────── responsables ───────── */
+.resp{display:grid;grid-template-columns:1.25fr .95fr;gap:34px}
+.rlist{display:flex;flex-direction:column}
+.rrow{display:grid;grid-template-columns:1fr 210px 46px;gap:14px;align-items:center;padding:7px 4px;
+  cursor:pointer;border-bottom:1px solid var(--linea2)}
+.rrow:hover{background:var(--papel3)}
+.rrow .nm{font-size:11.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rbar{height:9px;display:flex;overflow:hidden;background:var(--papel3)}
+.rbar i{display:block;height:100%}
+.rbar i.s{background:var(--sn)} .rbar i.e{background:var(--se)}
+.rrow .ct{font-family:var(--mono);font-size:11px;color:var(--gris);text-align:right}
+.fam{display:flex;flex-direction:column}
+.fcard{border-bottom:1px solid var(--linea2);padding:12px 4px;cursor:pointer}
+.fcard:hover{background:var(--papel3)}
+.fcard .t{display:flex;align-items:baseline;gap:8px;margin-bottom:5px}
+.fcard .t b{font-size:11.5px;letter-spacing:.02em}
+.fcard .t span{font-family:var(--mono);font-size:10px;color:var(--gris2);margin-left:auto}
+.fcard .d{font-size:10px;color:var(--gris);line-height:1.4}
+.fbar{height:3px;margin-top:9px;background:var(--papel3)}
+.fbar i{display:block;height:100%}
+
+/* ───────── panel de detalle ───────── */
+.drawer{position:fixed;top:0;right:0;bottom:0;width:min(430px,92vw);z-index:60;background:var(--papel);
+  border-left:1px solid var(--tinta);transform:translateX(102%);transition:transform .28s cubic-bezier(.4,0,.2,1);
+  overflow-y:auto;padding:26px 26px 44px}
+.drawer.open{transform:translateX(0)}
+.drawer .x{position:absolute;top:16px;right:18px;font-size:22px;color:var(--gris2);line-height:1}
+.drawer .x:hover{color:var(--tinta)}
+.drawer .kind{font-family:var(--mono);font-size:9px;letter-spacing:.2em;margin-bottom:12px}
+.drawer h3{margin:0 0 20px;font-size:16px;font-weight:700;line-height:1.35;padding-right:26px;letter-spacing:-.01em}
+.dl{display:grid;grid-template-columns:96px 1fr;gap:10px 14px;font-size:12px;padding:16px 0;
+  border-top:1px solid var(--linea);border-bottom:1px solid var(--linea)}
+.dl dt{font-size:9px;letter-spacing:.14em;color:var(--gris2);text-transform:uppercase;padding-top:2px}
+.dl dd{margin:0;font-size:12px}
+.dl dd.mono{font-family:var(--mono);font-size:11.5px}
+.gantt{margin:18px 0 8px}
+.gantt .lin{height:6px;background:var(--papel3);position:relative}
+.gantt .lin i{position:absolute;top:0;bottom:0}
+.gantt .lg{display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;
+  color:var(--gris);margin-top:7px}
+.hijos{margin-top:22px}
+.hijos h5{margin:0 0 10px;font-size:9px;letter-spacing:.18em;color:var(--gris2);text-transform:uppercase}
+.hijo{padding:9px 10px;border-left:2px solid var(--linea);margin-bottom:2px;cursor:pointer}
+.hijo:hover{background:var(--papel3);border-left-color:var(--sn)}
+.hijo .a{font-size:11px;line-height:1.35}
+.hijo .b{font-family:var(--mono);font-size:9.5px;color:var(--gris);margin-top:4px}
+.scrim{position:fixed;inset:0;background:rgba(20,22,26,.28);z-index:55;opacity:0;pointer-events:none;transition:.28s}
+.scrim.on{opacity:1;pointer-events:auto}
+
+/* tooltip */
+#tip{position:fixed;z-index:80;pointer-events:none;max-width:330px;padding:9px 12px;background:var(--tinta);
+  color:#fff;font-size:11.5px;line-height:1.42;opacity:0;transition:opacity .12s}
+#tip.on{opacity:1}
+#tip .t1{font-weight:600;margin-bottom:5px}
+#tip .t2{font-family:var(--mono);font-size:10px;color:#B9C2D4}
+#tip .t3{font-size:10px;color:#8F98A8;margin-top:3px}
+
+.leyenda{display:flex;gap:18px;flex-wrap:wrap;padding:12px 2px 0;font-size:10px;color:var(--gris)}
+.leyenda i{display:inline-block;vertical-align:middle;margin-right:6px}
+.sw{width:16px;height:7px}
+.sw.d{width:8px;height:8px;transform:rotate(45deg)}
+.vista{display:none} .vista.on{display:block}
+footer{margin-top:30px;padding-top:16px;border-top:1px solid var(--linea);font-size:10.5px;color:var(--gris2);
+  display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap}
+footer b{color:var(--gris);font-weight:600}
+@media (max-width:900px){
+  :root{--lbl:160px}
+  .resp{grid-template-columns:1fr}
+  .rrow{grid-template-columns:1fr 96px 40px}
+}
+@media (max-width:700px){
+  .wrap{padding:0 14px 40px}
+  header.top{padding:18px 0 14px;gap:14px;align-items:center}
+  .brand{flex:1 1 100%;order:1}
+  .brand .sub{display:none}
+  .brand h1{font-size:27px}
+  .cuenta{order:2;gap:11px}
+  .ring{width:62px;height:62px} .ring svg{width:62px;height:62px}
+  .ring .n{font-size:16px} .ring .u{font-size:7px;margin-top:2px}
+  .cuenta .txt{font-size:10px;max-width:190px}
+  .kpi{flex:1 1 33%;padding:10px 12px;border-bottom:1px solid var(--linea)}
+  .kpi .v{font-size:17px} .kpi .k{font-size:8px;letter-spacing:.1em}
+  .tools{gap:7px;margin:12px 0 10px}
+  .seg button{padding:7px 11px;font-size:11px}
+  .zoom{flex:1 1 100%} .zoom input[type=range]{flex:1}
+  .busca{flex:1 1 100%;max-width:none}
+  select.filtro{flex:1 1 44%}
+  .conteo{flex:1 1 100%;margin-left:0;text-align:right}
+  .agenda{grid-template-columns:1fr}
+  .tl{max-height:none !important;height:62vh}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none !important;animation:none !important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div class="brand">
+      <div class="eyebrow">Tribunal Supremo Electoral · El Salvador</div>
+      <h1>Calendario Electoral <em>2027</em></h1>
+      <div class="sub" id="subtitulo"></div>
+    </div>
+    <div class="cuenta">
+      <div class="ring">
+        <svg width="88" height="88" viewBox="0 0 104 104">
+          <circle cx="52" cy="52" r="45" fill="none" stroke="#EDEFF2" stroke-width="6"/>
+          <circle id="arco" cx="52" cy="52" r="45" fill="none" stroke="url(#g1)" stroke-width="6"
+                  stroke-linecap="butt" stroke-dasharray="283" stroke-dashoffset="283"/>
+          <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#0B3FA8"/><stop offset="1" stop-color="#B4700A"/>
+          </linearGradient></defs>
+        </svg>
+        <div class="mid"><div class="n" id="dias">—</div><div class="u">DÍAS</div></div>
+      </div>
+      <div class="txt"><b>28 feb 2027</b>Jornada electoral: presidencia, diputaciones y concejos municipales</div>
+    </div>
+  </header>
+
+  <div class="kpis">
+    <div class="kpi"><div class="v" id="k-tot">—</div><div class="k">Actividades</div></div>
+    <div class="kpi"><div class="v" id="k-mac">—</div><div class="k">Macro fases</div></div>
+    <div class="kpi sn"><div class="v" id="k-sn">—</div><div class="k">Nacional</div></div>
+    <div class="kpi se"><div class="v" id="k-se">—</div><div class="k">Extranjero</div></div>
+    <div class="kpi now"><div class="v" id="k-cur">—</div><div class="k">En curso hoy</div></div>
+    <div class="kpi"><div class="v" id="k-30">—</div><div class="k">Inician en 30 días</div></div>
+    <div class="kpi"><div class="v" id="k-hit">—</div><div class="k">Hitos de fecha fija</div></div>
+  </div>
+
+  <div class="tools">
+    <div class="seg" id="nav">
+      <button data-v="tl" class="on">Línea de tiempo</button>
+      <button data-v="ag">Agenda</button>
+      <button data-v="rs">Responsables</button>
+    </div>
+    <div class="seg amb" id="amb">
+      <button data-v="ALL" class="on">Ambos</button>
+      <button data-v="SN">Nacional</button>
+      <button data-v="SE">Extranjero</button>
+    </div>
+    <div class="busca">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+        <circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Buscar actividad, artículo o responsable…" autocomplete="off">
+    </div>
+    <select class="filtro" id="fFam"></select>
+    <select class="filtro" id="fEst">
+      <option value="ALL">Todo estado</option>
+      <option value="curso">En curso</option>
+      <option value="pend">Pendiente</option>
+      <option value="fin">Cumplida</option>
+    </select>
+    <div class="zoom tlonly"><label>ZOOM</label><input id="zoom" type="range" min="1" max="10" step="0.1" value="2.6"></div>
+    <button class="btn tlonly" id="bExp">Expandir todo</button>
+    <button class="btn hoy tlonly" id="bHoy">Ir a hoy</button>
+    <button class="btn tlonly" id="bElec">Ir a la elección</button>
+    <div class="conteo" id="conteo"></div>
+  </div>
+
+  <!-- VISTA LÍNEA DE TIEMPO -->
+  <section class="vista on" id="v-tl">
+    <div class="tlbox"><div class="tl" id="tl"><div class="tlin" id="tlin"></div></div></div>
+    <div class="leyenda">
+      <span><i class="sw" style="background:var(--sn-t);border:1px solid var(--sn)"></i>Macro fase</span>
+      <span><i class="sw" style="background:var(--sn)"></i>Micro actividad</span>
+      <span><i class="sw d" style="background:var(--sn)"></i>Hito de fecha fija</span>
+      <span><i class="sw" style="background:var(--sn);outline:1.5px solid var(--tinta);outline-offset:1px"></i>En curso hoy</span>
+      <span><i class="sw" style="background:#DFE2E7"></i>Cumplida</span>
+      <span><i class="sw" style="width:1px;height:12px;background:var(--alerta)"></i>Hoy</span>
+      <span>La cresta central mide cuántas actividades corren en paralelo cada semana.</span>
+    </div>
+  </section>
+
+  <!-- VISTA AGENDA -->
+  <section class="vista" id="v-ag">
+    <div class="tools" style="margin-top:2px">
+      <div class="seg" id="hor">
+        <button data-v="15">15 días</button>
+        <button data-v="30" class="on">30 días</button>
+        <button data-v="60">60 días</button>
+        <button data-v="90">90 días</button>
+        <button data-v="9999">Todo lo que resta</button>
+      </div>
+    </div>
+    <div id="agenda"></div>
+  </section>
+
+  <!-- VISTA RESPONSABLES -->
+  <section class="vista" id="v-rs">
+    <div class="resp">
+      <div>
+        <div class="agsplit"><h3>Carga por responsable</h3><div class="ln"></div></div>
+        <div class="rlist" id="rlist"></div>
+      </div>
+      <div>
+        <div class="agsplit"><h3>Familias institucionales</h3><div class="ln"></div></div>
+        <div class="fam" id="fam"></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span id="pie"></span>
+    <span>Las fechas de inicio son las <b>más tempranas</b> y las de fin las <b>más tardías</b> previstas en el calendario oficial.</span>
+  </footer>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-label="Detalle de actividad"></aside>
+<div id="tip"></div>
+
+<script>
+const DATA = {
+ "generado": "2026-08-12",
+ "fuente": "CALENDARIO_ELECTORAL_2027_MODIF_POR_REFORMAS_AL_MAYO2026_DEFINITIVO_SIN_COLORES.xlsx",
+ "titulos": {
+  "SN": "CALENDARIO ELECTORAL 2027 - SUFRAGIO EN TERRITORIO NACIONAL / ELECCIONES DE PRESIDENTE Y VICEPRESIDENTE DE LA REPÚBLICA, DIPUTACIONES A LA ASAMBLEA LEGISLATIVA E INTEGRANTES DE CONCEJOS MUNICIPALES",
+  "SE": "CALENDARIO ELECTORAL 2027 PARA SUFRAGIO EN EL EXTRANJERO - ELECCIONES DE PRESIDENTE Y VICEPRESIDENTE DE LA REPÚBLICA Y DIPUTACIONES A LA ASAMBLEA LEGISLATIVA"
+ },
+ "eleccion": "2027-02-28",
+ "actividades": [
+  {
+   "id": "SN-001",
+   "no": 1,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M01",
+   "actividad": "Suspensión proceso de modificación de dirección de residencia",
+   "inicio": "2025-10-08",
+   "fin": "2026-08-27",
+   "dias": 324,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-002",
+   "no": 2,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M01",
+   "actividad": "Divulgación institucional de información sobre la suspensión de modificación de residencia y sus efectos electorales",
+   "inicio": "2025-10-08",
+   "fin": "2026-08-27",
+   "dias": 324,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-003",
+   "no": 3,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M01",
+   "actividad": "Campaña de información ciudadana sobre la fecha de suspensión de modificación de residencia y sus efectos electorales",
+   "inicio": "2026-02-10",
+   "fin": "2026-08-27",
+   "dias": 199,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-004",
+   "no": 4,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M01",
+   "actividad": "Suspensión proceso de modificación de residencia de ciudadanos y ciudadanas al Registro Electoral (DL 573, DO N° 89, Tomo 451, 15/may/26)",
+   "inicio": "2026-08-27",
+   "fin": "2026-08-27",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": "DL 573, DO N° 89, Tomo 451, 15/may/26"
+  },
+  {
+   "id": "SN-005",
+   "no": 5,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M01",
+   "actividad": "Vigilar y fiscalizar la suspensión del proceso de modificación de residencia de ciudadanos en el Registro Electoral (Art. 135 CE)",
+   "inicio": "2026-08-27",
+   "fin": "2026-08-27",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135 CE"
+  },
+  {
+   "id": "SN-006",
+   "no": 6,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M02",
+   "actividad": "Convocatoria y realización de elecciones internas de partidos políticos para elegir candidaturas 2027",
+   "inicio": "2026-03-06",
+   "fin": "2026-07-29",
+   "dias": 146,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-007",
+   "no": 7,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M02",
+   "actividad": "Divulgación institucional de información sobre convocatoria y realización de elecciones internas de partidos políticos",
+   "inicio": "2026-03-06",
+   "fin": "2026-07-29",
+   "dias": 146,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-008",
+   "no": 8,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M02",
+   "actividad": "Última fecha para notificar a partidos políticos el número de concejales por municipio (Art. 12 CE; Art. 4 a) LERM)",
+   "inicio": "2026-03-27",
+   "fin": "2026-03-27",
+   "dias": 1,
+   "hito": true,
+   "responsable": "TSE / Secretaría General",
+   "familia": "SECRETARIA",
+   "base_legal": "Art. 12 CE; Art. 4 a"
+  },
+  {
+   "id": "SN-009",
+   "no": 9,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M02",
+   "actividad": "Última fecha para que los partidos políticos convoquen a las elecciones internas para elegir candidaturas 2027 (Art. 37-B LPP)",
+   "inicio": "2026-04-07",
+   "fin": "2026-04-07",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Comisión Electoral de cada partido político",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 37-B LPP"
+  },
+  {
+   "id": "SN-010",
+   "no": 10,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M02",
+   "actividad": "Última fecha para que los partidos políticos realicen elecciones internas para elegir candidaturas 2027 (Art. 37-K LPP)",
+   "inicio": "2026-07-29",
+   "fin": "2026-07-29",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Comisión Electoral de cada partido político",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 37-K LPP"
+  },
+  {
+   "id": "SN-011",
+   "no": 11,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M03",
+   "actividad": "Definición de oficiales de enlace y proceso de aprobación de centros de votación elecciones 2027",
+   "inicio": "2026-05-20",
+   "fin": "2026-12-31",
+   "dias": 226,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-012",
+   "no": 12,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M03",
+   "actividad": "Proceso de aprobación de centros de votación",
+   "inicio": "2026-05-20",
+   "fin": "2026-12-31",
+   "dias": 226,
+   "hito": false,
+   "responsable": "Organismo Colegiado / DOE / DRE / DTI",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-013",
+   "no": 13,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M03",
+   "actividad": "Designación de Oficiales de Enlace de partidos políticos ante el TSE para el proceso electoral 2027",
+   "inicio": "2026-03-09",
+   "fin": "2026-03-20",
+   "dias": 12,
+   "hito": false,
+   "responsable": "Partidos políticos / TSE",
+   "familia": "PARTIDOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-014",
+   "no": 14,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M04",
+   "actividad": "Suspensión de admisión de solicitudes de inscripción de nuevos partidos políticos",
+   "inicio": "2026-08-17",
+   "fin": "2027-04-04",
+   "dias": 231,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-015",
+   "no": 15,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M04",
+   "actividad": "Divulgación institucional de información s/ suspensión de admisión de solicitudes de inscripción de nuevos partidos politicos",
+   "inicio": "2026-08-17",
+   "fin": "2026-08-31",
+   "dias": 15,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-016",
+   "no": 16,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M04",
+   "actividad": "Última fecha de admisión de solicitudes de inscripción de nuevos partidos políticos (Art. 19 LPP)",
+   "inicio": "2026-08-31",
+   "fin": "2026-08-31",
+   "dias": 1,
+   "hito": true,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": "Art. 19 LPP"
+  },
+  {
+   "id": "SN-017",
+   "no": 17,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M04",
+   "actividad": "Período de no admisión de solicitudes de inscripción de nuevos partidos políticos (Art. 19 LPP)",
+   "inicio": "2026-09-01",
+   "fin": "2027-04-04",
+   "dias": 216,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": "Art. 19 LPP"
+  },
+  {
+   "id": "SN-018",
+   "no": 18,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M05",
+   "actividad": "Solicitudes de interesados en participar como candidatos no partidarios para ser reconocidos como tales",
+   "inicio": "2026-05-29",
+   "fin": "2026-09-29",
+   "dias": 124,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-019",
+   "no": 19,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M05",
+   "actividad": "Recibir solicitudes por parte de interesados en participar como candidatos no partidarios, para ser reconocidos como tales (S. Inc. 10 - 2011)",
+   "inicio": "2026-05-29",
+   "fin": "2026-09-29",
+   "dias": 124,
+   "hito": false,
+   "responsable": "Secretaría General (SG) / Ciudadanía interesada",
+   "familia": "EXTERNOS",
+   "base_legal": "S. Inc. 10 - 2011"
+  },
+  {
+   "id": "SN-020",
+   "no": 20,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M05",
+   "actividad": "Presentar al TSE los libros para la recolección de las firmas necesarias para la inscripción de candidaturas no partidarias (S. Inc. 10 - 2011)",
+   "inicio": "2026-05-29",
+   "fin": "2026-09-29",
+   "dias": 124,
+   "hito": false,
+   "responsable": "Interesados en participar como candidatos no partid",
+   "familia": "PARTIDOS",
+   "base_legal": "S. Inc. 10 - 2011"
+  },
+  {
+   "id": "SN-021",
+   "no": 21,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M06",
+   "actividad": "Inscripción de Pactos de Coalición",
+   "inicio": "2026-08-31",
+   "fin": "2026-09-11",
+   "dias": 12,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-022",
+   "no": 22,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M06",
+   "actividad": "Última fecha p/ presentación de solicitudes de inscripción de Pactos de Coalición (Art. 43 LPP)",
+   "inicio": "2026-08-31",
+   "fin": "2026-08-31",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Secretaría General (SG) / Partidos Políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 43 LPP"
+  },
+  {
+   "id": "SN-023",
+   "no": 23,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M06",
+   "actividad": "Resolución y notificación sobre solicitudes de inscripción de Pactos de Coalición (Art. 43 LPP)",
+   "inicio": "2026-09-01",
+   "fin": "2026-09-03",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 43 LPP"
+  },
+  {
+   "id": "SN-024",
+   "no": 24,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M06",
+   "actividad": "Notificación de la resolución",
+   "inicio": "2026-09-02",
+   "fin": "2026-09-04",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-025",
+   "no": 25,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M06",
+   "actividad": "Subsanar problemas de inscripción Pactos de Coalición (Art. 43 LPP)",
+   "inicio": "2026-09-03",
+   "fin": "2026-09-09",
+   "dias": 7,
+   "hito": false,
+   "responsable": "Partidos Poíticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 43 LPP"
+  },
+  {
+   "id": "SN-026",
+   "no": 26,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M06",
+   "actividad": "Resolución e inscripción de Pactos de Coalición (Art. 43 LPP)",
+   "inicio": "2026-09-04",
+   "fin": "2026-09-10",
+   "dias": 7,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 43 LPP"
+  },
+  {
+   "id": "SN-027",
+   "no": 27,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M06",
+   "actividad": "Notificación de la resolución",
+   "inicio": "2026-09-07",
+   "fin": "2026-09-11",
+   "dias": 5,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-028",
+   "no": 28,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M07",
+   "actividad": "Cierre de Registro Electoral",
+   "inicio": "2026-05-11",
+   "fin": "2026-12-31",
+   "dias": 235,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-029",
+   "no": 29,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Divulgación institucional de información s/suspensión del proceso de inscripción de ciudadanos y ciudadanas al Registro Electoral",
+   "inicio": "2026-05-11",
+   "fin": "2026-11-29",
+   "dias": 203,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-030",
+   "no": 30,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Campaña relacionada con el proceso electoral, DUI y cierre de inscripciones al Registro Electoral",
+   "inicio": "2026-10-29",
+   "fin": "2026-11-29",
+   "dias": 32,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-031",
+   "no": 31,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Divulgación institucional de información para motivar a la ciudadanía a participar en las elecciones 2027",
+   "inicio": "2026-10-29",
+   "fin": "2026-11-29",
+   "dias": 32,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-032",
+   "no": 32,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Suspensión del proceso de inscripción de ciudadanos al REL (Art. 20 CE - D.L. 573, D.O. N° 89, Tomo 451, 15/may/2026)",
+   "inicio": "2026-11-29",
+   "fin": "2026-11-29",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 20 CE - D.L. 573, D.O. N° 89, Tomo 451, 15/may/2026"
+  },
+  {
+   "id": "SN-033",
+   "no": 33,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Procesamiento y envío de padrones totales municipales y sectoriales a partidos políticos y coaliciones",
+   "inicio": "2026-11-30",
+   "fin": "2026-12-11",
+   "dias": 12,
+   "hito": false,
+   "responsable": "Dirección de Registro Electoral / DTI",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-034",
+   "no": 34,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Poner los padrones a disposición y consulta de la ciudadanía y recibir solicitudes de corrección que procedan según la ley",
+   "inicio": "2026-12-04",
+   "fin": "2026-12-26",
+   "dias": 23,
+   "hito": false,
+   "responsable": "TSE / Dirección de Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-035",
+   "no": 35,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Campaña relativa al llamado a la ciudadanía para consultar su estatus en el Registro Electoral",
+   "inicio": "2026-12-04",
+   "fin": "2026-12-26",
+   "dias": 23,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-036",
+   "no": 36,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Procesamiento de reclamos",
+   "inicio": "2026-12-07",
+   "fin": "2026-12-29",
+   "dias": 23,
+   "hito": false,
+   "responsable": "TSE / Dirección de Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-037",
+   "no": 37,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Cierre definitivo de inscripciones de ciudadanos y ciudadanas al REL (Art. 20 CE - D.L. 573, D.O. N° 89, Tomo 451, 15/may/2026)",
+   "inicio": "2026-12-29",
+   "fin": "2026-12-29",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 20 CE - D.L. 573, D.O. N° 89, Tomo 451, 15/may/2026"
+  },
+  {
+   "id": "SN-038",
+   "no": 38,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Última fecha para que el TSE determine el número de las JRV que deben establecerse en cada municipio",
+   "inicio": "2026-12-31",
+   "fin": "2026-12-31",
+   "dias": 1,
+   "hito": true,
+   "responsable": "TSE / Dirección de Registro Electoral / DTI",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-039",
+   "no": 39,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M07",
+   "actividad": "Vigilar y fiscalizar el proceso de cierre del Registro Electoral y padrones de consulta y definitivos (Art. 135 CE)",
+   "inicio": "2026-11-29",
+   "fin": "2026-12-29",
+   "dias": 31,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135 CE"
+  },
+  {
+   "id": "SN-040",
+   "no": 40,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M08",
+   "actividad": "Convocatoria a Elecciones y otras acciones",
+   "inicio": "2026-09-30",
+   "fin": "2027-02-24",
+   "dias": 148,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-041",
+   "no": 41,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M08",
+   "actividad": "Convocatoria a Elecciones 2027 (Art.169 CE)",
+   "inicio": "2026-09-30",
+   "fin": "2026-09-30",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art.169 CE"
+  },
+  {
+   "id": "SN-042",
+   "no": 42,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M08",
+   "actividad": "Requerir a los diferentes medios de comunicación social las tarifas que cobran por sus servicios (Art. 174 CE) (Tiempo administrativo)",
+   "inicio": "2026-10-01",
+   "fin": "2026-10-07",
+   "dias": 7,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 174 CE"
+  },
+  {
+   "id": "SN-043",
+   "no": 43,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M08",
+   "actividad": "Recepción de tarifas de medios de comunicación (Art.174 CE) (Tiempo administrativo)",
+   "inicio": "2026-10-12",
+   "fin": "2026-10-23",
+   "dias": 12,
+   "hito": false,
+   "responsable": "Medios de Comunicación / Secretaría General",
+   "familia": "COMUNICA",
+   "base_legal": "Art.174 CE"
+  },
+  {
+   "id": "SN-044",
+   "no": 44,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M08",
+   "actividad": "Determinar el tiempo que corresponde a c/ partido político en medios de radio y t.v. estatales (Art. 174 CE y 61 LPP)",
+   "inicio": "2026-12-18",
+   "fin": "2027-01-29",
+   "dias": 43,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": "Art. 174 CE y 61 LPP"
+  },
+  {
+   "id": "SN-045",
+   "no": 45,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M08",
+   "actividad": "Acceso gratuito a radio y televisión del Estado en franja electoral (Art. 174 CE y Art.60 LPP)",
+   "inicio": "2027-02-18",
+   "fin": "2027-02-24",
+   "dias": 7,
+   "hito": false,
+   "responsable": "TSE / Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 174 CE y Art.60 LPP"
+  },
+  {
+   "id": "SN-046",
+   "no": 46,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M09",
+   "actividad": "Inscripción y propaganda electoral de Candidatos o Candidatas a Presidente(a) y Vicepresidente(a) de la República",
+   "inicio": "2026-10-01",
+   "fin": "2027-02-24",
+   "dias": 147,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-047",
+   "no": 47,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Presentación de solicitudes de Inscripción de candidaturas a Presidente(a) y Vicepresidente(a) de la República (Art. 142 CE)",
+   "inicio": "2026-10-01",
+   "fin": "2026-11-19",
+   "dias": 50,
+   "hito": false,
+   "responsable": "Secretaría General / Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 142 CE"
+  },
+  {
+   "id": "SN-048",
+   "no": 48,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Resolución sobre solicitud de inscripción de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 145 CE)",
+   "inicio": "2026-10-02",
+   "fin": "2026-11-24",
+   "dias": 54,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-049",
+   "no": 49,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Notificación de resolución sobre solicitud de inscripción de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 145 CE)",
+   "inicio": "2026-10-05",
+   "fin": "2026-11-25",
+   "dias": 52,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-050",
+   "no": 50,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Subsanar problemas de inscripción de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 145 CE)",
+   "inicio": "2026-10-06",
+   "fin": "2026-11-30",
+   "dias": 56,
+   "hito": false,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-051",
+   "no": 51,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Inscripción definitiva o denegatoria de solic. de insc. de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 145 CE)",
+   "inicio": "2026-10-07",
+   "fin": "2026-12-01",
+   "dias": 56,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-052",
+   "no": 52,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Notificación sobre inscripción definitiva o denegatoria (Art. 145 CE)",
+   "inicio": "2026-10-08",
+   "fin": "2026-12-02",
+   "dias": 56,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-053",
+   "no": 53,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Presentación de nuevas solicitudes de inscripción de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 146 CE)",
+   "inicio": "2026-10-09",
+   "fin": "2026-12-07",
+   "dias": 60,
+   "hito": false,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 146 CE"
+  },
+  {
+   "id": "SN-054",
+   "no": 54,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Resolución de inscripción de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 145 CE)",
+   "inicio": "2026-10-12",
+   "fin": "2026-12-10",
+   "dias": 60,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-055",
+   "no": 55,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Notificación sobre resolución de inscripción de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 145 CE)",
+   "inicio": "2026-10-13",
+   "fin": "2026-12-11",
+   "dias": 60,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-056",
+   "no": 56,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Subsanar problemas de inscripción de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 145 CE)",
+   "inicio": "2026-10-14",
+   "fin": "2026-12-16",
+   "dias": 64,
+   "hito": false,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-057",
+   "no": 57,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Resolucion final sobre solicitud de inscripción de candidaturas a Presidente(a) y Vicepresidente(a) (Art. 145 CE)",
+   "inicio": "2026-10-15",
+   "fin": "2026-12-17",
+   "dias": 64,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-058",
+   "no": 58,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Notificación y publicacion de la resolución final sobre solicitud de inscripción de candidaturas (Art. 145 CE)",
+   "inicio": "2026-10-16",
+   "fin": "2026-12-23",
+   "dias": 69,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-059",
+   "no": 59,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M09",
+   "actividad": "Propaganda Electoral para Elección de Presidente(a) y Vicepresidente(a) de la República (Art. 81 Cn. y Arts. 172 y 175 CE)",
+   "inicio": "2026-10-27",
+   "fin": "2027-02-24",
+   "dias": 121,
+   "hito": false,
+   "responsable": "Partidos políticos / Coaliciones",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 81 Cn. y Arts. 172 y 175 CE"
+  },
+  {
+   "id": "SN-060",
+   "no": 60,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M10",
+   "actividad": "Inscripción y Propaganda Electoral de Candidatos y Candidatas a Diputados y Diputadas a la Asamblea Legislativa",
+   "inicio": "2026-10-01",
+   "fin": "2027-02-24",
+   "dias": 147,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-061",
+   "no": 61,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Presentación de solicitudes de Inscripción de candidatos y candidatas a Diputados y Diputadas a la Asamblea Legislativa (Art. 142 CE)",
+   "inicio": "2026-10-01",
+   "fin": "2026-11-19",
+   "dias": 50,
+   "hito": false,
+   "responsable": "Secretaría General / Partidos políticos / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 142 CE"
+  },
+  {
+   "id": "SN-062",
+   "no": 62,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Resolución sobre solicitud de inscripción de candidatos y candidatas a Diputados y Diputadas a Asamblea Legislativa (Art. 145 CE)",
+   "inicio": "2026-10-02",
+   "fin": "2026-11-24",
+   "dias": 54,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-063",
+   "no": 63,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Notificación de la resolución (Art. 145 CE)",
+   "inicio": "2026-10-05",
+   "fin": "2026-11-25",
+   "dias": 52,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-064",
+   "no": 64,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Subsanar problemas de inscripción de candidatos y candidatas a Diputados y Diputadas a la Asamblea Legislativa (Art. 145 CE)",
+   "inicio": "2026-10-06",
+   "fin": "2026-11-30",
+   "dias": 56,
+   "hito": false,
+   "responsable": "Partidos políticos / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-065",
+   "no": 65,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Inscripción definitiva o denegatoria de solic. de insc. de candidatos y candidatas a Diputados y Diputadas a la A.L. (Art. 145 CE)",
+   "inicio": "2026-10-07",
+   "fin": "2026-12-01",
+   "dias": 56,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-066",
+   "no": 66,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Notificación sobre inscripción definitiva o denegatoria (Art. 145 CE)",
+   "inicio": "2026-10-08",
+   "fin": "2026-12-02",
+   "dias": 56,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-067",
+   "no": 67,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Presentación de nuevas solicitudes de inscripción de candidatos y candidatas a Diputados y Diputadas a la A.L. (Art. 146 CE)",
+   "inicio": "2026-10-09",
+   "fin": "2026-12-07",
+   "dias": 60,
+   "hito": false,
+   "responsable": "Partidos políticos / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 146 CE"
+  },
+  {
+   "id": "SN-068",
+   "no": 68,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Resolución sobre inscripción de candidatos y candidatas a Diputados y Diputadas a la Asamblea Legislativa (Art. 145 CE)",
+   "inicio": "2026-10-12",
+   "fin": "2026-12-10",
+   "dias": 60,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-069",
+   "no": 69,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Notificación de la resolución (Art. 145 CE)",
+   "inicio": "2026-10-13",
+   "fin": "2026-12-11",
+   "dias": 60,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-070",
+   "no": 70,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Subsanar problemas de inscripción de candidatos y candidatas a Diputados y Diputadas a la Asamblea Legislativa (Art. 145 CE)",
+   "inicio": "2026-10-14",
+   "fin": "2026-12-16",
+   "dias": 64,
+   "hito": false,
+   "responsable": "Partidos políticos / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-071",
+   "no": 71,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Resolucion final sobre solicitud de inscripción de candidatos y candidatas a Diputados y Diputadas a la Asamblea Legislativa (Art. 145 CE)",
+   "inicio": "2026-10-15",
+   "fin": "2026-12-17",
+   "dias": 64,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-072",
+   "no": 72,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Notificación y publicacion de la resolución final sobre solicitud de inscripción de candidaturas (Art. 145 CE)",
+   "inicio": "2026-10-16",
+   "fin": "2026-12-23",
+   "dias": 69,
+   "hito": false,
+   "responsable": "Secretaría General / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-073",
+   "no": 73,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M10",
+   "actividad": "Propaganda Electoral para Elección de Diputados y Diputadas a la Asamblea Legislativa (Art. 81 Cn. y Arts. 172 y 175 C.E.)",
+   "inicio": "2026-12-27",
+   "fin": "2027-02-24",
+   "dias": 60,
+   "hito": false,
+   "responsable": "Partidos políticos / Coaliciones / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 81 Cn. y Arts. 172 y 175 C.E."
+  },
+  {
+   "id": "SN-074",
+   "no": 74,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M11",
+   "actividad": "Inscripción y Propaganda Electoral de Candidatos y Candidatas a Concejos Municipales",
+   "inicio": "2026-11-09",
+   "fin": "2027-02-24",
+   "dias": 108,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-075",
+   "no": 75,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Presentación de solicitudes de Inscripción de candidatos y candidatas a Concejos Municipales (Art. 142 CE)",
+   "inicio": "2026-11-09",
+   "fin": "2026-11-19",
+   "dias": 11,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales / Partidos políticos",
+   "familia": "OET",
+   "base_legal": "Art. 142 CE"
+  },
+  {
+   "id": "SN-076",
+   "no": 76,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Resolución sobre solicitud de inscripción de candidatos y candidatas a Concejos Municipales (Art. 145 CE)",
+   "inicio": "2026-11-10",
+   "fin": "2026-11-24",
+   "dias": 15,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-077",
+   "no": 77,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Notificación de la resolución (Art. 145 CE)",
+   "inicio": "2026-11-11",
+   "fin": "2026-11-25",
+   "dias": 15,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-078",
+   "no": 78,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Subsanar problemas de inscripción de candidatos y candidatas a Concejos Municipales (Art. 145 CE)",
+   "inicio": "2026-11-12",
+   "fin": "2026-11-30",
+   "dias": 19,
+   "hito": false,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-079",
+   "no": 79,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Inscripción definitiva o denegatoria de solic. de insc. de candidatos y candidatas a Concejos Municipales (Art. 145 CE)",
+   "inicio": "2026-11-13",
+   "fin": "2026-12-01",
+   "dias": 19,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-080",
+   "no": 80,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Notificación sobre inscripción definitiva o denegatoria (Art. 145 CE)",
+   "inicio": "2026-11-16",
+   "fin": "2026-12-02",
+   "dias": 17,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-081",
+   "no": 81,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Presentación de nuevas solicitudes de inscripción de candidatos y candidatas a Concejos Municipales (Art. 146 CE)",
+   "inicio": "2026-11-17",
+   "fin": "2026-12-07",
+   "dias": 21,
+   "hito": false,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 146 CE"
+  },
+  {
+   "id": "SN-082",
+   "no": 82,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Resolución sobre inscripción de candidatos y candidatas a Concejos Municipales (Art. 145 CE)",
+   "inicio": "2026-11-18",
+   "fin": "2026-12-10",
+   "dias": 23,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-083",
+   "no": 83,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Notificación de la resolución (Art. 145 CE)",
+   "inicio": "2026-11-19",
+   "fin": "2026-12-11",
+   "dias": 23,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-084",
+   "no": 84,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Subsanar problemas de inscripción de candidatos y candidatas a Concejos Municipales (Art. 145 CE)",
+   "inicio": "2026-11-20",
+   "fin": "2026-12-16",
+   "dias": 27,
+   "hito": false,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-085",
+   "no": 85,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Resolucion final sobre solicitud de inscripción de candidatos y candidatas a Concejos Municipales (Art. 145 CE)",
+   "inicio": "2026-11-23",
+   "fin": "2026-12-17",
+   "dias": 25,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-086",
+   "no": 86,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Notificación y publicacion de la resolución final sobre solicitud de inscripción de candidaturas (Art. 145 CE)",
+   "inicio": "2026-11-24",
+   "fin": "2026-12-23",
+   "dias": 30,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 145 CE"
+  },
+  {
+   "id": "SN-087",
+   "no": 87,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Última fecha para la devolución de los libros de inscripción de candidatos o candidatas al TSE (Art.94 - l CE)",
+   "inicio": "2027-01-13",
+   "fin": "2027-01-13",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art.94 - l CE"
+  },
+  {
+   "id": "SN-088",
+   "no": 88,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M11",
+   "actividad": "Propaganda Electoral para Elección de Concejos Municipales (Art. 81 Cn. y Arts. 172 y 175 C.E.)",
+   "inicio": "2027-01-27",
+   "fin": "2027-02-24",
+   "dias": 29,
+   "hito": false,
+   "responsable": "Partidos políticos, coaliciones y CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 81 Cn. y Arts. 172 y 175 C.E."
+  },
+  {
+   "id": "SN-089",
+   "no": 89,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M12",
+   "actividad": "Organización de Juntas Electorales Departamentales (JED)",
+   "inicio": "2026-08-31",
+   "fin": "2027-04-07",
+   "dias": 220,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-090",
+   "no": 90,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Última fecha para presentar propuestas para integrar las JED (Art. 91 CE)",
+   "inicio": "2026-08-31",
+   "fin": "2026-08-31",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 91 CE"
+  },
+  {
+   "id": "SN-091",
+   "no": 91,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Verificación de cumplimiento de requisitos de ley en ciudadanos propuestos",
+   "inicio": "2026-09-03",
+   "fin": "2026-09-25",
+   "dias": 23,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-092",
+   "no": 92,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Sorteo quinta posición en las JED (Art.91 CE - Tiempo administrativo)",
+   "inicio": "2026-09-10",
+   "fin": "2026-10-23",
+   "dias": 44,
+   "hito": false,
+   "responsable": "Organismo Colegiado / SG / Partidos políticos / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art.91 CE - Tiempo administrativo"
+  },
+  {
+   "id": "SN-093",
+   "no": 93,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Nombramientos de JED (Art. 115 CE)",
+   "inicio": "2026-10-30",
+   "fin": "2026-10-30",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 115 CE"
+  },
+  {
+   "id": "SN-094",
+   "no": 94,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Protesta de Ley JED (Art. 115 CE)",
+   "inicio": "2026-10-31",
+   "fin": "2026-11-07",
+   "dias": 8,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 115 CE"
+  },
+  {
+   "id": "SN-095",
+   "no": 95,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Capacitación a integrantes de las JED (Art. 117 C.E.)",
+   "inicio": "2026-10-31",
+   "fin": "2026-11-08",
+   "dias": 9,
+   "hito": false,
+   "responsable": "Dirección de Capacitación y Educación Cívica",
+   "familia": "CAPACITACION",
+   "base_legal": "Art. 117 C.E."
+  },
+  {
+   "id": "SN-096",
+   "no": 96,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Obligatoriedad de otorgar permiso con goce de sueldo a integrantes de JED para recibir capacitación (Art. 113 CE)",
+   "inicio": "2026-10-31",
+   "fin": "2026-11-08",
+   "dias": 9,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-097",
+   "no": 97,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Obligatoriedad de otorgar permiso con goce de sueldo a integrantes de JED para que desempeñen sus funciones (Art. 113 CE)",
+   "inicio": "2026-10-30",
+   "fin": "2027-04-12",
+   "dias": 165,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-098",
+   "no": 98,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Ajustar integración de las JED de acuerdo a inscripción legal de coaliciones y candidaturas (Art. 91 CE)",
+   "inicio": "2026-10-09",
+   "fin": "2026-12-23",
+   "dias": 76,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 91 CE"
+  },
+  {
+   "id": "SN-099",
+   "no": 99,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M12",
+   "actividad": "Vigilar la organización, instalación y capacitación de las JED (Art. 135- i CE)",
+   "inicio": "2026-08-31",
+   "fin": "2026-12-23",
+   "dias": 115,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135- i CE"
+  },
+  {
+   "id": "SN-100",
+   "no": 100,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M13",
+   "actividad": "Organización de Juntas Electorales Municipales (JEM)",
+   "inicio": "2026-08-31",
+   "fin": "2027-04-07",
+   "dias": 220,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-101",
+   "no": 101,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Cierre del plazo de presentación de propuestas para integrar las JEM (Art. 95 CE)",
+   "inicio": "2026-08-31",
+   "fin": "2026-08-31",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / Partidos políticos / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 95 CE"
+  },
+  {
+   "id": "SN-102",
+   "no": 102,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Verificación de cumplimiento de requisitos de ley en ciudadanos propuestos",
+   "inicio": "2026-09-01",
+   "fin": "2026-10-02",
+   "dias": 32,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-103",
+   "no": 103,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Sorteo quinta posición y distribución de cargos en las JEM (Art. 95 - Tiempo administrativo)",
+   "inicio": "2026-10-19",
+   "fin": "2026-10-23",
+   "dias": 5,
+   "hito": false,
+   "responsable": "Organismo Colegiado / SG / Partidos polít. / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 95 - Tiempo administrativo"
+  },
+  {
+   "id": "SN-104",
+   "no": 104,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Presentar propuestas de Gestores Logísticos Distritales para conformar los Equipos Distritales de Apoyo Logístico a las JEM",
+   "inicio": "2026-11-06",
+   "fin": "2026-11-06",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-105",
+   "no": 105,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Nombramiento de JEM (Art.115 CE)",
+   "inicio": "2026-11-30",
+   "fin": "2026-11-30",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": "Art.115 CE"
+  },
+  {
+   "id": "SN-106",
+   "no": 106,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Nombramiento de Gestores Logísticos Distritales",
+   "inicio": "2026-11-30",
+   "fin": "2026-11-30",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-107",
+   "no": 107,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Protesta de Ley JEM ( Art.115 CE)",
+   "inicio": "2026-12-01",
+   "fin": "2026-12-08",
+   "dias": 8,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": " Art.115 CE"
+  },
+  {
+   "id": "SN-108",
+   "no": 108,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Capacitación a integrantes de las JEM (Art. 117 CE)",
+   "inicio": "2026-12-05",
+   "fin": "2026-12-18",
+   "dias": 14,
+   "hito": false,
+   "responsable": "Dirección de Capacitación y Educación Cívica",
+   "familia": "CAPACITACION",
+   "base_legal": "Art. 117 CE"
+  },
+  {
+   "id": "SN-109",
+   "no": 109,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Capacitación a delegados y delegadas de JEM (Art.95 CE) tiempo administrativo",
+   "inicio": "2026-12-12",
+   "fin": "2027-01-06",
+   "dias": 26,
+   "hito": false,
+   "responsable": "Dirección de Capacitación y Educación Cívica",
+   "familia": "CAPACITACION",
+   "base_legal": "Art.95 CE"
+  },
+  {
+   "id": "SN-110",
+   "no": 110,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Capacitación a Gestores Logísticos Distritales",
+   "inicio": "2026-11-07",
+   "fin": "2026-12-12",
+   "dias": 36,
+   "hito": false,
+   "responsable": "Dirección de Capacitación y Educación Cívica",
+   "familia": "CAPACITACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-111",
+   "no": 111,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Obligatoriedad de otorgar permiso con goce de sueldo a integrantes de JEM para recibir capacitación (Art. 113 CE)",
+   "inicio": "2026-12-05",
+   "fin": "2026-12-18",
+   "dias": 14,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-112",
+   "no": 112,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Obligatoriedad de otorgar permiso con goce de sueldo a Delegados JEM para recibir capacitación (Art. 113 CE)",
+   "inicio": "2026-12-12",
+   "fin": "2027-01-06",
+   "dias": 26,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-113",
+   "no": 113,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Obligatoriedad de otorgar permiso con goce de sueldo a integrantes de JEM para que desempeñen sus funciones (Art. 113 CE)",
+   "inicio": "2026-11-30",
+   "fin": "2027-04-07",
+   "dias": 129,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-114",
+   "no": 114,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Obligatoriedad de otorgar permiso c/ goce de sueldo a delegados de JEM p/ que desempeñen sus funciones (Art. 113 CE)",
+   "inicio": "2027-02-27",
+   "fin": "2027-03-01",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-115",
+   "no": 115,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Ajustar integración de las JEM de acuerdo a inscripción legal de coaliciones y candidaturas (Art. 95 CE)",
+   "inicio": "2026-11-17",
+   "fin": "2026-12-23",
+   "dias": 37,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 95 CE"
+  },
+  {
+   "id": "SN-116",
+   "no": 116,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M13",
+   "actividad": "Vigilar la organización, instalación y capacitación de las JEM (Art. 135- i CE)",
+   "inicio": "2026-08-31",
+   "fin": "2027-01-06",
+   "dias": 129,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135- i CE"
+  },
+  {
+   "id": "SN-117",
+   "no": 117,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M14",
+   "actividad": "Preparativos y Material Electoral",
+   "inicio": "2026-11-03",
+   "fin": "2027-02-21",
+   "dias": 111,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-118",
+   "no": 118,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Proceso de impresión del reverso de papeletas de votación y preparativos para la impresión del anverso de las mismas",
+   "inicio": "2026-11-30",
+   "fin": "2026-12-17",
+   "dias": 18,
+   "hito": false,
+   "responsable": "TSE / DOE / Imprenta",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-119",
+   "no": 119,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Preparativos de arte, imágenes y guía de colores de emblemas de partidos políticos y coaliciones",
+   "inicio": "2026-11-20",
+   "fin": "2026-11-27",
+   "dias": 8,
+   "hito": false,
+   "responsable": "Secretaría General / DOE",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-120",
+   "no": 120,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Sorteo de posición de banderas y elementos distintivos de partidos políticos, coaliciones o CNP contendientes en papeletas de votación",
+   "inicio": "2026-11-27",
+   "fin": "2026-12-18",
+   "dias": 22,
+   "hito": false,
+   "responsable": "Organismo Colegiado / SG / Contendientes / DOE",
+   "familia": "PARTIDOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-121",
+   "no": 121,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Emisión de opinión referente a la calidad de la tinta indeleble (Art. 135 - i CE)",
+   "inicio": "2026-11-03",
+   "fin": "2026-11-30",
+   "dias": 28,
+   "hito": false,
+   "responsable": "TSE / Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135 - i CE"
+  },
+  {
+   "id": "SN-122",
+   "no": 122,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Última fecha p/ enviar al TSE colores, siglas, distintivos, tonalidades y diseños e indicación de nombres a imprimir en papeletas (Art. 186 CE)",
+   "inicio": "2027-01-13",
+   "fin": "2027-01-13",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 186 CE"
+  },
+  {
+   "id": "SN-123",
+   "no": 123,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Última fecha para la aprobación de tonalidades y diseños de pruebas de papeletas impresas (Art. 186 CE)",
+   "inicio": "2027-01-13",
+   "fin": "2027-01-13",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos / CNP / DOE",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 186 CE"
+  },
+  {
+   "id": "SN-124",
+   "no": 124,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Última fecha para completar la impresión definitiva de papeletas de votación (Art. 186 CE)",
+   "inicio": "2027-02-07",
+   "fin": "2027-02-07",
+   "dias": 1,
+   "hito": true,
+   "responsable": "TSE / DOE / Imprenta",
+   "familia": "ORGANIZACION",
+   "base_legal": "Art. 186 CE"
+  },
+  {
+   "id": "SN-125",
+   "no": 125,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Preparación del Paquete Electoral",
+   "inicio": "2026-12-03",
+   "fin": "2027-02-21",
+   "dias": 81,
+   "hito": false,
+   "responsable": "Dirección de Organización Electoral",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-126",
+   "no": 126,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M14",
+   "actividad": "Vigilar y fiscalizar la fase de preparación de material electoral (Art. 135 CE)",
+   "inicio": "2026-11-30",
+   "fin": "2027-02-21",
+   "dias": 84,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135 CE"
+  },
+  {
+   "id": "SN-127",
+   "no": 127,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M15",
+   "actividad": "Pruebas y Simulacros de Transmisión, Procesamiento y Divulgación de Resultados Electorales Preliminares y Escrutinio Final",
+   "inicio": "2026-03-20",
+   "fin": "2027-02-12",
+   "dias": 330,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-128",
+   "no": 128,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M15",
+   "actividad": "Proceso de pruebas y simulacros Sistema de Escrutinio Preliminar de JRV",
+   "inicio": "2026-03-20",
+   "fin": "2026-10-07",
+   "dias": 202,
+   "hito": false,
+   "responsable": "TSE / DTI / DOE / Dirección de Capacitación y Educ. Cívica",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-129",
+   "no": 129,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M15",
+   "actividad": "Proceso de pruebas y simulacros de transmisión, procesamiento y divulgación de resultados electorales preliminares",
+   "inicio": "2026-04-20",
+   "fin": "2027-02-12",
+   "dias": 299,
+   "hito": false,
+   "responsable": "TSE / Dirección de Tecnología e Innovación (DTI) / DOE",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-130",
+   "no": 130,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M15",
+   "actividad": "Proceso de pruebas y simulacros Sistema de Escrutinio Final",
+   "inicio": "2026-04-20",
+   "fin": "2027-02-07",
+   "dias": 294,
+   "hito": false,
+   "responsable": "TSE / Dirección de Tecnología e Innovación / Direcc. Ejecutiva",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-131",
+   "no": 131,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M16",
+   "actividad": "Organización de Juntas Receptoras de Votos",
+   "inicio": "2026-10-30",
+   "fin": "2027-03-01",
+   "dias": 123,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-132",
+   "no": 132,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Remitir al TSE propuestas de ciudadanos para integrar las JRV (Art. 99 CE)",
+   "inicio": "2026-10-30",
+   "fin": "2026-10-30",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos y coaliciones / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 99 CE"
+  },
+  {
+   "id": "SN-133",
+   "no": 133,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Verificación de cumplimiento de requisitos de ley en ciudadanos propuestos",
+   "inicio": "2026-11-03",
+   "fin": "2026-11-13",
+   "dias": 11,
+   "hito": false,
+   "responsable": "Organismo Colegiado / SG / Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-134",
+   "no": 134,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Sorteo quinto integrante y distribución equitativa de cargos en las JRV (Art. 100 CE - Tiempo administrativo)",
+   "inicio": "2026-11-16",
+   "fin": "2026-11-20",
+   "dias": 5,
+   "hito": false,
+   "responsable": "Org. Colegiado / SG / PP / candidatos no partid",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 100 CE - Tiempo administrativo"
+  },
+  {
+   "id": "SN-135",
+   "no": 135,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Sorteo para complementar las JRV (Art. 102 CE) tiempo administrativo",
+   "inicio": "2026-11-25",
+   "fin": "2026-11-27",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General / DTI",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 102 CE"
+  },
+  {
+   "id": "SN-136",
+   "no": 136,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Verificación de cumplimiento de requisitos de ley en ciudadanos seleccionados por sorteo de complemento",
+   "inicio": "2026-11-25",
+   "fin": "2026-11-27",
+   "dias": 3,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-137",
+   "no": 137,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Divulgación institucional de información p/ motivar a la población a integrar juntas receptoras de votos y su respectiva capacitación",
+   "inicio": "2026-11-30",
+   "fin": "2026-12-18",
+   "dias": 19,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-138",
+   "no": 138,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Campaña para llamar a verificar si el ciudadano ha sido seleccionado por sorteo para integrar JRV, motivar participación y capacitación",
+   "inicio": "2026-12-02",
+   "fin": "2026-12-18",
+   "dias": 17,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-139",
+   "no": 139,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Comunicar y contactar a personas elegidas por sorteo para complementar las JRV",
+   "inicio": "2026-12-02",
+   "fin": "2026-12-18",
+   "dias": 17,
+   "hito": false,
+   "responsable": "TSE / Dirección de Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-140",
+   "no": 140,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Nombramiento de las JRV",
+   "inicio": "2027-01-02",
+   "fin": "2027-01-02",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / Dirección Jurisdiccional y de Proc / SG",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-141",
+   "no": 141,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Protesta de Ley de las JRV (Art. 115 CE)",
+   "inicio": "2027-01-04",
+   "fin": "2027-01-11",
+   "dias": 8,
+   "hito": false,
+   "responsable": "Juntas Electorales Municipales",
+   "familia": "OET",
+   "base_legal": "Art. 115 CE"
+  },
+  {
+   "id": "SN-142",
+   "no": 142,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Capacitación a integrantes de las JRV (Art. 117 C.E.) (Tiempo administrativo)",
+   "inicio": "2027-01-04",
+   "fin": "2027-02-26",
+   "dias": 54,
+   "hito": false,
+   "responsable": "Dirección de Capacitación y Educación Cívica",
+   "familia": "CAPACITACION",
+   "base_legal": "Art. 117 C.E."
+  },
+  {
+   "id": "SN-143",
+   "no": 143,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Obligatoriedad de otorgar permiso con goce de sueldo a integrantes de JRV para recibir capacitación (Art. 113 CE)",
+   "inicio": "2027-01-04",
+   "fin": "2027-02-26",
+   "dias": 54,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-144",
+   "no": 144,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Obligatoriedad de otorgar permiso c/ goce de sueldo a JRV o vigilancia temp. o permanente p/ desempeñar funciones (Art. 113 CE)",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-145",
+   "no": 145,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Vigilar la organización, instalación y capacitación de las JRV (Art. 135- i CE)",
+   "inicio": "2026-10-30",
+   "fin": "2027-02-26",
+   "dias": 120,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135- i CE"
+  },
+  {
+   "id": "SN-146",
+   "no": 146,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M16",
+   "actividad": "Última fecha p/ que el TSE entregue a partidos polít. o coalic. la retribución a vigilantes acreditados ante c/ JRV (Art. 111 CE)",
+   "inicio": "2027-02-17",
+   "fin": "2027-02-17",
+   "dias": 1,
+   "hito": true,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": "Art. 111 CE"
+  },
+  {
+   "id": "SN-147",
+   "no": 147,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M17",
+   "actividad": "Logística para las elecciones",
+   "inicio": "2027-01-06",
+   "fin": "2027-04-17",
+   "dias": 102,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-148",
+   "no": 148,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Divulgación institucional p/ informar s/ capacitación de JRV, formas de votar, consulta s/lugar de votación y motivación a votar",
+   "inicio": "2027-01-06",
+   "fin": "2027-02-28",
+   "dias": 54,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones / DRE / DCEC",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-149",
+   "no": 149,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Campaña p/ informar s/ capacitación de JRV, formas de votar, consulta s/lugar de votación y motivación a concurrir a las urnas",
+   "inicio": "2027-01-06",
+   "fin": "2027-02-28",
+   "dias": 54,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones / DRE / DCEC",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-150",
+   "no": 150,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Información y consulta ciudadana (Art. 36 CE)",
+   "inicio": "2027-01-28",
+   "fin": "2027-02-28",
+   "dias": 32,
+   "hito": false,
+   "responsable": "TSE / Dirección del Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": "Art. 36 CE"
+  },
+  {
+   "id": "SN-151",
+   "no": 151,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Última fecha para la remisión de padrones electorales a las JEM, partidos políticos o coaliciones (Art. 36 CE)",
+   "inicio": "2027-01-28",
+   "fin": "2027-01-28",
+   "dias": 1,
+   "hito": true,
+   "responsable": "TSE / Dirección del Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": "Art. 36 CE"
+  },
+  {
+   "id": "SN-152",
+   "no": 152,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Última fecha para la publicidad de obras estatales y municipales (Art. 178 CE)",
+   "inicio": "2027-01-28",
+   "fin": "2027-01-28",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Gob. de la República / Concejos Municipales / Entid. autónomas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 178 CE"
+  },
+  {
+   "id": "SN-153",
+   "no": 153,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Prohibición de publicidad de obras estatales y municipales (Art. 178 CE)",
+   "inicio": "2027-01-29",
+   "fin": "2027-02-28",
+   "dias": 31,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": "Art. 178 CE"
+  },
+  {
+   "id": "SN-154",
+   "no": 154,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Última fecha p/ publicación de resultados de encuestas o proyecciones s/ resultados electorales (Art. 176 CE)",
+   "inicio": "2027-02-12",
+   "fin": "2027-02-12",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Part. Políticos / Coal. / Personas Nat o Jur / Asoc u Org",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 176 CE"
+  },
+  {
+   "id": "SN-155",
+   "no": 155,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Prohibición de publicación de resultados de encuestas o proyecciones s/ resultados electorales (Art. 176 CE)",
+   "inicio": "2027-02-13",
+   "fin": "2027-04-01",
+   "dias": 48,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": "Art. 176 CE"
+  },
+  {
+   "id": "SN-156",
+   "no": 156,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Última fecha para la entrega de paquete electoral a las JED (Art. 187 CE)",
+   "inicio": "2027-02-22",
+   "fin": "2027-02-22",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Dirección de Organización Electoral",
+   "familia": "ORGANIZACION",
+   "base_legal": "Art. 187 CE"
+  },
+  {
+   "id": "SN-157",
+   "no": 157,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Última fecha para la entrega de paquete electoral a las JEM (Art. 187 CE)",
+   "inicio": "2027-02-24",
+   "fin": "2027-02-24",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Juntas Electorales Departamentales / DOE",
+   "familia": "OET",
+   "base_legal": "Art. 187 CE"
+  },
+  {
+   "id": "SN-158",
+   "no": 158,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Recepción y desarrollo de agenda de trabajo Misión de Observación Electoral Internacional invitada por el TSE",
+   "inicio": "2027-02-25",
+   "fin": "2027-03-01",
+   "dias": 5,
+   "hito": false,
+   "responsable": "TSE / Sudirecc. de Asuntos Intern. y Protocolo",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-159",
+   "no": 159,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Adecuación y señalización de centros de votación",
+   "inicio": "2027-02-25",
+   "fin": "2027-02-27",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Dirección de Organización Electoral",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-160",
+   "no": 160,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Prohibición de venta, distribución y consumo de bebidas embriagantes de cualquier naturaleza (Art. 284 CE)",
+   "inicio": "2027-02-27",
+   "fin": "2027-03-01",
+   "dias": 3,
+   "hito": false,
+   "responsable": "TSE / PNC",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 284 CE"
+  },
+  {
+   "id": "SN-161",
+   "no": 161,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Tener a disposición de las JRV a más tardar a las 5:00 am el paquete electoral y demás materiales para la votación (Art. 189 CE)",
+   "inicio": "2027-02-28",
+   "fin": "2027-02-28",
+   "dias": 1,
+   "hito": true,
+   "responsable": "DOE / JED / JEM",
+   "familia": "OET",
+   "base_legal": "Art. 189 CE"
+  },
+  {
+   "id": "SN-162",
+   "no": 162,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Última fecha para sustituir por nuevos candidatos o candidatas postulados a los ya inscritos (Art. 147 CE)",
+   "inicio": "2027-02-27",
+   "fin": "2027-02-27",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos o coaliciones / TSE",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 147 CE"
+  },
+  {
+   "id": "SN-163",
+   "no": 163,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "ELECCIONES PRESIDENCIALES, LEGISLATIVAS Y MUNICIPALES",
+   "inicio": "2027-02-28",
+   "fin": "2027-02-28",
+   "dias": 1,
+   "hito": true,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-164",
+   "no": 164,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Transmisión, procesamiento y divulgación de resultados electorales preliminares (Art. 209 CE)",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "TSE / DTI / DOE",
+   "familia": "TECNOLOGIA",
+   "base_legal": "Art. 209 CE"
+  },
+  {
+   "id": "SN-165",
+   "no": 165,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Obligatoriedad de otorgar permiso con goce de sueldo a integrantes de OET o de vigilancia temporal o permanente (Art. 113 CE)",
+   "inicio": "2027-03-01",
+   "fin": "2027-03-01",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-166",
+   "no": 166,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Presentación de justificación por no comparecer al cargo JRV designado o por retirarse antes del fin de escrutinio JRV (Art. 242 CE)",
+   "inicio": "2027-03-01",
+   "fin": "2027-03-03",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Personas llamadas a integrar JRV",
+   "familia": "OET",
+   "base_legal": "Art. 242 CE"
+  },
+  {
+   "id": "SN-167",
+   "no": 167,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Recolección del material electoral retornable",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Dirección de Organización Electoral",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-168",
+   "no": 168,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Limpieza de centros de votación",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Dirección de Organización Electoral",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-169",
+   "no": 169,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Vigilancia de la transmisión, procesamiento y divulgación de resultados electorales preliminares (Art. 135 - k CE)",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135 - k CE"
+  },
+  {
+   "id": "SN-170",
+   "no": 170,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Elaborar y entregar al TSE, JED y part. políticos o coalic. el acta general municipal preliminar del escrutinio (Art. 98-e y 212 CE)",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Juntas Electorales Municipales",
+   "familia": "OET",
+   "base_legal": "Art. 98-e y 212 CE"
+  },
+  {
+   "id": "SN-171",
+   "no": 171,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Pago a integrantes de las JRV (Art. 111 CE)",
+   "inicio": "2027-03-08",
+   "fin": "2027-04-17",
+   "dias": 41,
+   "hito": false,
+   "responsable": "TSE / Dirección Financiera Institucional",
+   "familia": "TSE",
+   "base_legal": "Art. 111 CE"
+  },
+  {
+   "id": "SN-172",
+   "no": 172,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M17",
+   "actividad": "Última fecha para que los partidos políticos liquiden ante el TSE los pagos efectuados a vigilantes de las JRV (Art.111 CE)",
+   "inicio": "2027-04-14",
+   "fin": "2027-04-14",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art.111 CE"
+  },
+  {
+   "id": "SN-173",
+   "no": 173,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M18",
+   "actividad": "Declaratoria de Resultados y Entrega de Credenciales",
+   "inicio": "2027-02-28",
+   "fin": "2027-04-14",
+   "dias": 46,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-174",
+   "no": 174,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Presentación de Recurso de Nulidad de Elección (Art. 270 CE) y Nulidad de Urna (Art. 273 CE)",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Partidos políticos / Coaliciones / Candidat.no partid",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 270 CE | Art. 273 CE"
+  },
+  {
+   "id": "SN-175",
+   "no": 175,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Notificación inicio del escrutinio final a partidos políticos, coaliciones y Fiscal General de la República (Art. 214 CE)",
+   "inicio": "2027-03-01",
+   "fin": "2027-03-01",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 214 CE"
+  },
+  {
+   "id": "SN-176",
+   "no": 176,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Oír a partidos políticos y coaliciones contendientes (Art. 270 CE)",
+   "inicio": "2027-03-01",
+   "fin": "2027-03-02",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 CE"
+  },
+  {
+   "id": "SN-177",
+   "no": 177,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Abrir a prueba las respectivas diligencias (Art. 270 CE)",
+   "inicio": "2027-03-02",
+   "fin": "2027-03-03",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 CE"
+  },
+  {
+   "id": "SN-178",
+   "no": 178,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Término Probatorio (Art. 270 CE)",
+   "inicio": "2027-03-03",
+   "fin": "2027-03-06",
+   "dias": 4,
+   "hito": false,
+   "responsable": "Org. Colegiado / partidos políticos / Coaliciones / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 270 CE"
+  },
+  {
+   "id": "SN-179",
+   "no": 179,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Fallo (Art. 270 CE) (Puede ser a partir del viernes 5, si se resuelve después de las 4:00 pm, vencido el término probatorio)",
+   "inicio": "2027-03-05",
+   "fin": "2027-03-07",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 CE"
+  },
+  {
+   "id": "SN-180",
+   "no": 180,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Escrutinio final (Art.214 CE)",
+   "inicio": "2027-03-02",
+   "fin": "2027-03-15",
+   "dias": 14,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art.214 CE"
+  },
+  {
+   "id": "SN-181",
+   "no": 181,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Obligatoriedad de otorgar permiso c/goce de sueldo a miembros OET o de vigil. temp. o permanente en escrutinio final (Art. 113 CE)",
+   "inicio": "2027-03-02",
+   "fin": "2027-03-15",
+   "dias": 14,
+   "hito": false,
+   "responsable": "Personas naturales o juridicas relacionadas",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 113 CE"
+  },
+  {
+   "id": "SN-182",
+   "no": 182,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Vigilancia y fiscalización del escrutinio final (Art. 135 CE)",
+   "inicio": "2027-03-02",
+   "fin": "2027-03-15",
+   "dias": 14,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135 CE"
+  },
+  {
+   "id": "SN-183",
+   "no": 183,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Desarrollo del escrutinio final correspondiente a la elección presidencial",
+   "inicio": "2027-03-02",
+   "fin": "2027-03-05",
+   "dias": 4,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-184",
+   "no": 184,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Levantamiento y notificación del acta de escrutinio final correspondiente a la elección presidencial",
+   "inicio": "2027-03-06",
+   "fin": "2027-03-07",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-185",
+   "no": 185,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Recurso de Nulidad del Escrutinio Definitivo correspondiente a la elección presidencial (Art. 272 CE)",
+   "inicio": "2027-03-07",
+   "fin": "2027-03-10",
+   "dias": 4,
+   "hito": false,
+   "responsable": "Partidos políticos / Coaliciones",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 272 CE"
+  },
+  {
+   "id": "SN-186",
+   "no": 186,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Oír a partidos políticos y coaliciones contendientes respecto recurso de nulidad escrutinio definitivo elección presidencial (Art. 270 y 272 CE)",
+   "inicio": "2027-03-08",
+   "fin": "2027-03-11",
+   "dias": 4,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 y 272 CE"
+  },
+  {
+   "id": "SN-187",
+   "no": 187,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Abrir a prueba las respectivas diligencias sobre recurso de nulidad escrutinio definitivo elección presidencial (Art. 270 y 272 CE)",
+   "inicio": "2027-03-09",
+   "fin": "2027-03-12",
+   "dias": 4,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 y 272 CE"
+  },
+  {
+   "id": "SN-188",
+   "no": 188,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Término Probatorio proceso de recurso de nulidad escrutinio definitivo elección presidencial (Art. 270 y 272 CE)",
+   "inicio": "2027-03-10",
+   "fin": "2027-03-15",
+   "dias": 6,
+   "hito": false,
+   "responsable": "Org. Colegiado / Partidos políticos / Coaliciones",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 270 y 272 CE"
+  },
+  {
+   "id": "SN-189",
+   "no": 189,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Fallo s/ recurso de nulidad de escrutinio elección presidencial (Art. 270 CE) (Puede ser a partir del viernes 12, al resolver después de 4:00 pm)",
+   "inicio": "2027-03-12",
+   "fin": "2027-03-16",
+   "dias": 5,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 CE"
+  },
+  {
+   "id": "SN-190",
+   "no": 190,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Decreto de Declaratoria Firme de Resultados Elección Presidencial (Art. 220 CE)",
+   "inicio": "2027-03-12",
+   "fin": "2027-03-16",
+   "dias": 5,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 220 CE"
+  },
+  {
+   "id": "SN-191",
+   "no": 191,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Publicación Acta Escrutinio Final y Decreto de Declaratoria Firme de Resultados Elección Presidencial (Art. 221 CE)",
+   "inicio": "2027-03-13",
+   "fin": "2027-03-19",
+   "dias": 7,
+   "hito": false,
+   "responsable": "TSE / SG / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 221 CE"
+  },
+  {
+   "id": "SN-192",
+   "no": 192,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Levantamiento y notificación del acta de escrutinio final elecciones legislativas y municipales",
+   "inicio": "2027-03-09",
+   "fin": "2027-03-17",
+   "dias": 9,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-193",
+   "no": 193,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Recurso de Nulidad del Escrutinio Definitivo correspondiente a las elecciones legislativas y municipales (Art. 272 CE)",
+   "inicio": "2027-03-10",
+   "fin": "2027-03-30",
+   "dias": 21,
+   "hito": false,
+   "responsable": "Partidos políticos / Coaliciones / Candidaturas no partidarias",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 272 CE"
+  },
+  {
+   "id": "SN-194",
+   "no": 194,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Oír a partidos políticos y coalic. contendientes respecto recurso de nulidad escrutinio definitivo elecc. legislat. y municip. (Art. 270 y 272 CE)",
+   "inicio": "2027-03-11",
+   "fin": "2027-03-31",
+   "dias": 21,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 y 272 CE"
+  },
+  {
+   "id": "SN-195",
+   "no": 195,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Abrir a prueba las respectivas diligencias sobre recurso de nulidad escrutinio definitivo elecciones legislativas y municipales (Art. 270 y 272 CE)",
+   "inicio": "2027-03-12",
+   "fin": "2027-04-01",
+   "dias": 21,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 y 272 CE"
+  },
+  {
+   "id": "SN-196",
+   "no": 196,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Término Probatorio proceso de recurso de nulidad escrutinio definitivo elecciones legislativas y municipales (Art. 270 y 272 CE)",
+   "inicio": "2027-03-13",
+   "fin": "2027-04-04",
+   "dias": 23,
+   "hito": false,
+   "responsable": "Org. Colegiado / partidos políticos / Coaliciones / CNP",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 270 y 272 CE"
+  },
+  {
+   "id": "SN-197",
+   "no": 197,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Fallo s/ recurso de nulidad de escrutinio elecciones legislat. y munic. (Art. 270 CE) (Puede ser a partir de lunes 15, al resolver después de 4:00 pm)",
+   "inicio": "2027-03-15",
+   "fin": "2027-04-05",
+   "dias": 22,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 270 CE"
+  },
+  {
+   "id": "SN-198",
+   "no": 198,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Decreto de Declaratoria Firme de Resultados Elecciones Legislativas y Municipales (Art. 220 CE)",
+   "inicio": "2027-03-16",
+   "fin": "2027-04-06",
+   "dias": 22,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 220 CE"
+  },
+  {
+   "id": "SN-199",
+   "no": 199,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Publicación Acta Escrutinio Final y Decreto de Declaratoria Firme de Resultados Elecciones Legislativas y Municipales (Art. 221 CE)",
+   "inicio": "2027-03-17",
+   "fin": "2027-04-09",
+   "dias": 24,
+   "hito": false,
+   "responsable": "TSE / SG / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "Art. 221 CE"
+  },
+  {
+   "id": "SN-200",
+   "no": 200,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Entrega de credenciales a Presidente y Vicepresidente o Presidenta y Vicepresidenta de la República electos (Art. 222 CE)",
+   "inicio": "2027-03-15",
+   "fin": "2027-04-01",
+   "dias": 18,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 222 CE"
+  },
+  {
+   "id": "SN-201",
+   "no": 201,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Entrega de credenciales a Diputadas y Diputados electos a la Asamblea Legislativa (Art. 222 CE)",
+   "inicio": "2027-03-17",
+   "fin": "2027-04-12",
+   "dias": 27,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 222 CE"
+  },
+  {
+   "id": "SN-202",
+   "no": 202,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Entrega de credenciales a integrantes electos de Concejos Municipales (Art. 224 CE)",
+   "inicio": "2027-03-17",
+   "fin": "2027-04-12",
+   "dias": 27,
+   "hito": false,
+   "responsable": "Juntas Electorales Departamentales",
+   "familia": "OET",
+   "base_legal": "Art. 224 CE"
+  },
+  {
+   "id": "SN-203",
+   "no": 203,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Divulgación institucional de información sobre el cierre del proceso electoral y resultados de las elecciones 2027",
+   "inicio": "2027-03-16",
+   "fin": "2027-04-14",
+   "dias": 30,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-204",
+   "no": 204,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M18",
+   "actividad": "Campaña informativa s/ el cierre del proceso electoral y la divulgación de los resultados de las elecciones 2027",
+   "inicio": "2027-03-16",
+   "fin": "2027-04-14",
+   "dias": 30,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-205",
+   "no": 205,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M19",
+   "actividad": "Proceso sancionatorio p/ quien se negare sin justa causa a desempeñar cargos de miembro de Organismos Electorales",
+   "inicio": "2026-11-10",
+   "fin": "2027-06-23",
+   "dias": 226,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-206",
+   "no": 206,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M19",
+   "actividad": "Proceso sancionatorio a quien se negare s/ justa causa a desempeñar cargo en JED o JEM o lo abandonare (Art. 242 CE)",
+   "inicio": "2026-11-10",
+   "fin": "2027-06-23",
+   "dias": 226,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": "Art. 242 CE"
+  },
+  {
+   "id": "SN-207",
+   "no": 207,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M19",
+   "actividad": "Proceso sancionatorio a quien se negare sin justa causa a desempeñar cargo de miembro JRV o abandonare el cargo (Art. 242 CE)",
+   "inicio": "2027-03-04",
+   "fin": "2027-06-23",
+   "dias": 112,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": "Art. 242 CE"
+  },
+  {
+   "id": "SN-208",
+   "no": 208,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M20",
+   "actividad": "Seminario de Evaluación del Proceso Electoral 2027 y publicación y divulgación de Estadísticas Electorales 2027",
+   "inicio": "2027-05-24",
+   "fin": "2027-06-04",
+   "dias": 12,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-209",
+   "no": 209,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M20",
+   "actividad": "Seminario de Evaluación del Proceso Electoral 2027",
+   "inicio": "2027-05-24",
+   "fin": "2027-06-04",
+   "dias": 12,
+   "hito": false,
+   "responsable": "TSE / Representantes partidos políticos / Sociedad",
+   "familia": "PARTIDOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-210",
+   "no": 210,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M20",
+   "actividad": "Publicación y divulgación de estadísticas electorales 2027",
+   "inicio": "2027-05-28",
+   "fin": "2027-06-04",
+   "dias": 8,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-211",
+   "no": 211,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M21",
+   "actividad": "Ejecución, control y liquidación presupuestaria",
+   "inicio": "2026-01-23",
+   "fin": "2027-06-11",
+   "dias": 505,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-212",
+   "no": 212,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M21",
+   "actividad": "Ejecución, control y liquidación del Presupuesto Especial Extraordinario del Evento Electoral 2027",
+   "inicio": "2026-01-23",
+   "fin": "2027-06-11",
+   "dias": 505,
+   "hito": false,
+   "responsable": "TSE / Dirección Financiera Institucional",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SN-213",
+   "no": 213,
+   "ambito": "SN",
+   "tipo": "macro",
+   "macro_id": "SN-M22",
+   "actividad": "Rendición de Cuentas TSE sobre el Proceso Electoral 2027",
+   "inicio": "2027-06-18",
+   "fin": "2027-06-23",
+   "dias": 6,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SN-214",
+   "no": 214,
+   "ambito": "SN",
+   "tipo": "micro",
+   "macro_id": "SN-M22",
+   "actividad": "Presentación de Informe de Rendición de Cuentas TSE sobre el Proceso Electoral 2027",
+   "inicio": "2027-06-18",
+   "fin": "2027-06-23",
+   "dias": 6,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-001",
+   "no": 1,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M01",
+   "actividad": "Promoción del ejercicio del sufragio en el extranjero",
+   "inicio": "2025-10-08",
+   "fin": "2026-11-29",
+   "dias": 418,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-002",
+   "no": 2,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M01",
+   "actividad": "Divulgación institucional de información sobre la suspensión de modificación de residencia y sus efectos electorales",
+   "inicio": "2025-10-08",
+   "fin": "2026-11-29",
+   "dias": 418,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-003",
+   "no": 3,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M01",
+   "actividad": "Campaña de información ciudadana sobre la fecha de suspensión de modificación de residencia y sus efectos electorales",
+   "inicio": "2026-02-10",
+   "fin": "2026-11-29",
+   "dias": 293,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-004",
+   "no": 4,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M01",
+   "actividad": "Suspensión de inscripcion de ciudadanos por 1a. vez al REL o modificación de domicilio en DUI (DL 518, DO N° 41, Tomo 450, 27/feb/26)",
+   "inicio": "2026-11-29",
+   "fin": "2026-11-29",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": "DL 518, DO N° 41, Tomo 450, 27/feb/26"
+  },
+  {
+   "id": "SE-005",
+   "no": 5,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M01",
+   "actividad": "Vigilar y fiscalizar la suspensión del proceso de modificación de residencia de ciudadanos en el Registro Electoral (Art. 135 CE)",
+   "inicio": "2026-11-29",
+   "fin": "2026-11-29",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Junta de Vigilancia Electoral (JVE)",
+   "familia": "JVE",
+   "base_legal": "Art. 135 CE"
+  },
+  {
+   "id": "SE-006",
+   "no": 6,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M01",
+   "actividad": "Campaña país de información LEESE, motivacion y llamado a la participación electoral de salvadoreños residentes en el extranjero",
+   "inicio": "2026-05-04",
+   "fin": "2026-11-29",
+   "dias": 210,
+   "hito": false,
+   "responsable": "TSE / RNPN / DGME / MRREE / MEDIOS NACIONALES",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-007",
+   "no": 7,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M01",
+   "actividad": "Divulgación institucional de información importante de la Ley Especial para el Ejercicio del Sufragio en el Extranjero (LEESE)",
+   "inicio": "2026-02-27",
+   "fin": "2026-11-29",
+   "dias": 276,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": "LEESE"
+  },
+  {
+   "id": "SE-008",
+   "no": 8,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M02",
+   "actividad": "Proceso de contratación y desarrollo del sistema de votación remota por Internet y sistema de votación electrónica presencial",
+   "inicio": "2026-01-12",
+   "fin": "2027-01-14",
+   "dias": 368,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-009",
+   "no": 9,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M02",
+   "actividad": "Formulación de solicitud de ofertas p/ contratación de tercero para el desarrollo e implementación de sistemas de votación electrónica",
+   "inicio": "2026-01-12",
+   "fin": "2026-05-29",
+   "dias": 138,
+   "hito": false,
+   "responsable": "Dirección de Tecnología e Innovación",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-010",
+   "no": 10,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M02",
+   "actividad": "Proceso de contratación de tercero p/ el desarrollo e implementación del sistema de votación remota por Internet y electrónico presencial",
+   "inicio": "2026-06-08",
+   "fin": "2026-08-31",
+   "dias": 85,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-011",
+   "no": 11,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M02",
+   "actividad": "Desarrollo y pruebas de implementación del sistema de votación remota por internet y el sistema de votación electrónica presencial",
+   "inicio": "2026-09-07",
+   "fin": "2027-01-14",
+   "dias": 130,
+   "hito": false,
+   "responsable": "TSE / Tercero contratado",
+   "familia": "EXTERNOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-012",
+   "no": 12,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M02",
+   "actividad": "Creación de mecanismos de auditoría informática al sistema de votación remota por internet y al sistema de votación electrónica presencial",
+   "inicio": "2026-09-07",
+   "fin": "2027-01-14",
+   "dias": 130,
+   "hito": false,
+   "responsable": "TSE / Tercero contratado",
+   "familia": "EXTERNOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-013",
+   "no": 13,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M02",
+   "actividad": "Última fecha para definir el sistema de votación remota por internet y el sistema de votación electrónica presencial (Art. 14 LEESE)",
+   "inicio": "2026-06-27",
+   "fin": "2026-06-27",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 14 LEESE"
+  },
+  {
+   "id": "SE-014",
+   "no": 14,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M03",
+   "actividad": "Proceso de contratación de firmas de auditoría y ejercicio de auditoría de sistemas, a la data para REVEL y al escrutinio final",
+   "inicio": "2026-01-12",
+   "fin": "2027-03-15",
+   "dias": 428,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-015",
+   "no": 15,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M03",
+   "actividad": "Formulación de solicitud de ofertas p/ contratación de auditoría al sistema de votación remota por Internet y de votación electrónica pres.",
+   "inicio": "2026-01-12",
+   "fin": "2026-05-29",
+   "dias": 138,
+   "hito": false,
+   "responsable": "Dirección de Tecnología e Innovación",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-016",
+   "no": 16,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M03",
+   "actividad": "Proceso de contratación de firma para auditoría al sistema de votación remota por Internet y al sistema de votación electrónica presencial",
+   "inicio": "2026-06-08",
+   "fin": "2026-08-31",
+   "dias": 85,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-017",
+   "no": 17,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M03",
+   "actividad": "Auditorías al sistema de votación remota por Internet y al sistema de votación electrónica presencial",
+   "inicio": "2026-09-07",
+   "fin": "2027-03-03",
+   "dias": 178,
+   "hito": false,
+   "responsable": "Firma contratada",
+   "familia": "EXTERNOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-018",
+   "no": 18,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M03",
+   "actividad": "Formulación de solicitud de ofertas p/ contratación de firma de auditoría a la info. recibida del RNPN, DGME, MRREE o autoridad comp.",
+   "inicio": "2026-01-12",
+   "fin": "2026-05-29",
+   "dias": 138,
+   "hito": false,
+   "responsable": "Dirección de Registro Electoral / DTI",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-019",
+   "no": 19,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M03",
+   "actividad": "Proceso de contratación de firma de auditoría a la información proveniente del RNPN, DGME, MRREE o autoridad competente p/ REVEL",
+   "inicio": "2026-06-08",
+   "fin": "2026-08-31",
+   "dias": 85,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-020",
+   "no": 20,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M03",
+   "actividad": "Formulación de solicitud de ofertas para contratación de firma de auditoría al escrutinio final de sufragio en el extranjero",
+   "inicio": "2026-01-12",
+   "fin": "2026-05-29",
+   "dias": 138,
+   "hito": false,
+   "responsable": "Dirección de Tecnología e Innovación",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-021",
+   "no": 21,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M03",
+   "actividad": "Proceso de contratación de firma de auditoría al escrutinio final de sufragio en el extranjero",
+   "inicio": "2026-06-08",
+   "fin": "2026-08-31",
+   "dias": 85,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-022",
+   "no": 22,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M03",
+   "actividad": "Auditoría al escrutinio final de sufragio en el extranjero",
+   "inicio": "2027-03-02",
+   "fin": "2027-03-15",
+   "dias": 14,
+   "hito": false,
+   "responsable": "Firma contratada",
+   "familia": "EXTERNOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-023",
+   "no": 23,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M04",
+   "actividad": "Proceso de pruebas y simulacros de votación remota por internet y votación electrónica presencial",
+   "inicio": "2026-09-07",
+   "fin": "2027-02-12",
+   "dias": 159,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-024",
+   "no": 24,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M04",
+   "actividad": "Proceso de pruebas de sistemas y simulacros de votación remota por internet",
+   "inicio": "2026-09-07",
+   "fin": "2027-01-14",
+   "dias": 130,
+   "hito": false,
+   "responsable": "TSE / Tercero contratado / JELVEX / DTI",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-025",
+   "no": 25,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M04",
+   "actividad": "Proceso de pruebas de sistemas y simulacros de votación electrónica presencial",
+   "inicio": "2026-09-07",
+   "fin": "2027-02-12",
+   "dias": 159,
+   "hito": false,
+   "responsable": "TSE / Tercero contratado / JRVEX / DTI / DOE",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-026",
+   "no": 26,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M04",
+   "actividad": "Proceso de pruebas y simulacros transmisión, procesamiento y divulgación de result. electorales preliminares en el extranjero",
+   "inicio": "2026-09-07",
+   "fin": "2027-02-12",
+   "dias": 159,
+   "hito": false,
+   "responsable": "TSE / Tercero contratado / JELVEX / JRVEX / DTI / DOE",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-027",
+   "no": 27,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M05",
+   "actividad": "Proceso de creación y cierre del Registro Electoral para el Voto Electrónico (REVEL) en cualquiera de sus modalidades",
+   "inicio": "2025-09-11",
+   "fin": "2026-12-31",
+   "dias": 477,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-028",
+   "no": 28,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Coordinación y firma de convenios TSE c/ RNPN, DGME,MRREE o autoridad competente p/ la creación del REVEL en cualquier modalidad",
+   "inicio": "2025-09-11",
+   "fin": "2026-02-27",
+   "dias": 170,
+   "hito": false,
+   "responsable": "Organismo coleg. / Presidencia / Registro Electoral / DTI",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-029",
+   "no": 29,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Preparación de condiciones tecnológicas TSE para la transferencia de datos del RNPN, DGME, MRREE o autoridad competente",
+   "inicio": "2025-09-11",
+   "fin": "2026-02-27",
+   "dias": 170,
+   "hito": false,
+   "responsable": "DTI / Dirección de Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-030",
+   "no": 30,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Proceso de envío, recepción, validación e incorporación de la data al REVEL en cualquiera de sus modadlidades",
+   "inicio": "2026-09-14",
+   "fin": "2026-11-29",
+   "dias": 77,
+   "hito": false,
+   "responsable": "RNPN / DGME / MRREE o autoridad competente / TSE",
+   "familia": "EXTERNOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-031",
+   "no": 31,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Auditoría a la información proporcionada por RNPN, DGME, MRREE o autoridad competente para conformación del REVEL (Art. 13 LEESE)",
+   "inicio": "2026-09-14",
+   "fin": "2026-11-29",
+   "dias": 77,
+   "hito": false,
+   "responsable": "Firma contratada",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 13 LEESE"
+  },
+  {
+   "id": "SE-032",
+   "no": 32,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Divulgación institucional de información s/ suspensión de nuevas inscripciones y cambio de domicilio p/ sufragio en el extranjero",
+   "inicio": "2026-05-11",
+   "fin": "2026-11-29",
+   "dias": 203,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-033",
+   "no": 33,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Campaña de información ciudadana sobre fecha de suspensión de nuevas inscripciones y cambio de domicilio para sufragio en el extranjero",
+   "inicio": "2026-09-30",
+   "fin": "2026-11-29",
+   "dias": 61,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-034",
+   "no": 34,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Suspensión de inscripcion de ciudadanos por 1a. vez o modificación de domicilio en DUI (D.L. 518, D.O. N° 41, Tomo 450, 27/feb/2026)",
+   "inicio": "2026-11-29",
+   "fin": "2026-11-29",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": "D.L. 518, D.O. N° 41, Tomo 450, 27/feb/2026"
+  },
+  {
+   "id": "SE-035",
+   "no": 35,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Última fecha p/ remitir REVEL en cualquiera de sus modalidades, a partidos políticos y coaliciones (analogía c/art. 20 CE)",
+   "inicio": "2026-12-04",
+   "fin": "2026-12-11",
+   "dias": 8,
+   "hito": false,
+   "responsable": "TSE / Dirección Registro Electoral / DTI",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-036",
+   "no": 36,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Habilitación y funcionamiento de sitio Web y aplicación informática para consulta ciudadana de salvadoreños en el extranjero",
+   "inicio": "2026-12-04",
+   "fin": "2026-12-26",
+   "dias": 23,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-037",
+   "no": 37,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Consulta al REVEL de salvadoreños en el extranjero (Art. 20 CE inc. final, en lo aplicable)",
+   "inicio": "2026-12-04",
+   "fin": "2026-12-26",
+   "dias": 23,
+   "hito": false,
+   "responsable": "TSE / Dirección del Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": "Art. 20 CE inc. final, en lo aplicable"
+  },
+  {
+   "id": "SE-038",
+   "no": 38,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Procesamiento de reclamos por errores evidentes en el REVEL (Art. 20 CE inc. final, en lo aplicable)",
+   "inicio": "2026-12-07",
+   "fin": "2026-12-29",
+   "dias": 23,
+   "hito": false,
+   "responsable": "TSE / Dirección de Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": "Art. 20 CE inc. final, en lo aplicable"
+  },
+  {
+   "id": "SE-039",
+   "no": 39,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Cierre definitivo de inscripciones de ciudadanos y ciudadanas al REVEL (analogía con art. 20 CE)",
+   "inicio": "2026-12-29",
+   "fin": "2026-12-29",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-040",
+   "no": 40,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Determinación de centros de votación en el extranjero, JRVEX y número de dispositivos a utilizar en c/ centro (Art. 7 LEESE - tiempo admtivo.)",
+   "inicio": "2026-05-20",
+   "fin": "2026-12-31",
+   "dias": 226,
+   "hito": false,
+   "responsable": "Organismo Colegiado / DRE / DOE",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 7 LEESE - tiempo admtivo."
+  },
+  {
+   "id": "SE-041",
+   "no": 41,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M05",
+   "actividad": "Vigilar y fiscalizar el proceso formación y cierre REVEL en cualquiera de sus modadlidades (analogía c/art. 135, lit. a) - CE / Art. 25 LEESE)",
+   "inicio": "2026-09-14",
+   "fin": "2026-12-29",
+   "dias": 107,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral",
+   "familia": "JVE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-042",
+   "no": 42,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M06",
+   "actividad": "Organización de la Junta Electoral de Voto en el Extranjero (JELVEX) para votación remota por Internet",
+   "inicio": "2026-08-27",
+   "fin": "2026-11-28",
+   "dias": 94,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-043",
+   "no": 43,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Última fecha para la presentación de propuestas para integrar la JELVEX (Art. 8 LEESE)",
+   "inicio": "2026-08-27",
+   "fin": "2026-08-27",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 8 LEESE"
+  },
+  {
+   "id": "SE-044",
+   "no": 44,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Sorteo para complementar JELVEX si faltaren propuestas (Art. 8 LEESE)",
+   "inicio": "2026-08-31",
+   "fin": "2026-09-02",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General / DTI / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 8 LEESE"
+  },
+  {
+   "id": "SE-045",
+   "no": 45,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Verificación de cumplimiento de requisitos de ley en ciudadanos seleccionados por sorteo de complemento JELVEX (si fuere necesario)",
+   "inicio": "2026-09-03",
+   "fin": "2026-09-25",
+   "dias": 23,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General / DTI / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-046",
+   "no": 46,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Verificación de cumplimiento de requisitos de ley en ciudadanos propuestos para integrar la JELVEX",
+   "inicio": "2026-09-03",
+   "fin": "2026-09-25",
+   "dias": 23,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General / DTI / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-047",
+   "no": 47,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Comunicar y contactar a personas elegidas por sorteo para complementar la JELVEX",
+   "inicio": "2026-09-28",
+   "fin": "2026-10-16",
+   "dias": 19,
+   "hito": false,
+   "responsable": "TSE / Dirección de Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-048",
+   "no": 48,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Nombramientos de integrantes JELVEX",
+   "inicio": "2026-10-30",
+   "fin": "2026-10-30",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-049",
+   "no": 49,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Protesta de Ley JELVEX",
+   "inicio": "2026-10-31",
+   "fin": "2026-11-07",
+   "dias": 8,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-050",
+   "no": 50,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Capacitación a integrantes JELVEX",
+   "inicio": "2026-10-31",
+   "fin": "2026-11-28",
+   "dias": 29,
+   "hito": false,
+   "responsable": "Dirección de Capacitación / DTI / Tercero contratado",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-051",
+   "no": 51,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M06",
+   "actividad": "Vigilar la organización, instalación y capacitación de la JELVEX",
+   "inicio": "2026-08-27",
+   "fin": "2026-11-28",
+   "dias": 94,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral",
+   "familia": "JVE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-052",
+   "no": 52,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M07",
+   "actividad": "Organización de las Juntas Receptoras de Votos en el Extranjero (JRVEX) para votación electrónica presencial",
+   "inicio": "2026-08-27",
+   "fin": "2027-02-26",
+   "dias": 184,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-053",
+   "no": 53,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Última fecha para la presentación de propuestas para integrar las JRVEX (Art. 10 LEESE)",
+   "inicio": "2026-08-27",
+   "fin": "2026-08-27",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Partidos políticos",
+   "familia": "PARTIDOS",
+   "base_legal": "Art. 10 LEESE"
+  },
+  {
+   "id": "SE-054",
+   "no": 54,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Sorteo para complementar las JRVEX si faltaren propuestas (Art. 8 LEESE)",
+   "inicio": "2026-11-25",
+   "fin": "2026-11-27",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General / DTI / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": "Art. 8 LEESE"
+  },
+  {
+   "id": "SE-055",
+   "no": 55,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Verificación de cumplimiento de requisitos de ley en ciudadanos seleccionados por sorteo de complemento JRVEX (si fuere necesario)",
+   "inicio": "2026-11-25",
+   "fin": "2026-11-27",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General / DTI / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-056",
+   "no": 56,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Verificación de cumplimiento de requisitos de ley en ciudadanos propuestos para integrar las JRVEX",
+   "inicio": "2026-11-25",
+   "fin": "2026-11-27",
+   "dias": 3,
+   "hito": false,
+   "responsable": "Organismo Colegiado / Secretaría General / DTI / DRE",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-057",
+   "no": 57,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Comunicar y contactar a personas elegidas por sorteo para complementar las JRVEX",
+   "inicio": "2026-12-01",
+   "fin": "2026-12-18",
+   "dias": 18,
+   "hito": false,
+   "responsable": "TSE / Dirección del Registro Electoral",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-058",
+   "no": 58,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Nombramiento de integrantes de las JRVEX",
+   "inicio": "2026-12-23",
+   "fin": "2026-12-23",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-059",
+   "no": 59,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Protesta de Ley de JRVEX",
+   "inicio": "2027-01-04",
+   "fin": "2027-01-11",
+   "dias": 8,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-060",
+   "no": 60,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Capacitación a integrantes JRVEX",
+   "inicio": "2027-01-04",
+   "fin": "2027-02-26",
+   "dias": 54,
+   "hito": false,
+   "responsable": "Dirección de Capacitación / DTI / Tercero contratado",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-061",
+   "no": 61,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M07",
+   "actividad": "Vigilar la organización, instalación y capacitación de la JRVEX",
+   "inicio": "2026-08-27",
+   "fin": "2027-02-26",
+   "dias": 184,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral",
+   "familia": "JVE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-062",
+   "no": 62,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M08",
+   "actividad": "Inscripción de candidaturas",
+   "inicio": "2026-10-01",
+   "fin": "2026-12-16",
+   "dias": 77,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-063",
+   "no": 63,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M08",
+   "actividad": "Presentación de solicitudes de Inscripción de candidaturas a Presidente(a) y Vicepresidente(a) de la República",
+   "inicio": "2026-10-01",
+   "fin": "2026-11-19",
+   "dias": 50,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-064",
+   "no": 64,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M08",
+   "actividad": "Presentación de solicitudes de Inscripción de candidatos y candidatas a Diputados y Diputadas a la Asamblea Legislativa",
+   "inicio": "2026-10-01",
+   "fin": "2026-11-19",
+   "dias": 50,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-065",
+   "no": 65,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M08",
+   "actividad": "Presentación de solicitudes de Inscripción de candidatos y candidatas a Concejos Municipales",
+   "inicio": "2026-11-09",
+   "fin": "2026-11-19",
+   "dias": 11,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-066",
+   "no": 66,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M08",
+   "actividad": "Subsanar problemas de inscripción de candidaturas",
+   "inicio": "2026-10-06",
+   "fin": "2026-12-16",
+   "dias": 72,
+   "hito": false,
+   "responsable": "TSE",
+   "familia": "TSE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-067",
+   "no": 67,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M09",
+   "actividad": "Preparación y distribución del REVEL en cualquiera de sus modalidades a utilizar en las elecciones",
+   "inicio": "2027-01-04",
+   "fin": "2027-01-15",
+   "dias": 12,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-068",
+   "no": 68,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M09",
+   "actividad": "Preparación del REVEL en sus dos modalidades a utilizar en los sistemas de votación para las elecciones",
+   "inicio": "2027-01-04",
+   "fin": "2027-01-12",
+   "dias": 9,
+   "hito": false,
+   "responsable": "TSE / DRE",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-069",
+   "no": 69,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M09",
+   "actividad": "Última fecha p/ remitir REVEL en sus dos modalidades, a partidos políticos y coaliciones (analogía art. 36, Inc. 2do CE / Art.25 LEESE)",
+   "inicio": "2027-01-15",
+   "fin": "2027-01-15",
+   "dias": 1,
+   "hito": true,
+   "responsable": "TSE / DRE",
+   "familia": "REGISTRO",
+   "base_legal": "analogía art. 36, Inc. 2do CE / Art.25 LEESE"
+  },
+  {
+   "id": "SE-070",
+   "no": 70,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M10",
+   "actividad": "Logística para votación remota por Internet",
+   "inicio": "2026-09-28",
+   "fin": "2026-12-30",
+   "dias": 94,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-071",
+   "no": 71,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M10",
+   "actividad": "Nombramiento de asistentes técnicos informáticos para la JELVEX",
+   "inicio": "2026-10-12",
+   "fin": "2026-10-16",
+   "dias": 5,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-072",
+   "no": 72,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M10",
+   "actividad": "Capacitación a asistentes técnicos informáticos para JELVEX",
+   "inicio": "2026-10-19",
+   "fin": "2026-10-30",
+   "dias": 12,
+   "hito": false,
+   "responsable": "Dirección de Capacitación / DTI / Tercero contratado",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-073",
+   "no": 73,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M10",
+   "actividad": "Preparativos de papeletas de votación para el sistema de votación remota por internet y sistema de votación electrónica presencial",
+   "inicio": "2026-12-18",
+   "fin": "2026-12-30",
+   "dias": 13,
+   "hito": false,
+   "responsable": "Dirección de Organización Electoral",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-074",
+   "no": 74,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M10",
+   "actividad": "Preparación de materiales, equipos y accesorios que serán entregados a la JELVEX",
+   "inicio": "2026-10-19",
+   "fin": "2026-11-01",
+   "dias": 14,
+   "hito": false,
+   "responsable": "DOE / DTI",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-075",
+   "no": 75,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M10",
+   "actividad": "Búsqueda y adecuación de instalaciones de la JELVEX",
+   "inicio": "2026-09-28",
+   "fin": "2026-12-29",
+   "dias": 93,
+   "hito": false,
+   "responsable": "DOE / DTI / Dirección Administrativa",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-076",
+   "no": 76,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M10",
+   "actividad": "Entrega de equipos, accesorios y materiales a la JELVEX",
+   "inicio": "2026-11-30",
+   "fin": "2026-12-07",
+   "dias": 8,
+   "hito": false,
+   "responsable": "DOE / DTI",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-077",
+   "no": 77,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M11",
+   "actividad": "Logística para votación electrónica presencial",
+   "inicio": "2027-01-04",
+   "fin": "2027-02-25",
+   "dias": 53,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-078",
+   "no": 78,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M11",
+   "actividad": "Nombramiento de jefes de centros de votación en el extranjero",
+   "inicio": "2027-01-04",
+   "fin": "2027-01-14",
+   "dias": 11,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-079",
+   "no": 79,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M11",
+   "actividad": "Nombramiento de asistentes técnicos informáticos para las JRVEX",
+   "inicio": "2027-01-04",
+   "fin": "2027-01-14",
+   "dias": 11,
+   "hito": false,
+   "responsable": "Organismo Colegiado",
+   "familia": "COLEGIADO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-080",
+   "no": 80,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M11",
+   "actividad": "Capacitación a asistentes técnicos informáticos para JRVEX",
+   "inicio": "2027-01-15",
+   "fin": "2027-01-29",
+   "dias": 15,
+   "hito": false,
+   "responsable": "Dirección de Capacitación / DTI / Tercero contratado",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-081",
+   "no": 81,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M11",
+   "actividad": "Capacitación a jefes de centros de votación y equipo logístico en el extranjero",
+   "inicio": "2027-01-15",
+   "fin": "2027-01-29",
+   "dias": 15,
+   "hito": false,
+   "responsable": "Dirección de Capacitación / DOE / DTI / Tercero contrat",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-082",
+   "no": 82,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M11",
+   "actividad": "Preparación de materiales, equipos y accesorios que serán enviados a las JRVEX",
+   "inicio": "2027-01-04",
+   "fin": "2027-01-22",
+   "dias": 19,
+   "hito": false,
+   "responsable": "DOE / DTI / Tercero contratado",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-083",
+   "no": 83,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M11",
+   "actividad": "Envío de materiales, equipos y accesorios a las JRVEX",
+   "inicio": "2027-01-25",
+   "fin": "2027-02-13",
+   "dias": 20,
+   "hito": false,
+   "responsable": "DOE / DTI / Tercero contratado",
+   "familia": "TECNOLOGIA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-084",
+   "no": 84,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M11",
+   "actividad": "Entrega de equipos, accesorios y materiales a las JRVEX",
+   "inicio": "2027-02-15",
+   "fin": "2027-02-25",
+   "dias": 11,
+   "hito": false,
+   "responsable": "DOE / Jefes de centro de votación",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-085",
+   "no": 85,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M12",
+   "actividad": "Promoción y consulta ciudadana para el sufragio en el extranjero",
+   "inicio": "2027-01-11",
+   "fin": "2027-02-28",
+   "dias": 49,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-086",
+   "no": 86,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M12",
+   "actividad": "Divulgación institucional p/ promoción de información y consulta ciudadana, y motivación a la participación desde el extranjero",
+   "inicio": "2027-01-11",
+   "fin": "2027-02-28",
+   "dias": 49,
+   "hito": false,
+   "responsable": "TSE / Dirección de Comunicaciones",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-087",
+   "no": 87,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M12",
+   "actividad": "Campaña país para promoción de información y consulta ciudadana, y motivación a la participación del sufragio desde el extranjero",
+   "inicio": "2027-01-11",
+   "fin": "2027-02-28",
+   "dias": 49,
+   "hito": false,
+   "responsable": "TSE / RNPN / DGME / MRREE / MEDIOS NACIONALES",
+   "familia": "COMUNICA",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-088",
+   "no": 88,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M12",
+   "actividad": "Habilitación y funcionamiento de sitio Web y aplicación informática para consulta ciudadana de salvadoreños en el extranjero",
+   "inicio": "2027-01-11",
+   "fin": "2027-02-28",
+   "dias": 49,
+   "hito": false,
+   "responsable": "TSE / DTI / DRE / DOE",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-089",
+   "no": 89,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M12",
+   "actividad": "Información y atención de consulta de salvadoreños en el extranjero",
+   "inicio": "2027-01-11",
+   "fin": "2027-02-28",
+   "dias": 49,
+   "hito": false,
+   "responsable": "TSE / DRE / Salvadoreños en el extranjero",
+   "familia": "REGISTRO",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-090",
+   "no": 90,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M13",
+   "actividad": "Elecciones y escrutinios en modalidad de votación remota por Internet",
+   "inicio": "2027-01-30",
+   "fin": "2027-03-01",
+   "dias": 31,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-091",
+   "no": 91,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M13",
+   "actividad": "Habilitación y funcionamiento del sistema y aplicación informática para ejercer el voto remoto por Internet",
+   "inicio": "2027-01-30",
+   "fin": "2027-02-28",
+   "dias": 30,
+   "hito": false,
+   "responsable": "TSE / JELVEX / DTI / Tercero contratado",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-092",
+   "no": 92,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M13",
+   "actividad": "Asistencia técnica informática para la JELVEX",
+   "inicio": "2027-01-30",
+   "fin": "2027-02-28",
+   "dias": 30,
+   "hito": false,
+   "responsable": "Personal técnico de asistencia informática",
+   "familia": "EXTERNOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-093",
+   "no": 93,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M13",
+   "actividad": "Votación remota por Internet (Art. 16 LEESE)",
+   "inicio": "2027-01-30",
+   "fin": "2027-02-28",
+   "dias": 30,
+   "hito": false,
+   "responsable": "Salvadoreños en el extranjero",
+   "familia": "EXTERNOS",
+   "base_legal": "Art. 16 LEESE"
+  },
+  {
+   "id": "SE-094",
+   "no": 94,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M13",
+   "actividad": "Escrutinio de la votación remota por Internet",
+   "inicio": "2027-02-28",
+   "fin": "2027-02-28",
+   "dias": 1,
+   "hito": true,
+   "responsable": "JELVEX",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-095",
+   "no": 95,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M13",
+   "actividad": "Transmisión, procesamiento y divulgación de resultados electorales preliminares votación remota por internet",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "JELVEX / DTI",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-096",
+   "no": 96,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M13",
+   "actividad": "Vigilancia de la transmisión, procesamiento y divulgación de resultados electorales preliminares sufragio en el extranjero",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral",
+   "familia": "JVE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-097",
+   "no": 97,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M13",
+   "actividad": "Concluir la sesión de conformidad con las acciones descritas en Instructivo para miembros de JELVEX",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "JELVEX",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-098",
+   "no": 98,
+   "ambito": "SE",
+   "tipo": "macro",
+   "macro_id": "SE-M14",
+   "actividad": "Elecciones y escrutinios en modalidad de votación electrónica presencial",
+   "inicio": "2027-02-25",
+   "fin": "2027-03-01",
+   "dias": 5,
+   "hito": false,
+   "responsable": "",
+   "familia": null,
+   "base_legal": ""
+  },
+  {
+   "id": "SE-099",
+   "no": 99,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M14",
+   "actividad": "Adecuación y señalización de centros de votación en el extranjero",
+   "inicio": "2027-02-25",
+   "fin": "2027-02-27",
+   "dias": 3,
+   "hito": false,
+   "responsable": "DOE / Jefes de centros de votación",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-100",
+   "no": 100,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M14",
+   "actividad": "Apertura de centros, instalación de las JRVEX, habilitación y funcionamiento del sistema para ejercer voto electrónico presencial",
+   "inicio": "2027-02-28",
+   "fin": "2027-02-28",
+   "dias": 1,
+   "hito": true,
+   "responsable": "DOE / Jefes de centros de votación / JRVEX",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-101",
+   "no": 101,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M14",
+   "actividad": "Votación electrónica presencial según huso horario del país de que se trate",
+   "inicio": "2027-02-28",
+   "fin": "2027-02-28",
+   "dias": 1,
+   "hito": true,
+   "responsable": "Salvadoreños en el extranjero",
+   "familia": "EXTERNOS",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-102",
+   "no": 102,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M14",
+   "actividad": "Escrutinio de votación electrónica presencial",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "JRVEX",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-103",
+   "no": 103,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M14",
+   "actividad": "Transmisión, procesamiento y divulgación de resultados electorales preliminares votación electrónica presencial",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "JRVEX / DTI",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-104",
+   "no": 104,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M14",
+   "actividad": "Vigilancia de la transmisión, procesamiento y divulgación de resultados electorales preliminares sufragio en el extranjero",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "Junta de Vigilancia Electoral",
+   "familia": "JVE",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-105",
+   "no": 105,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M14",
+   "actividad": "Concluir la sesión de conformidad con las acciones descritas en Instructivo para miembros de JRVEX",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "JRVEX",
+   "familia": "OET",
+   "base_legal": ""
+  },
+  {
+   "id": "SE-106",
+   "no": 106,
+   "ambito": "SE",
+   "tipo": "micro",
+   "macro_id": "SE-M14",
+   "actividad": "Limpieza de centros de votación en el extranjero",
+   "inicio": "2027-02-28",
+   "fin": "2027-03-01",
+   "dias": 2,
+   "hito": false,
+   "responsable": "DOE / Jefes de centro de votación",
+   "familia": "ORGANIZACION",
+   "base_legal": ""
+  }
+ ]
+};
+const ACT   = DATA.actividades;
+const MACRO = ACT.filter(a=>a.tipo==='macro');
+const MICRO = ACT.filter(a=>a.tipo==='micro');
+const HIJOS = {};
+MICRO.forEach(m=>{ (HIJOS[m.macro_id] ||= []).push(m); });
+const MAC_GID = {};                       // macro_id -> macro
+const _n={SN:0,SE:0};
+MACRO.forEach(M=>{ MAC_GID[M.macro_id]=M; M.idx=++_n[M.ambito]; M.hijos=HIJOS[M.macro_id]||[]; });
+const padreDe = a => MAC_GID[a.macro_id];
+
+const DIA = 86400000;
+const d2 = s => new Date(s+'T00:00:00');
+const HOY = (()=>{ const n=new Date(); return new Date(n.getFullYear(),n.getMonth(),n.getDate()); })();
+const ELEC = d2(DATA.eleccion);
+const MESC = ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'];
+const fmt  = s => { const d=d2(s); return d.getDate()+' '+MESC[d.getMonth()]+' '+d.getFullYear(); };
+const fmtc = s => { const d=d2(s); return String(d.getDate()).padStart(2,'0')+'/'+MESC[d.getMonth()].toUpperCase()+'/'+String(d.getFullYear()).slice(2); };
+const norm = s => (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'');
+
+// rango efectivo de cada macro (incluye a sus hijas)
+MACRO.forEach(M=>{
+  const h = M.hijos;
+  M.ini_ef = h.reduce((a,x)=> x.inicio<a?x.inicio:a, M.inicio);
+  M.fin_ef = h.reduce((a,x)=> x.fin>a?x.fin:a, M.fin);
+});
+
+const T0 = new Date(Math.min(...ACT.map(a=>+d2(a.inicio))) - 14*DIA);
+const T1 = new Date(Math.max(...ACT.map(a=>+d2(a.fin)))   + 14*DIA);
+const NDIAS = Math.round((T1-T0)/DIA);
+
+const FAM_INFO = {
+  COLEGIADO:['Organismo Colegiado','Magistrados, resoluciones, nombramientos y sorteos','#0B3FA8'],
+  PARTIDOS:['Partidos, coaliciones y CNP','Propuestas, inscripciones, propaganda y recursos','#B4700A'],
+  COMUNICA:['Comunicaciones','Divulgación institucional y campañas ciudadanas','#2A6FC4'],
+  OET:['Organismos electorales temporales','JED, JEM, JRV, JELVEX y JRVEX','#5B3FBF'],
+  EXTERNOS:['Actores externos','RNPN, DGME, MRREE, PNC, firmas y terceros contratados','#A8175A'],
+  TSE:['TSE (institucional)','Direcciones de apoyo y funciones generales del Tribunal','#4B5563'],
+  REGISTRO:['Registro Electoral','Padrón, REVEL, inscripciones y reclamos','#0F6B54'],
+  TECNOLOGIA:['Tecnología e Innovación','Sistemas, transmisión, simulacros y auditoría informática','#0E6E80'],
+  ORGANIZACION:['Organización Electoral','Papeletas, paquete electoral, centros y logística','#8C5200'],
+  CAPACITACION:['Capacitación y Educación Cívica','Formación de organismos electorales','#4D7C0F'],
+  JVE:['Junta de Vigilancia Electoral','Vigilancia y fiscalización de todo el proceso','#B01238'],
+  SECRETARIA:['Secretaría General','Notificaciones y trámite documental','#616B7A'],
+  OTROS:['Otros','Sin clasificación institucional','#8A93A3']
+};
+
+const estado = a => d2(a.fin) < HOY ? 'fin' : (d2(a.inicio) <= HOY ? 'curso' : 'pend');
+const S = { vista:'tl', amb:'ALL', q:'', fam:'ALL', est:'ALL', dayW:2.6, abiertas:new Set(), hor:30 };
+
+/* ═══ filtro ═══ */
+function pasa(a){
+  if(S.amb!=='ALL' && a.ambito!==S.amb) return false;
+  if(S.fam!=='ALL' && a.familia!==S.fam) return false;
+  if(S.est!=='ALL' && estado(a)!==S.est) return false;
+  if(S.q){ const q=norm(S.q); if(!norm(a.actividad+' '+(a.responsable||'')).includes(q)) return false; }
+  return true;
+}
+// una macro sobrevive si ella pasa o alguna hija pasa (así no se pierde el contexto)
+function macroVisible(M){
+  if(S.amb!=='ALL' && M.ambito!==S.amb) return false;
+  if(S.fam==='ALL' && S.est==='ALL' && !S.q) return true;
+  return M.hijos.some(pasa) || (S.fam==='ALL' && pasa({...M,familia:null}));
+}
+
+/* ═══ geometría ═══ */
+const X = s => (d2(s)-T0)/DIA*S.dayW;
+const W = a => Math.max(S.dayW*a.dias, a.hito?0:3);
+const anchoTotal = () => NDIAS*S.dayW;
+
+/* ═══ línea de tiempo ═══ */
+function pintaEje(){
+  const w = anchoTotal();
+  let yrs='', mos='', grid='';
+  let c = new Date(T0.getFullYear(), T0.getMonth(), 1);
+  while(c < T1){
+    const nx = new Date(c.getFullYear(), c.getMonth()+1, 1);
+    const x  = (c-T0)/DIA*S.dayW, an = (nx-c)/DIA*S.dayW;
+    const esQ = c.getMonth()%3===0;
+    if(x+an>0) mos += `<div class="mo${esQ?' q':''}" style="left:${Math.max(0,x)}px;width:${an}px">${
+      an>30 ? MESC[c.getMonth()] : (an>14? MESC[c.getMonth()][0] : '')}</div>`;
+    grid += `<div class="vday${esQ?' q':''}" style="left:${x}px"></div>`;
+    if(c.getMonth()===0 || +c===+new Date(T0.getFullYear(),T0.getMonth(),1)){
+      const fy = new Date(c.getFullYear()+1,0,1);
+      yrs += `<div class="yr" style="left:${x}px;width:${Math.min((fy-c)/DIA*S.dayW, w-x)}px">${c.getFullYear()}</div>`;
+    }
+    c = nx;
+  }
+  const xh=(HOY-T0)/DIA*S.dayW, xe=(ELEC-T0)/DIA*S.dayW;
+  const banderas = `<div class="hoyflag" style="left:${xh}px">HOY · ${fmtc(iso(HOY))}</div>
+     <div class="elecflag" style="left:${xe}px">28 FEB 2027 · JORNADA ELECTORAL</div>`;
+  return {ejeHTML:`
+    <div class="axis">
+      <div class="r yrs"><div class="pad"></div><div class="lane yrs" style="width:${w}px">${yrs}</div></div>
+      <div class="r mos"><div class="pad"></div><div class="lane mos" style="width:${w}px">${mos}</div></div>
+      <div class="r flg"><div class="pad"></div><div class="lane flg" style="width:${w}px">${banderas}</div></div>
+    </div>`, grid, w};
+}
+
+function barra(a, cls){
+  const st = estado(a), w = anchoTotal();
+  const x = X(a.inicio);
+  const dat = `data-id="${a.id}"`;
+  if(a.hito) return `<div class="hito st-${st}" style="left:${x}px" ${dat}></div>`;
+  return `<div class="bar ${cls} st-${st}" style="left:${x}px;width:${W(a)}px" ${dat}></div>`;
+}
+
+function filaMacro(M){
+  const abierta = S.abiertas.has(M.id);
+  const hijos = M.hijos.filter(pasa);
+  const span = {inicio:M.ini_ef, fin:M.fin_ef,
+                dias:Math.round((d2(M.fin_ef)-d2(M.ini_ef))/DIA)+1, hito:M.ini_ef===M.fin_ef};
+  const st = estado(span);
+  let marcas = '';
+  if(!abierta) hijos.forEach(h=>{ marcas += `<div class="tick" style="left:${X(h.inicio)-X(M.ini_ef)}px"></div>`; });
+  const bar = span.hito
+    ? `<div class="hito st-${st}" style="left:${X(span.inicio)}px" data-id="${M.id}"></div>`
+    : `<div class="bar mac-bar st-${st}" style="left:${X(span.inicio)}px;width:${Math.max(S.dayW*span.dias,4)}px" data-id="${M.id}">${marcas}<span class="cap">${fmtc(span.inicio)} → ${fmtc(span.fin)}</span></div>`;
+  return `<div class="row mac ${M.ambito==='SN'?'sn':'se'} ${abierta?'open':''}" data-macro="${M.id}">
+      <div class="lbl" data-toggle="${M.id}" title="${esc(M.actividad)}">
+        <span class="chev">▶</span><span class="fno">${String(M.idx).padStart(2,'0')}</span>
+        <span class="tx">${esc(M.actividad)}</span><span class="num">${hijos.length}</span>
+      </div>
+      <div class="lane" style="width:${anchoTotal()}px">${bar}</div>
+    </div>`;
+}
+
+function filaMicro(m, atenuada){
+  return `<div class="row mic ${m.ambito==='SN'?'sn':'se'}${atenuada?' at':''}" data-id-row="${m.id}">
+      <div class="lbl" title="${esc(m.actividad)}">
+        <span class="tx">${esc(m.actividad)}</span><span class="num">${m.no}</span>
+      </div>
+      <div class="lane" style="width:${anchoTotal()}px">${barra(m,'mic-bar')}</div>
+    </div>`;
+}
+
+function cresta(){
+  const w = anchoTotal(), H=84, base=42, semanas=Math.ceil(NDIAS/7);
+  const cnt = {SN:new Array(semanas).fill(0), SE:new Array(semanas).fill(0)};
+  MICRO.filter(pasa).forEach(a=>{
+    const i0=Math.floor((d2(a.inicio)-T0)/DIA/7), i1=Math.floor((d2(a.fin)-T0)/DIA/7);
+    for(let i=Math.max(0,i0);i<=Math.min(semanas-1,i1);i++) cnt[a.ambito][i]++;
+  });
+  const mx = Math.max(1,...cnt.SN,...cnt.SE);
+  const path = (arr,dir)=>{
+    let d = `M0,${base}`;
+    arr.forEach((v,i)=>{ const x=i*7*S.dayW, y=base+dir*(v/mx)*(H/2-6); d+=` L${x.toFixed(1)},${y.toFixed(1)}`; });
+    d += ` L${w},${base} Z`; return d;
+  };
+  return `<svg class="ridge" width="${w}" height="${H}" viewBox="0 0 ${w} ${H}" preserveAspectRatio="none">
+    <path d="${path(cnt.SN,-1)}" fill="#0B3FA8" fill-opacity=".13" stroke="#0B3FA8" stroke-width="1"/>
+    <path d="${path(cnt.SE, 1)}" fill="#B4700A" fill-opacity=".13" stroke="#B4700A" stroke-width="1"/>
+    <line x1="0" y1="${base}" x2="${w}" y2="${base}" stroke="#C9CED6" stroke-width="1"/>
+  </svg>`;
+}
+
+function pintaTL(){
+  const {ejeHTML, grid, w} = pintaEje();
+  const sec = amb => {
+    const ms = MACRO.filter(M=>M.ambito===amb && macroVisible(M));
+    if(!ms.length) return '';
+    const nm = ms.reduce((a,M)=>a+M.hijos.filter(pasa).length,0);
+    let h = `<div class="trackhdr ${amb==='SN'?'sn':'se'}">${amb==='SN'?'Sufragio en territorio nacional':'Sufragio en el extranjero'}
+      <span class="c">${ms.length} fases · ${nm} act.</span></div><div class="track ${amb==='SN'?'sn':'se'}">`;
+    ms.forEach(M=>{
+      h += filaMacro(M);
+      if(S.abiertas.has(M.id)) M.hijos.forEach(m=>{ h += filaMicro(m, !pasa(m)); });
+    });
+    return h + '</div>';
+  };
+  const xh = (HOY-T0)/DIA*S.dayW, xe = (ELEC-T0)/DIA*S.dayW;
+  const html = `
+    ${ejeHTML}
+    <div class="gridlayer" style="position:absolute;left:var(--lbl);top:0;bottom:0;width:${w}px;z-index:0">${grid}</div>
+    ${S.amb!=='SE' ? sec('SN') : ''}
+    <div class="spine"><div class="r"><div class="lbl">
+        <div class="t">Carga operativa</div>
+        <div class="d">Actividades simultáneas por semana. Arriba nacional, abajo extranjero.</div>
+      </div><div class="lane" style="width:${w}px">${cresta()}</div></div></div>
+    ${S.amb!=='SN' ? sec('SE') : ''}
+    <div class="elec" style="left:calc(var(--lbl) + ${xe}px);width:${Math.max(S.dayW,3)}px"></div>
+    <div class="hoyline" style="left:calc(var(--lbl) + ${xh}px)"></div>`;
+  document.getElementById('tlin').innerHTML = html;
+}
+
+const iso = d => d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+function esc(s){ return (s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ═══ agenda ═══ */
+function pintaAgenda(){
+  const lim = new Date(+HOY + S.hor*DIA);
+  const ev = [];
+  ACT.filter(a=>a.tipo==='micro' && pasa(a)).forEach(a=>{
+    const i=d2(a.inicio), f=d2(a.fin);
+    if(a.hito){ if(i>=HOY && i<=lim) ev.push({a,t:'hito',d:i}); return; }
+    if(i>=HOY && i<=lim) ev.push({a,t:'ini',d:i});
+    if(f>=HOY && f<=lim && f>i) ev.push({a,t:'ven',d:f});
+  });
+  ev.sort((x,y)=> x.d-y.d || x.a.ambito.localeCompare(y.a.ambito));
+  if(!ev.length){
+    document.getElementById('agenda').innerHTML =
+      `<div style="padding:50px 0;text-align:center;color:var(--gris);font-size:13px">
+        No hay arranques ni vencimientos en este horizonte. Amplía el rango o quita filtros.</div>`;
+    return;
+  }
+  let h='', mesActual='';
+  ev.forEach(e=>{
+    const mes = MESC[e.d.getMonth()].toUpperCase()+' '+e.d.getFullYear();
+    if(mes!==mesActual){
+      if(mesActual) h+='</div>';
+      h += `<div class="agsplit"><h3>${mes}</h3><div class="ln"></div></div><div class="agenda">`;
+      mesActual = mes;
+    }
+    const dd = Math.round((e.d-HOY)/DIA);
+    const M  = padreDe(e.a);
+    const tag = e.t==='hito' ? '<span class="tag hit">HITO · FECHA FIJA</span>'
+              : e.t==='ini'  ? '<span class="tag ini">INICIA</span>'
+                             : '<span class="tag ven">VENCE</span>';
+    h += `<div class="card ${e.a.ambito==='SN'?'sn':'se'}" data-id="${e.a.id}">
+      <div class="hd">${tag}<span class="tag amb">${e.a.ambito==='SN'?'NACIONAL':'EXTRANJERO'}</span>
+        <span class="dcount"><b>${dd===0?'HOY':dd}</b>${dd===0?'':' d'}</span></div>
+      <h4>${esc(e.a.actividad)}</h4>
+      <div class="meta">
+        <span class="f">${fmtc(e.a.inicio)} → ${fmtc(e.a.fin)} · ${e.a.dias} día${e.a.dias>1?'s':''}</span>
+        <span>${esc(e.a.responsable)}</span>
+        <span style="color:#5D6885">${M?esc(M.actividad):''}</span>
+      </div></div>`;
+  });
+  document.getElementById('agenda').innerHTML = h+'</div>';
+}
+
+/* ═══ responsables ═══ */
+function pintaResp(){
+  const map={}, fam={};
+  MICRO.filter(pasa).forEach(a=>{
+    (map[a.responsable] ||= {SN:0,SE:0,f:a.familia});
+    map[a.responsable][a.ambito]++;
+    (fam[a.familia] ||= {n:0,SN:0,SE:0}); fam[a.familia].n++; fam[a.familia][a.ambito]++;
+  });
+  const arr = Object.entries(map).map(([k,v])=>({k,...v,t:v.SN+v.SE})).sort((a,b)=>b.t-a.t);
+  const mx = Math.max(1,...arr.map(x=>x.t));
+  document.getElementById('rlist').innerHTML = arr.map(r=>`
+    <div class="rrow" data-resp="${esc(r.k)}" title="${esc(r.k)}">
+      <div class="nm">${esc(r.k)}</div>
+      <div class="rbar"><i class="s" style="width:${r.SN/mx*100}%"></i><i class="e" style="width:${r.SE/mx*100}%"></i></div>
+      <div class="ct">${r.t}</div></div>`).join('') ||
+    '<div style="color:var(--gris);padding:20px 0">Sin resultados con los filtros actuales.</div>';
+  const fa = Object.entries(fam).sort((a,b)=>b[1].n-a[1].n);
+  const fmx = Math.max(1,...fa.map(x=>x[1].n));
+  document.getElementById('fam').innerHTML = fa.map(([k,v])=>{
+    const i = FAM_INFO[k]||[k,'','#7C89AE'];
+    return `<div class="fcard" data-fam="${k}" style="cursor:pointer">
+      <div class="t"><b style="color:${i[2]}">${i[0]}</b><span>${v.n}</span></div>
+      <div class="d">${i[1]}</div>
+      <div class="fbar"><i style="width:${v.n/fmx*100}%;background:${i[2]}"></i></div></div>`;
+  }).join('');
+}
+
+/* ═══ detalle ═══ */
+function abre(id){
+  const a = ACT.find(x=>x.id===id); if(!a) return;
+  const es = estado(a), M = padreDe(a);
+  const hijos = a.tipo==='macro' ? a.hijos : [];
+  const ini = a.tipo==='macro'? a.ini_ef : a.inicio, fin = a.tipo==='macro'? a.fin_ef : a.fin;
+  const total = (d2(fin)-d2(ini))/DIA+1;
+  const prog = es==='fin'?100 : es==='pend'?0 : Math.round((HOY-d2(ini))/DIA/total*100);
+  const col = a.ambito==='SN' ? 'var(--sn)':'var(--se)';
+  const etq = es==='fin'?'CUMPLIDA':es==='curso'?'EN CURSO':'PENDIENTE';
+  const dd  = Math.round((d2(a.inicio)-HOY)/DIA);
+  const fi  = FAM_INFO[a.familia]||null;
+  document.getElementById('drawer').innerHTML = `
+    <button class="x" onclick="cierra()" aria-label="Cerrar">×</button>
+    <div class="kind" style="color:${col}">
+      ${a.tipo==='macro'?'MACRO FASE':'MICRO ACTIVIDAD'} · ${a.ambito==='SN'?'TERRITORIO NACIONAL':'EXTRANJERO'} · N.º ${a.no}
+    </div>
+    <h3>${esc(a.actividad)}</h3>
+    <div class="gantt">
+      <div class="lin"><i style="left:0;width:${Math.max(prog,0)}%;background:${col}"></i></div>
+      <div class="lg"><span>${fmt(ini)}</span><span>${etq}${es==='pend'?' · faltan '+dd+' días':''}</span><span>${fmt(fin)}</span></div>
+    </div>
+    <dl class="dl">
+      <dt>Inicio</dt><dd class="mono">${fmt(ini)}${a.hito?' · fecha fija':''}</dd>
+      <dt>Fin</dt><dd class="mono">${fmt(fin)}</dd>
+      <dt>Duración</dt><dd class="mono">${total} día${total>1?'s':''}</dd>
+      ${a.responsable?`<dt>Responsable</dt><dd>${esc(a.responsable)}</dd>`:''}
+      ${fi?`<dt>Familia</dt><dd><span style="color:${fi[2]}">${fi[0]}</span></dd>`:''}
+      ${a.base_legal?`<dt>Base legal</dt><dd class="mono">${esc(a.base_legal)}</dd>`:''}
+      ${a.tipo==='micro'&&M?`<dt>Fase</dt><dd>${esc(M.actividad)}</dd>`:''}
+    </dl>
+    ${hijos.length?`<div class="hijos"><h5>${hijos.length} micro actividades</h5>${hijos.map(h=>`
+      <div class="hijo" data-id="${h.id}">
+        <div class="a">${esc(h.actividad)}</div>
+        <div class="b">${fmtc(h.inicio)} → ${fmtc(h.fin)} · ${esc(h.responsable)}</div>
+      </div>`).join('')}</div>`:''}`;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('scrim').classList.add('on');
+}
+function cierra(){
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('scrim').classList.remove('on');
+}
+
+/* ═══ tooltip ═══ */
+const tip = document.getElementById('tip');
+function muestraTip(e,id){
+  const a = ACT.find(x=>x.id===id); if(!a) return;
+  const M = a.tipo==='micro'? padreDe(a):null;
+  const ini = a.tipo==='macro'? a.ini_ef:a.inicio, fin = a.tipo==='macro'? a.fin_ef:a.fin;
+  tip.innerHTML = `<div class="t1">${esc(a.actividad)}</div>
+    <div class="t2">${fmtc(ini)} → ${fmtc(fin)}${a.hito?' · HITO':''}</div>
+    <div class="t3">${a.responsable?esc(a.responsable):a.hijos.length+' micro actividades'}${M?' · '+esc(M.actividad):''}</div>`;
+  tip.classList.add('on'); mueveTip(e);
+}
+function mueveTip(e){
+  const r = tip.getBoundingClientRect();
+  let x = e.clientX+15, y = e.clientY+15;
+  if(x+r.width > innerWidth-10) x = e.clientX-r.width-15;
+  if(y+r.height > innerHeight-10) y = e.clientY-r.height-15;
+  tip.style.left = x+'px'; tip.style.top = y+'px';
+}
+
+/* ═══ render maestro ═══ */
+function render(){
+  document.querySelectorAll('.vista').forEach(v=>v.classList.remove('on'));
+  document.getElementById('v-'+S.vista).classList.add('on');
+  document.querySelectorAll('.tlonly').forEach(el=>el.style.display = S.vista==='tl'?'':'none');
+  if(S.vista==='tl'){ pintaTL(); ajustaAlto(); }
+  if(S.vista==='ag') pintaAgenda();
+  if(S.vista==='rs') pintaResp();
+  if(S.vista==='tl' && S.q){
+    const m = MICRO.filter(pasa).sort((a,b)=>a.inicio<b.inicio?-1:1)[0];
+    if(m){ const c=document.getElementById('tl');
+      setTimeout(()=>{ c.scrollLeft = X(m.inicio) - c.clientWidth*0.35 + 300; },20); }
+  }
+  const vis = MICRO.filter(pasa).length;
+  document.getElementById('conteo').innerHTML = `<b>${vis}</b> / ${MICRO.length} micro actividades`;
+}
+
+function ajustaAlto(){
+  const c = document.getElementById('tl');
+  if(!c || S.vista!=='tl') return;
+  const arriba = c.getBoundingClientRect().top + scrollY - scrollY;
+  c.style.maxHeight = Math.max(360, innerHeight - arriba - 46) + 'px';
+}
+function centraEje(){
+  const c = document.getElementById('tl'), sp = c.querySelector('.spine');
+  if(!sp) return;
+  const sobra = sp.offsetTop + sp.offsetHeight - c.clientHeight*0.62;
+  c.scrollTop = Math.max(0, sobra);
+}
+function irAHoy(){
+  const c = document.getElementById('tl');
+  c.scrollLeft = (HOY-T0)/DIA*S.dayW - c.clientWidth*0.42 + 300;
+}
+
+/* ═══ arranque ═══ */
+(function init(){
+  document.getElementById('subtitulo').textContent =
+    'Calendario oficial con modificaciones por D.L. N.º 573, 574 y 575 (D.O. N.º 89, Tomo 451, 15/mayo/2026) y D.L. 518. ' +
+    'Vista comparada de sufragio en territorio nacional y en el extranjero sobre un mismo eje de tiempo.';
+  document.getElementById('pie').textContent =
+    'Fuente: ' + DATA.fuente + ' · Datos extraídos y normalizados el ' + fmt(DATA.generado) +
+    ' · ' + ACT.length + ' registros';
+
+  // countdown
+  const dias = Math.round((ELEC-HOY)/DIA);
+  document.getElementById('dias').textContent = dias>=0 ? dias : 'JORNADA';
+  const tot = (ELEC-d2(DATA.actividades.reduce((a,x)=>x.inicio<a?x.inicio:a,'2099-01-01')))/DIA;
+  const trans = Math.max(0,Math.min(1,1-dias/tot));
+  document.getElementById('arco').style.strokeDashoffset = 283*(1-trans);
+
+  // kpis
+  const k = (id,v)=>document.getElementById(id).textContent = v;
+  k('k-tot', ACT.length); k('k-mac', MACRO.length);
+  k('k-sn', ACT.filter(a=>a.ambito==='SN').length);
+  k('k-se', ACT.filter(a=>a.ambito==='SE').length);
+  k('k-cur', MICRO.filter(a=>estado(a)==='curso').length);
+  k('k-30',  MICRO.filter(a=>{const i=d2(a.inicio);return i>HOY && i<=new Date(+HOY+30*DIA);}).length);
+  k('k-hit', MICRO.filter(a=>a.hito).length);
+
+  // filtro de familias
+  const fsel = document.getElementById('fFam');
+  const fams = [...new Set(MICRO.map(a=>a.familia))].sort((a,b)=>
+    (FAM_INFO[a]?.[0]||a).localeCompare(FAM_INFO[b]?.[0]||b));
+  fsel.innerHTML = '<option value="ALL">Todos los responsables</option>' +
+    fams.map(f=>`<option value="${f}">${(FAM_INFO[f]||[f])[0]}</option>`).join('');
+
+  // navegación
+  const seg = (id,fn)=>document.getElementById(id).addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b) return;
+    e.currentTarget.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    b.classList.add('on'); fn(b.dataset.v);
+  });
+  seg('nav', v=>{ S.vista=v; render(); if(v==='tl') setTimeout(()=>{irAHoy();centraEje();},30); });
+  seg('amb', v=>{ S.amb=v; render(); });
+  seg('hor', v=>{ S.hor=+v; pintaAgenda(); });
+
+  let t; document.getElementById('q').addEventListener('input',e=>{
+    clearTimeout(t); t=setTimeout(()=>{ S.q=e.target.value.trim();
+      if(S.q && S.vista==='tl') MACRO.forEach(M=>{ if(M.hijos.some(pasa)) S.abiertas.add(M.id); });
+      render(); },180);
+  });
+  fsel.addEventListener('change',e=>{ S.fam=e.target.value; render(); });
+  document.getElementById('fEst').addEventListener('change',e=>{ S.est=e.target.value; render(); });
+  document.getElementById('zoom').addEventListener('input',e=>{
+    const c=document.getElementById('tl'), centro=(c.scrollLeft+c.clientWidth/2-300)/S.dayW;
+    S.dayW=+e.target.value; pintaTL();
+    c.scrollLeft = centro*S.dayW - c.clientWidth/2 + 300;
+  });
+  document.getElementById('bHoy').addEventListener('click',irAHoy);
+  document.getElementById('bElec').addEventListener('click',()=>{
+    const c=document.getElementById('tl');
+    c.scrollLeft = (ELEC-T0)/DIA*S.dayW - c.clientWidth*0.5 + 300;
+  });
+  document.getElementById('bExp').addEventListener('click',e=>{
+    if(S.abiertas.size){ S.abiertas.clear(); e.target.textContent='Expandir todo'; }
+    else { MACRO.forEach(M=>S.abiertas.add(M.id)); e.target.textContent='Contraer todo'; }
+    pintaTL();
+  });
+
+  // interacción de la línea de tiempo
+  const tl = document.getElementById('tlin');
+  tl.addEventListener('click',e=>{
+    const tg = e.target.closest('[data-toggle]');
+    if(tg){ const id=tg.dataset.toggle;
+      S.abiertas.has(id) ? S.abiertas.delete(id) : S.abiertas.add(id);
+      const sl = document.getElementById('tl').scrollLeft; pintaTL();
+      document.getElementById('tl').scrollLeft = sl; return; }
+    const b = e.target.closest('[data-id]'); if(b) abre(b.dataset.id);
+  });
+  tl.addEventListener('mouseover',e=>{ const b=e.target.closest('[data-id]'); if(b) muestraTip(e,b.dataset.id); });
+  tl.addEventListener('mousemove',e=>{ if(tip.classList.contains('on')) mueveTip(e); });
+  tl.addEventListener('mouseout',e=>{ if(e.target.closest('[data-id]')) tip.classList.remove('on'); });
+
+  document.getElementById('agenda').addEventListener('click',e=>{
+    const c=e.target.closest('[data-id]'); if(c) abre(c.dataset.id); });
+  document.getElementById('drawer').addEventListener('click',e=>{
+    const h=e.target.closest('.hijo'); if(h) abre(h.dataset.id); });
+  document.getElementById('rlist').addEventListener('click',e=>{
+    const r=e.target.closest('[data-resp]'); if(!r) return;
+    document.getElementById('q').value = r.dataset.resp; S.q=r.dataset.resp;
+    S.vista='tl'; document.querySelectorAll('#nav button').forEach((b,i)=>b.classList.toggle('on',i===0));
+    MACRO.forEach(M=>{ if(M.hijos.some(pasa)) S.abiertas.add(M.id); });
+    render(); setTimeout(()=>{irAHoy();centraEje();},30);
+  });
+  document.getElementById('fam').addEventListener('click',e=>{
+    const f=e.target.closest('[data-fam]'); if(!f) return;
+    S.fam = S.fam===f.dataset.fam ? 'ALL' : f.dataset.fam;
+    document.getElementById('fFam').value = S.fam; render();
+  });
+  document.getElementById('scrim').addEventListener('click',cierra);
+  addEventListener('keydown',e=>{ if(e.key==='Escape') cierra(); });
+
+  render();
+  setTimeout(()=>{ ajustaAlto(); irAHoy(); centraEje(); },60);
+  addEventListener('resize',()=>{ ajustaAlto(); });
+})();
+</script>
+</body>
+</html>

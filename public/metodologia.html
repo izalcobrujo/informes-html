@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metodología · Población salvadoreña en el exterior</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#ffffff; --ink:#0a1f3c; --ink-soft:#41506a;
+    --cobalt:#14489c; --cobalt-deep:#0d2f6b;
+    --sky:#eef3fa; --sky-deep:#e2ebf7; --line:#cbd6e6;
+    --gold:#9a6b12; --gold-soft:#f5edd6;
+    --good:#137a54; --alert:#a8341f;
+    --shadow:0 1px 2px rgba(10,31,60,.06),0 6px 24px rgba(10,31,60,.06);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--sky); color:var(--ink);
+    font-family:"Public Sans",system-ui,-apple-system,sans-serif;
+    font-size:17px; line-height:1.62; -webkit-font-smoothing:antialiased;
+    font-variant-numeric:tabular-nums;
+  }
+  h1,h2,h3,.display{font-family:"Libre Franklin","Public Sans",sans-serif;}
+  a{color:var(--cobalt);}
+  .wrap{max-width:960px; margin:0 auto; padding:0 28px;}
+
+  /* --- top flag bar --- */
+  .flag{height:6px;background:linear-gradient(90deg,var(--cobalt-deep) 0 60%,var(--gold) 60% 100%);}
+
+  /* --- masthead / cover --- */
+  header.cover{background:var(--cobalt-deep); color:#fff; padding:54px 0 46px;}
+  header.cover .eyebrow{
+    font-size:12.5px; letter-spacing:.22em; text-transform:uppercase;
+    color:#b9cdf0; font-weight:600; margin:0 0 18px;
+  }
+  header.cover h1{
+    font-size:clamp(30px,5vw,50px); line-height:1.06; font-weight:800;
+    margin:0 0 16px; letter-spacing:-.01em; max-width:16ch;
+  }
+  header.cover .lede{
+    font-size:19px; color:#dbe6f7; max-width:60ch; margin:0 0 30px; line-height:1.55;
+  }
+  .meta{display:flex; flex-wrap:wrap; gap:26px 44px; border-top:1px solid rgba(255,255,255,.18); padding-top:22px;}
+  .meta div{min-width:120px}
+  .meta dt{font-size:11.5px; letter-spacing:.14em; text-transform:uppercase; color:#93b0e0; margin-bottom:5px;}
+  .meta dd{margin:0; font-weight:600; font-size:15px; color:#fff;}
+
+  /* --- table of contents --- */
+  nav.toc{background:var(--paper); border-bottom:1px solid var(--line); position:sticky; top:0; z-index:20;}
+  nav.toc .wrap{display:flex; gap:6px; overflow-x:auto; padding-top:11px; padding-bottom:11px;}
+  nav.toc a{
+    white-space:nowrap; font-size:13px; font-weight:600; color:var(--ink-soft);
+    text-decoration:none; padding:6px 12px; border-radius:6px;
+  }
+  nav.toc a:hover{background:var(--sky); color:var(--cobalt);}
+
+  main{background:var(--paper);}
+  section{padding:46px 0; border-bottom:1px solid var(--line);}
+  section:last-child{border-bottom:none}
+  .num{
+    font-family:"Libre Franklin"; font-weight:700; font-size:13px; letter-spacing:.16em;
+    color:var(--gold); text-transform:uppercase; margin:0 0 8px;
+  }
+  h2{font-size:clamp(24px,3.4vw,33px); line-height:1.12; margin:0 0 18px; font-weight:800; letter-spacing:-.01em;}
+  h3{font-size:19px; margin:30px 0 8px; font-weight:700; color:var(--cobalt-deep);}
+  p{margin:0 0 16px; max-width:70ch;}
+  .lead{font-size:19px; color:var(--ink-soft);}
+  strong{font-weight:700;}
+  em{font-style:normal; background:var(--gold-soft); padding:0 4px; border-radius:3px;}
+
+  /* --- stat band --- */
+  .stats{display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:1px; background:var(--line); border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:26px 0;}
+  .stat{background:var(--paper); padding:20px 20px 18px;}
+  .stat .k{font-family:"Libre Franklin"; font-weight:800; font-size:30px; line-height:1; color:var(--cobalt-deep); letter-spacing:-.02em;}
+  .stat .l{font-size:13px; color:var(--ink-soft); margin-top:7px; line-height:1.35;}
+  .stat .s{font-size:12px; color:var(--gold); font-weight:600; margin-top:4px;}
+
+  /* --- callout --- */
+  .call{background:var(--sky); border-left:4px solid var(--cobalt); border-radius:0 10px 10px 0; padding:18px 22px; margin:24px 0;}
+  .call.gold{background:var(--gold-soft); border-left-color:var(--gold);}
+  .call h4{margin:0 0 6px; font-family:"Libre Franklin"; font-size:15px; letter-spacing:.02em; color:var(--cobalt-deep);}
+  .call.gold h4{color:var(--gold);}
+  .call p{margin:0; font-size:15.5px;}
+
+  /* --- formula --- */
+  .formula{background:var(--cobalt-deep); color:#eaf1fc; border-radius:10px; padding:18px 22px; margin:20px 0; font-size:17px; overflow-x:auto;}
+  .formula code{font-family:"Public Sans"; font-weight:600; white-space:nowrap;}
+  .formula .op{color:var(--gold-soft);} .formula .hl{color:#ffd98a; font-weight:700;}
+
+  /* --- tables --- */
+  table{width:100%; border-collapse:collapse; margin:22px 0; font-size:14.5px;}
+  th,td{text-align:left; padding:11px 14px; border-bottom:1px solid var(--line); vertical-align:top;}
+  thead th{background:var(--cobalt-deep); color:#fff; font-family:"Libre Franklin"; font-weight:600; font-size:12.5px; letter-spacing:.03em; text-transform:uppercase; border-bottom:none;}
+  tbody tr:nth-child(even){background:var(--sky);}
+  td.n,th.n{text-align:right; font-variant-numeric:tabular-nums;}
+  caption{caption-side:bottom; font-size:12.5px; color:var(--ink-soft); text-align:left; padding-top:8px;}
+
+  /* --- pipeline --- */
+  .pipe{display:grid; grid-template-columns:repeat(auto-fit,minmax(130px,1fr)); gap:10px; margin:26px 0;}
+  .step{background:var(--sky); border:1px solid var(--line); border-radius:10px; padding:14px 14px 15px; position:relative;}
+  .step .i{font-family:"Libre Franklin"; font-weight:800; font-size:12px; color:var(--gold); letter-spacing:.1em;}
+  .step .t{font-weight:700; font-size:14.5px; margin-top:3px; color:var(--cobalt-deep);}
+  .step .d{font-size:12.5px; color:var(--ink-soft); margin-top:4px; line-height:1.4;}
+
+  /* --- signature: registry gap --- */
+  .gap-fig{margin:26px 0; border:1px solid var(--line); border-radius:14px; padding:24px; background:linear-gradient(180deg,#fff,var(--sky));}
+  .gap-fig h4{margin:0 0 4px; font-family:"Libre Franklin"; font-size:16px; color:var(--cobalt-deep);}
+  .gap-fig .sub{font-size:13px; color:var(--ink-soft); margin:0 0 20px;}
+  .bar{display:flex; height:46px; border-radius:8px; overflow:hidden; margin:6px 0 4px; box-shadow:var(--shadow);}
+  .seg{display:flex; align-items:center; justify-content:center; color:#fff; font-weight:700; font-size:13.5px; position:relative; min-width:0; padding:0 8px;}
+  .seg span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  .seg.adult{background:var(--cobalt-deep);}
+  .seg.minor{background:var(--sky-deep); color:var(--ink-soft);}
+  .seg.dui{background:var(--cobalt);}
+  .seg.brecha{background:repeating-linear-gradient(45deg,var(--gold),var(--gold) 9px,#8a5f10 9px,#8a5f10 18px); color:#fff;}
+  .barlab{display:flex; justify-content:space-between; font-size:12.5px; color:var(--ink-soft); margin:2px 2px 18px; font-weight:600;}
+  .barttl{font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--gold); font-weight:700; margin:16px 0 2px;}
+
+  ul.clean{margin:14px 0; padding-left:0; list-style:none;}
+  ul.clean li{position:relative; padding-left:26px; margin-bottom:10px; max-width:68ch;}
+  ul.clean li::before{content:""; position:absolute; left:4px; top:10px; width:8px; height:8px; background:var(--cobalt); border-radius:2px; transform:rotate(45deg);}
+
+  /* --- glossary --- */
+  dl.gloss{margin:18px 0;}
+  dl.gloss dt{font-weight:700; color:var(--cobalt-deep); font-family:"Libre Franklin"; font-size:16px; margin-top:16px;}
+  dl.gloss dd{margin:4px 0 0; color:var(--ink-soft); font-size:15.5px; max-width:72ch;}
+
+  footer{background:var(--cobalt-deep); color:#c9d8f0; padding:38px 0 44px; font-size:14px;}
+  footer .wrap{display:grid; grid-template-columns:1fr; gap:18px;}
+  footer strong{color:#fff}
+  footer .src{font-size:13px; line-height:1.7;}
+  .disc{font-size:12.5px; color:#8fa9d4; border-top:1px solid rgba(255,255,255,.15); padding-top:16px; margin-top:6px;}
+
+  /* --- scroll progress --- */
+  #progress{position:fixed; top:0; left:0; height:3px; width:0; background:linear-gradient(90deg,var(--cobalt),var(--gold)); z-index:60; transition:width .12s linear;}
+
+  /* --- hero dot grid --- */
+  header.cover{position:relative; overflow:hidden;}
+  header.cover::after{content:""; position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.05) 1.2px, transparent 1.2px); background-size:27px 27px; pointer-events:none;}
+  header.cover .wrap{position:relative; z-index:1;}
+
+  /* --- stat accent + section-number tick --- */
+  .stat{position:relative;}
+  .stat::before{content:""; position:absolute; top:0; left:0; width:34px; height:3px; background:var(--gold);}
+  .num{display:inline-flex; align-items:center; gap:9px;}
+  .num::before{content:""; width:9px; height:9px; background:var(--gold); transform:rotate(45deg); display:inline-block; flex:none;}
+
+  /* --- cross-validation (invert) section --- */
+  section.invert{background:radial-gradient(130% 150% at 12% -12%, #17408c 0%, #0d2f6b 46%, #081a3d 100%); color:#eaf1fc; border-bottom:none; position:relative; overflow:hidden;}
+  section.invert::before{content:""; position:absolute; inset:0; background-image:radial-gradient(rgba(255,255,255,.055) 1.1px, transparent 1.1px); background-size:24px 24px; pointer-events:none;}
+  section.invert .wrap{position:relative; z-index:1;}
+  section.invert .num{color:#f0d488;} section.invert .num::before{background:#f0d488;}
+  section.invert h2{color:#fff;} section.invert h3{color:#bcd2f4;}
+  section.invert p{color:#d3e0f5;} section.invert .lead{color:#e6eefb;} section.invert strong{color:#fff;}
+  section.invert em{background:rgba(240,212,136,.2); color:#ffe6a6;}
+  section.invert .call{background:rgba(255,255,255,.06); border-left-color:#f0d488;}
+  section.invert .call h4{color:#f0d488;} section.invert .call p{color:#e7eefb;}
+
+  .deriv{display:flex; flex-wrap:wrap; align-items:stretch; gap:10px; margin:24px 0 6px;}
+  .d-item{flex:1 1 175px; background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.12); border-radius:10px; padding:16px 18px;}
+  .d-item.hl{background:rgba(240,212,136,.14); border-color:rgba(240,212,136,.5);}
+  .d-num{display:block; font-family:"Libre Franklin"; font-weight:800; font-size:25px; color:#fff; letter-spacing:-.02em;}
+  .d-item.hl .d-num{color:#ffe6a6;}
+  .d-lab{display:block; font-size:12.5px; color:#a9c1e8; margin-top:6px; line-height:1.4;}
+  .d-op{display:flex; align-items:center; font-family:"Libre Franklin"; font-weight:700; font-size:24px; color:#7f9cd0;}
+  .plusline{font-size:16px; color:#cdddf4; margin:4px 0 0;} .plusline b{color:#ffe6a6; font-weight:700;}
+
+  .conv-wrap{background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12); border-radius:14px; padding:20px 20px 8px; margin:28px 0;}
+  .conv-wrap .ct{font-family:"Libre Franklin"; font-size:12.5px; letter-spacing:.12em; text-transform:uppercase; color:#f0d488; font-weight:700; margin:0 0 6px;}
+  .conv{width:100%; height:auto; display:block;}
+
+  @media (max-width:640px){
+    body{font-size:16px}
+    section{padding:34px 0}
+    .meta{gap:18px 30px}
+  }
+  @media print{
+    body{background:#fff; font-size:11.5pt}
+    nav.toc{display:none}
+    header.cover{background:#fff!important; color:var(--ink)!important; padding-top:0;}
+    header.cover .eyebrow{color:var(--gold)} header.cover h1{color:var(--ink)}
+    header.cover .lede,.meta dd{color:var(--ink)} .meta dt{color:var(--ink-soft)}
+    .meta{border-top-color:var(--line)}
+    section{page-break-inside:avoid; border-bottom:1px solid #ddd}
+    .formula,thead th,.seg.adult,.seg.dui{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+    footer{background:#fff; color:var(--ink-soft)}
+    #progress{display:none}
+    section.invert{background:#fff!important; color:var(--ink)!important; border-bottom:1px solid #ddd}
+    section.invert::before{display:none}
+    section.invert h2,section.invert strong,section.invert .d-num{color:var(--ink)!important}
+    section.invert p,section.invert h3,section.invert .lead,section.invert .d-lab{color:var(--ink-soft)!important}
+    .d-item{border-color:var(--line)!important; background:var(--sky)!important}
+    .conv-wrap{border-color:var(--line)!important; background:var(--sky)!important}
+  }
+</style>
+</head>
+<body>
+<div class="flag"></div>
+<div id="progress"></div>
+
+<header class="cover">
+  <div class="wrap">
+    <p class="eyebrow">Nota metodológica · Propuesta de centros de votación en el exterior 2027</p>
+    <h1>Del padrón de DUIs al mapa de votantes potenciales</h1>
+    <p class="lede">Cómo se estima cuántos salvadoreños viven en cada zona de Estados Unidos, cuántos son mayores de edad y qué parte de ellos ya está en el registro del exterior — partiendo del padrón de DUIs y anclándolo al Censo estadounidense.</p>
+    <dl class="meta">
+      <div><dt>Fecha</dt><dd>Julio 2026</dd></div>
+      <div><dt>Ámbito</dt><dd>Estados Unidos (y mundial)</dd></div>
+      <div><dt>Unidad base</dt><dd>Código postal (ZIP)</dd></div>
+      <div><dt>Fuentes</dt><dd>RNPN · U.S. Census Bureau</dd></div>
+    </dl>
+  </div>
+</header>
+
+<nav class="toc">
+  <div class="wrap">
+    <a href="#resumen">Resumen</a>
+    <a href="#fuentes">Fuentes</a>
+    <a href="#geografia">Geografía</a>
+    <a href="#multiplicador">Multiplicador</a>
+    <a href="#calibracion">Calibración</a>
+    <a href="#escenarios">Subconteo</a>
+    <a href="#edad">Edad 18+</a>
+    <a href="#brecha">Cobertura</a>
+    <a href="#salidas">Salidas</a>
+    <a href="#sig">SIG y mapeo</a>
+    <a href="#validacion">Validación</a>
+    <a href="#limites">Límites</a>
+    <a href="#glosario">Glosario</a>
+  </div>
+</nav>
+
+<main>
+
+<!-- 1 RESUMEN -->
+<section id="resumen"><div class="wrap">
+  <p class="num">01 — Resumen</p>
+  <h2>Qué hace este método y por qué</h2>
+  <p class="lead">El padrón de DUIs del exterior nos dice dónde está <em>registrada</em> la gente, pero no cuánta gente hay realmente: no todos tienen DUI, no todos han camnbiado la dirección. El Censo de EE.UU. nos dice cuántos salvadoreños hay, pero no los tiene ligados a un DUI. La idea es unir ambos: usar el padrón para la <strong>distribución geográfica fina</strong> y el Censo para el <strong>tamaño real</strong>.</p>
+  <div class="stats">
+    <div class="stat"><div class="k">2.767.861</div><div class="l">Salvadoreños en EE.UU. (base)</div><div class="s">Censo ACS 2024</div></div>
+    <div class="stat"><div class="k">3.092.581</div><div class="l">Escenario alto (con subconteo)</div><div class="s">base ÷ (1−10,5%)</div></div>
+    <div class="stat"><div class="k">1.968.888</div><div class="l">Adultos 18+ (base)</div><div class="s">71,1% del total</div></div>
+    <div class="stat"><div class="k">925.571</div><div class="l">DUIs registrados en EE.UU.</div><div class="s">Padrón RNPN</div></div>
+  </div>
+  <p>En una frase: proyectamos la población multiplicando los DUIs de cada zona por un factor derivado del Censo, calibrado zona por zona para que los totales cuadren con la realidad estadística — y luego separamos a los adultos, que son los votantes potenciales.</p>
+</div></section>
+
+<!-- 2 FUENTES -->
+<section id="fuentes"><div class="wrap">
+  <p class="num">02 — Fuentes de datos</p>
+  <h2>De dónde sale cada número</h2>
+  <p>Todo se apoya en dos pilares: el registro administrativo salvadoreño y las estadísticas oficiales del Censo estadounidense. Ninguna cifra es inventada; cada una tiene origen y año.</p>
+  <table>
+    <thead><tr><th>Fuente</th><th>Qué aporta</th><th>Detalle</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Padrón de DUIs — RNPN</strong></td><td>Ubicación y volumen de registrados</td><td>968.329 registros del exterior; 925.571 en EE.UU.</td></tr>
+      <tr><td><strong>ACS tabla B03001</strong> (1 año, 2024)</td><td>Total de salvadoreños por estado</td><td>Población de origen salvadoreño, EE.UU. = 2.767.861</td></tr>
+      <tr><td><strong>ACS tabla B03001</strong> (5 años, 2023)</td><td>Distribución por condado</td><td>Único nivel que cubre todos los condados</td></tr>
+      <tr><td><strong>ACS tabla S0201</strong> (2024)</td><td>Estructura de edad</td><td>1.968.888 de 2.767.861 son 18+ (71,1%)</td></tr>
+      <tr><td><strong>Post-Enumeration Survey 2020</strong></td><td>Tasa de subconteo</td><td>Hispanos: neto 4,99% · omisión 10,5%</td></tr>
+    </tbody>
+    <caption>ACS = American Community Survey. Todas las tablas del Census Bureau se consultaron vía su API oficial.</caption>
+  </table>
+
+  <h3>La ACS y el Censo decenal: por qué no son lo mismo</h3>
+  <p>Casi todas las cifras de población de este estudio vienen de la <strong>ACS (American Community Survey)</strong>, no del "Censo" que la gente suele imaginar. Son dos instrumentos distintos de la misma Oficina del Censo de EE.UU., y conviene tener clara la diferencia.</p>
+  <p>El <strong>Censo decenal</strong> es el conteo oficial que ocurre cada diez años (2020, 2030…). Está mandado por la Constitución, intenta contar a <em>todas</em> las personas del país y hace pocas preguntas básicas: edad, sexo, raza, origen hispano y vivienda. Sirve para repartir los escaños del Congreso y es la cifra poblacional "oficial".</p>
+  <p>La <strong>ACS</strong> es una encuesta <em>continua</em> que reemplazó al "formulario largo" del censo en 2005. Cada año encuesta a una <strong>muestra</strong> de unos 3,5 millones de direcciones (cerca de 1 de cada 38 hogares) y pregunta a fondo: origen detallado, ingresos, educación, idioma, vivienda. Por ser muestra entrega <strong>estimaciones</strong> con margen de error, pero actualizadas cada año.</p>
+  <table>
+    <thead><tr><th>Aspecto</th><th>Censo decenal</th><th>ACS</th></tr></thead>
+    <tbody>
+      <tr><td>Naturaleza</td><td>Conteo: intenta a todos</td><td>Encuesta por muestra: estima</td></tr>
+      <tr><td>Frecuencia</td><td>Cada 10 años</td><td>Cada año (versiones 1 y 5 años)</td></tr>
+      <tr><td>Preguntas</td><td>Pocas y básicas</td><td>Detalladas y socioeconómicas</td></tr>
+      <tr><td>¿Da "salvadoreño"?</td><td>Solo origen hispano amplio</td><td>Sí, específico y por edad</td></tr>
+      <tr><td>Incertidumbre</td><td>Conteo (con su subconteo)</td><td>Margen de error muestral</td></tr>
+      <tr><td>Uso principal</td><td>Escaños y redistritación</td><td>Planeación y perfiles de población</td></tr>
+    </tbody>
+  </table>
+  <div class="call">
+    <h4>Por qué usamos la ACS y no el censo decenal</h4>
+    <p>Solo la ACS entrega el dato <strong>específico de salvadoreños</strong> por estado y condado (tabla B03001) y su estructura de edad (S0201), actualizado cada año. El censo decenal no desagrega "salvadoreño" con ese detalle ni esa frecuencia. Eso sí: las estimaciones de la ACS se <strong>anclan a los controles poblacionales</strong> que parten del último censo decenal — por eso la ACS hereda también su subconteo (ver sección 06).</p>
+  </div>
+</div></section>
+
+<!-- 3 GEOGRAFIA -->
+<section id="geografia"><div class="wrap">
+  <p class="num">03 — Unidad geográfica</p>
+  <h2>Por qué el código postal manda</h2>
+  <p>Cada geografía (ciudad, condado, estado) se deriva del <strong>código postal</strong> del DUI, no del campo de municipio o departamento del padrón, que mezcla niveles y no es homogéneo. El ZIP es un identificador estable que permite subir y bajar de nivel sin ambigüedad.</p>
+  <ul class="clean">
+    <li><strong>Estados Unidos:</strong> el ZIP se resuelve con una base local (offline) que incluye ciudad, condado, estado y coordenadas.</li>
+    <li><strong>Resto del mundo:</strong> se resuelve con una base postal multipaís, buscando cada código <em>dentro de la base del país que trae el DUI</em> — así un mismo código en dos países no se confunde: el país decide, no la coordenada.</li>
+  </ul>
+  <div class="call">
+    <h4>Advertencia sobre coordenadas y mapas</h4>
+    <p>El punto lat/lng es un centroide representativo del ZIP (una ruta postal), no el polígono del área. Para el mapa conviene unir por el campo ZIP contra un shapefile de áreas ZCTA del Censo, y dejar que la geometría del polígono defina la ubicación.</p>
+  </div>
+</div></section>
+
+<!-- 4 MULTIPLICADOR -->
+<section id="multiplicador"><div class="wrap">
+  <p class="num">04 — El multiplicador</p>
+  <h2>Cuántas personas representa cada DUI</h2>
+  <p>El corazón del método. Para cada unidad geográfica se calcula un factor que convierte DUIs en población total:</p>
+  <div class="formula"><code>multiplicador <span class="op">=</span> <span class="hl">salvadoreños según el Censo</span> <span class="op">÷</span> DUIs de esa misma unidad</code></div>
+  <div class="formula"><code>proyección(zona) <span class="op">=</span> DUIs(zona) <span class="op">×</span> multiplicador de su unidad</code></div>
+  <p>A nivel nacional el multiplicador promedio es <strong>3,0</strong>: cada DUI representa cerca de tres salvadoreños, porque no todos tienen DUI o no han camnbiado la dirección (menores, quienes nunca se registraron, llegadas recientes). Donde el multiplicador cae por debajo de 1 significa que hay más DUIs registrados que residentes actuales — típico de zonas con actividad consular donde la dirección quedó fija aunque la persona se mudó.</p>
+  <div class="call gold">
+    <h4>Decisión metodológica</h4>
+    <p>No se usa el "% de latinos" como multiplicador: esa cifra está dominada por población mexicana y distorsiona el resultado. Se usa el dato <strong>específico de salvadoreños</strong> (tabla B03001).</p>
+  </div>
+</div></section>
+
+<!-- 5 CALIBRACION -->
+<section id="calibracion"><div class="wrap">
+  <p class="num">05 — Calibración jerárquica</p>
+  <h2>Cuadrar sin contar dos veces</h2>
+  <p>El multiplicador no se aplica a ciegas. Se calibra en tres niveles encadenados, de modo que la suma siempre cierre en el total oficial:</p>
+  <div class="pipe">
+    <div class="step"><div class="i">NIVEL 1</div><div class="t">Nación → estado</div><div class="d">Cada estado recibe su total del Censo 2024.</div></div>
+    <div class="step"><div class="i">NIVEL 2</div><div class="t">Estado → condado</div><div class="d">El total del estado se reparte entre sus condados según el Censo.</div></div>
+    <div class="step"><div class="i">NIVEL 3</div><div class="t">Cierre exacto</div><div class="d">Cada estado suma exactamente su total; nada se pierde ni se duplica.</div></div>
+  </div>
+  <p>La distribución por condado viene del Censo de 5 años (único nivel que cubre todos los condados) pero <strong>escalada a los totales estatales de 2024</strong>, para no perder actualidad. Ejemplo en California: la suma de condados del 5-año (756.584) se lleva al total estatal de 2024 (851.402) con un factor de 1,125; así Los Ángeles pasa de 435.192 a <strong>489.732</strong>.</p>
+  <div class="call">
+    <h4>Cobertura del detalle</h4>
+    <p>El <strong>98,7% de los DUIs (914.120)</strong> se calibra a nivel condado. El resto cae a nivel estatal (p. ej. Connecticut, que el Censo reorganizó en "regiones") — igual de válido, solo con menos granularidad.</p>
+  </div>
+</div></section>
+
+<!-- 6 ESCENARIOS / SUBCONTEO -->
+<section id="escenarios"><div class="wrap">
+  <p class="num">06 — Escenario alto y subconteo</p>
+  <h2>Por qué la cifra real es mayor</h2>
+  <p><strong>Subconteo censal</strong> es cuando el Censo no cuenta a personas que sí viven en el país: existen, pero quedan fuera. La propia Oficina del Censo lo mide después de cada conteo con la <em>Post-Enumeration Survey</em>. Para 2020, la población hispana registró:</p>
+  <table>
+    <thead><tr><th>Medida</th><th class="n">Tasa 2020 (hispanos)</th><th>Qué es</th></tr></thead>
+    <tbody>
+      <tr><td>Subconteo <strong>neto</strong></td><td class="n">4,99%</td><td>Omitidos menos duplicados/erróneos. Conservador.</td></tr>
+      <tr><td>Tasa de <strong>omisión</strong> bruta</td><td class="n">10,5%</td><td>Solo los omitidos por completo. Cota superior.</td></tr>
+    </tbody>
+  </table>
+  <p>Como la ACS se ancla a los controles del Censo, arrastra ese subconteo: la población real es <strong>mayor</strong>. El escenario alto lo corrige:</p>
+  <div class="formula"><code>escenario alto <span class="op">=</span> base <span class="op">÷</span> (1 − <span class="hl">tasa de omisión</span>) <span class="op">=</span> 2.767.861 <span class="op">÷</span> (1 − 0,105) <span class="op">=</span> 3.092.581</code></div>
+  <p>Aplicar la tasa hispana a los salvadoreños es incluso <strong>conservador</strong>: los salvadoreños concentran los perfiles que el Censo más subcuenta — alta proporción de nacidos en el extranjero, hogares de estatus migratorio mixto, beneficiarios de TPS, inquilinos y dominio limitado del inglés. La banda defendible va de <strong>2,77 M</strong> (conteo directo) a <strong>3,09 M</strong> (ajuste por omisión).</p>
+</div></section>
+
+<!-- 7 EDAD -->
+<section id="edad"><div class="wrap">
+  <p class="num">07 — Factor de edad</p>
+  <h2>De población total a adultos 18+</h2>
+  <p>El padrón de DUIs ya es 100% adultos (el DUI se emite desde los 18). Pero la proyección de población incluye niños — sobre todo los hijos nacidos en EE.UU. Para aislar a los votantes potenciales se aplica la estructura de edad oficial del Censo (tabla S0201, origen salvadoreño):</p>
+  <div class="stats">
+    <div class="stat"><div class="k">71,1%</div><div class="l">Son mayores de 18</div><div class="s">1.968.888 de 2.767.861</div></div>
+    <div class="stat"><div class="k">28,9%</div><div class="l">Son menores de 18</div><div class="s">798.973 personas</div></div>
+    <div class="stat"><div class="k">30,3</div><div class="l">Edad mediana (años)</div><div class="s">Pew / ACS</div></div>
+  </div>
+  <p>Ese factor de 71,1% se aplica a cada estado y condado para obtener columnas de adultos base y alto en el mapa. Es un factor nacional uniforme; podría afinarse por estado con la misma tabla S0201, ya que las comunidades de migración más reciente tienen más adultos y las asentadas más niños nacidos aquí.</p>
+</div></section>
+
+<!-- 8 BRECHA (signature) -->
+<section id="brecha"><div class="wrap">
+  <p class="num">08 — Cobertura del padrón</p>
+  <h2>El hallazgo: la brecha de registro</h2>
+  <p>Cruzar los adultos estimados con los DUIs registrados revela cuánto del universo adulto ya está en el registro del exterior — y cuánto falta. Este es el argumento central para ubicar centros de votación.</p>
+
+  <div class="gap-fig">
+    <h4>Escenario base — Estados Unidos</h4>
+    <p class="sub">Cómo se compone la población salvadoreña estimada y qué parte ya tiene DUI</p>
+
+    <div class="barttl">Población total: 2.767.861</div>
+    <div class="bar">
+      <div class="seg adult" style="flex-basis:71.1%"><span>Adultos 18+ · 1.968.888 (71,1%)</span></div>
+      <div class="seg minor" style="flex-basis:28.9%"><span>Menores · 798.973</span></div>
+    </div>
+
+    <div class="barttl">Dentro de los adultos 18+</div>
+    <div class="bar">
+      <div class="seg dui" style="flex-basis:47%"><span>Con DUI · 925.571 (47%)</span></div>
+      <div class="seg brecha" style="flex-basis:53%"><span>Sin registrar · 1.043.317</span></div>
+    </div>
+    <div class="barlab"><span>Registrados en el padrón</span><span>Brecha = potencial de expansión</span></div>
+  </div>
+
+  <p>En el escenario base el padrón cubre el <strong>47% de los adultos</strong>; en el alto, el <strong>42%</strong>. Es decir, hay entre <strong>1,04 y 1,27 millones de adultos salvadoreños</strong> que existen pero no están en el registro de DUIs del exterior — el techo al que podría aspirar la inscripción.</p>
+  <div class="call gold">
+    <h4>La cobertura varía mucho por estado</h4>
+    <p>California está al <strong>39%</strong> (enorme margen de crecimiento), mientras Nueva York ya llega al <strong>67%</strong>. Esto permite priorizar no solo dónde vive más gente, sino dónde hay más votantes potenciales aún sin registrar.</p>
+  </div>
+</div></section>
+
+<!-- 9 SALIDAS -->
+<section id="salidas"><div class="wrap">
+  <p class="num">09 — Productos generados</p>
+  <h2>Qué entrega el modelo</h2>
+  <p>Todo el cálculo se materializa en una base de datos y una capa lista para SIG:</p>
+  <table>
+    <thead><tr><th>Hoja</th><th>Contenido</th></tr></thead>
+    <tbody>
+      <tr><td><strong>Por_ZIP</strong></td><td>Unidad de mapeo: DUIs y proyección por código postal, con fórmulas vivas.</td></tr>
+      <tr><td><strong>Por_condado / Por_estado</strong></td><td>Totales y control de calidad; comparan la proyección contra el Censo.</td></tr>
+      <tr><td><strong>GIS</strong></td><td>Misma información con valores estáticos y tipados para GIS: ZIP como texto, coordenadas y proyección como número, campos cortos para shapefile.</td></tr>
+      <tr><td><strong>Adultos_18mas</strong></td><td>Análisis de cobertura: adultos 18+ por estado, DUIs, % de cobertura y brecha.</td></tr>
+    </tbody>
+  </table>
+  <p>Cada zona incluye columnas de proyección base, escenario alto, y sus equivalentes solo-adultos (18+), de modo que el mapa puede mostrar población total o votantes potenciales según lo que la propuesta necesite argumentar.</p>
+</div></section>
+
+<!-- 10 SIG -->
+<section id="sig"><div class="wrap">
+  <p class="num">10 — Del dato al mapa</p>
+  <h2>Análisis SIG para ubicar centros</h2>
+  <p class="lead">La capa GIS no es el final, es el insumo. A partir de ella, un Sistema de Información Geográfica permite pasar de "cuántos hay" a "dónde conviene poner un centro". El flujo recomendado va de lo descriptivo a lo prescriptivo.</p>
+
+  <div class="pipe">
+    <div class="step"><div class="i">PASO 1</div><div class="t">Unir</div><div class="d">Join por ZIP contra el shapefile de áreas ZCTA (o de condados).</div></div>
+    <div class="step"><div class="i">PASO 2</div><div class="t">Visualizar</div><div class="d">Mapa coroplético de adultos 18+ o de la brecha.</div></div>
+    <div class="step"><div class="i">PASO 3</div><div class="t">Detectar clústeres</div><div class="d">Densidad y puntos calientes de votantes sin registrar.</div></div>
+    <div class="step"><div class="i">PASO 4</div><div class="t">Áreas de servicio</div><div class="d">Cuánta demanda alcanza un centro en X minutos.</div></div>
+    <div class="step"><div class="i">PASO 5</div><div class="t">Ubicación óptima</div><div class="d">El conjunto de sedes que cubre más gente.</div></div>
+  </div>
+
+  <h3>De describir a decidir</h3>
+  <p>Los primeros pasos <strong>describen</strong> el terreno. Un mapa coroplético coloreado por adultos 18+ —o por la brecha— muestra dónde se concentra la demanda. Un análisis de <strong>densidad kernel</strong> o de <strong>puntos calientes (Getis-Ord Gi*)</strong> sobre los centroides de ZIP, ponderados por adultos sin registrar, identifica clústeres estadísticamente significativos: las zonas prioritarias reales, no solo las que "se ven" grandes en el mapa.</p>
+  <p>Los últimos pasos <strong>deciden</strong>. Con la extensión <strong>Network Analyst</strong>, un análisis de <strong>Áreas de Servicio</strong> dibuja isócronas (30, 45, 60 minutos de viaje) alrededor de sedes candidatas —consulados, centros ya existentes— y cruza esa cobertura con la población adulta para medir a cuánta gente llega cada opción. Y la herramienta central para este problema, <strong>Location-Allocation</strong> (ubicación-asignación), elige automáticamente el conjunto de sedes que <strong>maximiza la demanda cubierta</strong> dentro de un umbral de viaje: es, literalmente, resolver "dónde poner los centros".</p>
+
+  <table>
+    <thead><tr><th>Herramienta SIG</th><th>Pregunta que responde</th></tr></thead>
+    <tbody>
+      <tr><td>Join ZIP ↔ ZCTA</td><td>¿Cómo se ve el dato sobre el territorio?</td></tr>
+      <tr><td>Símbolos graduados / coroplético</td><td>¿Dónde se concentran los adultos o la brecha?</td></tr>
+      <tr><td>Densidad kernel / Hot Spot (Gi*)</td><td>¿Dónde hay clústeres significativos de votantes sin registrar?</td></tr>
+      <tr><td>Áreas de servicio (Network Analyst)</td><td>¿A cuánta gente llega un centro en X minutos de viaje?</td></tr>
+      <tr><td>Location-Allocation</td><td>¿Cuál es el conjunto óptimo de sedes para cubrir más demanda?</td></tr>
+      <tr><td>Superposición ponderada</td><td>¿Qué centro candidato combina mejor demanda, acceso y brecha?</td></tr>
+    </tbody>
+  </table>
+
+  <div class="call gold">
+    <h4>Pondera por la brecha, no por la población total</h4>
+    <p>Al ubicar centros, el peso de demanda más útil es <strong>la brecha</strong> —los adultos sin DUI o con direccion de El Salvador en el DUI—, porque es la gente que un nuevo centro podría captar. Ponderar por población total sobreestima donde el registro ya es alto (como Nueva York, 67%) y subestima donde hay más potencial sin explotar (como California, 39%).</p>
+  </div>
+</div></section>
+
+<!-- 11 VALIDACION -->
+<section id="validacion" class="invert"><div class="wrap">
+  <p class="num">11 — Validación cruzada</p>
+  <h2>El padrón nacional confirma la cifra</h2>
+  <p class="lead">La proyección no descansa en una sola fuente. El propio registro salvadoreño, por un camino totalmente distinto al Censo de EE.UU., llega casi al mismo número — y esa coincidencia es la evidencia más difícil de refutar.</p>
+
+  <h3>La diáspora "oculta"</h3>
+  <p>El padrón tiene dos cuerpos: quienes se inscriben con dirección <em>en</em> El Salvador y quienes lo hacen con dirección <em>en el extranjero</em>. Comparar el primero con la población que realmente vive en el país deja al descubierto a los que no encajan:</p>
+
+  <div class="deriv">
+    <div class="d-item"><span class="d-num">5.538.926</span><span class="d-lab">Padrón con dirección en El Salvador</span></div>
+    <div class="d-op">−</div>
+    <div class="d-item"><span class="d-num">4.456.929</span><span class="d-lab">Adultos que viven en el país (censo)</span></div>
+    <div class="d-op">=</div>
+    <div class="d-item hl"><span class="d-num">1.081.997</span><span class="d-lab">Adultos con dirección nacional que viven fuera</span></div>
+  </div>
+  <p class="plusline">Si se le suman los <b>960.928</b> del padrón del exterior y el registro salvadoreño implica <b>~2.042.925 adultos</b> en la diáspora.</p>
+
+  <div class="conv-wrap">
+    <p class="ct">Tres fuentes independientes, un mismo resultado</p>
+    <svg class="conv" viewBox="0 0 820 250" role="img" aria-label="Tres fuentes independientes convergen en cerca de dos millones de adultos">
+      <rect x="366" y="150" width="122" height="34" rx="5" fill="#f0d488" opacity="0.16"/>
+      <text x="427" y="205" text-anchor="middle" font-size="15" font-weight="700" fill="#f0d488" font-family="Libre Franklin">≈ 2 millones de adultos</text>
+      <line x1="50" y1="167" x2="770" y2="167" stroke="#6f8cc4" stroke-width="1.4"/>
+      <g stroke="#6f8cc4"><line x1="50" y1="162" x2="50" y2="172"/><line x1="410" y1="162" x2="410" y2="172"/><line x1="770" y1="162" x2="770" y2="172"/></g>
+      <g fill="#8aa4d4" font-size="12" text-anchor="middle" font-family="Public Sans">
+        <text x="50" y="234">1,5 M</text><text x="410" y="234">2,0 M</text><text x="770" y="234">2,5 M</text>
+      </g>
+      <g stroke="#f0d488" stroke-width="1" opacity="0.5">
+        <line x1="170" y1="86" x2="388" y2="160"/>
+        <line x1="410" y1="86" x2="441" y2="160"/>
+        <line x1="650" y1="86" x2="482" y2="160"/>
+      </g>
+      <g fill="#f0d488" stroke="#fff" stroke-width="1.5">
+        <circle cx="388" cy="167" r="6"/><circle cx="441" cy="167" r="6"/><circle cx="482" cy="167" r="6"/>
+      </g>
+      <g text-anchor="middle">
+        <text x="170" y="42" fill="#bcd2f4" font-size="12.5" font-family="Public Sans">Censo EE.UU. · ACS</text>
+        <text x="170" y="72" fill="#fff" font-size="22" font-weight="800" font-family="Libre Franklin">1,97 M</text>
+        <text x="410" y="42" fill="#bcd2f4" font-size="12.5" font-family="Public Sans">Padrón salvadoreño</text>
+        <text x="410" y="72" fill="#fff" font-size="22" font-weight="800" font-family="Libre Franklin">2,04 M</text>
+        <text x="650" y="42" fill="#bcd2f4" font-size="12.5" font-family="Public Sans">Diáspora total × 71%</text>
+        <text x="650" y="72" fill="#fff" font-size="22" font-weight="800" font-family="Libre Franklin">2,1 M</text>
+      </g>
+    </svg>
+  </div>
+
+  <p>Cuando el registro salvadoreño, la estadística estadounidense y el conteo de diáspora —calculados sin hablarse entre sí— aterrizan todos cerca de <strong>2 millones de adultos</strong>, deja de ser coincidencia y pasa a ser corroboración. Hay un respaldo más: el censo salvadoreño de 2024 contó 6.029.976 habitantes, muy por debajo de los ~6,7 millones proyectados; ese faltante de residentes es la contracara exacta de la emigración que estas cifras describen.</p>
+
+  <div class="call">
+    <h4>Matices declarados</h4>
+    <p>El padrón nacional podría arrastrar algunos fallecidos y otros aun no depurados; la diferencia abarca toda la diáspora, no solo EE.UU. (~90%); y conviene fijar el año exacto del dato de adultos residentes. Aun con esos ajustes, la convergencia se mantiene.</p>
+  </div>
+</div></section>
+
+<!-- 12 LIMITES -->
+<section id="limites"><div class="wrap">
+  <p class="num">12 — Alcances y límites</p>
+  <h2>Lo que este método sí y no dice</h2>
+  <ul class="clean">
+    <li>Las cifras del Censo son <strong>estimaciones muestrales</strong>, no un conteo exacto; en condados con muy poca población salvadoreña tienen margen de error amplio y caen al multiplicador estatal.</li>
+    <li>La distribución por condado usa el Censo de 5 años (2019–2023) escalada a los totales de 2024: combina detalle y actualidad, pero mezcla dos añadas — conviene declararlo en la nota técnica.</li>
+    <li>El factor de edad (71,1%) es <strong>nacional</strong>; la estructura por edad varía algo entre estados.</li>
+    <li>La dirección del DUI es donde la persona se registró, no necesariamente donde vive hoy: por eso el conteo bruto de DUIs y la proyección de residentes responden preguntas distintas y ambas se conservan.</li>
+    <li>El escenario alto es un <strong>rango razonado</strong> sobre el subconteo reconocido por el Censo, no una medición directa.</li>
+  </ul>
+</div></section>
+
+<!-- 11 GLOSARIO -->
+<section id="glosario"><div class="wrap">
+  <p class="num">13 — Glosario</p>
+  <h2>Términos clave</h2>
+  <dl class="gloss">
+    <dt>Subconteo censal (undercount)</dt>
+    <dd>Personas que viven en el país pero el Censo no cuenta. Se mide con la Post-Enumeration Survey. Neto = omitidos menos duplicados; omisión bruta = solo los omitidos.</dd>
+    <dt>Multiplicador</dt>
+    <dd>Factor que convierte DUIs en población total: salvadoreños del Censo ÷ DUIs de la misma unidad. Promedio nacional ≈ 3,0.</dd>
+    <dt>Calibración jerárquica</dt>
+    <dd>Repartir el total del Censo de nación a estado a condado sin contar a nadie dos veces, de modo que cada nivel cierre exacto.</dd>
+    <dt>ACS (American Community Survey)</dt>
+    <dd>Encuesta continua por muestra del Censo de EE.UU. que da datos socioeconómicos detallados. Versión de 1 año = más actual; de 5 años = más detalle geográfico.</dd>
+    <dt>Censo decenal</dt>
+    <dd>Conteo oficial cada 10 años que intenta enumerar a toda la población. Aporta la cifra "oficial" y los controles a los que se ancla la ACS, pero no desagrega "salvadoreño" con detalle fino.</dd>
+    <dt>Location-Allocation (ubicación-asignación)</dt>
+    <dd>Herramienta SIG que elige, entre sedes candidatas, el conjunto que maximiza la demanda cubierta dentro de un umbral de viaje. Es el método directo para decidir dónde ubicar centros.</dd>
+    <dt>ZCTA</dt>
+    <dd>Área geográfica del Censo que aproxima un código postal en forma de polígono; es lo que usan los shapefiles de mapas, y no coincide exactamente con el punto del ZIP.</dd>
+    <dt>Escenario base / alto</dt>
+    <dd>Base = conteo directo del Censo. Alto = base ajustada por la tasa de subconteo, como cota superior defendible.</dd>
+    <dt>Diáspora oculta</dt>
+    <dd>Adultos con DUI de dirección salvadoreña que en realidad viven en el exterior y nunca cambiaron su domicilio al padrón del extranjero; aparecen como votantes nacionales aunque residan afuera.</dd>
+  </dl>
+</div></section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="src">
+      <strong>Fuentes.</strong> Registro Nacional de las Personas Naturales (RNPN), padrón de DUIs del exterior · U.S. Census Bureau, American Community Survey, tablas B03001 y S0201 (estimaciones 1 y 5 años) · U.S. Census Bureau, 2020 Post-Enumeration Survey (tasas de cobertura de la población hispana).
+    </div>
+    <div class="disc">
+      Documento metodológico preparado como anexo técnico de la Propuesta para Centros de Votación en el Exterior 2027. Las proyecciones son estimaciones estadísticas derivadas de fuentes administrativas y censales; no constituyen un conteo poblacional oficial. Julio 2026.
+    </div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var p=document.getElementById('progress');
+  if(!p) return;
+  function upd(){
+    var h=document.documentElement;
+    var sc=h.scrollTop||document.body.scrollTop;
+    var max=(h.scrollHeight-h.clientHeight)||1;
+    p.style.width=Math.min(100,(sc/max*100))+'%';
+  }
+  window.addEventListener('scroll',upd,{passive:true});
+  window.addEventListener('resize',upd);
+  upd();
+})();
+</script>
+
+</body>
+</html>

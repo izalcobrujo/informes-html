@@ -1,0 +1,1881 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Atlas Electoral 2024 · Polarización y Cruce de Escrutinios</title>
+
+<link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
+<style>
+/* ============================================================
+   PALETA EDITORIAL — clara, sobria, tipográfica
+   ============================================================ */
+:root{
+  --paper:#f6f4ef;      /* fondo papel */
+  --card:#ffffff;
+  --ink:#1a1c22;        /* texto principal */
+  --ink2:#5b6270;       /* secundario */
+  --ink3:#9aa1ae;       /* terciario */
+  --line:#e4e0d8;       /* bordes */
+  --line2:#efece5;
+  --accent:#1a1c22;     /* acento = tinta */
+  --hi:#c0442e;         /* rojo terracota = reñido/alerta */
+  --hi2:#d98a2b;        /* ámbar */
+  --cool:#2f6f8f;       /* azul pizarra */
+  --ni:#0f8a9e;         /* cian NI */
+  --ok:#4a7c59;         /* verde salvia */
+  --shadow:0 1px 2px rgba(26,28,34,.04),0 8px 24px rgba(26,28,34,.05);
+  --serif:"Georgia","Times New Roman",serif;
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:14px;line-height:1.55}
+.mono{font-family:var(--mono);font-variant-numeric:tabular-nums}
+.serif{font-family:var(--serif)}
+a{color:var(--cool)}
+
+/* ---------- Cabecera ---------- */
+header{padding:0 24px;border-bottom:1px solid #16324a;background:#0d2439;
+  display:flex;align-items:center;gap:18px;position:fixed;top:0;left:0;right:0;z-index:60;height:50px}
+.brand{display:flex;align-items:center;gap:11px}
+.mark-svg{width:30px;height:30px;border-radius:7px;background:#123049;display:grid;place-items:center;flex:0 0 auto}
+header h1{font-family:var(--serif);font-size:18px;font-weight:700;letter-spacing:.06em;color:#f6f4ef;line-height:1}
+.hdr-tag{color:#8fa9be;font-size:11.5px;letter-spacing:.01em;padding-left:14px;border-left:1px solid #1d445f}
+@media(max-width:900px){.hdr-tag{display:none}}
+.hdr-nav{display:flex;gap:4px;margin-left:18px}
+.nav-tab{background:transparent;border:1px solid transparent;color:#8fa9be;font-size:12.5px;
+  font-weight:600;padding:6px 14px;border-radius:7px;cursor:pointer}
+.nav-tab:hover{color:#cfe0ec}
+.nav-tab.on{background:#123049;color:#f6f4ef;border-color:#1d445f}
+#p_mapa{height:480px;width:100%;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+#p_mapa canvas{max-height:none!important;height:auto}
+.p-rank{display:flex;align-items:center;gap:10px;padding:7px 0;border-bottom:1px solid var(--line2)}
+.p-rank .rk{width:20px;font-family:var(--mono);font-size:12px;color:var(--ink3)}
+.p-rank .nm{flex:1;font-size:12.5px;font-weight:600}
+.p-rank .nm small{display:block;font-weight:400;color:var(--ink3);font-size:10.5px}
+.p-rank .bar{width:80px;height:8px;background:var(--line2);border-radius:2px;overflow:hidden}
+.p-rank .bar span{display:block;height:100%}
+.p-rank .val{width:52px;text-align:right;font-family:var(--mono);font-size:12.5px;font-weight:700}
+.spacer{flex:1}
+.hdr-stat{display:flex;align-items:center;gap:8px;background:#123049;border:1px solid #1d445f;
+  border-radius:8px;padding:5px 12px}
+.hdr-stat .hdr-n{font-family:var(--mono);font-size:14px;font-weight:700;color:#f6f4ef;line-height:1}
+.hdr-stat .hdr-lbl{font-size:10px;color:#8fa9be;text-transform:uppercase;letter-spacing:.06em}
+
+/* ---------- Barra de filtros horizontal (FIJA) ---------- */
+.filterbar{background:#0d2439;padding:11px 24px;border-bottom:1px solid #16324a;
+  position:fixed;top:50px;left:0;right:0;z-index:59;display:flex;gap:13px;align-items:flex-end;
+  overflow-x:auto}
+.filterbar .fb-field{display:flex;flex-direction:column;gap:4px;min-width:118px;flex:1 1 118px}
+.filterbar label{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:#8fa9be;font-weight:600}
+.filterbar select{background:#123049;color:#f6f4ef;border:1px solid #1d445f;
+  border-radius:6px;padding:7px 9px;font-size:12.5px}
+.filterbar select:focus{outline:none;border-color:#2f8fb8}
+.filterbar select:disabled{opacity:.45}
+.fb-rng{min-width:130px;flex:1 1 130px}
+.fb-rng .rng-h{display:flex;justify-content:space-between;font-size:9.5px;text-transform:uppercase;
+  letter-spacing:.08em;color:#8fa9be;font-weight:600;margin-bottom:4px}
+.fb-rng .rng-h b{color:#e07a55;font-family:var(--mono)}
+.filterbar input[type=range]{accent-color:#e07a55;height:20px}
+.fb-btns{display:flex;gap:8px;align-items:flex-end}
+.filterbar button{font-size:12px;padding:7px 12px;border-radius:6px}
+.filterbar button.ghost{background:transparent;color:#cfe0ec;border-color:#1d445f}
+.filterbar button:not(.ghost){background:#e07a55;color:#0d2439;border-color:#e07a55}
+
+/* ---------- Layout de 2 zonas ---------- */
+.shell{display:grid;grid-template-columns:250px 1fr;gap:0;min-height:calc(100vh - 112px);margin-top:112px}
+.rail{border-right:1px solid var(--line);padding:20px 18px;background:var(--paper);
+  position:sticky;top:112px;height:calc(100vh - 112px);overflow-y:auto}
+.stage{padding:20px 26px 80px;max-width:1500px}
+
+/* ---------- Selector de índice (protagonista) ---------- */
+.rail h2{font-size:11px;text-transform:uppercase;letter-spacing:.14em;color:var(--ink3);
+  margin:0 0 12px;font-weight:600}
+.rail h2:not(:first-child){margin-top:26px}
+.idx-list{display:flex;flex-direction:column;gap:2px}
+.idx{padding:11px 13px;border-radius:6px;cursor:pointer;border:1px solid transparent;
+  transition:.12s;position:relative}
+.idx:hover{background:var(--line2)}
+.idx.on{background:var(--card);border-color:var(--line);box-shadow:var(--shadow)}
+.idx.on::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;
+  border-radius:2px;background:var(--hi)}
+.idx .t{font-weight:600;font-size:13.5px}
+.idx .d{font-size:11.5px;color:var(--ink2);margin-top:2px;line-height:1.4}
+
+/* ---------- Filtros geográficos ---------- */
+.geo{display:flex;flex-direction:column;gap:11px}
+.field label{display:block;font-size:10.5px;text-transform:uppercase;letter-spacing:.08em;
+  color:var(--ink3);margin-bottom:4px;font-weight:600}
+select,input[type=range]{width:100%;font-family:var(--sans);font-size:13px;color:var(--ink);
+  background:var(--card);border:1px solid var(--line);border-radius:6px;padding:8px 10px}
+select:focus{outline:none;border-color:var(--cool)}
+input[type=range]{padding:0;accent-color:var(--hi);border:none;background:none;height:22px}
+.rng-h{display:flex;justify-content:space-between;font-size:10.5px;text-transform:uppercase;
+  letter-spacing:.08em;color:var(--ink3);margin-bottom:4px;font-weight:600}
+.rng-h b{color:var(--hi);font-family:var(--mono)}
+.btns{display:flex;gap:8px;margin-top:14px}
+button{font-family:var(--sans);font-size:12.5px;font-weight:600;cursor:pointer;
+  border-radius:6px;padding:8px 13px;border:1px solid var(--ink);background:var(--ink);color:var(--paper)}
+button.ghost{background:transparent;color:var(--ink2);border-color:var(--line)}
+button:hover{opacity:.88}
+
+/* ---------- Panel explicativo del índice ---------- */
+.explain{background:var(--card);border:1px solid var(--line);border-radius:10px 10px 0 0;border-bottom:none;
+  padding:16px 22px;box-shadow:var(--shadow);
+  display:grid;grid-template-columns:1fr auto 240px;gap:24px;align-items:start}
+.explain .kick{font-size:10px;text-transform:uppercase;letter-spacing:.14em;color:var(--hi);
+  font-weight:700;margin-bottom:5px}
+.explain h2{font-family:var(--serif);font-size:21px;font-weight:600;letter-spacing:-.02em;margin-bottom:6px}
+.explain .lead{font-size:13px;color:var(--ink2);line-height:1.5}
+.ex-value{text-align:center;padding:0 8px;border-left:1px solid var(--line2);border-right:1px solid var(--line2)}
+.ex-v-num{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--hi)}
+.ex-v-lbl{font-size:10px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-top:6px}
+.ex-ref{display:flex;flex-direction:column;gap:8px}
+.ex-ref-b{font-size:11.5px;color:var(--ink2);line-height:1.4}
+.ex-ref-b b{color:var(--ink)}
+@media(max-width:1080px){.explain{grid-template-columns:1fr}}
+.explain-scale{background:var(--card);border:1px solid var(--line);border-top:none;border-radius:0 0 10px 10px;
+  padding:0 22px 14px;margin-bottom:18px;box-shadow:var(--shadow)}
+.scale{display:flex;align-items:center;gap:0;border-radius:5px;overflow:hidden;border:1px solid var(--line)}
+.scale .seg{flex:1;height:24px;display:grid;place-items:center;font-size:10px;font-family:var(--mono);
+  color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.25)}
+.scale-lbl{display:flex;justify-content:space-between;font-size:11px;color:var(--ink3);margin-top:5px}
+
+/* ---------- KPIs ---------- */
+.kpis{display:grid;grid-template-columns:repeat(8,1fr);gap:10px;margin-bottom:18px}
+@media(max-width:1200px){.kpis{grid-template-columns:repeat(4,1fr)}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:12px 13px;box-shadow:var(--shadow)}
+.kpi-top{display:flex;align-items:center;gap:8px}
+.kpi-ic{color:var(--ink3);flex:0 0 auto}
+.kpi.hi .kpi-ic{color:var(--hi)} .kpi.ok .kpi-ic{color:var(--ok)}
+.kpi .v{font-size:20px;font-weight:700;letter-spacing:-.03em;font-family:var(--sans)}
+.kpi .l{font-size:9.5px;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;margin-top:2px;line-height:1.25}
+.kpi .kpi-sub{font-size:9.5px;color:var(--ink3);margin-top:4px;line-height:1.3;text-transform:none;letter-spacing:0}
+.kpi.hi .v{color:var(--hi)} .kpi.ok .v{color:var(--ok)} .kpi.cool .v{color:var(--cool)}
+
+/* ---------- Grid de contenido ---------- */
+.row{display:grid;gap:22px;margin-bottom:22px}
+.row.two{grid-template-columns:1.55fr 1fr}
+.row.mapgrid{grid-template-columns:1.35fr 1fr}
+.row.tops{grid-template-columns:1fr 1fr}
+@media(max-width:1080px){.row.two,.row.tops,.row.mapgrid{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:10px;
+  padding:20px 22px;box-shadow:var(--shadow);min-width:0}
+.panel h3{font-family:var(--serif);font-size:16px;font-weight:600;margin-bottom:3px}
+.panel .sub{font-size:12px;color:var(--ink3);margin-bottom:16px}
+#mapa{height:480px;width:100%;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+#mapa,#mapa *,.esri-view,.esri-view *,.esri-view-surface{outline:none!important}
+.esri-view-surface::after,.esri-view-surface--inset-outline:focus::after{outline:none!important;border:none!important;box-shadow:none!important;content:none!important}
+#side{max-height:600px;overflow-y:auto}
+.legend{display:flex;flex-wrap:wrap;gap:14px;align-items:center;font-size:11.5px;color:var(--ink2);margin-top:12px}
+.legend i{width:14px;height:14px;border-radius:3px;display:inline-block;margin-right:5px;vertical-align:-2px}
+
+/* ---------- Panel de resultados ---------- */
+.res-tabs{display:flex;gap:4px;margin:2px 0 16px;border-bottom:1px solid var(--line)}
+.res-tab{background:transparent;border:none;border-bottom:2px solid transparent;color:var(--ink3);
+  font-size:13px;font-weight:600;padding:8px 16px;cursor:pointer;border-radius:0;margin-bottom:-1px}
+.res-tab:hover{color:var(--ink2)}
+.res-tab.on{color:var(--ink);border-bottom-color:var(--hi)}
+.res-grid{display:grid;grid-template-columns:230px 1fr;gap:24px;align-items:start}
+@media(max-width:800px){.res-grid{grid-template-columns:1fr}}
+.res-winner{border:1px solid var(--line);border-radius:9px;padding:16px 18px;background:var(--paper)}
+.res-winner .lbl{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);font-weight:600}
+.res-winner .who{font-size:22px;font-weight:700;letter-spacing:-.02em;margin:4px 0 2px}
+.res-winner .sh{font-family:var(--mono);font-size:13px;color:var(--ink2)}
+.res-winner .vs{margin-top:12px;padding-top:12px;border-top:1px dashed var(--line);font-size:12px;color:var(--ink2)}
+.res-winner .vs b{color:var(--ink);font-weight:700}
+.res-winner .marg{margin-top:10px;display:inline-block;padding:4px 10px;border-radius:5px;
+  font-size:12px;font-weight:700}
+.rb{display:flex;align-items:center;gap:10px;padding:6px 0}
+.rb .rb-n{width:110px;font-size:12.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rb .rb-t{flex:1;height:18px;background:var(--line2);border-radius:3px;overflow:hidden;position:relative}
+.rb .rb-t span{display:block;height:100%;border-radius:3px}
+.rb .rb-v{width:92px;text-align:right;font-family:var(--mono);font-size:12.5px}
+.rb .rb-v b{font-weight:700}
+.rb .rb-v small{color:var(--ink3)}
+
+.top-aviso{background:#fdf6ec;border:1px solid #f0d9b5;border-radius:8px;padding:11px 14px;
+  font-size:12px;line-height:1.5;color:#8a6d3b;margin-bottom:12px}
+.top-aviso b{color:#6b4f1f}
+.top.top-dim{opacity:.5}
+.top.top-dim .b{color:#b08a3a}
+
+/* ---------- Tops ---------- */
+.top{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line2);cursor:pointer}
+.top:hover{background:var(--line2);margin:0 -10px;padding:9px 10px;border-radius:6px}
+.top .rk{font-family:var(--mono);font-size:12px;color:var(--ink3);width:22px;text-align:right}
+.top .nm{flex:1;min-width:0}
+.top .nm .a{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.top .nm .b{font-size:11px;color:var(--ink3)}
+.top .val{font-family:var(--mono);font-weight:700;font-size:14px}
+.bar{height:5px;border-radius:3px;background:var(--line2);overflow:hidden;margin-top:4px}
+.bar span{display:block;height:100%}
+
+/* ---------- Perfil de centro ---------- */
+#perfil{display:none}
+#perfil.show{display:block}
+.pf-head{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:2px}
+.pf-title{font-family:var(--serif);font-size:18px;font-weight:600;letter-spacing:-.01em}
+.pf-meta{font-size:11px;color:var(--ink3);margin-top:1px}
+.pf-close{cursor:pointer;color:var(--ink3);border:1px solid var(--line);border-radius:6px;
+  padding:4px 9px;font-size:11px;background:var(--card)}
+.pf-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin:12px 0}
+.pf-elx{border:1px solid var(--line);border-radius:8px;padding:9px}
+.pf-elx h4{font-size:9.5px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);margin-bottom:5px}
+.pf-elx .win{font-weight:700;font-size:12.5px;margin-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-elx .mg{font-size:10.5px;color:var(--ink2)}
+.pf-elx .barwrap{margin-top:7px;display:flex;flex-direction:column;gap:3px}
+.pfbar{display:flex;align-items:center;gap:5px;font-size:10px}
+.pfbar .pn{width:56px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--ink2)}
+.pfbar .pt{flex:1;height:9px;background:var(--line2);border-radius:2px;overflow:hidden}
+.pfbar .pt span{display:block;height:100%}
+.pfbar .pv{width:32px;text-align:right;font-family:var(--mono);color:var(--ink2)}
+.pf-cross{border-top:1px dashed var(--line);padding-top:11px;margin-top:2px}
+.pf-cross h4{font-size:11px;text-transform:uppercase;letter-spacing:.1em;color:var(--ink3);margin-bottom:9px}
+.pf-metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:9px}
+.pf-m .v{font-size:16px;font-weight:700;letter-spacing:-.02em}
+.pf-m .l{font-size:10px;color:var(--ink2);margin-top:0;line-height:1.3}
+.pf-narr{margin-top:11px;padding:10px 13px;background:var(--paper);border-radius:8px;
+  font-size:12px;line-height:1.5;color:var(--ink);border-left:3px solid var(--hi)}
+
+/* ---------- Tabla ---------- */
+.tbl-wrap{max-height:400px;overflow:auto;margin-top:4px}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+th{position:sticky;top:0;background:var(--card);text-align:left;padding:9px 10px;font-size:10px;
+  text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);border-bottom:1.5px solid var(--line);
+  cursor:pointer;white-space:nowrap;font-weight:700}
+td{padding:8px 10px;border-bottom:1px solid var(--line2)}
+tbody tr{cursor:pointer} tbody tr:hover{background:var(--line2)}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10.5px;font-weight:600}
+.g-ni{background:rgba(15,138,158,.13);color:var(--ni)}
+.g-op{background:rgba(192,68,46,.11);color:var(--hi)}
+.g-ok{background:rgba(74,124,89,.13);color:var(--ok)}
+.g-am{background:rgba(217,138,43,.14);color:var(--hi2)}
+
+.informe-charts{display:flex;flex-direction:column;gap:18px}
+.ic-block{border:1px solid var(--line);border-radius:9px;padding:14px 16px;background:var(--paper)}
+.ic-title{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);
+  font-weight:600;margin-bottom:10px}
+.ic-block canvas{max-height:170px}
+
+/* ---------- Leyenda de patrones NI ---------- */
+.leyenda-patron{margin-top:16px;padding-top:14px;border-top:1px solid var(--line2)}
+.lp-title{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);
+  font-weight:600;margin-bottom:10px}
+.lp-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px 20px}
+.lp{font-size:12px;color:var(--ink2);line-height:1.5}
+.lp .tag{margin-right:6px;white-space:nowrap}
+.lp b{color:var(--ink)}
+
+/* ---------- Informe ---------- */
+.informe-grid{display:grid;grid-template-columns:1fr 380px;gap:32px;align-items:start}
+@media(max-width:1100px){.informe-grid{grid-template-columns:1fr}}
+.informe{max-width:74ch;font-size:14.5px;line-height:1.75;color:var(--ink)}
+.informe h3{font-family:var(--serif);font-size:18px;margin:22px 0 8px;font-weight:600}
+.informe p{margin-bottom:12px} .informe strong{font-weight:700}
+.note{border-left:3px solid var(--ink3);background:var(--paper);padding:12px 16px;
+  border-radius:0 8px 8px 0;margin:14px 0;font-size:13px;color:var(--ink2)}
+
+canvas:not(#mapa canvas){max-height:210px}
+#mapa canvas{max-height:none!important;height:auto}
+#side_dist canvas{max-height:200px}
+.loading{position:fixed;inset:0;background:#eef3f7;display:grid;place-items:center;z-index:999}
+.loading.hide{display:none}
+.load-card{text-align:center}
+.load-map{margin:0 auto 20px;width:240px;height:150px}
+.load-map .grid path{stroke-dasharray:260;stroke-dashoffset:260;animation:gdraw 2.6s ease-out forwards}
+.load-map .grid path:nth-child(n+4){animation-delay:.3s}
+.load-map .dots circle{opacity:0;animation:dpop 2.4s ease-in-out infinite}
+.load-map .dots circle:nth-child(1){animation-delay:0s}
+.load-map .dots circle:nth-child(2){animation-delay:.25s}
+.load-map .dots circle:nth-child(3){animation-delay:.5s}
+.load-map .dots circle:nth-child(4){animation-delay:.75s}
+.load-map .dots circle:nth-child(5){animation-delay:1s}
+.load-map .dots circle:nth-child(6){animation-delay:1.25s}
+@keyframes gdraw{to{stroke-dashoffset:0}}
+@keyframes dpop{0%{opacity:0}20%{opacity:1}60%{opacity:1}100%{opacity:.15}}
+.load-txt{color:#3a5164;font-size:13px;font-weight:500;letter-spacing:.03em}
+#loadmsg{color:#8fa3b3;font-size:11px;margin-top:8px;min-height:14px}
+@keyframes s{to{transform:rotate(360deg)}}
+.esri-popup__main-container{border-radius:8px}
+</style>
+</head>
+
+<body>
+<div class="loading" id="loading">
+  <div class="load-card">
+    <div class="load-map">
+      <svg viewBox="0 0 240 150" width="240" height="150" fill="none">
+        <!-- líneas de mapa muy sutiles (meridianos/paralelos curvos) -->
+        <g class="grid" stroke="#c7d6e2" stroke-width="1" opacity=".55">
+          <path d="M0 38 C60 30 180 46 240 38"/>
+          <path d="M0 75 C60 67 180 83 240 75"/>
+          <path d="M0 112 C60 104 180 120 240 112"/>
+          <path d="M52 0 C44 50 60 100 52 150"/>
+          <path d="M120 0 C112 50 128 100 120 150"/>
+          <path d="M188 0 C180 50 196 100 188 150"/>
+        </g>
+        <!-- puntos que aparecen lentamente -->
+        <g class="dots" fill="#2f6f8f">
+          <circle cx="70" cy="52" r="3.2"/>
+          <circle cx="120" cy="44" r="3.2"/>
+          <circle cx="168" cy="58" r="3.2"/>
+          <circle cx="92" cy="82" r="3.2"/>
+          <circle cx="146" cy="76" r="3.2"/>
+          <circle cx="118" cy="104" r="3.2"/>
+        </g>
+      </svg>
+    </div>
+    <div class="load-txt">Cargando mapas</div>
+    <div id="loadmsg" class="mono"></div>
+  </div>
+</div>
+
+<header>
+  <div class="brand">
+    <div class="mark-svg" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="26" height="26">
+        <rect x="3" y="17" width="6" height="11" rx="1.5" fill="#f6f4ef"/>
+        <rect x="13" y="10" width="6" height="18" rx="1.5" fill="#f6f4ef"/>
+        <rect x="23" y="4" width="6" height="24" rx="1.5" fill="#f6f4ef"/>
+      </svg>
+    </div>
+    <h1>ATLAS ELECTORAL 2024</h1>
+    <span class="hdr-tag">Polarización · competitividad · cruce de escrutinios</span>
+  </div>
+  <nav class="hdr-nav">
+    <button class="nav-tab on" data-view="ni">Atlas NUEVAS IDEAS</button>
+    <button class="nav-tab" data-view="partidos">Análisis por partido</button>
+  </nav>
+  <div class="spacer"></div>
+  <div class="hdr-stat">
+    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#8fa9be" stroke-width="1.6">
+      <ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6"/>
+      <path d="M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg>
+    <span class="hdr-n" id="status">—</span>
+    <span class="hdr-lbl">centros</span>
+  </div>
+</header>
+
+<div id="view-ni" class="view">
+<div class="filterbar">
+  <div class="fb-field"><label>Escrutinio</label>
+    <select id="f_esc"><option value="ALC">Alcalde</option>
+      <option value="ASAM">Asamblea</option><option value="PRES">Presidente</option></select></div>
+  <div class="fb-field"><label>Departamento</label><select id="f_depto"><option value="">Todos</option></select></div>
+  <div class="fb-field"><label>Municipio</label><select id="f_muni"><option value="">Todos</option></select></div>
+  <div class="fb-field"><label>Distrito</label><select id="f_dist"><option value="">Todos</option></select></div>
+  <div class="fb-field"><label>Centro</label><select id="f_centro"><option value="">Todos</option></select></div>
+  <div class="fb-field"><label>Patrón NI</label><select id="f_patron"><option value="">Todos</option></select></div>
+  <div class="fb-field"><label>Tipología</label><select id="f_tipo"><option value="">Todas</option></select></div>
+  <div class="fb-rng"><div class="rng-h"><span>Margen máx. alc.</span><b id="v_marg">100%</b></div>
+    <input type="range" id="f_marg" min="0" max="100" value="100"></div>
+  <div class="fb-rng"><div class="rng-h"><span>Pedersen mín.</span><b id="v_ped">0%</b></div>
+    <input type="range" id="f_ped" min="0" max="100" value="0"></div>
+  <div class="fb-btns">
+    <button class="ghost" id="btn_reset">Limpiar</button>
+    <button id="btn_csv">CSV</button></div>
+</div>
+
+<div class="shell">
+  <!-- ================= RAIL IZQUIERDO ================= -->
+  <aside class="rail">
+    <h2>Seleccione un índice</h2>
+    <div class="idx-list" id="idx_list"></div>
+    <p style="font-size:11.5px;color:var(--ink3);margin-top:18px;line-height:1.5">
+      El índice elegido define el color del mapa, los tops y la explicación de arriba.
+      Delimite el territorio con los filtros superiores.</p>
+  </aside>
+
+  <!-- ================= ESCENARIO ================= -->
+  <main class="stage">
+    <!-- Explicación del índice -->
+    <div class="explain">
+      <div class="ex-main">
+        <div class="kick" id="ex_kick">Índice seleccionado</div>
+        <h2 id="ex_title">—</h2>
+        <div class="lead" id="ex_lead">—</div>
+      </div>
+      <div class="ex-value">
+        <div class="ex-v-num" id="ex_value">—</div>
+        <div class="ex-v-lbl" id="ex_value_lbl">valor observado</div>
+      </div>
+      <div class="ex-ref">
+        <div class="ex-ref-b" id="ex_low"></div>
+        <div class="ex-ref-b" id="ex_high"></div>
+      </div>
+    </div>
+    <div class="explain-scale">
+      <div class="scale" id="ex_scale"></div>
+      <div class="scale-lbl" id="ex_scalelbl"></div>
+    </div>
+
+    <!-- KPIs -->
+    <div class="kpis" id="kpis"></div>
+
+    <!-- Mapa (izq) + perfil/gráficos (der) -->
+    <div class="row mapgrid">
+      <div class="panel">
+        <h3>Mapa coroplético</h3>
+        <div class="sub" id="map_sub">—</div>
+        <div id="mapa"></div>
+        <div class="legend" id="leyenda"></div>
+      </div>
+      <div class="panel" id="side">
+        <!-- Perfil de centro (aparece al seleccionar, sobre los gráficos) -->
+        <div id="perfil">
+          <div class="pf-head">
+            <div><div class="pf-title" id="pf_nm">—</div><div class="pf-meta" id="pf_meta">—</div></div>
+            <div class="pf-close" id="pf_close">Cerrar ✕</div>
+          </div>
+          <div class="pf-grid" id="pf_grid"></div>
+          <div class="pf-cross">
+            <h4>Cruce entre elecciones</h4>
+            <div class="pf-metrics" id="pf_metrics"></div>
+            <div class="pf-narr" id="pf_narr"></div>
+          </div>
+        </div>
+        <!-- Gráficos (cuando no hay centro seleccionado) -->
+        <div id="side_dist">
+          <h3>Distribución del índice</h3>
+          <div class="sub">Cómo se reparten los centros filtrados</div>
+          <canvas id="c_dist"></canvas>
+          <div style="margin-top:20px">
+            <h3 style="font-size:15px">Dispersión Asamblea vs. Alcalde</h3>
+            <div class="sub">Si no hay relación, es una nube, no una diagonal</div>
+            <canvas id="c_scatter"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resultados de la selección: quiénes riñeron -->
+    <div class="panel" id="resultados_panel" style="margin-bottom:22px">
+      <h3>Resultados por elección</h3>
+      <div class="sub">Votos sumados de los centros filtrados (recalculado)</div>
+      <div class="res-tabs" id="res_tabs">
+        <button class="res-tab" data-e="PRES">Presidente</button>
+        <button class="res-tab" data-e="ASAM">Asamblea</button>
+        <button class="res-tab on" data-e="ALC">Alcalde</button>
+      </div>
+      <div class="res-grid">
+        <div class="res-winner" id="res_winner"></div>
+        <div class="res-bars" id="res_bars"></div>
+      </div>
+    </div>
+
+    <!-- Tops -->
+    <div class="row tops">
+      <div class="panel">
+        <h3 id="top_c_title">Centros más reñidos</h3>
+        <div class="sub" id="top_c_sub">Menor margen de victoria en alcalde</div>
+        <div id="top_centros"></div>
+      </div>
+      <div class="panel">
+        <h3 id="top_d_title">Distritos más reñidos</h3>
+        <div class="sub" id="top_d_sub">Recalculado desde los votos sumados del distrito</div>
+        <div id="top_dist"></div>
+      </div>
+    </div>
+
+    <!-- Tabla -->
+    <div class="panel" style="margin-bottom:22px">
+      <h3>Centros filtrados · <span id="tbl_n" class="mono"></span></h3>
+      <div class="sub">Clic en una fila para abrir el perfil y ubicar en el mapa</div>
+      <div class="tbl-wrap"><table><thead><tr id="thead"></tr></thead><tbody id="tbody"></tbody></table></div>
+      <div class="leyenda-patron">
+        <div class="lp-title">Qué significa el patrón de NUEVAS IDEAS en cada centro</div>
+        <div class="lp-grid">
+          <div class="lp"><span class="tag g-ok">HEGEMONIA TOTAL</span> NI ganó las tres elecciones (presidente, asamblea y alcalde).</div>
+          <div class="lp"><span class="tag g-am">P.S. ALCALDIA</span> <b>Pierde solo alcaldía:</b> NI ganó presidente y asamblea, pero otro partido se llevó la alcaldía. El caso más revelador.</div>
+          <div class="lp"><span class="tag g-op">PIERDE ASAMBLEA Y ALCALDIA</span> NI ganó la presidencial pero perdió tanto asamblea como alcaldía en ese centro.</div>
+          <div class="lp"><span class="tag g-op">PIERDE SOLO ASAMBLEA</span> NI ganó presidente y alcalde, pero no la asamblea (poco común).</div>
+          <div class="lp"><span class="tag g-op">OPOSITOR DESDE PRESIDENCIA</span> NI no ganó ni siquiera la presidencial: es un bastión opositor.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Informe -->
+    <div class="panel">
+      <h3 style="font-size:19px">Lectura analítica</h3>
+      <div class="informe-grid">
+        <div class="informe" id="informe"></div>
+        <div class="informe-charts">
+          <div class="ic-block">
+            <div class="ic-title">NUEVAS IDEAS en las tres elecciones</div>
+            <canvas id="c_ni_tri"></canvas>
+          </div>
+          <div class="ic-block">
+            <div class="ic-title">Participación por elección</div>
+            <canvas id="c_partic"></canvas>
+          </div>
+          <div class="ic-block">
+            <div class="ic-title">Composición del voto · <span id="ic_esc_lbl">Alcalde</span></div>
+            <canvas id="c_compo"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+</div><!-- /view-ni -->
+
+<!-- ================= VISTA: ANÁLISIS POR PARTIDO ================= -->
+<div id="view-partidos" class="view" style="display:none">
+<div class="filterbar">
+  <div class="fb-field"><label>Partido</label><select id="p_party"></select></div>
+  <div class="fb-field"><label>Elección</label>
+    <select id="p_esc"><option value="ALC">Alcalde</option>
+      <option value="ASAM">Asamblea</option><option value="PRES">Presidente</option></select></div>
+  <div class="fb-field"><label>Departamento</label><select id="p_depto"><option value="">Todos</option></select></div>
+  <div class="fb-field"><label>Municipio</label><select id="p_muni"><option value="">Todos</option></select></div>
+  <div class="fb-field"><label>Distrito</label><select id="p_dist"><option value="">Todos</option></select></div>
+  <div class="fb-field"><label>Centro</label><select id="p_centro"><option value="">Todos</option></select></div>
+  <div class="fb-rng"><div class="rng-h"><span>Fuerza mín. (%)</span><b id="p_v_min">0%</b></div>
+    <input type="range" id="p_min" min="0" max="100" value="0"></div>
+  <div class="fb-btns"><button class="ghost" id="p_reset">Limpiar</button></div>
+</div>
+
+<div class="stage" style="margin:112px auto 0;padding:20px 26px 80px;max-width:1500px">
+  <!-- Cabecera del partido -->
+  <div class="explain" style="border-radius:10px;border-bottom:1px solid var(--line);margin-bottom:18px">
+    <div class="ex-main">
+      <div class="kick" id="p_kick">Análisis territorial de partido</div>
+      <h2 id="p_title">—</h2>
+      <div class="lead" id="p_lead">Seleccione un partido y una elección para ver dónde es más fuerte en el territorio.</div>
+    </div>
+    <div class="ex-value">
+      <div class="ex-v-num" id="p_value">—</div>
+      <div class="ex-v-lbl">votos en la selección</div>
+    </div>
+    <div class="ex-ref">
+      <div class="ex-ref-b" id="p_ref1"></div>
+      <div class="ex-ref-b" id="p_ref2"></div>
+    </div>
+  </div>
+
+  <!-- KPIs del partido -->
+  <div class="kpis" id="p_kpis" style="grid-template-columns:repeat(6,1fr)"></div>
+
+  <!-- Mapa + panel -->
+  <div class="row mapgrid">
+    <div class="panel">
+      <h3>Dónde es fuerte · <span id="p_map_party">—</span></h3>
+      <div class="sub" id="p_map_sub">Porcentaje de votos del partido en cada centro</div>
+      <div id="p_mapa"></div>
+      <div class="legend" id="p_leyenda"></div>
+    </div>
+    <div class="panel" style="max-height:600px;overflow-y:auto">
+      <h3>Ranking territorial</h3>
+      <div class="sub">Distritos donde el partido saca más votos</div>
+      <div id="p_ranking"></div>
+      <div style="margin-top:18px">
+        <h3 style="font-size:15px">Voto persistente</h3>
+        <div class="sub">Piso del partido en sus tres elecciones</div>
+        <canvas id="p_c_duro" style="max-height:150px"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resultados de votos (todos los partidos) de la selección -->
+  <div class="panel" style="margin-top:22px">
+    <h3>Resultados de votos — <span id="p_res_esc">Alcalde</span></h3>
+    <div class="sub">Todos los partidos en el territorio filtrado · votos sumados (recalculado)</div>
+    <div class="res-grid" style="margin-top:14px">
+      <div class="res-winner" id="p_res_winner"></div>
+      <div class="res-bars" id="p_res_bars"></div>
+    </div>
+  </div>
+</div>
+</div><!-- /view-partidos -->
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<!-- ArcGIS SDK: se carga y SOLO entonces arranca la app (evita require undefined) -->
+<script>
+window.__arcgisReady=new Promise((res)=>{ window.__resolveArcgis=res; });
+window.addEventListener("error",e=>{
+  const box=document.getElementById("errbox")||(()=>{
+    const d=document.createElement("div");d.id="errbox";
+    d.style.cssText="position:fixed;bottom:0;left:0;right:0;background:#c0442e;color:#fff;"+
+      "font:12px/1.5 monospace;padding:10px 14px;z-index:99999;max-height:150px;overflow:auto;white-space:pre-wrap";
+    document.body.appendChild(d);return d;})();
+  box.textContent+=`\n⚠ ${e.message}  @ ${e.filename?.split("/").pop()}:${e.lineno}:${e.colno}`;
+});
+</script>
+<script src="https://js.arcgis.com/4.30/" onload="window.__resolveArcgis()"
+        onerror="document.getElementById('loadmsg').textContent='No se pudo cargar el SDK de ArcGIS (revise su conexión).';document.getElementById('loadmsg').style.color='#c0442e';"></script>
+
+<script>
+/* =====================================================================
+   CONFIGURACION
+   ===================================================================== */
+const CFG={
+  ZONAS_CRUCE:"https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/zonas_cruce_final/FeatureServer/0",
+  PTS_CRUCE  :"https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/pts_cruce_final/FeatureServer/0",
+  PTS_ESC    :"https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/pts_escrutinio_final/FeatureServer/0",
+  MUNICIPIOS :"https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/CAPA_GANADORES_MUNICIPIOS/FeatureServer/0",
+  CENTRO:[-88.9,13.78], ZOOM:9,
+  EXTENT:{xmin:-90.15,ymin:13.12,xmax:-87.68,ymax:14.45}
+};
+// Capa de contorno de municipios: solo línea azul muy oscura, sin relleno ni popup
+function capaMunicipios(){
+  const {FeatureLayer}=Modules;
+  return new FeatureLayer({url:CFG.MUNICIPIOS, popupEnabled:false, legendEnabled:false,
+    listMode:"hide",
+    renderer:{type:"simple",symbol:{type:"simple-fill",color:[0,0,0,0],
+      outline:{color:[13,36,57,.85],width:1.1}}}});
+}
+const F={
+  ID:"CAT_COD_CENTRO",CENTRO:"CAT_CENTRO",DEPTO:"CAT_DEPARTAMENTO",MUNI:"CAT_MUNICIPIO",
+  DIST:"CAT_DISTRITO",ELECT:"CAT_ELECTORES",ESC:"ESCRUTINIO",
+  PEDERSEN:"PEDERSEN_ASAM_ALC",PEDERSEN_PA:"PEDERSEN_PRES_ASAM",PEDERSEN_PL:"PEDERSEN_PRES_ALC",
+  MARG:{PRES:"MARGEN_VICTORIA_PRES",ASAM:"MARGEN_VICTORIA_ASAM",ALC:"MARGEN_VICTORIA_ALC"},
+  HHI:{PRES:"HHI_PRES",ASAM:"HHI_ASAM",ALC:"HHI_ALC"},
+  ENP:{PRES:"ENP_LAAKSO_TAAGEPERA_PRES",ASAM:"ENP_LAAKSO_TAAGEPERA_ASAM",ALC:"ENP_LAAKSO_TAAGEPERA_ALC"},
+  POLAR:{PRES:"POLARIZACION_BIPARTIDISTA_PRES",ASAM:"POLARIZACION_BIPARTIDISTA_ASAM",ALC:"POLARIZACION_BIPARTIDISTA_ALC"},
+  SHNI:{PRES:"SHARE_NI_PRES",ASAM:"SHARE_NI_ASAM",ALC:"SHARE_NI_ALC"},
+  MNI:{PRES:"MARGEN_NI_PRES",ASAM:"MARGEN_NI_ASAM",ALC:"MARGEN_NI_ALC"},
+  GAN:{PRES:"GANADOR_PRES",ASAM:"GANADOR_ASAM",ALC:"GANADOR_ALC"},
+  GANO:{PRES:"GANO_NI_PRES",ASAM:"GANO_NI_ASAM",ALC:"GANO_NI_ALC"},
+  MARG_ALC:"MARGEN_VICTORIA_ALC",MARG_ASAM:"MARGEN_VICTORIA_ASAM",MARG_PRES:"MARGEN_VICTORIA_PRES",
+  MNI_ALC:"MARGEN_NI_ALC",MNI_ASAM:"MARGEN_NI_ASAM",
+  SHNI_PRES:"SHARE_NI_PRES",SHNI_ASAM:"SHARE_NI_ASAM",SHNI_ALC:"SHARE_NI_ALC",
+  VOTO_DURO:"VOTO_PERSISTENTE_NI",
+  RET_PA:"RETENCION_VOTOS_PRES_ALC",CAIDA_NI:"CAIDA_NI_ASAM_ALC",
+  GANO_ALC:"GANO_NI_ALC",GANO_ASAM:"GANO_NI_ASAM",GAN_ALC:"GANADOR_ALC",
+  RIVAL:"RIVAL_NI_ALC",PATRON:"PATRON_NI",TIPO:"TIPOLOGIA_CENTRO",TOTAL:"TOTAL_VOTOS_VALIDOS"
+};
+const PARTIDOS=["ARENA","CD","FMLN","FPS","FUERZA_SOLIDARIA","GANA","NUESTRO_TIEMPO",
+  "NUEVAS_IDEAS","NUEVAS_IDEAS_CD","NUEVAS_IDEAS_GANA","PCN","PCN_GANA","PCN_PDC","PDC","PDC_PCN","VAMOS"];
+
+// Consolidación de coaliciones al partido que las encabeza.
+// Votar "NI" en asamblea y "NI-CD" en alcalde NO es volatilidad: es la misma fuerza.
+const CANON={
+  NUEVAS_IDEAS_CD:"NUEVAS_IDEAS", NUEVAS_IDEAS_GANA:"NUEVAS_IDEAS",
+  PCN_GANA:"PCN", PCN_PDC:"PCN", PDC_PCN:"PDC"
+};
+const canon=p=>CANON[p]||p;
+// Lista de partidos ya consolidados (sin duplicar el líder)
+const PARTIDOS_C=[...new Set(PARTIDOS.map(canon))];
+
+// Colapsa un objeto de votos {PARTIDO:n} sumando coaliciones a su líder
+function consolidar(v){
+  const out={};
+  for(const p in v){ const c=canon(p); out[c]=(out[c]||0)+v[p]; }
+  return out;
+}
+
+const NOMBRE_P={FUERZA_SOLIDARIA:"F. SOLIDARIA",NUESTRO_TIEMPO:"N. TIEMPO",
+  NUEVAS_IDEAS:"NUEVAS IDEAS",NUEVAS_IDEAS_CD:"NI-CD",NUEVAS_IDEAS_GANA:"NI-GANA",
+  PCN_GANA:"PCN-GANA",PCN_PDC:"PCN-PDC",PDC_PCN:"PDC-PCN"};
+const pn=p=>NOMBRE_P[p]||p;
+const ES_NI=p=>String(p).toUpperCase().includes("NUEVAS");
+const esc3={PRES:"PRESIDENTE",ASAM:"DIP_ASAMBLEA",ALC:"ALCALDE"};
+const escN={PRES:"Presidente",ASAM:"Asamblea",ALC:"Alcalde"};
+
+/* Rampas */
+const R_REN=["#4a7c59","#8aa35a","#d98a2b","#c0632e","#c0442e"];   // holgado->reñido
+const R_REN_I=[...R_REN].reverse();
+const R_SEC=["#e9f0f2","#a9cdd8","#6aa6b8","#3d7f95","#1a5064"];
+const R_DIV=["#c0442e","#e0a08f","#d8d4cc","#7fb8c9","#0f8a9e"];   // NI pierde->gana
+const R_NI_ROJO=["#01adef","#5ec5e0","#d98a2b","#c0632e","#c0442e"];   // cian NI -> naranja -> rojo
+
+/* =====================================================================
+   CATALOGO DE INDICES  (define explicacion + como colorear)
+   ===================================================================== */
+const IDX={
+  PEDERSEN:{
+    grupo:"cruce",
+    titulo:"Volatilidad Asamblea → Alcalde",
+    lead:"Mide cuánto cambió el patrón de votación de un mismo centro entre la elección de Asamblea y la de Alcalde, un mes después. Suma todos los cambios de porcentaje partido por partido y los divide entre dos.",
+    bajo:"<b>Cerca de 0%:</b> la gente votó casi igual en ambas elecciones. Los mismos partidos, en proporciones parecidas.",
+    alto:"<b>Cerca de 100%:</b> el centro votó por partidos completamente distintos en asamblea y en alcaldía. Máxima infidelidad entre niveles.",
+    campo:()=>F.PEDERSEN, stops:[.1,.25,.4,.55,.7], ramp:R_REN, fmt:"pct", dir:"desc"
+  },
+  PEDERSEN_PA:{
+    grupo:"cruce",
+    titulo:"Volatilidad Presidente → Asamblea",
+    lead:"Presidente y Asamblea se votaron el MISMO día, en la misma jornada. Este índice mide si la gente marcó el mismo partido en ambas boletas o si dividió su voto entre presidente y diputados.",
+    bajo:"<b>Cerca de 0%:</b> voto coherente. Quien marcó un partido para presidente marcó el mismo para asamblea. Es lo esperado.",
+    alto:"<b>Alto:</b> voto cruzado el mismo día — apoyaron a un partido para presidente y a otro para la asamblea. Poco común.",
+    campo:()=>F.PEDERSEN_PA, stops:[.05,.12,.2,.3,.45], ramp:R_REN, fmt:"pct", dir:"desc"
+  },
+  PEDERSEN_PL:{
+    grupo:"cruce",
+    titulo:"Volatilidad Presidente → Alcalde",
+    lead:"Mide cuánto cambió el voto entre la elección presidencial de febrero y la municipal de marzo. Es la distancia más grande: compara la marca nacional con la decisión puramente local.",
+    bajo:"<b>Cerca de 0%:</b> el centro votó igual para presidente y para alcalde. La fuerza nacional se trasladó intacta a lo local.",
+    alto:"<b>Alto:</b> el voto presidencial no se tradujo en voto municipal. Aquí pesan candidatos y dinámicas locales sobre la marca nacional.",
+    campo:()=>F.PEDERSEN_PL, stops:[.1,.25,.4,.55,.7], ramp:R_NI_ROJO, fmt:"pct", dir:"desc"
+  },
+  MARGEN:{
+    grupo:"esc",
+    titulo:"Margen de victoria",
+    lead:"La diferencia entre el primero y el segundo lugar. Es la forma más directa de saber qué tan peleada estuvo una elección en ese centro.",
+    bajo:"<b>Margen pequeño (rojo):</b> primero y segundo casi empatados. Elección reñida, cada voto contó.",
+    alto:"<b>Margen grande (verde):</b> el ganador arrasó. Es un bastión, sin competencia real.",
+    campo:()=>F.MARG[ESC], stops:[0,.10,.25,.45,.70], ramp:R_REN_I, fmt:"pct", dir:"asc"
+  },
+  POLAR:{
+    grupo:"esc",
+    titulo:"Polarización bipartidista",
+    lead:"Qué tanto se concentra el voto en dos fuerzas que además están parejas entre sí. Distingue un empate a dos bandas de una repartición dispersa entre muchos.",
+    bajo:"<b>Bajo:</b> o domina un solo partido, o el voto se dispersa entre muchos. No hay duelo.",
+    alto:"<b>Alto:</b> dos partidos concentran casi todo y van cabeza a cabeza. Máxima tensión bipolar.",
+    campo:()=>F.POLAR[ESC], stops:[0,.25,.5,.7,.9], ramp:R_REN, fmt:"pct", dir:"desc"
+  },
+  HHI:{
+    grupo:"esc",
+    titulo:"Concentración (Herfindahl–Hirschman)",
+    lead:"Mide qué tan concentrado está el voto. Se calcula sumando el cuadrado de la proporción de cada partido; premia a los grandes y castiga la dispersión.",
+    bajo:"<b>Bajo:</b> voto fragmentado entre muchos partidos, ninguno domina.",
+    alto:"<b>Alto:</b> un partido acapara casi todo el voto. Hegemonía.",
+    campo:()=>F.HHI[ESC], stops:[.2,.3,.45,.6,.8], ramp:R_SEC, fmt:"n3", dir:"desc"
+  },
+  ENP:{
+    grupo:"esc",
+    titulo:"Número efectivo de partidos",
+    lead:"Cuántos partidos compiten «de verdad», ponderando por su tamaño. Un valor de 2 significa que, en la práctica, la elección fue entre dos fuerzas equivalentes.",
+    bajo:"<b>Cercano a 1:</b> un solo partido concentra el voto. Sistema hegemónico.",
+    alto:"<b>3 o más:</b> varias fuerzas compiten en serio. Sistema fragmentado.",
+    campo:()=>F.ENP[ESC], stops:[1,1.5,2,2.8,4], ramp:R_SEC, fmt:"n2", dir:"desc"
+  },
+  MARGEN_NI:{
+    grupo:"cruce",
+    titulo:"Margen de NUEVAS IDEAS en Alcalde",
+    lead:"Cuánto ganó o perdió NUEVAS IDEAS frente a su rival más cercano en la elección de alcalde de cada centro. Positivo = ganó; negativo = perdió.",
+    bajo:"<b>Negativo (rojo):</b> NI quedó por debajo del ganador. Perdió ese centro.",
+    alto:"<b>Positivo (cian):</b> NI ganó, y mientras más alto, con más holgura.",
+    campo:()=>F.MNI_ALC, stops:[-.5,-.15,0,.15,.5], ramp:R_DIV, fmt:"pct", dir:"asc", div:true
+  },
+  MARGEN_NI_ASAM:{
+    grupo:"cruce",
+    titulo:"Margen de NUEVAS IDEAS en Asamblea",
+    lead:"Cuánto ganó o perdió NUEVAS IDEAS frente a su rival más cercano en la elección de asamblea de cada centro. Positivo = ganó; negativo = perdió.",
+    bajo:"<b>Negativo (rojo):</b> NI quedó por debajo del ganador en asamblea.",
+    alto:"<b>Positivo (cian):</b> NI ganó la asamblea, y mientras más alto, con más holgura.",
+    campo:()=>F.MNI_ASAM, stops:[-.5,-.15,0,.15,.5], ramp:R_DIV, fmt:"pct", dir:"asc", div:true
+  },
+  VOTO_DURO:{
+    grupo:"cruce",
+    titulo:"Voto persistente de NUEVAS IDEAS",
+    lead:"El piso de apoyo que NUEVAS IDEAS mantiene en las TRES elecciones sin importar el nivel. Se toma el porcentaje más bajo que sacó NI entre presidente, asamblea y alcalde: ese mínimo es el voto que no lo abandona ni en su peor elección. Es el estimador del voto duro.",
+    bajo:"<b>Bajo (rojo):</b> el apoyo a NI es blando — cae mucho en al menos una elección. Su fuerza depende del arrastre presidencial.",
+    alto:"<b>Alto (verde):</b> núcleo leal. NI conserva un apoyo alto incluso en la elección donde más pierde. Es territorio fiel.",
+    campo:()=>F.VOTO_DURO, stops:[.1,.25,.4,.55,.7], ramp:[...R_REN].reverse(), fmt:"pct", dir:"desc"
+  },
+  RETENCION:{
+    grupo:"cruce",
+    titulo:"Retención de votos (Presidente → Alcalde)",
+    lead:"De cada voto emitido en la presidencial de febrero, cuántos volvieron a las urnas en la municipal de marzo. Mide la caída de participación, que fue enorme.",
+    bajo:"<b>Bajo (rojo):</b> mucha gente que votó en febrero se quedó en casa en marzo.",
+    alto:"<b>Alto:</b> el centro mantuvo su participación entre ambas elecciones.",
+    campo:()=>F.RET_PA, stops:[.35,.45,.55,.7,.9], ramp:R_REN_I, fmt:"pct", dir:"asc"
+  },
+  CAIDA_NI:{
+    grupo:"cruce",
+    titulo:"Caída de NUEVAS IDEAS (Asamblea → Alcalde)",
+    lead:"Cuántos puntos porcentuales de apoyo perdió NI al pasar de la boleta de asamblea a la de alcalde en el mismo centro.",
+    bajo:"<b>Cerca de 0:</b> NI conservó su fuerza al bajar al nivel local.",
+    alto:"<b>Alto:</b> NI se desplomó en lo municipal pese a ganar la asamblea.",
+    campo:()=>F.CAIDA_NI, stops:[0,.15,.3,.45,.6], ramp:R_REN, fmt:"pct", dir:"desc"
+  }
+};
+let INDICE="PEDERSEN", ESC="ALC";
+
+/* =====================================================================
+   INDICES DESDE VOTOS (para agregados; nunca promedia indices)
+   ===================================================================== */
+function indices(v0){
+  const v=consolidar(v0);   // coaliciones al partido líder
+  const tot=Object.values(v).reduce((a,b)=>a+b,0);
+  if(!tot)return{tot:0,hhi:NaN,enp:NaN,margen:NaN,shni:NaN,p1:null,p2:null,sh1:NaN,sh2:NaN,shares:[]};
+  const pares=Object.entries(v).filter(([,n])=>n>0).sort((a,b)=>b[1]-a[1]);
+  const shares=pares.map(([p,n])=>[p,n/tot]);
+  const hhi=shares.reduce((a,[,x])=>a+x*x,0);
+  const shni=Object.entries(v).filter(([p])=>ES_NI(p)).reduce((a,[,n])=>a+n,0)/tot;
+  return{tot,hhi,enp:1/hhi,margen:(shares[0]?.[1]||0)-(shares[1]?.[1]||0),shni,
+    p1:shares[0]?.[0]??null,p2:shares[1]?.[0]??null,
+    sh1:shares[0]?.[1]||0,sh2:shares[1]?.[1]||0,shares};
+}
+function pedersen(a0,b0){
+  // consolidar coaliciones: votar NI y luego NI-CD no es cambiar de fuerza
+  const a=consolidar(a0), b=consolidar(b0);
+  const ta=Object.values(a).reduce((x,y)=>x+y,0),tb=Object.values(b).reduce((x,y)=>x+y,0);
+  if(!ta||!tb)return NaN;
+  return .5*PARTIDOS_C.reduce((s,p)=>s+Math.abs((a[p]||0)/ta-(b[p]||0)/tb),0);
+}
+
+/* =====================================================================
+   ARRANQUE (tras cargar SDK)
+   ===================================================================== */
+let ESC_DATA=[],CRUCE=[],VISTA,LYR={},CH={},FILT=[],IDS=new Set(),SEL=null,Modules={};
+
+window.__arcgisReady.then(()=>{
+  require(["esri/Map","esri/views/MapView","esri/layers/FeatureLayer",
+           "esri/widgets/Legend","esri/widgets/Expand","esri/Graphic",
+           "esri/Basemap","esri/layers/WebTileLayer"],
+  (Map,MapView,FeatureLayer,Legend,Expand,Graphic,Basemap,WebTileLayer)=>{
+    Modules={Map,MapView,FeatureLayer,Legend,Expand,Graphic,Basemap,WebTileLayer};
+    boot();
+  });
+});
+
+function boot(){
+  const {Map,MapView,FeatureLayer,Legend,Expand,Graphic,Basemap,WebTileLayer}=Modules;
+  const msg=t=>document.getElementById("loadmsg").textContent=t;
+
+  msg("Descargando atributos…");
+  const q=(url,campos,geom)=>{
+    const l=new FeatureLayer({url});
+    return l.queryFeatures({where:"1=1",outFields:campos,returnGeometry:!!geom,
+      maxRecordCountFactor:5,num:20000}).then(r=>r.features);
+  };
+  const cE=[F.ID,F.ESC,F.ELECT,F.TOTAL].concat(PARTIDOS);
+
+  // escrutinio (sin geom) + zonas CON geometria (para coropletas)
+  Promise.all([
+    q(CFG.PTS_ESC,cE,false),
+    q(CFG.ZONAS_CRUCE,[F.ID,F.CENTRO,F.DEPTO,F.MUNI,F.DIST,F.ELECT,F.PATRON,F.TIPO],true)
+  ]).then(([escFeat,zonaFeat])=>{
+    ESC_DATA=escFeat.map(f=>f.attributes);
+    window.__zonaFeat=zonaFeat;   // reuso en vista de partidos
+
+    // votos limpios por centro
+    const vpc={};
+    ESC_DATA.forEach(r=>{const id=r[F.ID];
+      (vpc[id]=vpc[id]||{PRES:{},ASAM:{},ALC:{}});
+      const suf=r[F.ESC]==="PRESIDENTE"?"PRES":r[F.ESC]==="DIP_ASAMBLEA"?"ASAM":"ALC";
+      PARTIDOS.forEach(p=>vpc[id][suf][p]=(vpc[id][suf][p]||0)+(r[p]||0));});
+
+    // CRUCE (1 x centro) con TODOS los indices recalculados
+    window.__vpc=vpc;
+    CRUCE=[];
+    for(const id in vpc){
+      const v=vpc[id];
+      const iP=indices(v.PRES),iS=indices(v.ASAM),iA=indices(v.ALC);
+      const rivA=iA.shares.filter(([p])=>!ES_NI(p))[0];
+      const rivS=iS.shares.filter(([p])=>!ES_NI(p))[0];
+      const z=zonaFeat.find(f=>f.attributes[F.ID]===id);
+      const meta=z?z.attributes:{};
+      CRUCE.push({
+        [F.ID]:id,[F.CENTRO]:meta[F.CENTRO]||id,[F.DEPTO]:meta[F.DEPTO],[F.MUNI]:meta[F.MUNI],
+        [F.DIST]:meta[F.DIST],[F.ELECT]:meta[F.ELECT]||0,[F.PATRON]:meta[F.PATRON],[F.TIPO]:meta[F.TIPO],
+        [F.GAN_ALC]:iA.p1,[F.GANO_ALC]:ES_NI(iA.p1)?1:0,[F.GANO_ASAM]:ES_NI(iS.p1)?1:0,
+        GANLBL_PRES:ES_NI(iP.p1)?"NI":pn(iP.p1),
+        GANLBL_ASAM:ES_NI(iS.p1)?"NI":pn(iS.p1),
+        GANLBL_ALC:ES_NI(iA.p1)?"NI":pn(iA.p1),
+        [F.RIVAL]:rivA?rivA[0]:null,
+        [F.MARG_PRES]:iP.margen,[F.MARG_ASAM]:iS.margen,[F.MARG_ALC]:iA.margen,
+        [F.HHI.PRES]:iP.hhi,[F.HHI.ASAM]:iS.hhi,[F.HHI.ALC]:iA.hhi,
+        [F.ENP.PRES]:iP.enp,[F.ENP.ASAM]:iS.enp,[F.ENP.ALC]:iA.enp,
+        [F.POLAR.PRES]:polar(iP),[F.POLAR.ASAM]:polar(iS),[F.POLAR.ALC]:polar(iA),
+        [F.SHNI_PRES]:iP.shni,[F.SHNI_ASAM]:iS.shni,[F.SHNI_ALC]:iA.shni,
+        [F.VOTO_DURO]:Math.min(iP.shni,iS.shni,iA.shni),
+        [F.PEDERSEN]:pedersen(v.ASAM,v.ALC),
+        [F.PEDERSEN_PA]:pedersen(v.PRES,v.ASAM),
+        [F.PEDERSEN_PL]:pedersen(v.PRES,v.ALC),
+        [F.RET_PA]:iP.tot?iA.tot/iP.tot:NaN,
+        [F.CAIDA_NI]:iS.shni-iA.shni,
+        [F.MNI_ALC]:iA.shni-(rivA?rivA[1]:0),
+        [F.MNI_ASAM]:iS.shni-(rivS?rivS[1]:0)
+      });
+    }
+
+    // Capas CLIENTE (atributos correctos + geometria)
+    const crossById={};CRUCE.forEach(r=>crossById[r[F.ID]]=r);
+    const campos=[
+      {name:"OBJECTID",type:"oid"},
+      {name:F.ID,type:"string"},{name:F.CENTRO,type:"string"},
+      {name:F.DEPTO,type:"string"},{name:F.MUNI,type:"string"},{name:F.DIST,type:"string"},
+      {name:F.GAN_ALC,type:"string"},{name:F.PATRON,type:"string"},
+      {name:"GANLBL_PRES",type:"string"},{name:"GANLBL_ASAM",type:"string"},{name:"GANLBL_ALC",type:"string"},
+      {name:F.PEDERSEN,type:"double"},{name:F.PEDERSEN_PA,type:"double"},{name:F.PEDERSEN_PL,type:"double"},
+      {name:F.MARG_ALC,type:"double"},
+      {name:F.MARG.PRES,type:"double"},{name:F.MARG.ASAM,type:"double"},{name:F.MARG.ALC,type:"double"},
+      {name:F.HHI.PRES,type:"double"},{name:F.HHI.ASAM,type:"double"},{name:F.HHI.ALC,type:"double"},
+      {name:F.ENP.PRES,type:"double"},{name:F.ENP.ASAM,type:"double"},{name:F.ENP.ALC,type:"double"},
+      {name:F.POLAR.PRES,type:"double"},{name:F.POLAR.ASAM,type:"double"},{name:F.POLAR.ALC,type:"double"},
+      {name:F.MNI_ALC,type:"double"},{name:F.MNI_ASAM,type:"double"},{name:F.VOTO_DURO,type:"double"},
+      {name:F.RET_PA,type:"double"},{name:F.CAIDA_NI,type:"double"}
+    ];
+    let oid=1;const graf=[],grafVacias=[];
+    window.__oid2id={};   // respaldo: OBJECTID del poligono -> ID de centro
+    zonaFeat.forEach(f=>{
+      const id=f.attributes[F.ID],cr=crossById[id];
+      if(cr){
+        const myoid=oid++;
+        window.__oid2id[myoid]=id;
+        graf.push(new Graphic({geometry:f.geometry,
+          attributes:{OBJECTID:myoid,...Object.fromEntries(campos.slice(1).map(c=>[c.name,cr[c.name]??null]))}}));
+      }
+      else{grafVacias.push(new Graphic({geometry:f.geometry,attributes:{OBJECTID:oid++}}));}
+    });
+
+    LYR.zonaVacia=new FeatureLayer({source:grafVacias,objectIdField:"OBJECTID",
+      fields:[{name:"OBJECTID",type:"oid"}],geometryType:"polygon",spatialReference:{wkid:4326},
+      renderer:{type:"simple",symbol:{type:"simple-fill",color:[235,232,225,1],
+        outline:{color:[210,205,195,.8],width:.3}}}});
+    LYR.zonas=new FeatureLayer({source:graf,objectIdField:"OBJECTID",fields:campos,
+      geometryType:"polygon",spatialReference:{wkid:4326},opacity:1});
+
+    // Puntos de centros (centroides) SIEMPRE visibles, color fijo, para ubicar
+    let poid=1;const grafPts=[];
+    zonaFeat.forEach(f=>{
+      const id=f.attributes[F.ID],cr=crossById[id];
+      if(!cr||!f.geometry)return;
+      const cen=f.geometry.centroid;
+      if(cen)grafPts.push(new Graphic({geometry:cen,
+        attributes:{OBJECTID:poid++,[F.ID]:id,[F.CENTRO]:cr[F.CENTRO]||id}}));
+    });
+    LYR.pts=new FeatureLayer({source:grafPts,objectIdField:"OBJECTID",
+      fields:[{name:"OBJECTID",type:"oid"},{name:F.ID,type:"string"},{name:F.CENTRO,type:"string"}],
+      geometryType:"point",spatialReference:{wkid:4326},
+      minScale:250000,          // los puntos aparecen solo al acercarse (~nivel municipio)
+      renderer:{type:"simple",symbol:{type:"simple-marker",size:5,color:[26,28,34,.92],
+        outline:{color:[255,255,255,.95],width:1}}},
+      labelingInfo:[{
+        labelExpressionInfo:{expression:'$feature["'+F.CENTRO+'"]'},
+        minScale:60000,         // el nombre solo cuando se está bien cerca
+        symbol:{type:"text",color:[26,28,34,1],haloColor:[255,255,255,1],haloSize:1.6,
+          font:{size:9,weight:"bold",family:"Inter"}}
+      }]});
+
+    // 1) Ocultar loading PRIMERO -> el contenedor del mapa ya es visible y medible
+    document.getElementById("loading").classList.add("hide");
+    railIndices();poblar();initNav();
+
+    // 2) Crear el MapView AHORA (contenedor visible => surface mide bien)
+    //    Doble requestAnimationFrame asegura que el reflow ya ocurrió.
+    requestAnimationFrame(()=>requestAnimationFrame(()=>{
+      const cont=document.getElementById("mapa");
+      cont.style.height="480px"; cont.style.width="100%";
+      // Basemap limpio SIN nombres (CARTO Positron no-labels, publico, sin key)
+      const baseLimpio=new Basemap({baseLayers:[new WebTileLayer({
+        urlTemplate:"https://basemaps.cartocdn.com/light_nolabels/{level}/{col}/{row}.png",
+        subDomains:["a","b","c","d"],
+        copyright:"© OpenStreetMap © CARTO"
+      })]});
+      const map=new Map({basemap:baseLimpio,layers:[LYR.zonaVacia,LYR.zonas,capaMunicipios(),LYR.pts]});
+      VISTA=new MapView({container:cont,map,extent:CFG.EXTENT,
+        popupEnabled:false,
+        constraints:{snapToZoom:false}});
+      VISTA.ui.add(new Expand({view:VISTA,content:new Legend({view:VISTA}),expanded:false}),"bottom-left");
+      VISTA.on("click",ev=>{
+        VISTA.hitTest(ev,{include:[LYR.zonas,LYR.pts]}).then(r=>{
+          for(const res of r.results){
+            const a=res.graphic&&res.graphic.attributes;
+            if(!a)continue;
+            // ID directo, o respaldo por OBJECTID del polígono
+            let id=a[F.ID];
+            if(id==null&&a.OBJECTID!=null&&window.__oid2id) id=window.__oid2id[a.OBJECTID];
+            if(id!=null){ abrirPerfil(id); return; }
+          }
+        }).catch(err=>console.warn("hitTest error:",err));
+      });
+      VISTA.when(()=>{ pintar(); });
+    }));
+
+    aplicar();
+  }).catch(e=>{
+    msg("ERROR: "+e.message);
+    document.getElementById("loadmsg").style.color="#c0442e";
+    console.error(e);
+  });
+}
+
+/* =====================================================================
+   RAIL: lista de indices
+   ===================================================================== */
+function railIndices(){
+  $("idx_list").innerHTML=Object.entries(IDX).map(([k,v])=>
+    `<div class="idx ${k===INDICE?"on":""}" data-k="${k}">
+       <div class="t">${v.titulo}</div>
+       <div class="d">${v.grupo==="esc"?"Por elección":"Cruce entre elecciones"}</div>
+     </div>`).join("");
+  $("idx_list").onclick=e=>{const el=e.target.closest(".idx");if(!el)return;
+    INDICE=el.dataset.k;railIndices();
+    // el selector de escrutinio solo aplica a indices "por eleccion"
+    $("f_esc").disabled=IDX[INDICE].grupo!=="esc";
+    render();};
+  $("f_esc").disabled=IDX[INDICE].grupo!=="esc";
+}
+
+/* =====================================================================
+   FILTROS
+   ===================================================================== */
+const $=id=>document.getElementById(id);
+const uniq=(a,k)=>[...new Set(a.map(r=>r[k]).filter(Boolean))].sort();
+const opts=(s,v,ph)=>{s.innerHTML=`<option value="">${ph}</option>`+v.map(x=>`<option>${x}</option>`).join("")};
+
+function poblar(){
+  opts($("f_depto"),uniq(CRUCE,F.DEPTO),"Todos");
+  opts($("f_patron"),uniq(CRUCE,F.PATRON),"Todos");
+  opts($("f_tipo"),uniq(CRUCE,F.TIPO),"Todas");
+  cascada();
+  ["f_depto","f_muni","f_dist","f_centro","f_patron","f_tipo"].forEach(id=>
+    $(id).addEventListener("change",()=>{
+      if(["f_depto","f_muni","f_dist"].includes(id))cascada();
+      if(id==="f_centro"&&$("f_centro").value){
+        const r=CRUCE.find(x=>x[F.CENTRO]===$("f_centro").value); if(r)abrirPerfil(r[F.ID]);
+      }
+      aplicar();}));
+  $("f_esc").addEventListener("change",()=>{ESC=$("f_esc").value;render();});
+  [["f_marg","v_marg"],["f_ped","v_ped"]].forEach(([i,v])=>
+    $(i).addEventListener("input",()=>{$(v).textContent=$(i).value+"%";aplicar();}));
+  $("btn_reset").onclick=()=>{
+    ["f_depto","f_dist","f_muni","f_centro","f_patron","f_tipo"].forEach(i=>$(i).value="");
+    $("f_marg").value=100;$("f_ped").value=0;$("v_marg").textContent="100%";$("v_ped").textContent="0%";
+    cerrarPerfil();cascada();aplicar();
+    // volver a la vista inicial del país (tras el re-render de la capa)
+    if(VISTA)setTimeout(()=>VISTA.goTo(CFG.EXTENT,{duration:700}).catch(()=>{}),120);};
+  $("btn_csv").onclick=exportar;
+  $("pf_close").onclick=cerrarPerfil;
+  // pestañas del panel de resultados (independientes del filtro de escrutinio)
+  $("res_tabs").onclick=e=>{
+    const b=e.target.closest(".res-tab"); if(!b) return;
+    RES_ESC=b.dataset.e;
+    document.querySelectorAll(".res-tab").forEach(t=>t.classList.toggle("on",t===b));
+    resultados();
+  };
+}
+function cascada(){
+  const d=$("f_depto").value,mu=$("f_muni").value,di=$("f_dist").value;
+  let s=CRUCE;if(d)s=s.filter(r=>r[F.DEPTO]===d);
+  opts($("f_muni"),uniq(s,F.MUNI),"Todos");$("f_muni").value=mu;
+  if(mu)s=s.filter(r=>r[F.MUNI]===mu);
+  opts($("f_dist"),uniq(s,F.DIST),"Todos");$("f_dist").value=di;
+  if(di)s=s.filter(r=>r[F.DIST]===di);
+  opts($("f_centro"),uniq(s,F.CENTRO),"Todos");
+}
+function filtrar(){
+  const d=$("f_depto").value,di=$("f_dist").value,mu=$("f_muni").value,ce=$("f_centro").value,
+    pa=$("f_patron").value,ti=$("f_tipo").value,mM=+$("f_marg").value/100,pMin=+$("f_ped").value/100;
+  return CRUCE.filter(r=>
+    (!d||r[F.DEPTO]===d)&&(!di||r[F.DIST]===di)&&(!mu||r[F.MUNI]===mu)&&(!ce||r[F.CENTRO]===ce)&&
+    (!pa||r[F.PATRON]===pa)&&(!ti||r[F.TIPO]===ti)&&!(r[F.MARG_ALC]>mM)&&!(r[F.PEDERSEN]<pMin));
+}
+function aplicar(){
+  FILT=filtrar();IDS=new Set(FILT.map(r=>r[F.ID]));
+  const ids=[...IDS].map(i=>`'${String(i).replace(/'/g,"''")}'`);
+  const where=ids.length===CRUCE.length?"1=1":ids.length?`${F.ID} IN (${ids.join(",")})`:"1=0";
+  if(LYR.zonas)LYR.zonas.definitionExpression=where;
+  if(LYR.pts)LYR.pts.definitionExpression=where;
+  // zoom automatico al territorio filtrado
+  if(LYR.zonas&&VISTA&&ids.length&&ids.length<CRUCE.length){
+    LYR.zonas.queryExtent({where}).then(r=>{if(r.extent&&VISTA)VISTA.goTo(r.extent.expand(1.15),{duration:600}).catch(()=>{});}).catch(()=>{});
+  }
+  render();
+  $("status").textContent=FILT.length.toLocaleString("es-SV");
+}
+function render(){ explicar();pintar();kpis();resultados();tops();graficos();tabla();informe();
+  if(SEL)abrirPerfil(SEL,true); }
+
+/* =====================================================================
+   RESULTADOS DE LA SELECCION — quiénes riñeron
+   ===================================================================== */
+// colores oficiales de partidos
+const COLOR_P={
+  ARENA:"#005aad",FMLN:"#d4202b",GANA:"#df6f06",PCN:"#1135b5",PDC:"#00732e",
+  NUEVAS_IDEAS:"#01adef",NUEVAS_IDEAS_CD:"#01adef",NUEVAS_IDEAS_GANA:"#01adef",
+  CD:"#ffff00",FUERZA_SOLIDARIA:"#dcde17",PCN_PDC:"#e22fa4",PCN_GANA:"#1135b5",
+  PDC_PCN:"#00732e",NUESTRO_TIEMPO:"#a6c56a",FPS:"#f90200",VAMOS:"#0f4a8b"};
+const colorP=p=>COLOR_P[p]||"#8a94a3";
+
+let RES_ESC="ALC";   // pestaña activa del panel de resultados (independiente del filtro)
+
+function resultados(){
+  const V=aggVotos(RES_ESC);
+  const ix=indices(V);
+  if(!ix.tot){ $("res_winner").innerHTML="<div class='lbl'>Sin datos</div>";
+    $("res_bars").innerHTML=""; return; }
+
+  const marg=ix.margen, cls=marg<=.02?"EMPATE TÉCNICO":marg<=.05?"MUY REÑIDO":
+    marg<=.10?"REÑIDO":marg<=.25?"COMPETITIVO":"AMPLIA VENTAJA";
+  const clsCol=marg<=.05?"g-dan":marg<=.10?"g-am":marg<=.25?"g-ok":"g-ok";
+  const bg=marg<=.05?"rgba(192,68,46,.14)":marg<=.10?"rgba(217,138,43,.16)":"rgba(74,124,89,.14)";
+  const fg=marg<=.05?"var(--hi)":marg<=.10?"var(--hi2)":"var(--ok)";
+
+  $("res_winner").innerHTML=`
+    <div class="lbl">Ganador</div>
+    <div class="who" style="color:${colorP(ix.p1)}">${pn(ix.p1)}</div>
+    <div class="sh">${(ix.sh1*100).toFixed(1)}% · ${num(ix.tot*ix.sh1)} votos</div>
+    <div class="vs">2.º lugar: <b>${pn(ix.p2)}</b> (${(ix.sh2*100).toFixed(1)}%)</div>
+    <span class="marg" style="background:${bg};color:${fg}">${cls} · margen ${(marg*100).toFixed(1)} pts</span>`;
+
+  // podio de todos los partidos con voto
+  const total=ix.tot;
+  const mx=ix.shares[0]?ix.shares[0][1]:1;
+  $("res_bars").innerHTML=ix.shares.map(([p,sh],i)=>`
+    <div class="rb">
+      <div class="rb-n" style="color:${i<2?colorP(p):'var(--ink2)'}">${i+1}. ${pn(p)}</div>
+      <div class="rb-t"><span style="width:${sh/mx*100}%;background:${colorP(p)}"></span></div>
+      <div class="rb-v"><b>${(sh*100).toFixed(1)}%</b> <small>${num(total*sh)}</small></div>
+    </div>`).join("")
+    + `<div class="rb" style="border-top:1px solid var(--line2);margin-top:6px;padding-top:10px">
+        <div class="rb-n" style="color:var(--ink3)">Total válidos</div>
+        <div class="rb-t"></div>
+        <div class="rb-v"><b>${num(total)}</b></div></div>`;
+}
+
+/* =====================================================================
+   EXPLICACION DEL INDICE
+   ===================================================================== */
+const fmt=(x,t)=>!isFinite(x)?"—":t==="pct"?(x*100).toFixed(1)+"%":t==="n3"?x.toFixed(3):t==="n2"?x.toFixed(2):Math.round(x).toLocaleString("es-SV");
+function valorObservadoIndice(){
+  // valor agregado del índice para la selección, recalculado desde votos
+  const c=IDX[INDICE];
+  const A=aggVotos("ALC"),S=aggVotos("ASAM"),P=aggVotos("PRES");
+  const iA=indices(A),iS=indices(S),iP=indices(P);
+  const porEsc={PRES:iP,ASAM:iS,ALC:iA};
+  switch(INDICE){
+    case "PEDERSEN": return pedersen(S,A);
+    case "PEDERSEN_PA": return pedersen(P,S);
+    case "PEDERSEN_PL": return pedersen(P,A);
+    case "MARGEN": return porEsc[ESC].margen;
+    case "POLAR": return polar(porEsc[ESC]);
+    case "HHI": return porEsc[ESC].hhi;
+    case "ENP": return porEsc[ESC].enp;
+    case "MARGEN_NI": return margenNI(A);
+    case "MARGEN_NI_ASAM": return margenNI(S);
+    case "RETENCION": return iP.tot?iA.tot/iP.tot:NaN;
+    case "CAIDA_NI": return iS.shni-iA.shni;
+    case "VOTO_DURO": return Math.min(iP.shni,iS.shni,iA.shni);
+    default: return NaN;
+  }
+}
+function explicar(){
+  const c=IDX[INDICE];
+  $("ex_kick").textContent=(c.grupo==="esc"?`Por elección · ${escN[ESC]}`:"Cruce entre elecciones");
+  $("ex_title").textContent=c.titulo;
+  $("ex_lead").textContent=c.lead;
+  $("ex_low").innerHTML=c.bajo;
+  $("ex_high").innerHTML=c.alto;
+  const val=valorObservadoIndice();
+  $("ex_value").textContent=fmt(val,c.fmt);
+  $("ex_value_lbl").textContent="valor de la selección";
+  $("ex_scale").innerHTML=c.ramp.map((col,i)=>
+    `<div class="seg" style="background:${col}">${fmt(c.stops[i],c.fmt==="pct"?"pct":c.fmt)}</div>`).join("");
+  $("ex_scalelbl").innerHTML=`<span>${c.div?"NI pierde":"menor"}</span><span>${c.div?"NI gana":"mayor"}</span>`;
+  $("map_sub").textContent=c.titulo+(c.grupo==="esc"?` · ${escN[ESC]}`:"");
+}
+
+/* =====================================================================
+   MAPA
+   ===================================================================== */
+function hacerRenderer(esPunto){
+  const c=IDX[INDICE];
+  const stops=c.stops.map((v,i)=>({value:v,color:c.ramp[i]}));
+  return{type:"simple",
+    symbol:esPunto?{type:"simple-marker",size:6,outline:{color:[255,255,255,.7],width:.6}}
+                  :{type:"simple-fill",outline:{color:[255,255,255,.35],width:.4}},
+    visualVariables:[{type:"color",field:c.campo(),stops}]};
+}
+function pintar(){
+  if(!LYR.zonas)return;
+  LYR.zonas.renderer=hacerRenderer(false);
+  const c=IDX[INDICE];
+  // Etiqueta de ganador por sector. Para índices "por elección" usa ese escrutinio;
+  // para índices de cruce, muestra el ganador de Alcalde (la decisión local).
+  const campoGan=c.grupo==="esc"?("GANLBL_"+ESC):"GANLBL_ALC";
+  LYR.zonas.labelingInfo=[{
+    labelExpressionInfo:{expression:'$feature["'+campoGan+'"]'},
+    minScale:180000,
+    symbol:{type:"text",color:[20,22,28,1],haloColor:[255,255,255,.95],haloSize:1.4,
+      font:{size:9,weight:"bold",family:"Inter"}}
+  }];
+  $("leyenda").innerHTML=c.ramp.map((col,i)=>
+    `<span><i style="background:${col}"></i>${fmt(c.stops[i],c.fmt)}</span>`).join("");
+}
+
+/* =====================================================================
+   AGREGADOS + KPIs
+   ===================================================================== */
+function aggVotos(suf,ids){
+  const set=ids||IDS;
+  const filas=ESC_DATA.filter(r=>set.has(r[F.ID])&&r[F.ESC]===esc3[suf]);
+  const v={};PARTIDOS.forEach(p=>v[p]=0);
+  filas.forEach(r=>PARTIDOS.forEach(p=>v[p]+=(r[p]||0)));
+  return v;
+}
+const pct=x=>isFinite(x)?(x*100).toFixed(1)+"%":"—";
+const num=x=>isFinite(x)?Math.round(x).toLocaleString("es-SV"):"—";
+const noGana=r=>{const g=r[F.GANO_ALC];return g===0||g===false||g==="False"||g==="false";};
+const siGana=r=>!noGana(r)&&r[F.GANO_ALC]!=null;
+
+function kpis(){
+  const A=aggVotos("ALC"),S=aggVotos("ASAM"),P=aggVotos("PRES");
+  const iA=indices(A),iS=indices(S),iP=indices(P);
+  const ped=pedersen(S,A),ret=iP.tot?iA.tot/iP.tot:NaN;
+  const perdio=FILT.filter(noGana).length;
+  const ICON={
+    centros:'<circle cx="12" cy="8" r="3.2"/><path d="M5 20c0-3.5 3-6 7-6s7 2.5 7 6"/>',
+    electores:'<path d="M9 11a3 3 0 100-6 3 3 0 000 6z"/><path d="M3 20c0-3 2.5-5 6-5s6 2 6 5"/><path d="M16 6a3 3 0 010 6"/><path d="M21 20c0-2.5-1.5-4.2-4-4.7"/>',
+    margen:'<path d="M4 18h16"/><path d="M7 14l3-4 3 3 4-6"/>',
+    voto:'<rect x="4" y="9" width="16" height="11" rx="1.5"/><path d="M8 9V6a4 4 0 018 0v3"/>',
+    volat:'<path d="M3 12h4l2-6 4 12 2-6h6"/>',
+    reten:'<path d="M4 12a8 8 0 108-8"/><path d="M4 4v4h4"/>',
+    pierde:'<circle cx="12" cy="12" r="8"/><path d="M8 12h8"/>',
+    duro:'<path d="M12 3l7 3v5c0 4-3 7.5-7 9-4-1.5-7-5-7-9V6l7-3z"/>'
+  };
+  const svg=k=>`<svg class="kpi-ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ICON[k]}</svg>`;
+  const votoDuro=Math.min(iP.shni,iS.shni,iA.shni);
+  $("kpis").innerHTML=[
+    ["Centros",FILT.length.toLocaleString("es-SV"),"","centros en la selección","centros"],
+    ["Electores",num(FILT.reduce((a,r)=>a+(r[F.ELECT]||0),0)),"","personas habilitadas para votar","electores"],
+    ["Margen en alcalde",pct(iA.margen),iA.margen<.10?"hi":iA.margen<.25?"":"ok",
+      `${pn(iA.p1)} le sacó ${pct(iA.margen)} al 2.º lugar`,"margen"],
+    ["Votos de NI en alcalde",pct(iA.shni),iA.shni<.4?"hi":"ok","% del total que fue para NUEVAS IDEAS","voto"],
+    ["Voto persistente de NI",pct(votoDuro),votoDuro>.4?"ok":votoDuro<.2?"hi":"","piso de NI en sus tres elecciones","duro"],
+    ["Volatilidad asam→alc",pct(ped),ped>.4?"hi":"","qué tan distinto se votó entre boletas","volat"],
+    ["Retención pres→alc",pct(ret),ret<.55?"hi":"","% de votantes que regresó en la municipal","reten"],
+    ["Centros que NI no ganó",perdio.toLocaleString("es-SV"),perdio?"hi":"ok","donde otro partido quedó 1.º en alcalde","pierde"]
+  ].map(([l,v,c,sub,ic])=>`<div class="kpi ${c}"><div class="kpi-top">${svg(ic)}<div class="v">${v}</div></div><div class="l">${l}</div>${sub?`<div class="kpi-sub">${sub}</div>`:""}</div>`).join("");
+}
+
+/* =====================================================================
+   TOPS  (centros y distritos mas reñidos segun indice activo)
+   ===================================================================== */
+function valorIndice(r){
+  const c=IDX[INDICE];
+  if(c.grupo==="esc")return r[c.campo()];      // ya viene en la fila de cruce
+  return r[c.campo()];
+}
+// Evalúa si un valor es realmente "notable" para el índice, para no engañar
+// al lector cuando el #1 de la lista en realidad es un valor bajo/moderado.
+// Devuelve {notable:bool, etiqueta:"", nombre_bajo:""} según el índice.
+function notabilidad(INDICE, val){
+  const V=Math.abs(val);
+  switch(INDICE){
+    case "MARGEN":  // reñido = margen bajo
+      return {notable:val<=.20, flojo:"ventaja amplia", concepto:"reñido"};
+    case "PEDERSEN": case "PEDERSEN_PA": case "PEDERSEN_PL":  // alto = volátil
+      return {notable:V>=.30, flojo:"volatilidad baja", concepto:"volátil"};
+    case "CAIDA_NI":  // alto = cae mucho
+      return {notable:V>=.20, flojo:"caída leve", concepto:"caída fuerte"};
+    case "MARGEN_NI": case "MARGEN_NI_ASAM":  // negativo = NI pierde
+      return {notable:val<0, flojo:"NI ganó aquí", concepto:"NI en desventaja"};
+    case "RETENCION":  // bajo = cae participación
+      return {notable:val<=.55, flojo:"retención normal", concepto:"caída de participación"};
+    case "VOTO_DURO":  // alto = núcleo leal
+      return {notable:V>=.40, flojo:"piso bajo", concepto:"núcleo leal"};
+    default:
+      return {notable:true, flojo:"", concepto:""};
+  }
+}
+function tops(){
+  const c=IDX[INDICE];
+  // --- Centros ---
+  const asc=c.dir==="asc";
+  const list=[...FILT].filter(r=>isFinite(valorIndice(r)))
+    .sort((a,b)=>asc?valorIndice(a)-valorIndice(b):valorIndice(b)-valorIndice(a)).slice(0,10);
+  const esMargen=INDICE==="MARGEN";
+  $("top_c_title").textContent=esMargen?"Centros más reñidos":
+    (asc?"Centros con menor "+c.titulo.toLowerCase():"Centros con mayor "+c.titulo.toLowerCase());
+  $("top_c_sub").textContent=asc?`Menor ${c.titulo.toLowerCase()}`:`Mayor ${c.titulo.toLowerCase()}`;
+  const mx=Math.max(...list.map(r=>Math.abs(valorIndice(r))),.001);
+  let avisoC="";
+  if(list.length){
+    const hayNotable=list.some(r=>notabilidad(INDICE,valorIndice(r)).notable);
+    if(!hayNotable){
+      const nb=notabilidad(INDICE,valorIndice(list[0]));
+      avisoC=`<div class="top-aviso">Ningún centro de esta selección destaca por ${c.titulo.toLowerCase()}. El primero es <b>${list[0][F.CENTRO]}</b> con ${fmt(valorIndice(list[0]),c.fmt)}${nb.flojo?` (${nb.flojo})`:""}.</div>`;
+    }
+  }
+  $("top_centros").innerHTML=avisoC+list.map((r,i)=>{
+    const v=valorIndice(r),col=colorDe(v);
+    const nb=notabilidad(INDICE,v);
+    return `<div class="top${nb.notable?'':' top-dim'}" data-id="${r[F.ID]}">
+      <div class="rk">${i+1}</div>
+      <div class="nm"><div class="a">${r[F.CENTRO]}</div>
+        <div class="b">${r[F.MUNI]} · ${r[F.DIST]}${nb.notable?'':` · ${nb.flojo}`}</div>
+        <div class="bar"><span style="width:${Math.abs(v)/mx*100}%;background:${col}"></span></div></div>
+      <div class="val" style="color:${col}">${fmt(v,c.fmt)}</div></div>`;
+  }).join("");
+  $("top_centros").onclick=e=>{const t=e.target.closest(".top");if(t)abrirPerfil(t.dataset.id);};
+
+  // --- Distritos: recalcular indice desde votos sumados ---
+  // Clave única distrito+municipio: hay nombres de distrito repetidos en
+  // distintos municipios (EL ROSARIO, EL CARMEN, etc.) que no deben mezclarse.
+  const porDist={};
+  FILT.forEach(r=>{const k=`${r[F.DIST]}|||${r[F.MUNI]}`;
+    (porDist[k]=porDist[k]||{dist:r[F.DIST],muni:r[F.MUNI],ids:[]}).ids.push(r[F.ID]);});
+  const dist=Object.values(porDist).map(({dist:dNom,muni,ids})=>{
+    const set=new Set(ids);
+    let val;
+    if(c.grupo==="esc"){ const v=aggVotos(ESC,set),ix=indices(v);
+      val=INDICE==="MARGEN"?ix.margen:INDICE==="HHI"?ix.hhi:INDICE==="ENP"?ix.enp:
+          INDICE==="POLAR"?polar(ix):ix.margen;
+    }else{ const va=aggVotos("ALC",set),vs=aggVotos("ASAM",set),vp=aggVotos("PRES",set);
+      val=INDICE==="PEDERSEN"?pedersen(vs,va):
+          INDICE==="PEDERSEN_PA"?pedersen(vp,vs):
+          INDICE==="PEDERSEN_PL"?pedersen(vp,va):
+          INDICE==="RETENCION"?(indices(vp).tot?indices(va).tot/indices(vp).tot:NaN):
+          INDICE==="CAIDA_NI"?(indices(vs).shni-indices(va).shni):
+          INDICE==="VOTO_DURO"?Math.min(indices(vp).shni,indices(vs).shni,indices(va).shni):
+          INDICE==="MARGEN_NI"?margenNI(va):
+          INDICE==="MARGEN_NI_ASAM"?margenNI(vs):NaN;
+    }
+    return{d:dNom,muni,n:ids.length,val};
+  }).filter(x=>isFinite(x.val)&&x.n>=3);
+  dist.sort((a,b)=>asc?a.val-b.val:b.val-a.val);
+  $("top_d_title").textContent=esMargen?"Distritos más reñidos":
+    (asc?"Distritos con menor "+c.titulo.toLowerCase():"Distritos con mayor "+c.titulo.toLowerCase());
+  $("top_d_sub").textContent=(asc?`Menor ${c.titulo.toLowerCase()}`:`Mayor ${c.titulo.toLowerCase()}`)+" · recalculado desde votos sumados";
+  const top=dist.slice(0,10),mxd=Math.max(...top.map(x=>Math.abs(x.val)),.001);
+  let avisoD="";
+  if(top.length){
+    const hayNotable=top.some(x=>notabilidad(INDICE,x.val).notable);
+    if(!hayNotable){
+      const nb=notabilidad(INDICE,top[0].val);
+      avisoD=`<div class="top-aviso">Ningún distrito de esta selección destaca por ${c.titulo.toLowerCase()}. El primero es <b>${top[0]?.d||"—"}</b> con ${fmt(top[0]?.val,c.fmt)}${nb.flojo?` (${nb.flojo})`:""}.</div>`;
+    }
+  }
+  $("top_dist").innerHTML=avisoD+top.map((x,i)=>{const col=colorDe(x.val);
+    const nb=notabilidad(INDICE,x.val);
+    return `<div class="top${nb.notable?'':' top-dim'}">
+      <div class="rk">${i+1}</div>
+      <div class="nm"><div class="a">${x.d}</div><div class="b">${x.muni} · ${x.n} centros${nb.notable?'':` · ${nb.flojo}`}</div>
+        <div class="bar"><span style="width:${Math.abs(x.val)/mxd*100}%;background:${col}"></span></div></div>
+      <div class="val" style="color:${col}">${fmt(x.val,c.fmt)}</div></div>`;}).join("");
+}
+function polar(ix){const t2=ix.sh1+ix.sh2;return t2>0?t2*(1-Math.abs(ix.sh1-ix.sh2)/t2):NaN;}
+function margenNI(v){const ix=indices(v);const niSh=ix.shni;
+  // margen NI = share NI - share del mejor rival
+  const rival=ix.shares.filter(([p])=>!ES_NI(p))[0];
+  return niSh-(rival?rival[1]:0);}
+function colorDe(v){const c=IDX[INDICE];
+  for(let i=c.stops.length-1;i>=0;i--)if(v>=c.stops[i])return c.ramp[i];
+  return c.ramp[0];}
+
+/* =====================================================================
+   GRAFICOS (Chart.js)
+   ===================================================================== */
+const CBASE={responsive:true,maintainAspectRatio:false,
+  plugins:{legend:{labels:{color:"#5b6270",font:{size:11,family:"Inter"},boxWidth:12}}},
+  scales:{x:{ticks:{color:"#9aa1ae",font:{size:10}},grid:{color:"#efece5"}},
+          y:{ticks:{color:"#9aa1ae",font:{size:10}},grid:{color:"#efece5"}}}};
+const nc=(id,cfg)=>{if(!$(id))return;CH[id]?.destroy();CH[id]=new Chart($(id),cfg);};
+function graficos(){
+  if(SEL)return;
+  const c=IDX[INDICE];
+  // valores finitos; para indices en proporcion (0-1) descartamos fuera de [-2,2]
+  let vals=FILT.map(valorIndice).filter(v=>Number.isFinite(v));
+  if(c.fmt!=="n2") vals=vals.filter(v=>v>=-2&&v<=2);   // Pedersen, margen, share... viven en 0-1
+  if(!vals.length){ CH.c_dist?.destroy(); CH.c_scatter?.destroy(); return; }
+  vals.sort((a,b)=>a-b);
+  // rango robusto: percentil 1 a 99 (evita que un outlier aplaste todo)
+  const pc=(p)=>vals[Math.min(vals.length-1,Math.max(0,Math.floor(p*(vals.length-1))))];
+  let lo=Math.min(0,pc(0.01)), hi=pc(0.99);
+  if(c.div){lo=Math.min(lo,pc(0.01)); hi=Math.max(hi,pc(0.99));}
+  if(lo===hi)hi=lo+1;
+  const paso=(hi-lo)/12;
+  const bins=Array(12).fill(0);
+  vals.forEach(v=>{const k=Math.floor((v-lo)/paso);bins[Math.min(11,Math.max(0,k))]++;});
+  nc("c_dist",{type:"bar",data:{labels:bins.map((_,i)=>fmt(lo+i*paso,c.fmt)),
+    datasets:[{data:bins,backgroundColor:bins.map((_,i)=>colorDe(lo+i*paso))}]},
+    options:{...CBASE,plugins:{legend:{display:false}}}});
+  nc("c_scatter",{type:"scatter",data:{datasets:[
+    {label:"NI gana",pointRadius:2.4,backgroundColor:"rgba(15,138,158,.55)",
+      data:FILT.filter(siGana).map(r=>({x:r[F.MARG_ASAM],y:r[F.MARG_ALC]}))},
+    {label:"NI pierde",pointRadius:2.4,backgroundColor:"rgba(192,68,46,.5)",
+      data:FILT.filter(noGana).map(r=>({x:r[F.MARG_ASAM],y:r[F.MARG_ALC]}))}]},
+    options:{...CBASE,scales:{
+      x:{...CBASE.scales.x,title:{text:"Margen Asamblea",display:true,color:"#5b6270"}},
+      y:{...CBASE.scales.y,title:{text:"Margen Alcalde",display:true,color:"#5b6270"}}}}});
+}
+
+/* =====================================================================
+   PERFIL DE CENTRO
+   ===================================================================== */
+function abrirPerfil(id,silencioso){
+ try{
+  const sid=String(id);
+  const r=CRUCE.find(x=>String(x[F.ID])===sid);
+  if(!r){console.warn("perfil no encontrado para id:",id);return;}
+  SEL=r[F.ID];
+  $("perfil").classList.add("show");$("side_dist").style.display="none";
+  $("pf_nm").textContent=r[F.CENTRO];
+  $("pf_meta").textContent=`${r[F.MUNI]} · ${r[F.DIST]} · ${r[F.DEPTO]} — ${num(r[F.ELECT])} electores`;
+
+  const set=new Set([r[F.ID]]);
+  const cards=["PRES","ASAM","ALC"].map(s=>{
+    const v=aggVotos(s,set),ix=indices(v);
+    const top=ix.shares.slice(0,4);
+    const bars=top.map(([p,sh])=>`<div class="pfbar">
+      <span class="pn">${pn(p)}</span>
+      <span class="pt"><span style="width:${sh*100}%;background:${colorP(p)}"></span></span>
+      <span class="pv">${(sh*100).toFixed(0)}%</span></div>`).join("");
+    return `<div class="pf-elx">
+      <h4>${escN[s]}</h4>
+      <div class="win">${ix.p1?pn(ix.p1):"—"}</div>
+      <div class="mg">margen ${pct(ix.margen)} · ${num(ix.tot)} votos</div>
+      <div class="barwrap">${bars}</div></div>`;
+  }).join("");
+  $("pf_grid").innerHTML=cards;
+
+  const vA=aggVotos("ALC",set),vS=aggVotos("ASAM",set),vP=aggVotos("PRES",set);
+  const ped=pedersen(vS,vA),ret=indices(vP).tot?indices(vA).tot/indices(vP).tot:NaN;
+  const M=[
+    ["Pedersen asam→alc",fmt(ped,"pct"),ped>.4?"var(--hi)":"var(--ink)"],
+    ["Retención pres→alc",fmt(ret,"pct"),ret<.55?"var(--hi)":"var(--ink)"],
+    ["Cuánto bajó NI de asamblea a alcalde",fmt(r[F.CAIDA_NI],"pct"),r[F.CAIDA_NI]>.3?"var(--hi)":"var(--ink)"],
+    ["Ventaja/desventaja de NI en alcalde",fmt(r[F.MNI_ALC],"pct"),r[F.MNI_ALC]<0?"var(--hi)":"var(--ni)"]
+  ];
+  $("pf_metrics").innerHTML=M.map(([l,v,col])=>
+    `<div class="pf-m"><div class="v" style="color:${col}">${v}</div><div class="l">${l}</div></div>`).join("");
+
+  const ganaAlc=siGana(r), rival=r[F.RIVAL];
+  let txt;
+  if(ganaAlc) txt=`NUEVAS IDEAS ganó las tres elecciones en este centro. `;
+  else txt=`NUEVAS IDEAS ganó ${r[F.GANO_ASAM]?"asamblea":"—"} pero <strong>${r[F.GAN_ALC]}</strong> se impuso en la alcaldía`+(rival?` (rival: ${rival})`:"")+". ";
+  if(isFinite(ped)&&ped>.4)txt+=`La volatilidad entre asamblea y alcaldía fue alta (${pct(ped)}): la gente votó por fuerzas muy distintas en cada boleta. `;
+  else if(isFinite(ped))txt+=`El voto se mantuvo relativamente estable entre asamblea y alcaldía (Pedersen ${pct(ped)}). `;
+  if(isFinite(ret)&&ret<.55)txt+=`La participación cayó fuerte en la municipal (retención ${pct(ret)}).`;
+  $("pf_narr").innerHTML=txt;
+
+  if(!silencioso&&LYR.zonas&&VISTA){
+    LYR.zonas.queryFeatures({where:`${F.ID}='${String(id).replace(/'/g,"''")}'`,returnGeometry:true,outFields:["OBJECTID"]})
+      .then(res=>{if(res.features.length)VISTA.goTo({target:res.features[0].geometry,zoom:14},{duration:600}).catch(()=>{});}).catch(()=>{});
+  }
+ }catch(err){ console.error("Error en abrirPerfil:",err); }
+}
+function cerrarPerfil(){SEL=null;$("perfil").classList.remove("show");
+  $("side_dist").style.display="block";graficos();}
+
+/* =====================================================================
+   TABLA
+   ===================================================================== */
+const COLS=[
+  ["Centro",F.CENTRO,v=>v],["Distrito",F.DIST,v=>v],["Electores",F.ELECT,v=>num(v)],
+  ["Gana alcalde",F.GAN_ALC,v=>`<span class="tag ${ES_NI(v)?"g-ni":"g-op"}">${v??"—"}</span>`],
+  ["Margen alc.",F.MARG_ALC,v=>pct(v)],["Margen asam.",F.MARG_ASAM,v=>pct(v)],
+  ["Pedersen",F.PEDERSEN,v=>pct(v)],["Retención",F.RET_PA,v=>pct(v)],
+  ["Patrón NI",F.PATRON,v=>{const c=v==="HEGEMONIA TOTAL"?"g-ok":v==="PIERDE SOLO ALCALDIA"?"g-am":"g-op";
+    return `<span class="tag ${c}">${(v||"—").replace("PIERDE SOLO ","P.S. ")}</span>`;}]
+];
+let oc=F.MARG_ALC,oa=true;
+function tabla(){
+  if(!$("thead").innerHTML){
+    $("thead").innerHTML=COLS.map(c=>`<th data-c="${c[1]}">${c[0]}</th>`).join("");
+    $("thead").onclick=e=>{const c=e.target.dataset.c;if(!c)return;oa=(c===oc)?!oa:true;oc=c;tabla();};
+  }
+  const d=[...FILT].sort((a,b)=>{const x=a[oc],y=b[oc];
+    if(typeof x==="string")return oa?String(x).localeCompare(y):String(y).localeCompare(x);
+    return oa?(x??1e9)-(y??1e9):(y??-1e9)-(x??-1e9);});
+  $("tbl_n").textContent=d.length.toLocaleString("es-SV")+" centros";
+  $("tbody").innerHTML=d.slice(0,300).map(r=>
+    `<tr data-id="${r[F.ID]}">`+COLS.map(c=>`<td>${c[2](r[c[1]])}</td>`).join("")+`</tr>`).join("");
+  $("tbody").onclick=e=>{const tr=e.target.closest("tr");if(tr)abrirPerfil(tr.dataset.id);};
+}
+function exportar(){
+  if(!FILT.length)return;
+  const cols=Object.keys(FILT[0]);
+  const csv=[cols.join(",")].concat(FILT.map(r=>cols.map(c=>{
+    const v=r[c]??"";return /[",\n]/.test(v)?`"${String(v).replace(/"/g,'""')}"`:v;}).join(","))).join("\n");
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(new Blob(["\ufeff"+csv],{type:"text/csv;charset=utf-8"}));
+  a.download="centros_filtrados.csv";a.click();
+}
+
+/* =====================================================================
+   INFORME
+   ===================================================================== */
+function corr(xs,ys){const n=xs.length;if(n<3)return NaN;
+  const mx=xs.reduce((a,b)=>a+b,0)/n,my=ys.reduce((a,b)=>a+b,0)/n;
+  let sxy=0,sx=0,sy=0;for(let i=0;i<n;i++){const a=xs[i]-mx,b=ys[i]-my;sxy+=a*b;sx+=a*a;sy+=b*b;}
+  return sxy/Math.sqrt(sx*sy);}
+function informe(){
+  const f1=FILT.filter(r=>isFinite(r[F.MARG_ASAM])&&isFinite(r[F.MARG_ALC]));
+  const rAA=corr(f1.map(r=>r[F.MARG_ASAM]),f1.map(r=>r[F.MARG_ALC]));
+  const f2=FILT.filter(r=>isFinite(r[F.MARG_PRES])&&isFinite(r[F.MARG_ASAM]));
+  const rPA=corr(f2.map(r=>r[F.MARG_PRES]),f2.map(r=>r[F.MARG_ASAM]));
+  const f3=FILT.filter(r=>isFinite(r[F.SHNI_ASAM])&&isFinite(r[F.SHNI_ALC]));
+  const rNI=corr(f3.map(r=>r[F.SHNI_ASAM]),f3.map(r=>r[F.SHNI_ALC]));
+  const A=aggVotos("ALC"),S=aggVotos("ASAM"),P=aggVotos("PRES");
+  const iA=indices(A),iS=indices(S),iP=indices(P);
+  const quiebre=FILT.filter(r=>r[F.PATRON]==="PIERDE SOLO ALCALDIA");
+  const niAsam=Object.entries(S).filter(([p])=>ES_NI(p)).reduce((a,[,n])=>a+n,0);
+  const niAlc=Object.entries(A).filter(([p])=>ES_NI(p)).reduce((a,[,n])=>a+n,0);
+  const opAsam=iS.tot-niAsam,opAlc=iA.tot-niAlc;
+  const dOp=opAsam?(opAlc/opAsam-1):NaN;
+  const n=FILT.length;
+  const elect=num(FILT.reduce((a,r)=>a+(r[F.ELECT]||0),0));
+
+  // Ámbito geográfico completo (nombre + contexto)
+  let ambito;
+  if($("f_centro").value){
+    const r=FILT[0]||{};
+    ambito=`<strong>${$("f_centro").value}</strong> — centro de votación en ${r[F.DIST]||"—"}, `+
+      `municipio de ${r[F.MUNI]||"—"}, ${r[F.DEPTO]||"—"}`;
+  }else if($("f_dist").value){
+    const r=FILT[0]||{};
+    ambito=`distrito de <strong>${$("f_dist").value}</strong> (municipio de ${r[F.MUNI]||"—"}, ${r[F.DEPTO]||"—"})`;
+  }else if($("f_muni").value){
+    const r=FILT[0]||{};
+    ambito=`municipio de <strong>${$("f_muni").value}</strong> (${r[F.DEPTO]||"—"})`;
+  }else if($("f_depto").value){
+    ambito=`departamento de <strong>${$("f_depto").value}</strong>`;
+  }else{
+    ambito=`<strong>todo el país</strong>`;
+  }
+
+  // --- CASO POCOS CENTROS: correlaciones no aplican, análisis directo ---
+  if(n<3){
+    const gAlc=iA.p1,gAsam=iS.p1,gPres=iP.p1;
+    const caida=iS.shni-iA.shni;
+    $("informe").innerHTML=`
+    <p>Ámbito: ${ambito} — ${n} ${n===1?"centro":"centros"}, ${elect} electores.
+       Con tan pocos centros no se calculan correlaciones (requieren varios puntos);
+       en su lugar, este es el resultado directo de la selección.</p>
+    <h3>Quién ganó cada elección aquí</h3>
+    <p>Presidente: <strong>${pn(gPres)}</strong> (${pct(iP.sh1)}). ·
+       Asamblea: <strong>${pn(gAsam)}</strong> (${pct(iS.sh1)}). ·
+       Alcalde: <strong>${pn(gAlc)}</strong> (${pct(iA.sh1)}, margen ${pct(iA.margen)}).</p>
+    <h3>NUEVAS IDEAS entre elecciones</h3>
+    <p>Su apoyo fue <strong class="mono">${pct(iP.shni)}</strong> en presidente,
+       <strong class="mono">${pct(iS.shni)}</strong> en asamblea y
+       <strong class="mono">${pct(iA.shni)}</strong> en alcalde
+       ${caida>0.05?`— una caída de <strong class="mono">${pct(caida)}</strong> al bajar a lo local`:
+         caida<-0.05?`— incluso subió al llegar a lo local`:`— se mantuvo estable`}.</p>
+    ${!ES_NI(gAlc)?`<div class="note"><strong>Dato:</strong> aquí NI ${ES_NI(gAsam)?"ganó la asamblea pero":"no ganó y"}
+       <strong>${pn(gAlc)}</strong> se impuso en la alcaldía.</div>`:""}
+    <div class="note"><strong>Cómo leer esto.</strong> Un solo centro es una fotografía puntual.
+       Para ver patrones y correlaciones, amplíe la selección a un municipio, distrito o departamento.</div>`;
+    graficosInforme();
+    return;
+  }
+
+  // --- CASO MUCHOS CENTROS: análisis con correlaciones ---
+  const rtxt=x=>isFinite(x)?"r="+x.toFixed(3):"r no disponible";
+  $("informe").innerHTML=`
+  <p>Ámbito: ${ambito} — ${n.toLocaleString("es-SV")} centros, ${elect} electores.
+     Los agregados se calculan sumando votos y recalculando cada índice; nunca son promedios de índices.</p>
+  <h3>Presidente y Asamblea van de la mano; la Alcaldía no</h3>
+  <p>La correlación del margen entre presidente y asamblea es <strong class="mono">${rtxt(rPA)}</strong>.
+     Entre asamblea y alcaldía cae a <strong class="mono">${rtxt(rAA)}</strong>: saber cuán
+     reñida fue la asamblea en un centro casi no dice nada sobre su alcaldía.</p>
+  <h3>NUEVAS IDEAS se contrae al bajar a lo local</h3>
+  <p>Su apoyo pasa de <strong class="mono">${pct(iP.shni)}</strong> en presidente y
+     <strong class="mono">${pct(iS.shni)}</strong> en asamblea a <strong class="mono">${pct(iA.shni)}</strong>
+     en alcalde. La correlación de su share asamblea↔alcalde es apenas <strong class="mono">${rtxt(rNI)}</strong>.</p>
+  ${isFinite(dOp)&&dOp>0?`<h3>La oposición creció en votos absolutos</h3>
+   <p>Pese a que la participación cayó, los votos de la oposición variaron
+   <strong class="mono">+${(dOp*100).toFixed(1)}%</strong> entre asamblea y alcaldía. No fue apatía:
+   fue movilización local dirigida hacia candidatos municipales concretos.</p>`:""}
+  <h3>Quiebre local</h3>
+  <p><strong>${quiebre.length.toLocaleString("es-SV")} centros</strong>
+     (${num(quiebre.reduce((a,r)=>a+(r[F.ELECT]||0),0))} electores) donde NI ganó presidencia y asamblea
+     pero no el centro en la municipal.</p>
+  <div class="note"><strong>Cómo leer esto.</strong> Son datos agregados por centro. No distinguen si el mismo
+     votante cambió de partido (voto diferenciado) o si votaron personas distintas (desmovilización selectiva):
+     ambos producen las mismas cifras. Es la <em>falacia ecológica</em>. Separarlos exige el cruce de DUI por elección.</div>`;
+  graficosInforme();
+}
+
+/* Gráficos complementarios del panel de lectura analítica */
+function graficosInforme(){
+  const P=aggVotos("PRES"),S=aggVotos("ASAM"),A=aggVotos("ALC");
+  const iP=indices(P),iS=indices(S),iA=indices(A);
+  const elect=FILT.reduce((a,r)=>a+(r[F.ELECT]||0),0);
+  const CB={responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false}},
+    scales:{x:{ticks:{color:"#9aa1ae",font:{size:10}},grid:{display:false}},
+            y:{ticks:{color:"#9aa1ae",font:{size:10}},grid:{color:"#efece5"},beginAtZero:true}}};
+
+  // 1) Share NI en las tres elecciones
+  nc("c_ni_tri",{type:"bar",data:{labels:["Presidente","Asamblea","Alcalde"],
+    datasets:[{data:[iP.shni,iS.shni,iA.shni].map(x=>+(x*100).toFixed(1)),
+      backgroundColor:["#01adef","#1a9fd4","#c0442e"],borderRadius:4}]},
+    options:{...CB,scales:{...CB.scales,y:{...CB.scales.y,max:100,
+      ticks:{...CB.scales.y.ticks,callback:v=>v+"%"}}}}});
+
+  // 2) Participación por elección (votos válidos / electores)
+  const partP=elect?iP.tot/elect:0,partS=elect?iS.tot/elect:0,partA=elect?iA.tot/elect:0;
+  nc("c_partic",{type:"bar",data:{labels:["Presidente","Asamblea","Alcalde"],
+    datasets:[{data:[partP,partS,partA].map(x=>+(x*100).toFixed(1)),
+      backgroundColor:["#4a7c59","#7ba05b","#d98a2b"],borderRadius:4}]},
+    options:{...CB,scales:{...CB.scales,y:{...CB.scales.y,max:100,
+      ticks:{...CB.scales.y.ticks,callback:v=>v+"%"}}}}});
+
+  // 3) Composición del voto (top partidos) del escrutinio de la pestaña de resultados
+  $("ic_esc_lbl").textContent=escN[RES_ESC];
+  const iR=indices(aggVotos(RES_ESC));
+  const top=iR.shares.slice(0,6);
+  nc("c_compo",{type:"bar",data:{labels:top.map(([p])=>pn(p)),
+    datasets:[{data:top.map(([,sh])=>+(sh*100).toFixed(1)),
+      backgroundColor:top.map(([p])=>colorP(p)),borderRadius:4}]},
+    options:{...CB,indexAxis:"y",scales:{x:{...CB.scales.x,max:100,
+      ticks:{...CB.scales.x.ticks,callback:v=>v+"%"}},y:{...CB.scales.y,grid:{display:false}}}}});
+}
+
+/* =====================================================================
+   VISTA: ANÁLISIS POR PARTIDO
+   ===================================================================== */
+let P_VISTA=null, P_LYR={}, PESC="ALC", PPARTY=null;
+
+// cambio de vista (tabs del header)
+function initNav(){
+  document.querySelector(".hdr-nav").onclick=e=>{
+    const b=e.target.closest(".nav-tab"); if(!b) return;
+    document.querySelectorAll(".nav-tab").forEach(t=>t.classList.toggle("on",t===b));
+    const v=b.dataset.view;
+    $("view-ni").style.display=v==="ni"?"":"none";
+    $("view-partidos").style.display=v==="partidos"?"":"none";
+    if(v==="partidos"&&!P_VISTA) bootPartidos();
+    else if(v==="partidos"&&P_VISTA) setTimeout(()=>P_VISTA.goTo(CFG.EXTENT).catch(()=>{}),100);
+  };
+}
+
+// votos de un partido consolidado por centro en una elección
+function votosPartidoCentro(id,suf,party){
+  const v=window.__vpc?.[id]?.[suf]; if(!v) return {vp:0,tot:0};
+  const c=consolidar(v);
+  return {vp:c[party]||0, tot:Object.values(c).reduce((a,b)=>a+b,0)};
+}
+
+function bootPartidos(){
+  const {Map,MapView,FeatureLayer,Legend,Expand,Graphic,Basemap,WebTileLayer}=Modules;
+  // poblar selector de partidos (consolidados, ordenados por votos totales nacionales)
+  const totNac={};
+  PARTIDOS_C.forEach(p=>totNac[p]=0);
+  ESC_DATA.forEach(r=>PARTIDOS.forEach(pp=>{ if(r[pp]) totNac[canon(pp)]=(totNac[canon(pp)]||0)+r[pp]; }));
+  const orden=[...PARTIDOS_C].sort((a,b)=>totNac[b]-totNac[a]);
+  $("p_party").innerHTML=orden.map(p=>`<option value="${p}">${pn(p)}</option>`).join("");
+  PPARTY=orden[0];
+
+  // poblar filtros geográficos
+  const deptos=[...new Set(CRUCE.map(r=>r[F.DEPTO]).filter(Boolean))].sort();
+  $("p_depto").innerHTML='<option value="">Todos</option>'+deptos.map(d=>`<option>${d}</option>`).join("");
+
+  // mapa de partidos
+  const cont=$("p_mapa"); cont.style.height="480px";
+  const baseLimpio=new Basemap({baseLayers:[new WebTileLayer({
+    urlTemplate:"https://basemaps.cartocdn.com/light_nolabels/{level}/{col}/{row}.png",
+    subDomains:["a","b","c","d"],copyright:"© OpenStreetMap © CARTO"})]});
+  const map=new Map({basemap:baseLimpio});
+  P_VISTA=new MapView({container:cont,map,extent:CFG.EXTENT,popupEnabled:false,
+    constraints:{snapToZoom:false}});
+  P_LYR.muni=capaMunicipios();
+  map.add(P_LYR.muni);
+  P_VISTA.ui.add(new Expand({view:P_VISTA,content:new Legend({view:P_VISTA}),expanded:false}),"bottom-left");
+
+  // listeners
+  $("p_party").onchange=e=>{PPARTY=e.target.value;renderPartido();};
+  $("p_esc").onchange=e=>{PESC=e.target.value;renderPartido();};
+  $("p_depto").onchange=()=>{pCascada();renderPartido();};
+  $("p_muni").onchange=()=>{pCascada();renderPartido();};
+  $("p_dist").onchange=()=>{pCascada();renderPartido();};
+  $("p_centro").onchange=renderPartido;
+  $("p_min").oninput=e=>{$("p_v_min").textContent=e.target.value+"%";renderPartido();};
+  $("p_reset").onclick=()=>{["p_depto","p_muni","p_dist","p_centro"].forEach(i=>$(i).value="");
+    $("p_min").value=0;$("p_v_min").textContent="0%";pCascada();renderPartido();
+    setTimeout(()=>P_VISTA.goTo(CFG.EXTENT).catch(()=>{}),120);};
+
+  renderPartido();
+}
+
+function pCascada(){
+  const d=$("p_depto").value,mu=$("p_muni").value;
+  const munis=[...new Set(CRUCE.filter(r=>!d||r[F.DEPTO]===d).map(r=>r[F.MUNI]).filter(Boolean))].sort();
+  $("p_muni").innerHTML='<option value="">Todos</option>'+munis.map(m=>`<option ${m===mu?"selected":""}>${m}</option>`).join("");
+  const mu2=$("p_muni").value;
+  const dists=[...new Set(CRUCE.filter(r=>(!d||r[F.DEPTO]===d)&&(!mu2||r[F.MUNI]===mu2)).map(r=>r[F.DIST]).filter(Boolean))].sort();
+  const di=$("p_dist").value;
+  $("p_dist").innerHTML='<option value="">Todos</option>'+dists.map(x=>`<option ${x===di?"selected":""}>${x}</option>`).join("");
+  const di2=$("p_dist").value;
+  const cens=[...new Set(CRUCE.filter(r=>(!d||r[F.DEPTO]===d)&&(!mu2||r[F.MUNI]===mu2)&&(!di2||r[F.DIST]===di2))
+    .map(r=>r[F.CENTRO]).filter(Boolean))].sort();
+  $("p_centro").innerHTML='<option value="">Todos</option>'+cens.map(c=>`<option>${c}</option>`).join("");
+}
+
+function pFiltrados(){
+  const d=$("p_depto").value,mu=$("p_muni").value,di=$("p_dist").value,ce=$("p_centro").value;
+  const minPct=(+$("p_min").value)/100;
+  return CRUCE.filter(r=>{
+    if(d&&r[F.DEPTO]!==d)return false;
+    if(mu&&r[F.MUNI]!==mu)return false;
+    if(di&&r[F.DIST]!==di)return false;
+    if(ce&&r[F.CENTRO]!==ce)return false;
+    const {vp,tot}=votosPartidoCentro(r[F.ID],PESC,PPARTY);
+    return tot>0 && (vp/tot)>=minPct;
+  });
+}
+
+function renderPartido(){
+  if(!P_VISTA) return;
+  const {Graphic,FeatureLayer}=Modules;
+  const nombre=pn(PPARTY), col=colorP(PPARTY);
+  const FIL=pFiltrados();
+  const ids=new Set(FIL.map(r=>r[F.ID]));
+
+  // agregados de la selección
+  let vpTot=0,totTot=0,electTot=0,ganados=0;
+  const perCentro={};
+  FIL.forEach(r=>{
+    const {vp,tot}=votosPartidoCentro(r[F.ID],PESC,PPARTY);
+    perCentro[r[F.ID]]={vp,tot,sh:tot?vp/tot:0};
+    vpTot+=vp; totTot+=tot; electTot+=(r[F.ELECT]||0);
+    // ¿ganó el centro? (partido es el más votado)
+    const iC=indices(window.__vpc[r[F.ID]][PESC]);
+    if(iC.p1===PPARTY) ganados++;
+  });
+  const shGlobal=totTot?vpTot/totTot:0;
+
+  // cabecera
+  $("p_title").textContent=`${nombre} · ${escN[PESC]}`;
+  $("p_kick").textContent=`Análisis territorial · ${escN[PESC]}`;
+  $("p_lead").textContent=`Dónde concentra sus votos ${nombre} en la elección de ${escN[PESC].toLowerCase()}. `+
+    `El mapa colorea el porcentaje que saca el partido en cada centro.`;
+  $("p_value").textContent=num(vpTot);
+  $("p_value").style.color=col;
+  $("p_ref1").innerHTML=`<b>${pct(shGlobal)}</b> de los votos válidos de la selección`;
+  $("p_ref2").innerHTML=`Gana en <b>${ganados.toLocaleString("es-SV")}</b> de ${FIL.length.toLocaleString("es-SV")} centros`;
+  $("p_map_party").textContent=nombre;
+  $("status").textContent=FIL.length.toLocaleString("es-SV");
+
+  // KPIs
+  const shares=FIL.map(r=>perCentro[r[F.ID]].sh).filter(isFinite);
+  const shMax=shares.length?Math.max(...shares):0;
+  const shMin=shares.length?Math.min(...shares):0;
+  // voto persistente del partido: mínimo share entre las 3 elecciones (agregado)
+  const aggP={PRES:{},ASAM:{},ALC:{}};
+  ["PRES","ASAM","ALC"].forEach(s=>{ let vp=0,tot=0;
+    FIL.forEach(r=>{const x=votosPartidoCentro(r[F.ID],s,PPARTY);vp+=x.vp;tot+=x.tot;});
+    aggP[s]={sh:tot?vp/tot:0};});
+  const votoDuroP=Math.min(aggP.PRES.sh,aggP.ASAM.sh,aggP.ALC.sh);
+
+  const kpi=(v,l,sub,c)=>`<div class="kpi ${c||''}"><div class="v">${v}</div><div class="l">${l}</div>${sub?`<div class="kpi-sub">${sub}</div>`:""}</div>`;
+  $("p_kpis").innerHTML=[
+    kpi(pct(shGlobal),`Votos de ${nombre}`,"% del total en la selección"),
+    kpi(num(vpTot),"Votos absolutos","suma en los centros filtrados"),
+    kpi(ganados.toLocaleString("es-SV"),"Centros que gana","donde es el 1.º lugar",ganados?"ok":"hi"),
+    kpi(pct(shMax),"Su mejor centro","máximo % que alcanza"),
+    kpi(pct(votoDuroP),"Voto persistente","piso en sus tres elecciones",votoDuroP>.3?"ok":"hi"),
+    kpi(FIL.length.toLocaleString("es-SV"),"Centros","en la selección")
+  ].join("");
+
+  // mapa: colorear share del partido
+  const stops=[.05,.15,.3,.45,.6];
+  const ramp=["#eef2f4","#cfe0d6",col+"88",col+"cc",col];
+  const campos=[{name:"OBJECTID",type:"oid"},{name:"CID",type:"string"},
+    {name:"CENTRO",type:"string"},{name:"SH",type:"double"},{name:"VP",type:"double"},
+    {name:"GANLBL",type:"string"}];
+  let oid=1;const graf=[],grafPts=[];let poid=1;
+  (window.__zonaFeat||[]).forEach(f=>{
+    const id=f.attributes[F.ID]; if(!ids.has(id)||!f.geometry) return;
+    const pc=perCentro[id]; if(!pc) return;
+    const cen=CRUCE.find(r=>r[F.ID]===id)||{};
+    const iC=indices(window.__vpc[id][PESC]);
+    const ganlbl=ES_NI(iC.p1)?"NI":pn(iC.p1);
+    graf.push(new Graphic({geometry:f.geometry,
+      attributes:{OBJECTID:oid++,CID:id,CENTRO:cen[F.CENTRO]||id,
+        SH:+(pc.sh).toFixed(4),VP:pc.vp,GANLBL:ganlbl}}));
+    const c=f.geometry.centroid;
+    if(c)grafPts.push(new Graphic({geometry:c,
+      attributes:{OBJECTID:poid++,CID:id,CENTRO:cen[F.CENTRO]||id}}));
+  });
+  if(P_LYR.zonas) P_VISTA.map.remove(P_LYR.zonas);
+  P_LYR.zonas=new FeatureLayer({source:graf,objectIdField:"OBJECTID",fields:campos,
+    geometryType:"polygon",spatialReference:{wkid:4326},
+    renderer:{type:"class-breaks",field:"SH",legendOptions:{title:nombre+" (% votos)"},
+      classBreakInfos:stops.map((s,i)=>({minValue:i?stops[i-1]:-1,maxValue:s,
+        symbol:{type:"simple-fill",color:ramp[i],outline:{color:[255,255,255,.4],width:.3}},
+        label:(i?Math.round(stops[i-1]*100):0)+"–"+Math.round(s*100)+"%"})).concat([{
+        minValue:stops[stops.length-1],maxValue:1.01,
+        symbol:{type:"simple-fill",color:ramp[ramp.length-1],outline:{color:[255,255,255,.4],width:.3}},
+        label:">"+Math.round(stops[stops.length-1]*100)+"%"}])},
+    labelingInfo:[{labelExpressionInfo:{expression:'$feature.GANLBL'},minScale:180000,
+      symbol:{type:"text",color:[20,22,28,1],haloColor:[255,255,255,.95],haloSize:1.4,
+        font:{size:9,weight:"bold",family:"Inter"}}}],
+    popupTemplate:{title:"{CENTRO}",content:"Votos: {VP}<br>Share: {SH}"}});
+  // insertar zonas DEBAJO del contorno de municipios
+  const idxMuni=P_VISTA.map.layers.indexOf(P_LYR.muni);
+  P_VISTA.map.add(P_LYR.zonas, idxMuni>=0?idxMuni:undefined);
+
+  // capa de puntos de centros (nombre al acercarse)
+  if(P_LYR.pts) P_VISTA.map.remove(P_LYR.pts);
+  P_LYR.pts=new FeatureLayer({source:grafPts,objectIdField:"OBJECTID",
+    fields:[{name:"OBJECTID",type:"oid"},{name:"CID",type:"string"},{name:"CENTRO",type:"string"}],
+    geometryType:"point",spatialReference:{wkid:4326},minScale:250000,legendEnabled:false,
+    renderer:{type:"simple",symbol:{type:"simple-marker",size:5,color:[26,28,34,.92],
+      outline:{color:[255,255,255,.95],width:1}}},
+    labelingInfo:[{labelExpressionInfo:{expression:'$feature.CENTRO'},minScale:60000,
+      symbol:{type:"text",color:[26,28,34,1],haloColor:[255,255,255,1],haloSize:1.6,
+        font:{size:9,weight:"bold",family:"Inter"}}}]});
+  P_VISTA.map.add(P_LYR.pts);
+
+  // leyenda
+  $("p_leyenda").innerHTML=ramp.map((c,i)=>
+    `<span><i style="background:${c}"></i>${Math.round((stops[i]||1)*100)}%</span>`).join("");
+
+  // ranking de distritos
+  const porDist={};
+  FIL.forEach(r=>{const k=`${r[F.DIST]} · ${r[F.MUNI]}`;
+    (porDist[k]=porDist[k]||{vp:0,tot:0});
+    porDist[k].vp+=perCentro[r[F.ID]].vp; porDist[k].tot+=perCentro[r[F.ID]].tot;});
+  const rank=Object.entries(porDist).map(([k,o])=>({k,sh:o.tot?o.vp/o.tot:0,vp:o.vp}))
+    .sort((a,b)=>b.sh-a.sh).slice(0,12);
+  const mxsh=rank[0]?.sh||1;
+  $("p_ranking").innerHTML=rank.map((r,i)=>`<div class="p-rank">
+    <span class="rk">${i+1}</span>
+    <span class="nm">${r.k.split(" · ")[0]}<small>${r.k.split(" · ")[1]||""}</small></span>
+    <span class="bar"><span style="width:${r.sh/mxsh*100}%;background:${col}"></span></span>
+    <span class="val">${pct(r.sh)}</span></div>`).join("")||"<p class='sub'>Sin datos.</p>";
+
+  // gráfico voto persistente (share en las tres elecciones)
+  nc("p_c_duro",{type:"bar",data:{labels:["Presidente","Asamblea","Alcalde"],
+    datasets:[{data:[aggP.PRES.sh,aggP.ASAM.sh,aggP.ALC.sh].map(x=>+(x*100).toFixed(1)),
+      backgroundColor:[col+"99",col+"cc",col],borderRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},
+      scales:{x:{ticks:{color:"#9aa1ae",font:{size:10}},grid:{display:false}},
+        y:{beginAtZero:true,max:100,ticks:{color:"#9aa1ae",font:{size:10},callback:v=>v+"%"},
+          grid:{color:"#efece5"}}}}});
+
+  // zoom si hay filtro geográfico
+  if(($("p_depto").value||$("p_muni").value||$("p_dist").value||$("p_centro").value)&&graf.length){
+    setTimeout(()=>P_LYR.zonas.queryExtent().then(r=>{if(r.extent)P_VISTA.goTo(r.extent.expand(1.15)).catch(()=>{});}).catch(()=>{}),200);
+  }
+
+  // panel de resultados de votos (todos los partidos)
+  resultadosPartido(ids);
+}
+
+function resultadosPartido(ids){
+  // votos sumados de la elección seleccionada sobre los centros filtrados
+  const V={};
+  ids.forEach(id=>{const v=consolidar(window.__vpc[id]?.[PESC]||{});
+    for(const p in v) V[p]=(V[p]||0)+v[p];});
+  const ix=indices(V);
+  $("p_res_esc").textContent=escN[PESC];
+  if(!ix.tot){ $("p_res_winner").innerHTML="<div class='lbl'>Sin datos</div>";
+    $("p_res_bars").innerHTML=""; return; }
+
+  const marg=ix.margen, cls=marg<=.02?"EMPATE TÉCNICO":marg<=.05?"MUY REÑIDO":
+    marg<=.10?"REÑIDO":marg<=.25?"COMPETITIVO":"AMPLIA VENTAJA";
+  const bg=marg<=.05?"rgba(192,68,46,.14)":marg<=.10?"rgba(217,138,43,.16)":"rgba(74,124,89,.14)";
+  const fg=marg<=.05?"var(--hi)":marg<=.10?"var(--hi2)":"var(--ok)";
+  $("p_res_winner").innerHTML=`
+    <div class="lbl">Ganador</div>
+    <div class="who" style="color:${colorP(ix.p1)}">${pn(ix.p1)}</div>
+    <div class="sh">${(ix.sh1*100).toFixed(1)}% · ${num(ix.tot*ix.sh1)} votos</div>
+    <div class="vs">2.º lugar: <b>${pn(ix.p2)}</b> (${(ix.sh2*100).toFixed(1)}%)</div>
+    <span class="marg" style="background:${bg};color:${fg}">${cls} · margen ${(marg*100).toFixed(1)} pts</span>`;
+
+  const total=ix.tot, mx=ix.shares[0]?ix.shares[0][1]:1;
+  $("p_res_bars").innerHTML=ix.shares.map(([p,sh],i)=>`
+    <div class="rb">
+      <div class="rb-n" style="color:${i<2?colorP(p):'var(--ink2)'}">${i+1}. ${pn(p)}</div>
+      <div class="rb-t"><span style="width:${sh/mx*100}%;background:${colorP(p)}"></span></div>
+      <div class="rb-v"><b>${(sh*100).toFixed(1)}%</b> <small>${num(total*sh)}</small></div>
+    </div>`).join("")
+    + `<div class="rb" style="border-top:1px solid var(--line2);margin-top:6px;padding-top:10px">
+        <div class="rb-n" style="color:var(--ink3)">Total válidos</div>
+        <div class="rb-t"></div><div class="rb-v"><b>${num(total)}</b></div></div>`;
+}
+</script>
+</body>
+</html>

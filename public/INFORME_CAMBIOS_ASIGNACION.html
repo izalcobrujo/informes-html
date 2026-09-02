@@ -1,0 +1,283 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Reasignación de centros de votación</title><style>
+*{box-sizing:border-box}
+:root{color-scheme:light;
+ --plane:#f9f9f7;--surface:#fcfcfb;--sunk:#f4f3ef;--border:#e1e0d9;--rule:#c3c2b7;
+ --ink:#0b0b0b;--ink2:#52514e;--muted:#898781;
+ --s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--s4:#eda100;--quiet:#e1e0d9;
+ --good:#0ca30c;--warn:#fab219;--crit:#d03b3b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;
+ --plane:#0d0d0d;--surface:#1a1a19;--sunk:#141413;--border:#2c2c2a;--rule:#383835;
+ --ink:#fff;--ink2:#c3c2b7;--muted:#898781;
+ --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--quiet:#2c2c2a}}
+:root[data-theme="dark"]{color-scheme:dark;
+ --plane:#0d0d0d;--surface:#1a1a19;--sunk:#141413;--border:#2c2c2a;--rule:#383835;
+ --ink:#fff;--ink2:#c3c2b7;--muted:#898781;
+ --s1:#3987e5;--s2:#d95926;--s3:#199e70;--s4:#c98500;--quiet:#2c2c2a}
+body{margin:0;background:var(--plane);color:var(--ink);
+ font:15px/1.55 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+ -webkit-text-size-adjust:100%}
+.wrap{max-width:880px;margin:0 auto;padding:16px 14px 56px}
+header{padding:8px 0 18px;border-bottom:1px solid var(--border);margin-bottom:20px}
+h1{font-size:22px;line-height:1.25;margin:0 0 6px;letter-spacing:-.02em}
+.sub{color:var(--ink2);font-size:14px;margin:0}
+.meta{color:var(--muted);font-size:12px;margin-top:10px}
+h2{font-size:16px;margin:32px 0 4px;letter-spacing:-.01em}
+.lead{color:var(--ink2);font-size:13.5px;margin:0 0 14px}
+.card{background:var(--surface);border:1px solid var(--border);border-radius:12px;
+ padding:16px;margin-bottom:12px}
+.hero{display:flex;flex-wrap:wrap;gap:20px 30px;align-items:flex-end}
+.hero .n{font-size:32px;font-weight:650;letter-spacing:-.03em;line-height:1;
+ font-variant-numeric:tabular-nums}
+.hero .l{font-size:12.5px;color:var(--ink2);margin-top:6px}
+.tiles{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+@media(min-width:640px){.tiles{grid-template-columns:repeat(4,1fr)}}
+.tile{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:14px}
+.tile .sw{width:22px;height:4px;border-radius:2px;margin-bottom:10px}
+.tile .n{font-size:22px;font-weight:650;letter-spacing:-.02em;line-height:1.1;
+ font-variant-numeric:tabular-nums}
+.tile .p{font-size:12px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums}
+.tile .l{font-size:12.5px;color:var(--ink2);margin-top:8px;font-weight:550}
+.bar{display:flex;height:12px;background:var(--quiet);border-radius:4px;overflow:hidden}
+.bar i{display:block;height:100%;box-shadow:2px 0 0 0 var(--surface)}
+.bar i:last-child{box-shadow:none;border-radius:0 4px 4px 0}
+.bar i:first-child{border-radius:4px 0 0 4px}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;margin:12px 0 0;font-size:12.5px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:10px;height:10px;border-radius:3px;display:block}
+.rowl{padding:10px 0;border-bottom:1px solid var(--border)}
+.rowl:last-child{border-bottom:0}
+.rh{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:6px}
+.rn{font-size:13px;font-weight:550}
+.rv{font-size:13px;font-weight:650;font-variant-numeric:tabular-nums;white-space:nowrap}
+.rs{font-size:11.5px;color:var(--muted);font-weight:400;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:12.5px;font-variant-numeric:tabular-nums}
+th,td{padding:7px 6px;text-align:right;border-bottom:1px solid var(--border);white-space:nowrap}
+th:first-child,td:first-child,th:nth-child(2),td:nth-child(2){text-align:left;white-space:normal}
+th{color:var(--muted);font-weight:550;font-size:11px;text-transform:uppercase;letter-spacing:.04em}
+tr:last-child td{border-bottom:0}
+tfoot td{font-weight:650;border-top:2px solid var(--rule);border-bottom:0}
+.scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+.scroll table{min-width:520px}
+.hint{font-size:11px;color:var(--muted);margin:0 0 8px}
+@media(min-width:700px){.hint{display:none}}
+.note{font-size:12.5px;color:var(--ink2);background:var(--surface);
+ border:1px solid var(--border);border-left:3px solid var(--s1);
+ border-radius:0 10px 10px 0;padding:12px 14px;margin:12px 0}
+.note b{color:var(--ink)}
+ul.notas{margin:8px 0;padding-left:20px}
+ul.notas li{margin:5px 0;font-size:13px;color:var(--ink2)}
+ul.notas li b{color:var(--ink);font-weight:550}
+footer{margin-top:40px;padding-top:16px;border-top:1px solid var(--border);
+ font-size:11.5px;color:var(--muted);line-height:1.6}
+.flecha{color:var(--muted);padding:0 6px}
+.flx{padding:10px 0;border-bottom:1px solid var(--border);display:flex;
+ justify-content:space-between;align-items:flex-start;gap:12px}
+.flx:last-child{border-bottom:0}
+.flx .t{font-size:13px;line-height:1.4}
+.flx .t .de{color:var(--ink)}
+.flx .t .a{color:var(--ink);font-weight:550}
+.flx .t .mu{display:block;font-size:11.5px;color:var(--muted);margin-top:2px}
+.flx .v{font-size:13px;font-weight:650;font-variant-numeric:tabular-nums;
+ white-space:nowrap;text-align:right}
+.flx .v small{display:block;font-weight:400;font-size:11px;color:var(--muted)}
+.tot{padding:11px 0 0;margin-top:6px;border-top:2px solid var(--rule);
+ display:flex;justify-content:space-between;font-size:13px;font-weight:650;
+ font-variant-numeric:tabular-nums}
+@media print{body{background:#fff}.card,.tile{break-inside:avoid}.hint{display:none}
+ .scroll{overflow:visible}}
+</style></head>
+<body><div class="wrap"><header>
+<h1>Reasignación de centros de votación</h1><p class="sub">Nuevos electores y quienes cambiaron de dirección: qué decidió el motor y con qué respaldo</p>
+<p class="meta">Generado el 29/08/2026 a las 17:05 · Fuente: PADRON_REASIGNACION_NACIONAL_FINAL_20260829_154329.txt</p></header>
+<div class="card hero">
+<div><div class="n">628,326</div><div class="l">Electores a reasignar<br>(nuevos y mudados)</div></div>
+<div><div class="n">553,378</div><div class="l">Reciben un centro distinto<br>(88.1% del universo)</div></div>
+<div><div class="n">6,600</div><div class="l">Van a default<br>(1.1%)</div></div>
+</div>
+<h2>Qué pasa con cada uno</h2>
+<p class="lead">El motor determinó un centro para casi todos. Solo van a default aquellos para los que no encontró ninguna referencia.</p>
+<div class="card"><div class="bar">
+<i style="width:54.517%;background:var(--s1)"></i>
+<i style="width:33.555%;background:var(--s2)"></i>
+<i style="width:10.878%;background:var(--s3)"></i>
+<i style="width:1.050%;background:var(--crit)"></i>
+</div><div class="legend">
+<span><i style="background:var(--s1)"></i>Reciben centro por primera vez</span>
+<span><i style="background:var(--s2)"></i>Cambian de centro</span>
+<span><i style="background:var(--s3)"></i>Conservan su centro</span>
+<span><i style="background:var(--crit)"></i>Van a default</span>
+</div></div>
+<div class="tiles">
+<div class="tile"><div class="sw" style="background:var(--s1)"></div><div class="n">342,544</div><div class="p">54.52%</div><div class="l">Reciben centro por primera vez</div></div>
+<div class="tile"><div class="sw" style="background:var(--s2)"></div><div class="n">210,834</div><div class="p">33.55%</div><div class="l">Cambian de centro</div></div>
+<div class="tile"><div class="sw" style="background:var(--s3)"></div><div class="n">68,348</div><div class="p">10.88%</div><div class="l">Conservan su centro</div></div>
+<div class="tile"><div class="sw" style="background:var(--crit)"></div><div class="n">6,600</div><div class="p">1.05%</div><div class="l">Van a default</div></div>
+</div>
+<div class="note">Los <b>68,348</b> que conservan su centro se mudaron, pero según la evidencia del vecindario les sigue correspondiendo el mismo. <b>No hay movimiento que notificar</b> — baja la cantidad de gente que se entera de un cambio.</div>
+<h2>Por qué está cada uno en la lista</h2>
+<div class="card">
+<div class="rowl">
+<div class="rh"><span class="rn">Nuevos<span class="rs"> · 346,083 electores</span></span><span class="rv">342,544 se mueven</span></div>
+<div class="bar">
+<i style="width:98.977%;background:var(--s1)"></i>
+<i style="width:1.023%;background:var(--crit)"></i>
+</div></div>
+<div class="rowl">
+<div class="rh"><span class="rn">Cambio de departamento<span class="rs"> · 76,037 electores</span></span><span class="rv">68,957 se mueven</span></div>
+<div class="bar">
+<i style="width:90.689%;background:var(--s2)"></i>
+<i style="width:7.968%;background:var(--s3)"></i>
+<i style="width:1.343%;background:var(--crit)"></i>
+</div></div>
+<div class="rowl">
+<div class="rh"><span class="rn">Cambio de municipio<span class="rs"> · 75,424 electores</span></span><span class="rv">66,883 se mueven</span></div>
+<div class="bar">
+<i style="width:88.676%;background:var(--s2)"></i>
+<i style="width:10.156%;background:var(--s3)"></i>
+<i style="width:1.168%;background:var(--crit)"></i>
+</div></div>
+<div class="rowl">
+<div class="rh"><span class="rn">Mudanza interna<span class="rs"> · 130,782 electores</span></span><span class="rv">74,994 se mueven</span></div>
+<div class="bar">
+<i style="width:57.343%;background:var(--s2)"></i>
+<i style="width:41.771%;background:var(--s3)"></i>
+<i style="width:0.886%;background:var(--crit)"></i>
+</div></div>
+</div>
+<h2>De dónde a dónde: entre municipios</h2>
+<p class="lead">135,840 electores cambiaron de municipio y recibieron centro en el nuevo. Los 25 traslados con más gente.</p>
+<div class="card">
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">SANTA TECLA</span><span class="mu">SAN SALVADOR &rarr; LA LIBERTAD</span></div><div class="v">1,478<small>1.1%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SOYAPANGO</span><span class="flecha">&rarr;</span><span class="a">SAN SALVADOR</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">1,474<small>1.1%</small></div></div>
+<div class="flx"><div class="t"><span class="de">MEJICANOS</span><span class="flecha">&rarr;</span><span class="a">SAN SALVADOR</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">1,443<small>1.1%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">MEJICANOS</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">1,393<small>1.0%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">SOYAPANGO</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">1,292<small>1.0%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SANTA TECLA</span><span class="flecha">&rarr;</span><span class="a">SAN SALVADOR</span><span class="mu">LA LIBERTAD &rarr; SAN SALVADOR</span></div><div class="v">1,116<small>0.8%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">ANTIGUO CUSCATLAN</span><span class="mu">SAN SALVADOR &rarr; LA LIBERTAD</span></div><div class="v">1,071<small>0.8%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SANTA TECLA</span><span class="flecha">&rarr;</span><span class="a">COLON</span><span class="mu">LA LIBERTAD &rarr; LA LIBERTAD</span></div><div class="v">958<small>0.7%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SOYAPANGO</span><span class="flecha">&rarr;</span><span class="a">ILOPANGO</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">714<small>0.5%</small></div></div>
+<div class="flx"><div class="t"><span class="de">ILOPANGO</span><span class="flecha">&rarr;</span><span class="a">SOYAPANGO</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">698<small>0.5%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SANTA ANA</span><span class="flecha">&rarr;</span><span class="a">SAN SEBASTIAN SALITRILLO</span><span class="mu">SANTA ANA &rarr; SANTA ANA</span></div><div class="v">688<small>0.5%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">APOPA</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">630<small>0.5%</small></div></div>
+<div class="flx"><div class="t"><span class="de">ANTIGUO CUSCATLAN</span><span class="flecha">&rarr;</span><span class="a">SAN SALVADOR</span><span class="mu">LA LIBERTAD &rarr; SAN SALVADOR</span></div><div class="v">618<small>0.5%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">COLON</span><span class="mu">SAN SALVADOR &rarr; LA LIBERTAD</span></div><div class="v">607<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">CIUDAD DELGADO</span><span class="flecha">&rarr;</span><span class="a">SAN SALVADOR</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">542<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">NUEVO CUSCATLAN</span><span class="mu">SAN SALVADOR &rarr; LA LIBERTAD</span></div><div class="v">534<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN MARCOS</span><span class="flecha">&rarr;</span><span class="a">SAN SALVADOR</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">509<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">APOPA</span><span class="flecha">&rarr;</span><span class="a">SAN SALVADOR</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">508<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">ILOPANGO</span><span class="flecha">&rarr;</span><span class="a">TONACATEPEQUE</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">507<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">SAN JUAN OPICO</span><span class="mu">SAN SALVADOR &rarr; LA LIBERTAD</span></div><div class="v">505<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">ILOPANGO</span><span class="flecha">&rarr;</span><span class="a">SAN SALVADOR</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">500<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">SAN MARCOS</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">499<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">ILOPANGO</span><span class="flecha">&rarr;</span><span class="a">SAN MARTIN</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">498<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">SAN SALVADOR</span><span class="flecha">&rarr;</span><span class="a">ILOPANGO</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">485<small>0.4%</small></div></div>
+<div class="flx"><div class="t"><span class="de">CIUDAD DELGADO</span><span class="flecha">&rarr;</span><span class="a">SOYAPANGO</span><span class="mu">SAN SALVADOR &rarr; SAN SALVADOR</span></div><div class="v">471<small>0.3%</small></div></div>
+<div class="tot"><span>Total de traslados</span><span>135,840</span></div></div>
+<h2>De dónde a dónde: entre centros del mismo municipio</h2>
+<p class="lead">74,994 electores se mudaron dentro de su municipio y les cambia el centro. Los 25 movimientos más grandes.</p>
+<div class="card">
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 7</span><span class="mu">METAPAN · SANTA ANA</span></div><div class="v">108</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 5</span><span class="flecha">&rarr;</span><span class="a">Centro 6</span><span class="mu">QUEZALTEPEQUE · LA LIBERTAD</span></div><div class="v">106</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 4</span><span class="mu">ARMENIA · SONSONATE</span></div><div class="v">104</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 3</span><span class="mu">MEJICANOS · SAN SALVADOR</span></div><div class="v">92</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 4</span><span class="mu">AGUILARES · SAN SALVADOR</span></div><div class="v">88</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 2</span><span class="mu">GUAZAPA · SAN SALVADOR</span></div><div class="v">87</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 2</span><span class="mu">BERLIN · USULUTAN</span></div><div class="v">85</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 2</span><span class="mu">SONZACATE · SONSONATE</span></div><div class="v">83</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 7</span><span class="flecha">&rarr;</span><span class="a">Centro 8</span><span class="mu">SOYAPANGO · SAN SALVADOR</span></div><div class="v">83</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 7</span><span class="flecha">&rarr;</span><span class="a">Centro 8</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">79</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 3</span><span class="mu">EL CONGO · SANTA ANA</span></div><div class="v">78</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 2</span><span class="mu">SAN MARTIN · SAN SALVADOR</span></div><div class="v">75</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 12</span><span class="flecha">&rarr;</span><span class="a">Centro 2</span><span class="mu">SAN VICENTE · SAN VICENTE</span></div><div class="v">72</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 2</span><span class="mu">JIQUILISCO · USULUTAN</span></div><div class="v">71</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 12</span><span class="mu">LA UNION · LA UNION</span></div><div class="v">70</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 9</span><span class="flecha">&rarr;</span><span class="a">Centro 1</span><span class="mu">SENSUNTEPEQUE · CABAÑAS</span></div><div class="v">70</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 5</span><span class="mu">USULUTAN · USULUTAN</span></div><div class="v">69</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 39</span><span class="flecha">&rarr;</span><span class="a">Centro 8</span><span class="mu">SANTA ANA · SANTA ANA</span></div><div class="v">69</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 11</span><span class="flecha">&rarr;</span><span class="a">Centro 8</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">68</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 5</span><span class="flecha">&rarr;</span><span class="a">Centro 1</span><span class="mu">QUEZALTEPEQUE · LA LIBERTAD</span></div><div class="v">67</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 36</span><span class="flecha">&rarr;</span><span class="a">Centro 35</span><span class="mu">SAN SALVADOR · SAN SALVADOR</span></div><div class="v">66</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 7</span><span class="flecha">&rarr;</span><span class="a">Centro 1</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">64</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 7</span><span class="mu">LA LIBERTAD · LA LIBERTAD</span></div><div class="v">64</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 1</span><span class="flecha">&rarr;</span><span class="a">Centro 4</span><span class="mu">SANTIAGO DE MARIA · USULUTAN</span></div><div class="v">63</div></div>
+<div class="flx"><div class="t"><span class="de">Centro 39</span><span class="flecha">&rarr;</span><span class="a">Centro 13</span><span class="mu">SANTA ANA · SANTA ANA</span></div><div class="v">63</div></div>
+<div class="tot"><span>Total de movimientos internos</span><span>74,994</span></div></div>
+<h2>Dónde quedaron los electores nuevos</h2>
+<p class="lead">342,544 electores sin centro previo recibieron uno. Los 25 centros que más recibieron.</p>
+<div class="card">
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">SAN ANTONIO DEL MONTE · SONSONATE</span></div><div class="v">1,252</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 34</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">1,250</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 35</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">1,230</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 35</span><span class="mu">SAN SALVADOR · SAN SALVADOR</span></div><div class="v">1,095</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 14</span><span class="mu">COLON · LA LIBERTAD</span></div><div class="v">1,038</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 4</span><span class="mu">SAN SEBASTIAN SALITRILLO · SANTA ANA</span></div><div class="v">940</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 7</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">929</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 12</span><span class="mu">SAN MARTIN · SAN SALVADOR</span></div><div class="v">883</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 8</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">878</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 4</span><span class="mu">ARMENIA · SONSONATE</span></div><div class="v">868</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 2</span><span class="mu">SAN VICENTE · SAN VICENTE</span></div><div class="v">863</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">CIUDAD BARRIOS · SAN MIGUEL</span></div><div class="v">841</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 5</span><span class="mu">TONACATEPEQUE · SAN SALVADOR</span></div><div class="v">782</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 11</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">778</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">PANCHIMALCO · SAN SALVADOR</span></div><div class="v">775</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">JUCUAPA · USULUTAN</span></div><div class="v">773</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">SAN JUAN OPICO · LA LIBERTAD</span></div><div class="v">769</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">CANDELARIA DE LA FRONTERA · SANTA ANA</span></div><div class="v">751</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 2</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">751</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">QUEZALTEPEQUE · LA LIBERTAD</span></div><div class="v">745</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 2</span><span class="mu">CIUDAD ARCE · LA LIBERTAD</span></div><div class="v">743</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">SAN JULIAN · SONSONATE</span></div><div class="v">732</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 1</span><span class="mu">SANTO TOMAS · SAN SALVADOR</span></div><div class="v">731</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 13</span><span class="mu">SANTA ANA · SANTA ANA</span></div><div class="v">722</div></div>
+<div class="flx"><div class="t"><span class="a">Centro 3</span><span class="mu">SAN MIGUEL · SAN MIGUEL</span></div><div class="v">722</div></div>
+<div class="tot"><span>Total de nuevos ubicados</span><span>342,544</span></div></div>
+<h2>Con qué respaldo se tomó cada decisión</h2>
+<p class="lead">La confianza mide cuán concentrada estaba la evidencia del vecindario. Las decisiones se aplican todas, pero esta tabla dice por dónde empezar si después se quiere revisar.</p>
+<div class="card">
+<div class="rowl">
+<div class="rh"><span class="rn">TOTAL<span class="rs"> · 10.0% de las decisiones</span></span><span class="rv">62,771</span></div>
+<div class="bar"><i style="width:9.990%;background:var(--good)"></i></div>
+<div class="rs" style="margin-top:5px">52,151 reciben centro distinto · 10,620 conservan el suyo · 0 a default</div>
+</div>
+<div class="rowl">
+<div class="rh"><span class="rn">MUY ALTA<span class="rs"> · 65.8% de las decisiones</span></span><span class="rv">413,431</span></div>
+<div class="bar"><i style="width:65.799%;background:var(--good)"></i></div>
+<div class="rs" style="margin-top:5px">368,800 reciben centro distinto · 44,631 conservan el suyo · 0 a default</div>
+</div>
+<div class="rowl">
+<div class="rh"><span class="rn">ALTA<span class="rs"> · 14.5% de las decisiones</span></span><span class="rv">91,190</span></div>
+<div class="bar"><i style="width:14.513%;background:var(--good)"></i></div>
+<div class="rs" style="margin-top:5px">82,426 reciben centro distinto · 8,764 conservan el suyo · 0 a default</div>
+</div>
+<div class="rowl">
+<div class="rh"><span class="rn">CATASTRAL<span class="rs"> · 0.2% de las decisiones</span></span><span class="rv">1,315</span></div>
+<div class="bar"><i style="width:0.209%;background:var(--warn)"></i></div>
+<div class="rs" style="margin-top:5px">1,195 reciben centro distinto · 110 conservan el suyo · 10 a default</div>
+</div>
+<div class="rowl">
+<div class="rh"><span class="rn">MEDIA<span class="rs"> · 6.6% de las decisiones</span></span><span class="rv">41,324</span></div>
+<div class="bar"><i style="width:6.577%;background:var(--warn)"></i></div>
+<div class="rs" style="margin-top:5px">37,852 reciben centro distinto · 3,472 conservan el suyo · 0 a default</div>
+</div>
+<div class="rowl">
+<div class="rh"><span class="rn">BAJA / DISPERSA<span class="rs"> · 1.9% de las decisiones</span></span><span class="rv">11,705</span></div>
+<div class="bar"><i style="width:1.863%;background:var(--crit)"></i></div>
+<div class="rs" style="margin-top:5px">10,954 reciben centro distinto · 751 conservan el suyo · 0 a default</div>
+</div>
+<div class="rowl">
+<div class="rh"><span class="rn">SIN DATO<span class="rs"> · 1.0% de las decisiones</span></span><span class="rv">6,590</span></div>
+<div class="bar"><i style="width:1.049%;background:var(--crit)"></i></div>
+<div class="rs" style="margin-top:5px">0 reciben centro distinto · 0 conservan el suyo · 6,590 a default</div>
+</div>
+</div>
+<div class="note"><b>567,392</b> decisiones (90.3%) se tomaron con confianza alta o superior. El resto se aplica igual —no hay mejor estimación disponible y la alternativa es dejarlos en default— pero son las que conviene revisar primero si aparece tiempo.</div>
+<h2>Notas</h2><ul class="notas">
+<li><b>Alcance.</b> Solo entran los electores nuevos y los que cambiaron de dirección. Quien no se movió conserva su centro, aunque el motor proponga otro: así cada movimiento de esta lista se puede explicar con un motivo concreto.</li>
+<li><b>Se aplica todo lo que el motor pudo determinar.</b> Para este grupo la comparación no es contra el centro correcto, es contra el default: un elector nuevo no tiene centro y un mudado tiene el de su dirección anterior. No asignar también es una decisión, y es peor.</li>
+<li><b>Cómo decide el motor.</b> Cruza la evidencia de los vecinos con la misma dirección, el catastro de colonias y el catastro de calles, con varias capas de normalización de direcciones.</li>
+<li><b>5,121 filas</b> del archivo traían un separador dentro de un campo de texto y se realinearon al leer. No se perdió ningún dato.</li>
+</ul>
+<footer>Informe generado automáticamente a partir del resultado del motor de reasignación. Cada elector se cuenta una sola vez. Los porcentajes se calculan sobre el universo de nuevos y mudados, no sobre el padrón completo.</footer>
+</div></body></html>

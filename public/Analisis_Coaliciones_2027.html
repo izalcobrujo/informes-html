@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Análisis de Coaliciones Electorales 2027</title>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{--cyan:#00ADEF;--dark:#001b71;--gray:#a8a8a7;--ink:#1a1a1a;}
+*{box-sizing:border-box;}
+body{margin:0;font-family:Montserrat,sans-serif;color:var(--ink);background:#f4f6fa;font-weight:400;line-height:1.55;}
+header{background:var(--dark);color:#fff;padding:18px 28px;position:sticky;top:0;z-index:50;box-shadow:0 2px 12px rgba(0,0,0,.18);}
+header .logo{font-weight:900;font-size:20px;letter-spacing:.5px;}
+header .logo span{color:var(--cyan);}
+header .sub{font-size:12px;color:#c9d3ea;font-weight:300;margin-top:2px;letter-spacing:.3px;}
+.wrap{max-width:1500px;margin:0 auto;padding:26px 22px 70px;}
+h2{font-weight:900;color:var(--dark);font-size:20px;margin:38px 0 6px;border-left:5px solid var(--cyan);padding-left:12px;}
+h3{font-weight:700;color:var(--dark);font-size:15px;margin:24px 0 6px;}
+p{font-size:14px;margin:8px 0;}
+.lead{font-size:14px;color:#444;max-width:1050px;}
+.card{background:#fff;border-radius:10px;padding:20px 22px;box-shadow:0 1px 4px rgba(0,27,113,.09);margin:14px 0;}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin:18px 0 6px;}
+.kpi{background:#fff;border-radius:10px;padding:16px 18px;border-top:4px solid var(--cyan);box-shadow:0 1px 4px rgba(0,27,113,.09);}
+.kpi .v{font-size:26px;font-weight:900;color:var(--dark);line-height:1.1;}
+.kpi .l{font-size:11px;color:#666;text-transform:uppercase;letter-spacing:.6px;font-weight:500;margin-top:4px;}
+.kpi.alert{border-top-color:#d9342b;}
+.kpi.alert .v{color:#d9342b;}
+table{width:100%;border-collapse:collapse;font-size:12.5px;background:#fff;}
+th{background:var(--dark);color:#fff;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:.4px;padding:10px 8px;text-align:left;position:sticky;top:0;}
+td{padding:9px 8px;border-bottom:1px solid #e6e9f0;vertical-align:top;}
+tbody tr:hover{background:#eef7fd;}
+.jur{font-weight:700;color:var(--dark);white-space:nowrap;}
+.coal{font-weight:700;color:#333;white-space:nowrap;}
+.gan{font-weight:600;white-space:nowrap;}
+.tag{font-size:10px;padding:2px 7px;border-radius:20px;font-weight:700;letter-spacing:.3px;white-space:nowrap;}
+.t-leg{background:#e3ecff;color:var(--dark);}
+.t-mun{background:#dff3fd;color:#046a92;}
+.badge{display:inline-block;font-size:9.5px;font-weight:900;letter-spacing:.5px;padding:2px 7px;border-radius:3px;margin-right:5px;color:#fff;}
+.b-critico{background:#b3170f;} .b-alto{background:#d9642b;} .b-medio{background:#c9a227;}
+.b-bajo{background:#8a8a8a;} .b-blindaje{background:#046a92;} .b-anomalia{background:#6b21a8;}
+.r-crit{background:#fff2f1;} .r-anom{background:#faf5ff;}
+.scroll{overflow:auto;max-height:none;border-radius:10px;box-shadow:0 1px 6px rgba(0,27,113,.12);}
+table.data{font-size:12.5px;}
+table.data th{background:#e9edf6;color:var(--dark);position:static;}
+table.data td{border-bottom:1px solid #eef0f5;}
+table.data td.num{text-align:right;font-variant-numeric:tabular-nums;}
+.neg{color:#b3170f;font-weight:700;} .pos{color:#0a7d2e;font-weight:700;}
+.note{background:#fff8e6;border-left:4px solid #c9a227;padding:12px 16px;font-size:13px;border-radius:0 8px 8px 0;margin:14px 0;}
+.key{background:#eaf7fe;border-left:4px solid var(--cyan);padding:14px 18px;border-radius:0 8px 8px 0;margin:14px 0;}
+.key b{color:var(--dark);}
+.bar{height:22px;background:#e6e9f0;border-radius:3px;overflow:hidden;display:flex;}
+.bar i{display:block;height:100%;}
+.b-ni{background:var(--cyan);} .b-co{background:#d9642b;} .b-ot{background:var(--gray);}
+.legend{font-size:11px;color:#666;margin-top:6px;}
+.legend s{display:inline-block;width:10px;height:10px;border-radius:2px;margin:0 4px 0 12px;text-decoration:none;}
+footer{background:var(--dark);color:#c9d3ea;font-size:11.5px;padding:18px 28px;text-align:center;font-weight:300;}
+ul{font-size:14px;margin:8px 0 8px 18px;padding:0;} li{margin:5px 0;}
+.mini{font-size:11.5px;color:#666;}
+
+tbody tr.rowx{cursor:pointer;}
+tbody tr.rowx .jur:before{content:"\25B8";color:#00ADEF;font-weight:900;margin-right:6px;display:inline-block;transition:transform .15s;}
+tbody tr.rowx.open .jur:before{transform:rotate(90deg);}
+tr.det>td{background:#f7f9fd;padding:0;border-bottom:2px solid #d8dfee;}
+.detwrap{padding:16px 14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px;}
+.ecard{background:#fff;border-radius:10px;padding:14px 16px;box-shadow:0 1px 4px rgba(0,27,113,.10);border-top:3px solid #001b71;}
+.ecard h4{margin:0 0 2px;font-size:13px;font-weight:900;color:#001b71;letter-spacing:.3px;text-transform:uppercase;}
+.ecard .tot{font-size:11px;color:#666;margin-bottom:8px;}
+.pierow{display:flex;gap:14px;align-items:flex-start;}
+.pierow svg{flex:0 0 128px;}
+.leg{flex:1;font-size:11.5px;}
+.leg .li{display:flex;align-items:center;gap:6px;padding:1.5px 0;}
+.leg .sw{width:10px;height:10px;border-radius:2px;flex:0 0 10px;}
+.leg .nm{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.leg .vt{font-variant-numeric:tabular-nums;font-weight:600;}
+.leg .pc{font-variant-numeric:tabular-nums;color:#666;width:44px;text-align:right;}
+.leg .li.coal .nm{font-weight:800;color:#001b71;}
+.leg .li.coal .sw{outline:2px solid #001b71;outline-offset:1px;}
+.foot{margin-top:9px;padding-top:8px;border-top:1px dashed #dde2ec;font-size:11.5px;line-height:1.6;}
+.foot b{color:#001b71;}
+.chip{display:inline-block;background:#eaf7fe;border:1px solid #b9e4fb;color:#046a92;border-radius:4px;padding:1px 6px;font-size:10.5px;font-weight:700;margin-left:4px;}
+.chip.no{background:#f3f3f3;border-color:#ddd;color:#777;}
+
+
+@media (max-width:900px){
+ header{padding:14px 16px;} header .logo{font-size:16px;line-height:1.25;} header .sub{font-size:10.5px;}
+ .wrap{padding:18px 12px 50px;} h2{font-size:17px;} p,.lead{font-size:13.5px;}
+ .kpis{grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;}
+ .kpi .v{font-size:21px;} .kpi .l{font-size:10px;}
+ .card{padding:14px 14px;}
+ /* tabla resumen -> tarjetas apiladas */
+ #resumen{display:block;background:transparent;}
+ #resumen thead{display:none;}
+ #resumen tbody,#resumen tr,#resumen td{display:block;width:100%;}
+ .scroll-resumen{overflow:visible;box-shadow:none;}
+ #resumen tbody tr.rowx{background:#fff;border:1px solid #e2e7f1;border-left:4px solid #00ADEF;
+   border-radius:10px;margin-bottom:10px;padding:11px 13px;box-shadow:0 1px 3px rgba(0,27,113,.08);}
+ #resumen tbody tr.rowx.r-crit{border-left-color:#b3170f;}
+ #resumen tbody tr.rowx.r-anom{border-left-color:#6b21a8;}
+ #resumen tbody tr.rowx:hover{background:#fff;}
+ #resumen td{border:none;padding:3px 0;font-size:12.5px;}
+ #resumen td[data-l]:before{content:attr(data-l);display:block;font-size:9.5px;font-weight:800;
+   letter-spacing:.5px;color:#98a0b2;text-transform:uppercase;margin-bottom:1px;}
+ #resumen td.jur{font-size:15px;font-weight:900;padding-bottom:6px;margin-bottom:4px;border-bottom:1px solid #eef1f7;}
+ #resumen td.coal,#resumen td.gan{white-space:normal;}
+ #resumen tr.det{margin:-6px 0 12px;}
+ #resumen tr.det>td{background:transparent;border:none;padding:0;}
+ .detwrap{grid-template-columns:1fr;padding:0;gap:10px;}
+ .pierow{gap:10px;}
+ .pierow svg{flex:0 0 104px;width:104px;height:104px;}
+ .leg{font-size:11px;} .leg .pc{width:40px;}
+ table.data{font-size:11.5px;} table.data th,table.data td{padding:7px 6px;}
+}
+@media (max-width:420px){
+ .pierow{flex-direction:column;align-items:center;}
+ .pierow svg{flex:0 0 auto;}
+ .leg{width:100%;}
+ #resumen td[data-l="Riesgo"]{font-size:12px;}
+}
+
+</style>
+</head>
+<body>
+<header>
+<div class="logo">Análisis de Coaliciones Electorales 2027</div>
+<div class="sub">Base: escrutinio final 2024 (presidencial, legislativa y municipal) · Elecciones del 28 de febrero de 2027</div>
+</header>
+<div class="wrap">
+
+<p class="lead">Este documento evalúa el mapa de coaliciones anunciado para 2027 contra la votación real de 2024, y responde a una pregunta específica: <b>si esas coaliciones se refuerzan a nivel municipal, ¿cómo puede eso afectar a Nuevas Ideas en la elección legislativa?</b> La respuesta corta es que el riesgo no está en las coaliciones legislativas —que sobre datos 2024 no mueven un solo escaño— sino en el canal de contagio que abre la concurrencia de las tres papeletas el 28 de febrero de 2027.</p>
+
+<div class="kpis">
+<div class="kpi"><div class="v">27</div><div class="l">Pactos jurisdiccionales analizados</div></div>
+<div class="kpi"><div class="v">0</div><div class="l">Escaños que ganan las coaliciones con voto 2024</div></div>
+<div class="kpi alert"><div class="v">−6</div><div class="l">Escaños de NI en riesgo por arrastre municipal (escenario 100%)</div></div>
+<div class="kpi alert"><div class="v">4</div><div class="l">Concejos municipales en riesgo real</div></div>
+<div class="kpi"><div class="v">50 617</div><div class="l">Votos legislativos de FS en 2024 (mínimo legal: 50 000)</div></div>
+</div>
+
+<h2>1. Tabla resumen por jurisdicción</h2>
+<p class="lead">Cada fila es un pacto en una jurisdicción. «Ganador de la jurisdicción» es el resultado real de 2024 en esa misma circunscripción (departamento para legislativa, municipio para municipal). La situación de cada partido es su posición y porcentaje propios en 2024, antes de coaligarse. <b>Haz clic en cualquier fila</b> para desplegar los tres escrutinios de 2024 en esa misma jurisdicción —presidencial, legislativa y municipal, sin PARLACEN— con gráfica de pastel y votos netos, y contrastar la afirmación de la columna de riesgo.</p>
+<div class="scroll scroll-resumen">
+<table id="resumen">
+<thead><tr>
+<th style="min-width:130px">Jurisdicción</th><th>Tipo de Elección</th><th>Coalición / Partidos</th><th>Ganador de la Jurisdicción</th>
+<th style="min-width:190px">Situación partido 1</th><th style="min-width:190px">Situación partido 2</th><th style="min-width:170px">Situación partido 3</th><th style="min-width:420px">Riesgo</th>
+</tr></thead>
+<tbody>
+<tr data-i="0" data-k="L|Ahuachapan" data-p="PCN|DS" class="rowx r-alto">
+<td class="jur">Ahuachapán</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">PCN - DS</td><td data-l="Ganador" class="gan">NI (61.33%)</td>
+<td data-l="Partido 1">PCN 2.º lugar&#8239; 21.26% (34&#8239;787 votos)</td><td data-l="Partido 2">DS no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-alto">ALTO</span> PCN ya ganó el escaño solo (21.26% vs. corte 20.44%). La entrada de DS —sin votación en 2024— no aporta votos pero eleva el umbral de cancelación del pacto de 50&#8239;000 a 100&#8239;000. Riesgo para PCN, no para NI.</td></tr>
+<tr data-i="1" data-k="L|Chalatenango" data-p="PCN|DS" class="rowx r-alto">
+<td class="jur">Chalatenango</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">PCN - DS</td><td data-l="Ganador" class="gan">NI (46.78%)</td>
+<td data-l="Partido 1">PCN 2.º lugar&#8239; 33.11% (29&#8239;394 votos)</td><td data-l="Partido 2">DS no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-alto">ALTO</span> PCN es el segundo bloque real del departamento (33.11%) y ya tiene escaño. DS aporta cero. El pacto blinda un escaño existente; NI defiende el suyo con 46.78%, su porcentaje más bajo del país.</td></tr>
+<tr data-i="2" data-k="L|San Miguel" data-p="PDC|FUERZA SOLIDARIA" class="rowx r-alto">
+<td class="jur">San Miguel</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">PDC - FS</td><td data-l="Ganador" class="gan">NI (58.04%)</td>
+<td data-l="Partido 1">PDC 2.º lugar&#8239; 22.12% (39&#8239;980 votos)</td><td data-l="Partido 2">FS 7.º lugar&#8239; 1.54% (2&#8239;789 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-alto">ALTO</span> PDC ya gana escaño solo (22.12%). Con FS el bloque llega a 23.67%, a 2.29× del corte para un segundo escaño (necesitaría 47.2%). Es el pacto legislativo más sólido del mapa.</td></tr>
+<tr data-i="3" data-k="L|San Salvador" data-p="PDC|FUERZA SOLIDARIA" class="rowx r-bajo">
+<td class="jur">San Salvador</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">PDC - FS</td><td data-l="Ganador" class="gan">NI (71.16%)</td>
+<td data-l="Partido 1">PDC 7.º lugar&#8239; 1.32% (10&#8239;978 votos)</td><td data-l="Partido 2">FS 8.º lugar&#8239; 0.89% (7&#8239;413 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-bajo">BAJO</span> Suma 2.20% en la circunscripción más grande. Necesita 45&#8239;676 votos para un escaño (2.48× lo que tiene). Con la reforma de mayo 2026 San Salvador baja de 16 a 11 escaños: el umbral sube a 5.47%.</td></tr>
+<tr data-i="4" data-k="L|La Union" data-p="PDC|FUERZA SOLIDARIA" class="rowx r-bajo">
+<td class="jur">La Unión</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">PDC - FS</td><td data-l="Ganador" class="gan">NI (76.67%)</td>
+<td data-l="Partido 1">PDC 6.º lugar&#8239; 1.4% (1&#8239;307 votos)</td><td data-l="Partido 2">FS no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-bajo">BAJO</span> FS no compitió en La Unión y PDC apenas 1.40%. Necesita 27× su votación actual. Función exclusivamente registral.</td></tr>
+<tr data-i="5" data-k="L|San Vicente" data-p="PDC|GANA" class="rowx r-bajo">
+<td class="jur">San Vicente</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">PDC - GANA</td><td data-l="Ganador" class="gan">NI (64.91%)</td>
+<td data-l="Partido 1">PDC no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 2">GANA 4.º lugar&#8239; 7.07% (4&#8239;916 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-bajo">BAJO</span> PDC sin votación propia; GANA aporta todo (7.07%). Requiere 4.59× para un escaño. En el mismo departamento coexiste un segundo pacto (PCN-FS), lo que fragmenta el voto anti-NI.</td></tr>
+<tr data-i="6" data-k="L|Morazan" data-p="PDC|GANA" class="rowx r-med">
+<td class="jur">Morazán</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">PDC - GANA</td><td data-l="Ganador" class="gan">NI (62.17%)</td>
+<td data-l="Partido 1">PDC 7.º lugar&#8239; 0.47% (360 votos)</td><td data-l="Partido 2">GANA 3.º lugar&#8239; 7.06% (5&#8239;432 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-medio">MEDIO</span> En 2024 PDC compitió aquí coaligado con PCN (4&#8239;882 votos, símbolo PDC-PCN). El pacto 2027 expulsa al PCN y mete a GANA: el bloque pasa de 7.53% a 2.24× del corte. Cambio de socio con pérdida neta.</td></tr>
+<tr data-i="7" data-k="L|San Vicente" data-p="PCN|FUERZA SOLIDARIA" class="rowx r-bajo">
+<td class="jur">San Vicente</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">PCN - FS</td><td data-l="Ganador" class="gan">NI (64.91%)</td>
+<td data-l="Partido 1">PCN 6.º lugar&#8239; 1.46% (1&#8239;014 votos)</td><td data-l="Partido 2">FS 5.º lugar&#8239; 2.75% (1&#8239;913 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-bajo">BAJO</span> Segundo pacto en San Vicente. Suma 4.21% y necesita 7.71×. Compite contra PDC-GANA por el mismo electorado opositor: efecto de división, no de suma.</td></tr>
+<tr data-i="8" data-k="L|Cuscatlan" data-p="GANA|PCN" class="rowx r-med">
+<td class="jur">Cuscatlán</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">GANA - PCN</td><td data-l="Ganador" class="gan">NI (66.93%)</td>
+<td data-l="Partido 1">GANA 4.º lugar&#8239; 8.3% (10&#8239;105 votos)</td><td data-l="Partido 2">PCN 5.º lugar&#8239; 4.82% (5&#8239;871 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-medio">MEDIO</span> GANA+PCN suman 13.12% legislativo pero 37.27% municipal en el departamento. Es el pacto con mayor reserva de arrastre relativo al tamaño de la circunscripción (2 escaños).</td></tr>
+<tr data-i="9" data-k="L|La Paz" data-p="GANA|FUERZA SOLIDARIA" class="rowx r-med">
+<td class="jur">La Paz</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">GANA - FS</td><td data-l="Ganador" class="gan">NI (66.87%)</td>
+<td data-l="Partido 1">GANA 5.º lugar&#8239; 3.5% (5&#8239;038 votos)</td><td data-l="Partido 2">FS 3.º lugar&#8239; 5.91% (8&#8239;518 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-medio">MEDIO</span> 3.50% + 5.91% = 9.41% legislativo frente a 51.38% municipal del mismo bloque. Ratio de arrastre 5.46×: la brecha más explotable del mapa después de La Libertad.</td></tr>
+<tr data-i="10" data-k="L|La Libertad" data-p="GANA|FUERZA SOLIDARIA" class="rowx r-alto">
+<td class="jur">La Libertad</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">GANA - FS</td><td data-l="Ganador" class="gan">NI (68.8%)</td>
+<td data-l="Partido 1">GANA 7.º lugar&#8239; 2.04% (7&#8239;489 votos)</td><td data-l="Partido 2">FS 9.º lugar&#8239; 1.17% (4&#8239;284 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-alto">ALTO</span> Solo 3.21% legislativo pero 22.91% municipal (ratio 7.14×, el más alto del país). Con la reforma La Libertad baja de 7 a 6 escaños, pero el bloque GANA gobierna dos distritos del departamento.</td></tr>
+<tr data-i="11" data-k="L|Usulutan" data-p="GANA|FUERZA SOLIDARIA" class="rowx r-med">
+<td class="jur">Usulután</td><td data-l="Tipo"><span class="tag t-leg">Legislativa</span></td>
+<td data-l="Coalición" class="coal">GANA - FS</td><td data-l="Ganador" class="gan">NI (69.66%)</td>
+<td data-l="Partido 1">GANA 5.º lugar&#8239; 1.92% (2&#8239;660 votos)</td><td data-l="Partido 2">FS 4.º lugar&#8239; 4.96% (6&#8239;875 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-medio">MEDIO</span> 6.87% legislativo vs. 31.25% municipal (ratio 4.55×). GANA-FS ya se llevó Usulután Oeste en aritmética 2024.</td></tr>
+<tr data-i="12" data-k="M|San Vicente Sur" data-p="PDC|GANA" class="rowx r-med">
+<td class="jur">San Vicente Sur</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">PDC - GANA</td><td data-l="Ganador" class="gan">NI (39.17%)</td>
+<td data-l="Partido 1">PDC no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 2">GANA 2.º lugar&#8239; 32.2% (7&#8239;078 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-medio">MEDIO</span> NI ganó con 39.17% frente a GANA con 32.20%. El pacto no vuelca el municipio por sí solo (brecha 1&#8239;532), pero deja el margen bajo 7 puntos.</td></tr>
+<tr data-i="13" data-k="M|San Salvador Sur" data-p="PDC|GANA|FUERZA SOLIDARIA" class="rowx r-bajo">
+<td class="jur">San Salvador Sur</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">PDC - GANA - FS</td><td data-l="Ganador" class="gan">NI (34.21%)</td>
+<td data-l="Partido 1">PDC 4.º lugar&#8239; 9.99% (4&#8239;489 votos)</td><td data-l="Partido 2">GANA 6.º lugar&#8239; 4.02% (1&#8239;805 votos)</td><td data-l="Partido 3">FS 8.º lugar&#8239; 1.29% (579 votos)</td>
+<td data-l="Riesgo"><span class="badge b-bajo">BAJO</span> El bloque suma 15.30% y el verdadero segundo lugar es ARENA (22.64%). El pacto no disputa este concejo.</td></tr>
+<tr data-i="14" data-k="M|San Miguel Centro" data-p="PDC|FUERZA SOLIDARIA" class="rowx r-blind">
+<td class="jur">San Miguel Centro</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">PDC - FS</td><td data-l="Ganador" class="gan">PDC (73.61%)</td>
+<td data-l="Partido 1">PDC 1.º lugar&#8239; 73.61% (56&#8239;288 votos)</td><td data-l="Partido 2">FS 6.º lugar&#8239; 0.53% (406 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-blindaje">BLINDAJE</span> PDC ya gobierna con 73.61%. FS aporta 0.53%. Pacto de consolidación pura: asegura una plaza donde NI compitió coaligado con GANA y quedó en 20.91%.</td></tr>
+<tr data-i="15" data-k="M|San Miguel Oeste" data-p="PDC|FUERZA SOLIDARIA" class="rowx r-med">
+<td class="jur">San Miguel Oeste</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">PDC - FS</td><td data-l="Ganador" class="gan">NI (43.89%)</td>
+<td data-l="Partido 1">PDC 5.º lugar&#8239; 3.02% (614 votos)</td><td data-l="Partido 2">FS 3.º lugar&#8239; 20.37% (4&#8239;147 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-medio">MEDIO</span> FS es el activo real aquí (20.37%, 3.º) y PDC apenas 3.02%. El bloque llega a 23.38% frente a NI 43.89%. No vuelca, pero consolida el tercer lugar.</td></tr>
+<tr data-i="16" data-k="M|San Miguel Norte" data-p="PDC|FUERZA SOLIDARIA" class="rowx r-blind">
+<td class="jur">San Miguel Norte</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">PDC - FS</td><td data-l="Ganador" class="gan">PDC (52.82%)</td>
+<td data-l="Partido 1">PDC 1.º lugar&#8239; 52.82% (14&#8239;966 votos)</td><td data-l="Partido 2">FS no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-blindaje">BLINDAJE</span> PDC gobierna con 52.82% y NI quedó a 2&#8239;455 votos (44.15%). FS no aporta votos. Es un municipio recuperable para NI si el pacto no moviliza.</td></tr>
+<tr data-i="17" data-k="M|San Salvador Este" data-p="PDC|FUERZA SOLIDARIA" class="rowx r-bajo">
+<td class="jur">San Salvador Este</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">PDC - FS</td><td data-l="Ganador" class="gan">NI (38.9%)</td>
+<td data-l="Partido 1">PDC 9.º lugar&#8239; 0.79% (980 votos)</td><td data-l="Partido 2">FS 6.º lugar&#8239; 3.44% (4&#8239;286 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-bajo">BAJO</span> El bloque suma 4.23%. El adversario real de NI aquí es CD con 34.20% frente a 38.90% de NI: margen de 5&#8239;859 votos que este pacto no toca.</td></tr>
+<tr data-i="18" data-k="M|San Vicente Norte" data-p="PCN|FUERZA SOLIDARIA" class="rowx r-alto">
+<td class="jur">San Vicente Norte</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">PCN - FS</td><td data-l="Ganador" class="gan">NI (32.52%)</td>
+<td data-l="Partido 1">PCN no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 2">FS 2.º lugar&#8239; 30.57% (5&#8239;679 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-alto">ALTO</span> FS quedó 2.º con 30.57% a solo 362 votos de NI. PCN no compitió. El pacto formaliza una amenaza que ya existía: es el municipio con el margen más estrecho del mapa.</td></tr>
+<tr data-i="19" data-k="M|La Libertad Costa" data-p="PCN|FUERZA SOLIDARIA" class="rowx r-anom">
+<td class="jur">La Libertad Costa</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">PCN - FS</td><td data-l="Ganador" class="gan">GANA (49.6%)</td>
+<td data-l="Partido 1">PCN 6.º lugar&#8239; 0.65% (157 votos)</td><td data-l="Partido 2">FS 7.º lugar&#8239; 0.19% (47 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-anomalia">ANOMALÍA</span> GANA gobierna este municipio con 49.60% y NO integra el pacto. PCN+FS suman 204 votos (0.85%). Geometría incoherente: el pacto es irrelevante donde el aliado ya manda.</td></tr>
+<tr data-i="20" data-k="M|La Libertad Norte" data-p="GANA|PCN|FUERZA SOLIDARIA" class="rowx r-anom">
+<td class="jur">La Libertad Norte</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">GANA - PCN - FS</td><td data-l="Ganador" class="gan">NI (34.4%)</td>
+<td data-l="Partido 1">GANA no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 2">PCN no obtuvo votos propios en esta jurisdicción</td><td data-l="Partido 3">FS 3.º lugar&#8239; 10.9% (2&#8239;336 votos)</td>
+<td data-l="Riesgo"><span class="badge b-anomalia">ANOMALÍA</span> El pacto suma 10.90% (solo FS). El verdadero contendiente es PDC con 34.18%, a 48 votos de NI, y queda fuera de la coalición. Es el municipio más vulnerable de NI en el país y el pacto lo ignora.</td></tr>
+<tr data-i="21" data-k="M|La Libertad Centro" data-p="GANA|PCN|FUERZA SOLIDARIA" class="rowx r-bajo">
+<td class="jur">La Libertad Centro</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">GANA - PCN - FS</td><td data-l="Ganador" class="gan">NI (33.44%)</td>
+<td data-l="Partido 1">GANA 5.º lugar&#8239; 5.74% (1&#8239;767 votos)</td><td data-l="Partido 2">PCN 8.º lugar&#8239; 1.29% (398 votos)</td><td data-l="Partido 3">FS no obtuvo votos propios en esta jurisdicción</td>
+<td data-l="Riesgo"><span class="badge b-bajo">BAJO</span> El bloque suma 7.04%; el segundo lugar real es ARENA (25.74%). Pacto sin efecto competitivo.</td></tr>
+<tr data-i="22" data-k="M|La Libertad Oeste" data-p="GANA|PCN|FUERZA SOLIDARIA" class="rowx r-blind">
+<td class="jur">La Libertad Oeste</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">GANA - PCN - FS</td><td data-l="Ganador" class="gan">GANA (64.29%)</td>
+<td data-l="Partido 1">GANA 1.º lugar&#8239; 64.29% (30&#8239;475 votos)</td><td data-l="Partido 2">PCN 5.º lugar&#8239; 1.48% (702 votos)</td><td data-l="Partido 3">FS 9.º lugar&#8239; 0.28% (132 votos)</td>
+<td data-l="Riesgo"><span class="badge b-blindaje">BLINDAJE</span> GANA gobierna con 64.29% y suma a PCN y FS para llegar a 66.05%. Consolidación defensiva; NI quedó en 25.26%.</td></tr>
+<tr data-i="23" data-k="M|Cuscatlan Sur" data-p="GANA|PCN" class="rowx r-crit">
+<td class="jur">Cuscatlán Sur</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">GANA - PCN</td><td data-l="Ganador" class="gan">NI (40.89%)</td>
+<td data-l="Partido 1">GANA 2.º lugar&#8239; 35.67% (13&#8239;989 votos)</td><td data-l="Partido 2">PCN 3.º lugar&#8239; 11.11% (4&#8239;356 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-critico">CRÍTICO</span> GANA (35.67%) + PCN (11.11%) = 46.78% frente a NI 40.89%. En aritmética 2024 el pacto VOLTEA el municipio con +2&#8239;310 votos de ventaja.</td></tr>
+<tr data-i="24" data-k="M|La Paz Oeste" data-p="GANA|FUERZA SOLIDARIA" class="rowx r-blind">
+<td class="jur">La Paz Oeste</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">GANA - FS</td><td data-l="Ganador" class="gan">GANA (57.07%)</td>
+<td data-l="Partido 1">GANA 1.º lugar&#8239; 57.07% (16&#8239;129 votos)</td><td data-l="Partido 2">FS 3.º lugar&#8239; 8.52% (2&#8239;407 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-blindaje">BLINDAJE</span> GANA gobierna con 57.07% y con FS llega a 65.58%. NI en 25.92%. Refuerzo de un bastión ya perdido en 2024.</td></tr>
+<tr data-i="25" data-k="M|La Libertad Sur" data-p="GANA|FUERZA SOLIDARIA" class="rowx r-bajo">
+<td class="jur">La Libertad Sur</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">GANA - FS</td><td data-l="Ganador" class="gan">NI (50.73%)</td>
+<td data-l="Partido 1">GANA 8.º lugar&#8239; 0.94% (411 votos)</td><td data-l="Partido 2">FS 6.º lugar&#8239; 2.89% (1&#8239;262 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-bajo">BAJO</span> El bloque suma 3.84% frente a NI 50.73%. Sin efecto competitivo.</td></tr>
+<tr data-i="26" data-k="M|Usulutan Oeste" data-p="GANA|FUERZA SOLIDARIA" class="rowx r-crit">
+<td class="jur">Usulután Oeste</td><td data-l="Tipo"><span class="tag t-mun">Municipal</span></td>
+<td data-l="Coalición" class="coal">GANA - FS</td><td data-l="Ganador" class="gan">NI (29.91%)</td>
+<td data-l="Partido 1">GANA 2.º lugar&#8239; 26.98% (5&#8239;520 votos)</td><td data-l="Partido 2">FS 3.º lugar&#8239; 26.88% (5&#8239;500 votos)</td><td data-l="Partido 3">—</td>
+<td data-l="Riesgo"><span class="badge b-critico">CRÍTICO</span> GANA (26.98%) + FS (26.88%) = 53.85% frente a NI 29.91%. El pacto VOLTEA el municipio con +4&#8239;899. NI ganó en 2024 únicamente por fragmentación del contrario.</td></tr>
+
+</tbody>
+</table>
+</div>
+<p class="mini">FS = Fuerza Solidaria · DS = Democracia Salvadoreña (no participó en 2024; necesita competir en 2027 para conservar su registro). Porcentajes sobre votos válidos de la jurisdicción.</p>
+
+<h2>2. Base de datos y validación del modelo</h2>
+<div class="card">
+<p>El análisis parte de <b>VOTOS_CONSOLIDADOS.xlsx</b> (358 753 registros, ubicación <i>NACIONAL</i>), agregado por jurisdicción de voto asignado.</p>
+<table class="data">
+<thead><tr><th>Escrutinio 2024</th><th class="num">Votos válidos</th><th class="num">NI</th><th class="num">2.ª fuerza</th></tr></thead>
+<tbody>
+<tr><td>Presidente</td><td class="num">2 861 965</td><td class="num">83.13%</td><td class="num">FMLN 7.03%</td></tr>
+<tr><td>Diputados</td><td class="num">2 815 927</td><td class="num">67.93%</td><td class="num">ARENA 7.97%</td></tr>
+<tr><td>Alcaldes</td><td class="num">1 616 216</td><td class="num">36.63%</td><td class="num">GANA 13.41%</td></tr>
+</tbody></table>
+<p><b>Validación D'Hondt.</b> Reproduciendo la asignación 2024 con los escaños del D.L. 755 (SS 16, LL 7, SA/SM/SO 5, US 4, AH/LP 3, resto 2) el modelo entrega <b>NI 53, PCN 2, ARENA 2, PDC 1, VAMOS 1, FMLN 1</b>. El oficial fue NI 54 / PCN 1. La única diferencia es el tercer escaño de Ahuachapán, donde el corte queda en 34 787 (PCN) contra 33 446 (NI÷3): <b>1 341 votos, 0.8% del departamento</b>. El archivo excluye el voto del exterior que en 2024 se sumaba a San Salvador. El modelo reproduce 59 de 60 escaños.</p>
+</div>
+
+<h2>3. Efecto directo de las coaliciones legislativas: nulo</h2>
+<p class="lead">Para cada pacto se calculó, por búsqueda binaria sobre D'Hondt, el número exacto de votos que necesitaría para arrebatar un escaño en su departamento.</p>
+<div class="scroll"><table class="data">
+<thead><tr><th>Departamento</th><th>Coalición</th><th class="num">Votos 2024</th><th class="num">%</th><th class="num">Umbral 1 escaño</th><th class="num">%</th><th class="num">Faltan</th><th class="num">Factor</th></tr></thead>
+<tbody>
+<tr><td>San Miguel</td><td>PDC + FS</td><td class="num">42 769</td><td class="num">23.67</td><td class="num">20 977</td><td class="num">11.61</td><td class="num pos">ya lo tiene</td><td class="num">0.49×</td></tr>
+<tr><td>Ahuachapán</td><td>PCN + DS</td><td class="num">34 787</td><td class="num">21.26</td><td class="num">33 447</td><td class="num">20.44</td><td class="num pos">ya lo tiene</td><td class="num">0.96×</td></tr>
+<tr><td>Chalatenango</td><td>PCN + DS</td><td class="num">29 394</td><td class="num">33.11</td><td class="num">20 766</td><td class="num">23.39</td><td class="num pos">ya lo tiene</td><td class="num">0.71×</td></tr>
+<tr><td>San Salvador</td><td>PDC + FS</td><td class="num">18 391</td><td class="num">2.20</td><td class="num">45 676</td><td class="num">5.47</td><td class="num neg">27 285</td><td class="num">2.48×</td></tr>
+<tr><td>Cuscatlán</td><td>GANA + PCN</td><td class="num">15 976</td><td class="num">13.12</td><td class="num">40 745</td><td class="num">33.46</td><td class="num neg">24 769</td><td class="num">2.55×</td></tr>
+<tr><td>La Paz</td><td>GANA + FS</td><td class="num">13 558</td><td class="num">9.41</td><td class="num">32 114</td><td class="num">22.29</td><td class="num neg">18 556</td><td class="num">2.37×</td></tr>
+<tr><td>La Libertad</td><td>GANA + FS</td><td class="num">11 774</td><td class="num">3.21</td><td class="num">38 589</td><td class="num">10.52</td><td class="num neg">26 815</td><td class="num">3.28×</td></tr>
+<tr><td>Morazán</td><td>PDC + GANA</td><td class="num">10 674</td><td class="num">13.88</td><td class="num">23 910</td><td class="num">31.09</td><td class="num neg">13 236</td><td class="num">2.24×</td></tr>
+<tr><td>Usulután</td><td>GANA + FS</td><td class="num">9 536</td><td class="num">6.87</td><td class="num">24 158</td><td class="num">17.42</td><td class="num neg">14 622</td><td class="num">2.53×</td></tr>
+<tr><td>San Vicente</td><td>PDC + GANA</td><td class="num">4 916</td><td class="num">7.07</td><td class="num">22 571</td><td class="num">32.45</td><td class="num neg">17 655</td><td class="num">4.59×</td></tr>
+<tr><td>San Vicente</td><td>PCN + FS</td><td class="num">2 928</td><td class="num">4.21</td><td class="num">22 571</td><td class="num">32.45</td><td class="num neg">19 643</td><td class="num">7.71×</td></tr>
+<tr><td>La Unión</td><td>PDC + FS</td><td class="num">1 307</td><td class="num">1.40</td><td class="num">35 786</td><td class="num">38.34</td><td class="num neg">34 479</td><td class="num">27.4×</td></tr>
+</tbody></table></div>
+<div class="key"><b>Con la votación de 2024, ninguna coalición legislativa gana un escaño adicional.</b> Los tres escaños que «produce» el mapa (San Miguel, Ahuachapán, Chalatenango) ya los ganaban PDC y PCN corriendo solos. La coalición no los crea: los blinda.</div>
+
+<h2>4. El canal de contagio: cómo lo municipal llega a lo legislativo</h2>
+<p class="lead">Aquí está la respuesta a la pregunta. El refuerzo municipal no afecta a NI por la vía aritmética de los escaños, sino por tres mecanismos encadenados.</p>
+
+<h3>4.1 El cambio de calendario es el habilitador</h3>
+<div class="card">
+<p>En 2024 las elecciones fueron <b>separadas</b>: presidencial y legislativa el 4 de febrero, municipal el 3 de marzo. El resultado fue una brecha de participación enorme —2 815 927 votos válidos legislativos contra 1 616 216 municipales, apenas el <b>57.4%</b>—. Esa separación aisló los dos electorados: el voto de estructura local de GANA, PDC, PCN y FS se expresó en marzo, en una elección donde el votante blando de NI se quedó en casa, y no tuvo ninguna forma de contaminar la papeleta legislativa de febrero.</p>
+<p><b>En 2027 las tres papeletas se votan el mismo día, el 28 de febrero.</b> El votante que la maquinaria municipal de la coalición saca a votar por su alcalde recibe simultáneamente la papeleta legislativa. Ese canal, que en 2024 estaba físicamente cerrado, en 2027 está abierto.</p>
+</div>
+
+<h3>4.2 La reserva: cuánto voto municipal tiene cada bloque por encima de su voto legislativo</h3>
+<p class="lead">Para cada departamento se comparó el porcentaje que los partidos del pacto obtuvieron en la papeleta legislativa (febrero 2024) contra el que obtuvieron en la papeleta municipal (marzo 2024) en ese mismo territorio.</p>
+<div class="scroll"><table class="data">
+<thead><tr><th>Departamento</th><th>Bloque</th><th class="num">% legislativo</th><th class="num">% municipal</th><th class="num">Ratio arrastre</th><th class="num">NI legisl.</th><th class="num">NI munic.</th><th class="num">Desacople NI</th></tr></thead>
+<tbody>
+<tr><td>La Libertad</td><td>GANA + FS</td><td class="num">3.21</td><td class="num">22.91</td><td class="num neg">7.14×</td><td class="num">68.80</td><td class="num">34.82</td><td class="num neg">−33.98</td></tr>
+<tr><td>La Paz</td><td>GANA + FS</td><td class="num">9.41</td><td class="num">51.38</td><td class="num neg">5.46×</td><td class="num">66.87</td><td class="num">32.87</td><td class="num neg">−34.00</td></tr>
+<tr><td>Usulután</td><td>GANA + FS</td><td class="num">6.87</td><td class="num">31.25</td><td class="num neg">4.55×</td><td class="num">69.66</td><td class="num">37.12</td><td class="num neg">−32.54</td></tr>
+<tr><td>La Unión</td><td>PDC + FS</td><td class="num">1.40</td><td class="num">5.44</td><td class="num">3.88×</td><td class="num">76.67</td><td class="num">48.25</td><td class="num neg">−28.42</td></tr>
+<tr><td>San Salvador</td><td>PDC + FS</td><td class="num">2.20</td><td class="num">7.19</td><td class="num">3.26×</td><td class="num">71.16</td><td class="num">44.44</td><td class="num neg">−26.72</td></tr>
+<tr><td>Cuscatlán</td><td>GANA + PCN</td><td class="num">13.12</td><td class="num">37.27</td><td class="num neg">2.84×</td><td class="num">66.93</td><td class="num">42.48</td><td class="num neg">−24.45</td></tr>
+<tr><td>San Vicente</td><td>PDC + GANA</td><td class="num">7.07</td><td class="num">18.89</td><td class="num">2.67×</td><td class="num">64.91</td><td class="num">36.12</td><td class="num neg">−28.79</td></tr>
+<tr><td>San Miguel</td><td>PDC + FS</td><td class="num">23.67</td><td class="num">61.06</td><td class="num neg">2.58×</td><td class="num">58.04</td><td class="num">17.13</td><td class="num neg">−40.91</td></tr>
+<tr><td>Ahuachapán</td><td>PCN + DS</td><td class="num">21.26</td><td class="num">50.69</td><td class="num neg">2.38×</td><td class="num">61.33</td><td class="num">36.85</td><td class="num neg">−24.48</td></tr>
+<tr><td>Morazán</td><td>PDC + GANA</td><td class="num">7.53</td><td class="num">12.06</td><td class="num">1.60×</td><td class="num">62.17</td><td class="num">35.65</td><td class="num neg">−26.52</td></tr>
+<tr><td>Chalatenango</td><td>PCN + DS</td><td class="num">33.11</td><td class="num">27.81</td><td class="num pos">0.84×</td><td class="num">46.78</td><td class="num">31.12</td><td class="num neg">−15.66</td></tr>
+</tbody></table></div>
+<div class="key"><b>Lectura:</b> en La Libertad el bloque GANA-FS vale 7 veces más en la papeleta municipal que en la legislativa. En San Miguel, PDC-FS alcanza el 61% municipal contra 23.67% legislativo. Esa diferencia es la reserva que el pacto puede intentar convertir. Y en la columna espejo, NI pierde entre 24 y 41 puntos al pasar de la papeleta legislativa a la municipal en <b>todos</b> los departamentos del mapa: el desacople no es del adversario, es de NI.</div>
+
+<h3>4.3 Simulación: qué pasa si el voto municipal se traslada a la papeleta legislativa</h3>
+<p class="lead">Escenarios sobre los <b>54 escaños departamentales</b> vigentes para 2027 (reforma del 14 de mayo de 2026: San Salvador baja de 16 a 11, La Libertad de 7 a 6, y se crea la circunscripción Exterior con 6). Se mantiene el voto legislativo de NI en su nivel de febrero 2024 y se eleva el del bloque coaligado hacia su nivel municipal en la proporción T.</p>
+<div class="scroll"><table class="data">
+<thead><tr><th>Escenario de traslado (T)</th><th class="num">NI</th><th class="num">Coaliciones</th><th class="num">ARENA</th><th class="num">VAMOS</th><th>Departamentos donde el pacto obtiene escaño</th></tr></thead>
+<tbody>
+<tr><td><b>T = 0%</b> — comportamiento idéntico a 2024</td><td class="num">49</td><td class="num">3</td><td class="num">1</td><td class="num">1</td><td>San Miguel, Ahuachapán, Chalatenango</td></tr>
+<tr><td><b>T = 25%</b></td><td class="num">48</td><td class="num">4</td><td class="num">1</td><td class="num">1</td><td>+ 2.º escaño en San Miguel</td></tr>
+<tr><td><b>T = 50%</b></td><td class="num">45</td><td class="num">7</td><td class="num">1</td><td class="num">1</td><td>+ La Libertad, La Paz, Usulután</td></tr>
+<tr><td><b>T = 75%</b></td><td class="num">45</td><td class="num">7</td><td class="num">1</td><td class="num">1</td><td>igual que T=50%</td></tr>
+<tr class="r-crit"><td><b>T = 100%</b> — el bloque vota igual que en la municipal</td><td class="num neg">43</td><td class="num">9</td><td class="num">1</td><td class="num">1</td><td>+ Cuscatlán, 3.er escaño en San Miguel</td></tr>
+</tbody></table></div>
+
+<div class="card">
+<p class="mini" style="margin-bottom:10px">Distribución de los 54 escaños departamentales por escenario</p>
+<p style="font-size:12px;margin:2px 0 3px">T = 0%</p><div class="bar"><i class="b-ni" style="width:90.7%"></i><i class="b-co" style="width:5.6%"></i><i class="b-ot" style="width:3.7%"></i></div>
+<p style="font-size:12px;margin:10px 0 3px">T = 50%</p><div class="bar"><i class="b-ni" style="width:83.3%"></i><i class="b-co" style="width:13.0%"></i><i class="b-ot" style="width:3.7%"></i></div>
+<p style="font-size:12px;margin:10px 0 3px">T = 100%</p><div class="bar"><i class="b-ni" style="width:79.6%"></i><i class="b-co" style="width:16.7%"></i><i class="b-ot" style="width:3.7%"></i></div>
+<p style="font-size:12px;margin:10px 0 3px">Cota extrema: estructura municipal completa</p><div class="bar"><i class="b-ni" style="width:50.0%"></i><i class="b-co" style="width:25.9%"></i><i class="b-ot" style="width:24.1%"></i></div>
+<div class="legend"><s class="b-ni"></s>Nuevas Ideas <s class="b-co"></s>Coaliciones del mapa <s class="b-ot"></s>Otros (ARENA, VAMOS, FMLN, CD, GANA/PDC/PCN fuera de pacto)</div>
+</div>
+
+<div class="note"><b>Cota extrema (no es una proyección).</b> Si la papeleta legislativa de 2027 se comportara exactamente como se comportó la papeleta municipal de 2024 —misma estructura de preferencias, con los pactos ya aplicados— NI obtendría <b>27 de los 54 escaños departamentales</b>: 6 de 11 en San Salvador, 3 de 6 en La Libertad, 1 de 5 en San Miguel, 1 de 3 en Ahuachapán y 1 de 3 en La Paz. Este número no debe leerse como pronóstico: la municipal de marzo de 2024 fue una elección de baja participación donde el voto blando de NI no salió. Sirve como <b>límite superior del daño</b> y como medida de cuánto de la ventaja legislativa de NI depende de que el votante llegue a las urnas movilizado por la papeleta presidencial y no por la municipal.</div>
+
+<h3>4.4 Los tres mecanismos, en orden</h3>
+<div class="card">
+<ul>
+<li><b>Arrastre de candidatura (efecto inmediato, 28-feb-2027).</b> Un candidato a alcalde competitivo con estructura territorial saca votantes que reciben las tres papeletas en la misma mesa. Cuanto más fuerte el refuerzo municipal, más gente de ese perfil llega a la urna. En La Libertad, La Paz, Usulután y Cuscatlán la maquinaria municipal del bloque es de 3 a 7 veces mayor que su presencia legislativa.</li>
+<li><b>Símbolo único y reconocimiento (efecto de intermediación).</b> Si el pacto se inscribe con símbolo único, el votante que marca ese símbolo en la papeleta municipal lo reconoce en la legislativa. Es la vía más barata de convertir estructura local en votos de circunscripción. La imagen no especifica si los pactos son con símbolo único o con símbolos separados; ese dato cambia por completo la magnitud del efecto y debe verificarse en el pacto inscrito ante el TSE.</li>
+<li><b>Incumbencia (efecto diferido, 2030).</b> Cada concejo que el pacto conserve o gane en 2027 le da tres años de recursos, planilla y presencia territorial. No afecta la legislativa de 2027, pero es el insumo de la de 2030.</li>
+</ul>
+</div>
+
+<h2>5. Los concejos que sí están en juego</h2>
+<div class="scroll"><table class="data">
+<thead><tr><th>Categoría</th><th>Municipio</th><th class="num">NI 2024</th><th>Coalición 2027 sobre voto 2024</th><th class="num">%</th><th class="num">Saldo para NI</th></tr></thead>
+<tbody>
+<tr class="r-crit"><td><b>Vuelca</b></td><td>Usulután Oeste</td><td class="num">6 121 (29.91%)</td><td>GANA 5 520 + FS 5 500 = 11 020</td><td class="num">53.85</td><td class="num neg">−4 899</td></tr>
+<tr class="r-crit"><td><b>Vuelca</b></td><td>Cuscatlán Sur</td><td class="num">16 035 (40.89%)</td><td>GANA 13 989 + PCN 4 356 = 18 345</td><td class="num">46.78</td><td class="num neg">−2 310</td></tr>
+<tr><td>A tiro</td><td>San Vicente Norte</td><td class="num">6 041 (32.52%)</td><td>PCN 0 + FS 5 679 = 5 679</td><td class="num">30.57</td><td class="num neg">+362</td></tr>
+<tr><td>A tiro</td><td>San Vicente Sur</td><td class="num">8 610 (39.17%)</td><td>PDC 0 + GANA 7 078 = 7 078</td><td class="num">32.20</td><td class="num neg">+1 532</td></tr>
+<tr><td>Blindaje ajeno</td><td>San Miguel Centro</td><td class="num">15 992 (20.91%)</td><td>PDC 56 288 + FS 406 = 56 694</td><td class="num">74.14</td><td class="num">—</td></tr>
+<tr><td>Blindaje ajeno</td><td>La Libertad Oeste</td><td class="num">11 975 (25.26%)</td><td>GANA + PCN + FS = 31 309</td><td class="num">66.05</td><td class="num">—</td></tr>
+<tr><td>Blindaje ajeno</td><td>La Paz Oeste</td><td class="num">7 327 (25.92%)</td><td>GANA 16 129 + FS 2 407 = 18 536</td><td class="num">65.58</td><td class="num">—</td></tr>
+<tr><td>Blindaje ajeno</td><td>San Miguel Norte</td><td class="num">12 511 (44.15%)</td><td>PDC 14 966 + FS 0 = 14 966</td><td class="num">52.82</td><td class="num">—</td></tr>
+</tbody></table></div>
+<p class="lead" style="margin-top:10px">Los 19 pactos restantes no tienen efecto competitivo: suman entre 0.85% y 23.4% en jurisdicciones donde el segundo lugar real es otro partido.</p>
+
+<div class="note"><b>Dos anomalías que conviene registrar.</b> En <b>La Libertad Norte</b> el pacto GANA-PCN-FS suma 10.90% e ignora al PDC, que quedó a <b>48 votos</b> de ganar el municipio (34.18% contra 34.40% de NI): es la plaza más vulnerable del país y la coalición no la toca. En <b>La Libertad Costa</b> el pacto PCN-FS suma 204 votos (0.85%) en un municipio que <b>GANA ya gobierna con 49.60%</b> sin integrar el pacto. La geometría de la coalición no está optimizada para ganar territorio; está optimizada para otra cosa.</div>
+
+<h2>6. Esa otra cosa: supervivencia registral</h2>
+<div class="card">
+<p>La Ley de Partidos Políticos manda cancelar al partido que en la elección legislativa no obtenga al menos <b>50 000 votos válidos</b> corriendo solo. Para coaliciones con símbolo único los mínimos son <b>100 000</b> con dos partidos, <b>150 000</b> con tres y 50 000 adicionales por cada partido por encima de tres. Ningún partido puede ser cancelado si conserva al menos un diputado electo.</p>
+<table class="data">
+<thead><tr><th>Partido</th><th class="num">Legislativa 2024</th><th class="num">%</th><th class="num">Margen sobre 50 000</th><th>Red de protección</th></tr></thead>
+<tbody>
+<tr><td>PCN</td><td class="num">100 902</td><td class="num">3.58</td><td class="num pos">+50 902</td><td>Escaño en Ahuachapán / Chalatenango</td></tr>
+<tr><td>PDC (incl. PDC-PCN Morazán)</td><td class="num">97 132</td><td class="num">3.45</td><td class="num pos">+47 132</td><td>Escaño en San Miguel</td></tr>
+<tr><td>GANA</td><td class="num">95 492</td><td class="num">3.39</td><td class="num pos">+45 492</td><td class="neg">Ninguna — sin diputados en 2024</td></tr>
+<tr class="r-crit"><td><b>Fuerza Solidaria</b></td><td class="num">50 617</td><td class="num">1.80</td><td class="num neg">+617</td><td class="neg">Ninguna — sin diputados en 2024</td></tr>
+<tr><td>Democracia Salvadoreña</td><td class="num">no participó</td><td class="num">—</td><td class="num">—</td><td class="neg">Debe competir para conservar registro</td></tr>
+</tbody></table>
+<p style="margin-top:12px">FS sobrevivió a 2024 por <b>617 votos</b>. Por eso aparece en 5 de los 6 pactos legislativos y en 11 de los 15 municipales. No está buscando alcaldías: está buscando volumen. Y ahí aparece la contradicción del diseño.</p>
+<table class="data">
+<thead><tr><th>Pacto</th><th>Departamentos</th><th class="num">Votos 2024</th><th class="num">Umbral de coalición</th><th class="num">Brecha</th></tr></thead>
+<tbody>
+<tr><td>PCN + DS</td><td>Ahuachapán, Chalatenango</td><td class="num">64 181</td><td class="num">100 000</td><td class="num neg">−35 819</td></tr>
+<tr><td>PDC + FS</td><td>San Miguel, San Salvador, La Unión</td><td class="num">62 468</td><td class="num">100 000</td><td class="num neg">−37 532</td></tr>
+<tr><td>GANA + FS</td><td>La Paz, La Libertad, Usulután</td><td class="num">34 868</td><td class="num">100 000</td><td class="num neg">−65 132</td></tr>
+<tr><td>GANA + PCN</td><td>Cuscatlán</td><td class="num">15 976</td><td class="num">100 000</td><td class="num neg">−84 024</td></tr>
+<tr><td>PDC + GANA</td><td>San Vicente, Morazán</td><td class="num">10 708</td><td class="num">100 000</td><td class="num neg">−89 292</td></tr>
+<tr><td>PCN + FS</td><td>San Vicente</td><td class="num">2 928</td><td class="num">100 000</td><td class="num neg">−97 072</td></tr>
+</tbody></table>
+<p style="margin-top:12px">Además, la proporción del voto nacional que cada partido metería dentro de pactos: <b>PCN 70.4%, FS 62.8%, PDC 54.2%, GANA 37.3%</b>. Si el TSE aplica el umbral de coalición a esos votos y el residual individual no llega a 50 000, el pacto se convierte en trampa de cancelación en vez de salvavidas. PCN y PDC están protegidos por la excepción del diputado electo. <b>GANA y FS no.</b></p>
+<p class="mini"><b>Advertencia metodológica:</b> la Ley de Partidos Políticos fue reformada de nuevo en mayo de 2026 junto con el paquete de la circunscripción exterior. Los montos exactos vigentes para 2027 deben verificarse en el texto reformado antes de darse por firmes.</p>
+</div>
+
+<h2>7. Conclusiones operativas</h2>
+<div class="card">
+<ul>
+<li><b>El riesgo legislativo no es aritmético, es de movilización.</b> Con el comportamiento de 2024 congelado, las coaliciones no le quitan un escaño a NI. Con traslado del 50% del voto municipal a la papeleta legislativa, NI pasa de 49 a 45 escaños departamentales; con traslado total, a 43. Ninguno de esos escenarios pone en riesgo la mayoría simple (31) ni la calificada (40) sumando la circunscripción Exterior, pero cambian el margen de maniobra.</li>
+<li><b>El indicador a vigilar es el desacople, no la coalición.</b> NI pierde entre 24 y 41 puntos al pasar de la papeleta legislativa a la municipal en los once departamentos del mapa. La concurrencia de 2027 obliga a que esa brecha se cierre por arriba o el arrastre opera en sentido contrario: será la papeleta municipal la que arrastre a la legislativa, no al revés.</li>
+<li><b>Cuatro concejos concentran el problema real:</b> Usulután Oeste y Cuscatlán Sur (pérdidas en aritmética simple) y San Vicente Norte y San Vicente Sur (márgenes de 362 y 1 532 votos). En los dos primeros NI ganó en 2024 con 29.91% y 40.89%, muy por debajo de su propio piso presidencial en esos departamentos (69.66% y 66.93%): es desacople interno, no captación del adversario.</li>
+<li><b>La reforma de mayo de 2026 pesa más que todo el mapa de coaliciones.</b> Con San Salvador en 11 y La Libertad en 6, sobre voto 2024 el FMLN pierde su única curul sin que nadie mueva un dedo. Y los 6 escaños de la circunscripción Exterior se juegan en un padrón de ~962 000 inscritos sin serie histórica: cualquier proyección 2027 que no modele la circunscripción 15 está incompleta.</li>
+<li><b>Verificar antes de operar:</b> (1) si los pactos se inscriben con símbolo único o separado; (2) los umbrales de cancelación vigentes tras la reforma de 2026; (3) si el pacto de La Libertad Norte incorpora finalmente al PDC, lo que convertiría ese municipio en la amenaza más seria del mapa.</li>
+</ul>
+</div>
+
+</div>
+<footer>Análisis elaborado sobre VOTOS_CONSOLIDADOS.xlsx — escrutinio final 2024 · Septiembre 2026</footer>
+
+<script>
+const DET={"L|Ahuachapan":{"nivel":"Departamento","nombre":"Ahuachapán","esc":{"Presidencial":{"total":166314,"p":[["NUEVAS IDEAS",141263],["ARENA",11568],["FMLN",9355],["FUERZA SOLIDARIA",1754],["NUESTRO TIEMPO",1463],["FPS",911]]},"Legislativa":{"total":163614,"p":[["NUEVAS IDEAS",100338],["PCN",34787],["ARENA",12249],["FUERZA SOLIDARIA",7652],["FMLN",6693],["GANA",987],["NUESTRO TIEMPO",906]]},"Municipal":{"total":113012,"p":[["PCN",57287],["NUEVAS IDEAS",41642],["ARENA",7560],["FMLN",2801],["GANA",2358],["FUERZA SOLIDARIA",916],["CD",244],["FPS",204]]}}},"L|Chalatenango":{"nivel":"Departamento","nombre":"Chalatenango","esc":{"Presidencial":{"total":89793,"p":[["NUEVAS IDEAS",67309],["FMLN",13029],["ARENA",7502],["NUESTRO TIEMPO",886],["FPS",551],["FUERZA SOLIDARIA",516]]},"Legislativa":{"total":88788,"p":[["NUEVAS IDEAS",41531],["PCN",29394],["FMLN",10873],["ARENA",6138],["GANA",486],["CD",364]]},"Municipal":{"total":65726,"p":[["NUEVAS IDEAS",20453],["PCN",18280],["ARENA",10393],["FMLN",10117],["PCN-GANA",5948],["GANA",343],["FPS",192]]}}},"L|San Miguel":{"nivel":"Departamento","nombre":"San Miguel","esc":{"Presidencial":{"total":185317,"p":[["NUEVAS IDEAS",159060],["FMLN",14262],["ARENA",6811],["FUERZA SOLIDARIA",2573],["NUESTRO TIEMPO",1651],["FPS",960]]},"Legislativa":{"total":180720,"p":[["NUEVAS IDEAS",104881],["PDC",39980],["FMLN",15281],["GANA",6945],["ARENA",6593],["PCN",3486],["FUERZA SOLIDARIA",2789],["CD",762]]},"Municipal":{"total":125167,"p":[["PDC",71868],["NUEVAS IDEAS",21447],["NUEVAS IDEAS-GANA",15992],["FMLN",7059],["FUERZA SOLIDARIA",4553],["PCN",2038],["FPS",821],["ARENA",702],["GANA",687]]}}},"L|San Salvador":{"nivel":"Departamento","nombre":"San Salvador","esc":{"Presidencial":{"total":849691,"p":[["NUEVAS IDEAS",702023],["FMLN",54496],["ARENA",50165],["NUESTRO TIEMPO",30956],["FPS",7121],["FUERZA SOLIDARIA",4930]]},"Legislativa":{"total":834383,"p":[["NUEVAS IDEAS",593777],["VAMOS",65415],["ARENA",61039],["FMLN",48120],["NUESTRO TIEMPO",20679],["GANA",20288],["PDC",10978],["FUERZA SOLIDARIA",7413],["PCN",6671]]},"Municipal":{"total":419278,"p":[["NUEVAS IDEAS",186339],["ARENA",60335],["FMLN",53383],["CD",43391],["GANA",25230],["PDC",20696],["FUERZA SOLIDARIA",9462],["PCN",9418],["NUESTRO TIEMPO",7881],["FPS",1978],["VAMOS",1165]]}}},"L|La Union":{"nivel":"Departamento","nombre":"La Unión","esc":{"Presidencial":{"total":95377,"p":[["NUEVAS IDEAS",86077],["FMLN",4260],["ARENA",4040],["NUESTRO TIEMPO",400],["FUERZA SOLIDARIA",366],["FPS",234]]},"Legislativa":{"total":93346,"p":[["NUEVAS IDEAS",71571],["ARENA",6721],["FMLN",5760],["GANA",5536],["PCN",1564],["PDC",1307],["CD",886]]},"Municipal":{"total":51236,"p":[["NUEVAS IDEAS",24723],["PCN",10493],["GANA",5912],["FUERZA SOLIDARIA",2785],["ARENA",2604],["FMLN",2447],["CD",2272]]}}},"L|San Vicente":{"nivel":"Departamento","nombre":"San Vicente","esc":{"Presidencial":{"total":70662,"p":[["NUEVAS IDEAS",56028],["FMLN",7827],["ARENA",5147],["FUERZA SOLIDARIA",687],["NUESTRO TIEMPO",598],["FPS",375]]},"Legislativa":{"total":69547,"p":[["NUEVAS IDEAS",45141],["FMLN",8591],["ARENA",6620],["GANA",4916],["FUERZA SOLIDARIA",1913],["PCN",1014],["VAMOS",801],["CD",549]]},"Municipal":{"total":40558,"p":[["NUEVAS IDEAS",14651],["GANA",7660],["FMLN",7335],["FUERZA SOLIDARIA",6543],["ARENA",2218],["CD",1189],["PCN",863],["VAMOS",99]]}}},"L|Morazan":{"nivel":"Departamento","nombre":"Morazán","esc":{"Presidencial":{"total":77559,"p":[["NUEVAS IDEAS",61079],["FMLN",10905],["ARENA",4586],["FUERZA SOLIDARIA",361],["NUESTRO TIEMPO",339],["FPS",289]]},"Legislativa":{"total":76909,"p":[["NUEVAS IDEAS",47818],["FMLN",12884],["GANA",5432],["ARENA",4945],["PDC-PCN",4882],["CD",462],["PDC",360],["PCN",125]]},"Municipal":{"total":57823,"p":[["PCN-PDC",22446],["NUEVAS IDEAS",20616],["GANA",6973],["FMLN",6649],["ARENA",1139]]}}},"L|Cuscatlan":{"nivel":"Departamento","nombre":"Cuscatlán","esc":{"Presidencial":{"total":122939,"p":[["NUEVAS IDEAS",99970],["FMLN",10288],["ARENA",10078],["NUESTRO TIEMPO",1384],["FPS",690],["FUERZA SOLIDARIA",529]]},"Legislativa":{"total":121759,"p":[["NUEVAS IDEAS",81488],["ARENA",11837],["FMLN",11420],["GANA",10105],["PCN",5871],["CD",1038]]},"Municipal":{"total":62112,"p":[["NUEVAS IDEAS",26388],["GANA",16070],["PCN",7082],["ARENA",5699],["FMLN",5663],["NUESTRO TIEMPO",1210]]}}},"L|La Paz":{"nivel":"Departamento","nombre":"La Paz","esc":{"Presidencial":{"total":146112,"p":[["NUEVAS IDEAS",121780],["ARENA",10334],["FMLN",9582],["FUERZA SOLIDARIA",1968],["NUESTRO TIEMPO",1487],["FPS",961]]},"Legislativa":{"total":144074,"p":[["NUEVAS IDEAS",96339],["ARENA",20040],["FUERZA SOLIDARIA",8518],["FMLN",8033],["GANA",5038],["VAMOS",2133],["PDC",1428],["PCN",919],["CD",882],["NUESTRO TIEMPO",739]]},"Municipal":{"total":88041,"p":[["GANA",40341],["NUEVAS IDEAS",28937],["PCN",6121],["FUERZA SOLIDARIA",4892],["FMLN",3001],["ARENA",2205],["CD",830],["PDC",602],["FPS",557],["NUESTRO TIEMPO",555]]}}},"L|La Libertad":{"nivel":"Departamento","nombre":"La Libertad","esc":{"Presidencial":{"total":372044,"p":[["NUEVAS IDEAS",302425],["ARENA",27208],["FMLN",20725],["NUESTRO TIEMPO",16197],["FUERZA SOLIDARIA",2745],["FPS",2744]]},"Legislativa":{"total":366953,"p":[["NUEVAS IDEAS",252452],["ARENA",38588],["FMLN",17253],["VAMOS",16444],["NUESTRO TIEMPO",13972],["PDC",8765],["GANA",7489],["PCN",5784],["FUERZA SOLIDARIA",4284],["CD",1918]]},"Municipal":{"total":211470,"p":[["NUEVAS IDEAS",73641],["ARENA",52831],["GANA",44675],["PDC",11250],["FMLN",7914],["VAMOS",7533],["CD",3866],["NUESTRO TIEMPO",3812],["FUERZA SOLIDARIA",3777],["PCN",1760],["FPS",411]]}}},"L|Usulutan":{"nivel":"Departamento","nombre":"Usulután","esc":{"Presidencial":{"total":140258,"p":[["NUEVAS IDEAS",116672],["FMLN",14965],["ARENA",5445],["FUERZA SOLIDARIA",1829],["NUESTRO TIEMPO",811],["FPS",536]]},"Legislativa":{"total":138717,"p":[["NUEVAS IDEAS",96631],["FMLN",20507],["ARENA",7001],["FUERZA SOLIDARIA",6875],["GANA",2660],["PDC",2534],["CD",1042],["PCN",876],["NUESTRO TIEMPO",587]]},"Municipal":{"total":82616,"p":[["NUEVAS IDEAS",30668],["FUERZA SOLIDARIA",19234],["PDC",17978],["GANA",6582],["FMLN",6344],["ARENA",793],["PCN",496],["NUESTRO TIEMPO",437],["CD",84]]}}},"M|San Vicente Sur":{"nivel":"Municipio","nombre":"San Vicente Sur","esc":{"Presidencial":{"total":43232,"p":[["NUEVAS IDEAS",34224],["FMLN",4784],["ARENA",3234],["NUESTRO TIEMPO",461],["FUERZA SOLIDARIA",289],["FPS",240]]},"Legislativa":{"total":42601,"p":[["NUEVAS IDEAS",27430],["FMLN",5125],["ARENA",4117],["GANA",3992],["PCN",609],["FUERZA SOLIDARIA",493],["VAMOS",464],["CD",369]]},"Municipal":{"total":21983,"p":[["NUEVAS IDEAS",8610],["GANA",7078],["FMLN",2963],["ARENA",1168],["FUERZA SOLIDARIA",864],["PCN",863],["CD",437]]}}},"M|San Salvador Sur":{"nivel":"Municipio","nombre":"San Salvador Sur","esc":{"Presidencial":{"total":86903,"p":[["NUEVAS IDEAS",69886],["FMLN",7335],["ARENA",6533],["NUESTRO TIEMPO",2035],["FPS",610],["FUERZA SOLIDARIA",504]]},"Legislativa":{"total":85255,"p":[["NUEVAS IDEAS",58854],["ARENA",8004],["FMLN",7463],["VAMOS",4681],["NUESTRO TIEMPO",1910],["GANA",1661],["PDC",1234],["FUERZA SOLIDARIA",803],["PCN",640]]},"Municipal":{"total":44923,"p":[["NUEVAS IDEAS",15366],["ARENA",10170],["FMLN",9187],["PDC",4489],["NUESTRO TIEMPO",1918],["GANA",1805],["CD",714],["FUERZA SOLIDARIA",579],["VAMOS",499],["PCN",196]]}}},"M|San Miguel Centro":{"nivel":"Municipio","nombre":"San Miguel Centro","esc":{"Presidencial":{"total":118213,"p":[["NUEVAS IDEAS",101796],["FMLN",8384],["ARENA",3859],["FUERZA SOLIDARIA",2048],["NUESTRO TIEMPO",1376],["FPS",750]]},"Legislativa":{"total":114677,"p":[["NUEVAS IDEAS",63738],["PDC",27513],["FMLN",9173],["GANA",5904],["ARENA",3640],["PCN",2712],["FUERZA SOLIDARIA",1480],["CD",515]]},"Municipal":{"total":76470,"p":[["PDC",56288],["NUEVAS IDEAS-GANA",15992],["FMLN",1835],["PCN",1059],["FPS",581],["FUERZA SOLIDARIA",406],["ARENA",309]]}}},"M|San Miguel Oeste":{"nivel":"Municipio","nombre":"San Miguel Oeste","esc":{"Presidencial":{"total":36902,"p":[["NUEVAS IDEAS",31526],["FMLN",3160],["ARENA",1592],["FUERZA SOLIDARIA",345],["NUESTRO TIEMPO",154],["FPS",125]]},"Legislativa":{"total":36311,"p":[["NUEVAS IDEAS",24606],["FMLN",3878],["PDC",3237],["ARENA",1833],["FUERZA SOLIDARIA",1214],["GANA",758],["PCN",605],["CD",177]]},"Municipal":{"total":20362,"p":[["NUEVAS IDEAS",8936],["FMLN",4678],["FUERZA SOLIDARIA",4147],["PCN",979],["PDC",614],["GANA",485],["ARENA",283],["FPS",240]]}}},"M|San Miguel Norte":{"nivel":"Municipio","nombre":"San Miguel Norte","esc":{"Presidencial":{"total":30202,"p":[["NUEVAS IDEAS",25738],["FMLN",2718],["ARENA",1360],["FUERZA SOLIDARIA",180],["NUESTRO TIEMPO",121],["FPS",85]]},"Legislativa":{"total":29730,"p":[["NUEVAS IDEAS",16536],["PDC",9229],["FMLN",2229],["ARENA",1119],["GANA",283],["PCN",169],["FUERZA SOLIDARIA",93],["CD",69]]},"Municipal":{"total":28335,"p":[["PDC",14966],["NUEVAS IDEAS",12511],["FMLN",546],["GANA",202],["ARENA",110]]}}},"M|San Salvador Este":{"nivel":"Municipio","nombre":"San Salvador Este","esc":{"Presidencial":{"total":267701,"p":[["NUEVAS IDEAS",234202],["FMLN",13294],["ARENA",12323],["NUESTRO TIEMPO",4691],["FPS",1796],["FUERZA SOLIDARIA",1395]]},"Legislativa":{"total":261423,"p":[["NUEVAS IDEAS",201097],["ARENA",15465],["VAMOS",14088],["FMLN",12061],["GANA",7189],["NUESTRO TIEMPO",4073],["PDC",3428],["FUERZA SOLIDARIA",2284],["PCN",1735]]},"Municipal":{"total":124555,"p":[["NUEVAS IDEAS",48451],["CD",42592],["GANA",11676],["FMLN",7768],["ARENA",6558],["FUERZA SOLIDARIA",4286],["FPS",1138],["PCN",1106],["PDC",980]]}}},"M|San Vicente Norte":{"nivel":"Municipio","nombre":"San Vicente Norte","esc":{"Presidencial":{"total":27430,"p":[["NUEVAS IDEAS",21804],["FMLN",3043],["ARENA",1913],["FUERZA SOLIDARIA",398],["NUESTRO TIEMPO",137],["FPS",135]]},"Legislativa":{"total":26946,"p":[["NUEVAS IDEAS",17711],["FMLN",3465],["ARENA",2503],["FUERZA SOLIDARIA",1420],["GANA",924],["PCN",405],["VAMOS",336],["CD",180]]},"Municipal":{"total":18575,"p":[["NUEVAS IDEAS",6041],["FUERZA SOLIDARIA",5679],["FMLN",4372],["ARENA",1050],["CD",752],["GANA",582],["VAMOS",99]]}}},"M|La Libertad Costa":{"nivel":"Municipio","nombre":"La Libertad Costa","esc":{"Presidencial":{"total":40436,"p":[["NUEVAS IDEAS",34187],["ARENA",3189],["FMLN",2282],["FUERZA SOLIDARIA",326],["NUESTRO TIEMPO",282],["FPS",170]]},"Legislativa":{"total":39590,"p":[["NUEVAS IDEAS",28428],["ARENA",4079],["FMLN",2252],["PDC",2123],["GANA",694],["FUERZA SOLIDARIA",644],["VAMOS",567],["PCN",437],["NUESTRO TIEMPO",229],["CD",134]]},"Municipal":{"total":24112,"p":[["GANA",11960],["NUEVAS IDEAS",8009],["ARENA",1904],["PDC",1390],["FMLN",645],["PCN",157],["FUERZA SOLIDARIA",47]]}}},"M|La Libertad Norte":{"nivel":"Municipio","nombre":"La Libertad Norte","esc":{"Presidencial":{"total":41587,"p":[["NUEVAS IDEAS",34776],["FMLN",3367],["ARENA",2408],["NUESTRO TIEMPO",471],["FUERZA SOLIDARIA",357],["FPS",208]]},"Legislativa":{"total":40801,"p":[["NUEVAS IDEAS",29702],["ARENA",3316],["FMLN",3136],["PDC",1358],["FUERZA SOLIDARIA",900],["VAMOS",721],["PCN",527],["NUESTRO TIEMPO",495],["GANA",462],["CD",180]]},"Municipal":{"total":21433,"p":[["NUEVAS IDEAS",7374],["PDC",7326],["FUERZA SOLIDARIA",2336],["FMLN",2033],["ARENA",1939],["CD",301],["NUESTRO TIEMPO",124]]}}},"M|La Libertad Centro":{"nivel":"Municipio","nombre":"La Libertad Centro","esc":{"Presidencial":{"total":69327,"p":[["NUEVAS IDEAS",61160],["ARENA",3657],["FMLN",2960],["NUESTRO TIEMPO",706],["FUERZA SOLIDARIA",490],["FPS",354]]},"Legislativa":{"total":67995,"p":[["NUEVAS IDEAS",53390],["ARENA",5051],["FMLN",3024],["VAMOS",1392],["PDC",1314],["FUERZA SOLIDARIA",937],["GANA",871],["PCN",791],["NUESTRO TIEMPO",635],["CD",586]]},"Municipal":{"total":30768,"p":[["NUEVAS IDEAS",10289],["ARENA",7920],["VAMOS",3797],["CD",3292],["GANA",1767],["FMLN",1680],["PDC",1535],["PCN",398],["FPS",90]]}}},"M|La Libertad Oeste":{"nivel":"Municipio","nombre":"La Libertad Oeste","esc":{"Presidencial":{"total":81971,"p":[["NUEVAS IDEAS",71805],["ARENA",4401],["FMLN",3323],["NUESTRO TIEMPO",1419],["FPS",548],["FUERZA SOLIDARIA",475]]},"Legislativa":{"total":80563,"p":[["NUEVAS IDEAS",60798],["ARENA",6596],["FMLN",2946],["GANA",2732],["VAMOS",2275],["PDC",1569],["NUESTRO TIEMPO",1424],["PCN",1266],["FUERZA SOLIDARIA",577],["CD",376]]},"Municipal":{"total":47404,"p":[["GANA",30475],["NUEVAS IDEAS",11975],["ARENA",1810],["FMLN",705],["PCN",702],["NUESTRO TIEMPO",665],["VAMOS",495],["PDC",374],["FUERZA SOLIDARIA",132],["FPS",71]]}}},"M|Cuscatlan Sur":{"nivel":"Municipio","nombre":"Cuscatlán Sur","esc":{"Presidencial":{"total":74315,"p":[["NUEVAS IDEAS",61388],["ARENA",6422],["FMLN",4774],["NUESTRO TIEMPO",931],["FPS",456],["FUERZA SOLIDARIA",344]]},"Legislativa":{"total":73513,"p":[["NUEVAS IDEAS",47761],["GANA",8719],["ARENA",7381],["FMLN",5138],["PCN",4007],["CD",505]]},"Municipal":{"total":39218,"p":[["NUEVAS IDEAS",16035],["GANA",13989],["PCN",4356],["ARENA",3137],["FMLN",1701]]}}},"M|La Paz Oeste":{"nivel":"Municipio","nombre":"La Paz Oeste","esc":{"Presidencial":{"total":49603,"p":[["NUEVAS IDEAS",41958],["ARENA",3585],["FMLN",2748],["FUERZA SOLIDARIA",561],["NUESTRO TIEMPO",487],["FPS",264]]},"Legislativa":{"total":49063,"p":[["NUEVAS IDEAS",35025],["ARENA",6608],["FMLN",2574],["GANA",1455],["FUERZA SOLIDARIA",1451],["VAMOS",764],["PDC",476],["PCN",258],["NUESTRO TIEMPO",251],["CD",196]]},"Municipal":{"total":28263,"p":[["GANA",16129],["NUEVAS IDEAS",7327],["FUERZA SOLIDARIA",2407],["ARENA",996],["FMLN",698],["PCN",536],["PDC",112],["CD",58]]}}},"M|La Libertad Sur":{"nivel":"Municipio","nombre":"La Libertad Sur","esc":{"Presidencial":{"total":82881,"p":[["NUEVAS IDEAS",60531],["NUESTRO TIEMPO",7615],["ARENA",7277],["FMLN",5729],["FPS",1001],["FUERZA SOLIDARIA",728]]},"Legislativa":{"total":82423,"p":[["NUEVAS IDEAS",48050],["ARENA",9988],["VAMOS",7227],["NUESTRO TIEMPO",6714],["FMLN",3671],["GANA",1907],["PCN",1772],["PDC",1727],["FUERZA SOLIDARIA",914],["CD",451]]},"Municipal":{"total":43593,"p":[["NUEVAS IDEAS",22114],["ARENA",9623],["VAMOS",3241],["NUESTRO TIEMPO",3023],["FMLN",2539],["FUERZA SOLIDARIA",1262],["PDC",625],["GANA",411],["CD",273],["FPS",250],["PCN",232]]}}},"M|Usulutan Oeste":{"nivel":"Municipio","nombre":"Usulután Oeste","esc":{"Presidencial":{"total":30201,"p":[["NUEVAS IDEAS",23298],["FMLN",4980],["ARENA",981],["FUERZA SOLIDARIA",677],["NUESTRO TIEMPO",148],["FPS",117]]},"Legislativa":{"total":29919,"p":[["NUEVAS IDEAS",17332],["FMLN",7015],["FUERZA SOLIDARIA",2268],["GANA",1715],["ARENA",993],["CD",263],["PDC",148],["PCN",111],["NUESTRO TIEMPO",68]]},"Municipal":{"total":20463,"p":[["NUEVAS IDEAS",6121],["GANA",5520],["FUERZA SOLIDARIA",5500],["FMLN",3193],["ARENA",90],["PCN",39]]}}}};
+const COL={"NUEVAS IDEAS":"#00ADEF","ARENA":"#003B7A","FMLN":"#D8232A","GANA":"#F58220","PCN":"#8E44AD",
+"PDC":"#1E9E4A","VAMOS":"#B5008E","NUESTRO TIEMPO":"#00B5AD","FUERZA SOLIDARIA":"#FDB913","FPS":"#7F8C8D",
+"CD":"#A0522D","DS":"#555","NUEVAS IDEAS-GANA":"#5FC4E8","NUEVAS IDEAS-CD":"#7ECBEA","PCN-PDC":"#5E9E6B",
+"PDC-PCN":"#5E9E6B","PCN-GANA":"#C77BA8","OTROS":"#c9ced8"};
+const AB={"NUEVAS IDEAS":"NI","FUERZA SOLIDARIA":"FS","NUESTRO TIEMPO":"N. Tiempo",
+"NUEVAS IDEAS-GANA":"NI-GANA","NUEVAS IDEAS-CD":"NI-CD"};
+const fmt=n=>n.toLocaleString('es-SV');
+function donut(items,total){
+  const R=58,r=33,C=64;let a=-Math.PI/2,out='';
+  items.forEach(it=>{
+    const f=it[1]/total, ang=f*2*Math.PI, b=a+ang;
+    if(f>0.9999){out+=`<circle cx="${C}" cy="${C}" r="${(R+r)/2}" fill="none" stroke="${it[2]}" stroke-width="${R-r}"/>`;a=b;return;}
+    const x1=C+R*Math.cos(a),y1=C+R*Math.sin(a),x2=C+R*Math.cos(b),y2=C+R*Math.sin(b);
+    const x3=C+r*Math.cos(b),y3=C+r*Math.sin(b),x4=C+r*Math.cos(a),y4=C+r*Math.sin(a);
+    const la=ang>Math.PI?1:0;
+    out+=`<path d="M${x1} ${y1}A${R} ${R} 0 ${la} 1 ${x2} ${y2}L${x3} ${y3}A${r} ${r} 0 ${la} 0 ${x4} ${y4}Z" fill="${it[2]}" stroke="#fff" stroke-width="1"><title>${it[0]}: ${fmt(it[1])} (${(f*100).toFixed(2)}%)</title></path>`;
+    a=b;});
+  return `<svg viewBox="0 0 128 128" width="128" height="128">${out}</svg>`;
+}
+function card(lab,d,coal){
+  const tot=d.total; let arr=d.p.map(x=>[x[0],x[1]]);
+  const keep=[],rest=[];
+  arr.forEach(x=>{ (x[1]/tot>=0.02 || coal.includes(x[0])) ? keep.push(x) : rest.push(x); });
+  const ro=rest.reduce((a,b)=>a+b[1],0);
+  const items=keep.map(x=>[x[0],x[1],COL[x[0]]||"#999"]);
+  if(ro>0) items.push(["OTROS",ro,COL.OTROS]);
+  const cv=coal.reduce((a,p)=>a+((arr.find(x=>x[0]===p)||[0,0])[1]),0);
+  const gan=arr[0];
+  const leg=items.map(x=>{
+    const c=coal.includes(x[0]);
+    return `<div class="li${c?' coal':''}"><span class="sw" style="background:${x[2]}"></span><span class="nm">${AB[x[0]]||x[0]}</span><span class="vt">${fmt(x[1])}</span><span class="pc">${(x[1]/tot*100).toFixed(1)}%</span></div>`;}).join('');
+  const ausentes=coal.filter(p=>!arr.some(x=>x[0]===p));
+  return `<div class="ecard"><h4>${lab} 2024</h4><div class="tot">${fmt(tot)} votos válidos</div>
+  <div class="pierow">${donut(items,tot)}<div class="leg">${leg}</div></div>
+  <div class="foot">Ganador: <b>${AB[gan[0]]||gan[0]}</b> con ${fmt(gan[1])} (${(gan[1]/tot*100).toFixed(2)}%)<br>
+  Bloque de la coalición: <b>${fmt(cv)}</b> (${(cv/tot*100).toFixed(2)}%) · saldo vs. ganador <b>${cv-gan[1]>=0?'+':''}${fmt(cv-gan[1])}</b>
+  ${ausentes.length?`<span class="chip no">sin votos: ${ausentes.map(x=>AB[x]||x).join(', ')}</span>`:''}</div></div>`;
+}
+document.querySelectorAll('tr.rowx').forEach(tr=>{
+  tr.addEventListener('click',()=>{
+    const nx=tr.nextElementSibling;
+    if(nx&&nx.classList.contains('det')){nx.remove();tr.classList.remove('open');return;}
+    document.querySelectorAll('tr.det').forEach(e=>e.remove());
+    document.querySelectorAll('tr.rowx.open').forEach(e=>e.classList.remove('open'));
+    const d=DET[tr.dataset.k], coal=tr.dataset.p.split('|');
+    const html=['Presidencial','Legislativa','Municipal'].map(l=>card(l,d.esc[l],coal)).join('');
+    const row=document.createElement('tr');row.className='det';
+    row.innerHTML=`<td colspan="8"><div class="detwrap">${html}</div>
+      <div style="padding:0 16px 14px;font-size:11.5px;color:#666">Los tres escrutinios de 2024 en <b>${d.nivel.toLowerCase()} ${d.nombre}</b>. Se excluye PARLACEN. Presidencial y legislativa se votaron el 4 de febrero; municipal el 3 de marzo — la diferencia de totales es la brecha de participación entre ambas jornadas.</div></td>`;
+    tr.after(row);tr.classList.add('open');
+  });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Análisis de riesgo · NUEVAS IDEAS 2027-2030</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
+<style>
+  :root{--navy:#1B2A56;--cyan:#29ABE2;--gold:#F4A300;--red:#C0454A;--green:#2E9E5B;--ink:#1f2a44;--muted:#6B7585;--line:#E2E8F2;--bg:#F4F7FB;}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Segoe UI',Roboto,Arial,sans-serif;color:var(--ink);background:var(--bg);}
+  header{background:var(--navy);color:#fff;padding:14px 22px;}
+  header h1{margin:0;font-size:19px;font-weight:700;letter-spacing:.3px}
+  header p{margin:3px 0 0;font-size:12.5px;color:#AFc7e6}
+  .wrap{max-width:1360px;margin:0 auto;padding:16px 18px 40px}
+  .panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;margin-bottom:16px}
+  .controls{display:grid;grid-template-columns:1.1fr 1.5fr 2fr;gap:22px;align-items:center}
+  label.lbl{display:block;font-size:11px;text-transform:uppercase;letter-spacing:.5px;color:var(--muted);font-weight:700;margin-bottom:6px}
+  select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;font-size:14px;color:var(--ink);background:#fff}
+  .seg{display:flex;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+  .seg button{flex:1;border:0;background:#fff;padding:9px 8px;font-size:12.5px;cursor:pointer;color:var(--muted);line-height:1.2}
+  .seg button.on{background:var(--navy);color:#fff;font-weight:600}
+  .sliderbox{display:flex;align-items:center;gap:14px}
+  input[type=range]{flex:1;accent-color:var(--cyan)}
+  .pct{font-size:26px;font-weight:800;color:var(--red);min-width:74px;text-align:right}
+  .kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:16px}
+  .kpi{background:#fff;border:1px solid var(--line);border-radius:12px;padding:13px 14px}
+  .kpi .k{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted);font-weight:700}
+  .kpi .v{font-size:27px;font-weight:800;margin-top:4px;color:var(--navy)}
+  .kpi .s{font-size:11.5px;color:var(--muted);margin-top:2px}
+  .badge{display:inline-block;padding:3px 9px;border-radius:20px;font-size:12px;font-weight:700;margin-top:6px}
+  .ok{background:#E4F5EC;color:var(--green)} .bad{background:#FBE9EA;color:var(--red)}
+  .cols{display:grid;grid-template-columns:1.75fr 1fr;gap:16px}
+  h3.t{margin:0 0 12px;font-size:14px;color:var(--navy)}
+  #compo{display:flex;height:52px;border-radius:8px;overflow:hidden;border:1px solid var(--line)}
+  #compo .s{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11.5px;font-weight:700;min-width:14px;overflow:visible;border-right:1px solid rgba(255,255,255,.55)}
+  #compo .s:last-child{border-right:0}
+  .thr{position:relative;height:20px;margin-top:2px;font-size:10.5px;color:var(--muted)}
+  .thr span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+  .thr span::before{content:'';position:absolute;top:-8px;left:50%;width:2px;height:6px;background:var(--muted)}
+  #map{height:400px;border-radius:8px;border:1px solid var(--line);background:#eef2f7}
+  .legend{display:flex;flex-wrap:wrap;gap:10px 16px;margin-top:12px;font-size:12px;color:var(--muted)}
+  .legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.4px;color:var(--muted)}
+  td.n{text-align:right;font-variant-numeric:tabular-nums}
+  .dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:7px;vertical-align:-1px}
+  .note{font-size:11.5px;color:var(--muted);margin-top:10px;line-height:1.5}
+  .maphint{font-size:11.5px;color:var(--muted);margin-top:8px}
+  .lossvotes{font-size:12.5px;color:var(--ink);margin-top:8px;background:#FBF3E4;border:1px solid #F1E2BF;border-radius:8px;padding:8px 10px}
+  .lossvotes b{color:var(--red)}
+  @media(max-width:900px){.controls{grid-template-columns:1fr}.kpis{grid-template-columns:repeat(2,1fr)}.cols{grid-template-columns:1fr}}
+
+  .maprow{display:flex;gap:12px}
+  #map{flex:1}
+  .extcard{flex:0 0 150px;border:1px solid var(--line);border-radius:10px;padding:14px;background:#F1FAFE;display:flex;flex-direction:column;justify-content:center;cursor:pointer}
+  .extcard .h{font-size:13px;font-weight:700;color:var(--navy)}
+  .extcard .big{font-size:38px;font-weight:800;color:var(--cyan);line-height:1;margin-top:6px}
+  .extcard .dd{font-size:11px;color:var(--muted);margin-top:6px;line-height:1.4}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:10px}
+  .dcard{border:1px solid var(--line);border-radius:10px;padding:10px 12px;cursor:pointer;transition:border-color .15s}
+  .dcard:hover{border-color:var(--cyan)}
+  .dcard.risk{border-color:#E2231A;background:#FEF3F3}
+  .dcard .dn{font-size:12px;font-weight:700;color:var(--navy)}
+  .dcard .ds{font-size:23px;font-weight:800;margin-top:3px}
+  .dcard .dd{font-size:11px;color:var(--muted);margin-top:1px}
+  .leaflet-tooltip.maplbl{background:rgba(255,255,255,.88);border:0;box-shadow:none;font-weight:800;color:#0b2b4a;font-size:12.5px;padding:0 5px;border-radius:5px}
+  .leaflet-tooltip.maplbl.risk{background:#E2231A;color:#fff}
+  .leaflet-tooltip.maplbl::before{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>Análisis de riesgo — NUEVAS IDEAS pierde votos · Asamblea 2027-2030</h1>
+  <p>Simulación D'Hondt sobre la distribución 2027 (60 escaños, incluye 6 del Exterior). Mueve el deslizador para ver cómo se reconforma la Asamblea.</p>
+</header>
+<div class="wrap">
+
+  <div class="panel controls">
+    <div>
+      <label class="lbl">Ámbito</label>
+      <select id="scope"></select>
+    </div>
+    <div>
+      <label class="lbl">¿A dónde van los votos que pierde NI?</label>
+      <div class="seg" id="mode">
+        <button data-m="prop" class="on">A la oposición (proporcional)</button>
+        <button data-m="void">A nadie (abstención)</button>
+      </div>
+    </div>
+    <div>
+      <label class="lbl">Porcentaje de votos que pierde NUEVAS IDEAS (0–100%)</label>
+      <div class="sliderbox">
+        <input type="range" id="loss" min="0" max="100" step="1" value="0"/>
+        <div class="pct" id="lossOut">0%</div>
+      </div>
+      <div class="lossvotes" id="lossVotes"></div>
+    </div>
+  </div>
+
+  <div class="kpis" id="kpis"></div>
+
+  <div class="panel">
+    <h3 class="t">Conformación de la Asamblea <span id="scopeName" style="color:var(--muted);font-weight:400"></span></h3>
+    <div id="compo"></div>
+    <div class="thr" id="thr"></div>
+    <div class="legend" id="legend"></div>
+  </div>
+
+  <div class="cols">
+    <div class="panel">
+      <h3 class="t">Mapa por departamento — escaños de NI (números en vivo)</h3>
+      <div class="maprow">
+        <div id="map"></div>
+        <div class="extcard" id="extCard" title="Analizar el Exterior"></div>
+      </div>
+      <div class="maphint" id="maphint">Cargando mapa desde ArcGIS…</div>
+    </div>
+    <div class="panel">
+      <h3 class="t">Escaños de NI según el porcentaje que pierde</h3>
+      <div style="position:relative;height:300px"><canvas id="chart"></canvas></div>
+      <div class="note" id="chartNote"></div>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h3 class="t">Riesgo por departamento — mayor barra = más riesgo de perder un diputado <span style="color:var(--muted);font-weight:400;font-size:12px">· la etiqueta indica con qué caída de NI se cede el primer escaño. Toca una barra para analizarla.</span></h3>
+    <div style="position:relative;height:520px"><canvas id="riskChart"></canvas></div>
+  </div>
+
+  <div class="panel">
+    <h3 class="t">Escaños de NUEVAS IDEAS por distrito <span style="color:var(--muted);font-weight:400;font-size:12px">· incluye Exterior · toca uno para analizarlo</span></h3>
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="panel">
+    <h3 class="t">Detalle por partido</h3>
+    <table id="tbl"><thead><tr><th>Partido</th><th style="text-align:right">Escaños</th><th style="text-align:right">Cambio vs base</th><th style="text-align:right">Votos (ámbito)</th></tr></thead><tbody></tbody></table>
+    <div class="note">Base = 0% de pérdida bajo la distribución 2027. Mayoría absoluta = 31 de 60; mayoría calificada (2/3) = 40 de 60. El cálculo usa el método D'Hondt con los votos válidos oficiales por departamento.</div>
+  </div>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+const DATA = {"AHUACHAPAN": {"seats": 3, "votes": {"ARENA": 12275.67, "FMLN": 6713.33, "FUERZA SOLIDARIA": 7675.83, "GANA": 997.0, "NUESTRO TIEMPO": 915.83, "NUEVAS IDEAS": 102130.5, "PCN": 34823.83}}, "CABAÑAS": {"seats": 2, "votes": {"ARENA": 5106.0, "CD": 1585.0, "FMLN": 4446.0, "GANA": 9688.0, "NUEVAS IDEAS": 40038.0, "PCN": 2186.0}}, "CHALATENANGO": {"seats": 2, "votes": {"ARENA": 6168.0, "CD": 366.5, "FMLN": 10929.5, "GANA": 501.5, "NUEVAS IDEAS": 44110.5, "PCN": 29564.0}}, "CUSCATLAN": {"seats": 2, "votes": {"ARENA": 11865.5, "CD": 1039.5, "FMLN": 11459.5, "GANA": 10149.5, "NUEVAS IDEAS": 83427.0, "PCN": 5883.0}}, "EXTRANJERO": {"seats": 6, "votes": {"ARENA": 1387.25, "FMLN": 1616.3, "FUERZA SOLIDARIA": 205.3, "GANA": 2566.38, "NUESTRO TIEMPO": 464.05, "NUEVAS IDEAS": 206750.64, "PCN": 322.64, "PDC": 331.89, "VAMOS": 997.54}}, "LA LIBERTAD": {"seats": 6, "votes": {"ARENA": 38912.67, "CD": 1927.04, "FMLN": 17409.49, "FUERZA SOLIDARIA": 4301.43, "GANA": 7709.27, "NUESTRO TIEMPO": 14280.47, "NUEVAS IDEAS": 259668.66, "PCN": 5816.99, "PDC": 8785.25, "VAMOS": 16678.73}}, "LA PAZ": {"seats": 3, "votes": {"ARENA": 20088.33, "CD": 885.83, "FMLN": 8066.83, "FUERZA SOLIDARIA": 8536.83, "GANA": 5066.5, "NUESTRO TIEMPO": 744.67, "NUEVAS IDEAS": 99653.0, "PCN": 924.83, "PDC": 1433.0, "VAMOS": 2143.17}}, "LA UNION": {"seats": 2, "votes": {"ARENA": 6805.0, "CD": 896.5, "FMLN": 5811.5, "GANA": 5689.5, "NUEVAS IDEAS": 78920.5, "PCN": 1578.5, "PDC": 1333.5}}, "MORAZAN": {"seats": 2, "votes": {"ARENA": 4977.0, "CD": 464.0, "FMLN": 12930.0, "GANA": 5481.0, "NUEVAS IDEAS": 50736.5, "PCN": 126.0, "PDC": 365.0, "PDC-PCN": 4906.5}}, "SAN MIGUEL": {"seats": 5, "votes": {"ARENA": 6673.95, "CD": 770.65, "FMLN": 15384.6, "FUERZA SOLIDARIA": 2813.12, "GANA": 7072.4, "NUEVAS IDEAS": 113455.0, "PCN": 3520.7, "PDC": 40307.58}}, "SAN SALVADOR": {"seats": 11, "votes": {"ARENA": 61656.73, "FMLN": 48692.36, "FUERZA SOLIDARIA": 7478.71, "GANA": 20662.26, "NUESTRO TIEMPO": 21115.27, "NUEVAS IDEAS": 621468.69, "PCN": 6747.37, "PDC": 11065.72, "VAMOS": 66237.9}}, "SAN VICENTE": {"seats": 2, "votes": {"ARENA": 6638.0, "CD": 552.5, "FMLN": 8622.5, "FUERZA SOLIDARIA": 1920.0, "GANA": 4961.0, "NUEVAS IDEAS": 47131.5, "PCN": 1023.0, "VAMOS": 810.5}}, "SANTA ANA": {"seats": 5, "votes": {"ARENA": 15715.1, "CD": 1103.98, "FMLN": 10376.18, "FUERZA SOLIDARIA": 7019.65, "GANA": 13029.03, "NUESTRO TIEMPO": 2949.02, "NUEVAS IDEAS": 195264.65, "PCN": 3203.52, "PDC": 7336.25, "VAMOS": 4807.62}}, "SONSONATE": {"seats": 5, "votes": {"ARENA": 22048.35, "CD": 1530.23, "FMLN": 12873.97, "FUERZA SOLIDARIA": 4176.0, "GANA": 3076.05, "NUEVAS IDEAS": 156281.57, "PCN": 5040.63, "PDC": 19611.2}}, "USULUTAN": {"seats": 4, "votes": {"ARENA": 7039.75, "CD": 1043.75, "FMLN": 20587.92, "FUERZA SOLIDARIA": 6894.25, "GANA": 2694.5, "NUESTRO TIEMPO": 591.17, "NUEVAS IDEAS": 101295.08, "PCN": 881.42, "PDC": 2543.17}}};
+const PC = {'NUEVAS IDEAS':'#01adef','ARENA':'#005aad','FMLN':'#d4202b','VAMOS':'#0f4a8b','GANA':'#df6f06','NUESTRO TIEMPO':'#a6c56a','PCN':'#1135b5','PDC':'#00732e','FUERZA SOLIDARIA':'#dcde17','CD':'#ffff00','PDC-PCN':'#e22fa4'};
+function lum(h){h=h.replace('#','');return 0.299*parseInt(h.substr(0,2),16)+0.587*parseInt(h.substr(2,2),16)+0.114*parseInt(h.substr(4,2),16);}
+const textOn=h=>lum(h)>150?'#14203a':'#fff';
+const NI='NUEVAS IDEAS';
+const norm = s => (s||'').toString().toUpperCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/Ñ/g,'N').replace(/N\u0303/g,'N').trim();
+const fmt = n => Math.round(n).toLocaleString('es-SV');
+const DEPTS = Object.keys(DATA);
+const TOTAL_SEATS = Object.values(DATA).reduce((a,d)=>a+d.seats,0);
+
+function dhondt(votes, seats){
+  const q=[];
+  for(const p in votes){ if(votes[p]<=0) continue; for(let d=1; d<=seats; d++) q.push([votes[p]/d, p]); }
+  q.sort((a,b)=> b[0]-a[0] || (a[1]<b[1]?-1:1));
+  const sc={};
+  for(let i=0;i<seats;i++){ const p=q[i][1]; sc[p]=(sc[p]||0)+1; }
+  return sc;
+}
+function scenVotes(d, loss, mode){
+  const v=Object.assign({}, d.votes);
+  const lost=(v[NI]||0)*loss; v[NI]=(v[NI]||0)-lost;
+  if(mode==='prop' && lost>0){
+    let s=0; for(const p in v) if(p!==NI) s+=v[p];
+    if(s>0) for(const p in v) if(p!==NI) v[p]+=lost*v[p]/s;
+  }
+  return v;
+}
+function compose(scope, loss, mode){
+  const keys = scope==='NACIONAL'? DEPTS : [scope];
+  const seats={}; let total=0;
+  for(const k of keys){
+    const d=DATA[k]; total+=d.seats;
+    const sc=dhondt(scenVotes(d,loss,mode), d.seats);
+    for(const p in sc) seats[p]=(seats[p]||0)+sc[p];
+  }
+  return {seats,total};
+}
+function niSeats(scope,loss,mode){ return compose(scope,loss,mode).seats[NI]||0; }
+function breakPoint(scope,mode,thr){
+  for(let p=0;p<=100;p++){ if(niSeats(scope,p/100,mode)<thr) return p; }
+  return null;
+}
+
+let scope='NACIONAL', mode='prop', loss=0;
+const $=id=>document.getElementById(id);
+
+// scope options
+const sel=$('scope');
+sel.innerHTML='<option value="NACIONAL">🇸🇻 Nacional (60 escaños)</option>'+
+  DEPTS.map(d=>`<option value="${d}">${d} (${DATA[d].seats})</option>`).join('');
+sel.onchange=e=>{scope=e.target.value; render();};
+document.querySelectorAll('#mode button').forEach(b=>b.onclick=()=>{
+  mode=b.dataset.m; document.querySelectorAll('#mode button').forEach(x=>x.classList.remove('on')); b.classList.add('on'); render();
+});
+$('loss').oninput=e=>{loss=+e.target.value; $('lossOut').textContent='-'+loss+'%'; render();};
+
+let chart, riskChart, map, geoLayer, riskOrder=[];
+const valuePlugin={id:'valp',afterDatasetsDraw(ch){const ctx=ch.ctx,m=ch.getDatasetMeta(0);ctx.save();ctx.font='700 11px Segoe UI';ctx.fillStyle='#3a3a3a';ctx.textBaseline='middle';m.data.forEach((bar,i)=>{const v=ch.data.datasets[0].data[i];ctx.fillText('cede a -'+(100-v)+'%',bar.x+6,bar.y);});ctx.restore();}};
+function initRisk(){
+  riskChart=new Chart(document.getElementById('riskChart'),{type:'bar',plugins:[valuePlugin],
+    data:{labels:[],datasets:[{data:[],backgroundColor:[]}]},
+    options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,animation:false,
+      layout:{padding:{right:36}},
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>'Cede su primer diputado al bajar '+(100-c.raw)+'% de sus votos'}}},
+      scales:{x:{max:100,title:{display:true,text:'Índice de riesgo (barra más larga = más frágil)'}},y:{ticks:{font:{size:11}}}},
+      onClick:(e,els)=>{ if(els.length){ scope=riskOrder[els[0].index]; document.getElementById('scope').value=scope; render(); } }}});
+}
+function renderRisk(){
+  const rows=DEPTS.map(d=>{
+    const base=dhondt(scenVotes(DATA[d],0,mode),DATA[d].seats)[NI]||0;
+    let thr=100; for(let p=0;p<=100;p++){ if((dhondt(scenVotes(DATA[d],p/100,mode),DATA[d].seats)[NI]||0) < base){ thr=p; break; } }
+    return {d,thr,risk:100-thr};
+  }).sort((a,b)=>b.risk-a.risk);
+  riskOrder=rows.map(r=>r.d);
+  const col=t=> t<=10?'#d4202b': t<=20?'#df6f06': t<=35?'#f0b429':'#00732e';
+  riskChart.data.labels=rows.map(r=>r.d==='EXTRANJERO'?'EXTERIOR':r.d);
+  riskChart.data.datasets[0].data=rows.map(r=>r.risk);
+  riskChart.data.datasets[0].backgroundColor=rows.map(r=>col(r.thr));
+  riskChart.update();
+}
+function initChart(){
+  chart=new Chart($('chart'),{type:'line',
+    data:{labels:[...Array(21).keys()].map(i=>'-'+i*5+'%'),datasets:[]},
+    options:{responsive:true,maintainAspectRatio:false,animation:false,
+      scales:{y:{beginAtZero:true,title:{display:true,text:'Escaños NI'}}},
+      plugins:{legend:{display:true,labels:{boxWidth:12,font:{size:11}}}}}});
+}
+function baseVotesLabel(scope){
+  const keys=scope==='NACIONAL'?DEPTS:[scope];
+  let v=0; for(const k of keys) v+=DATA[k].votes[NI]||0; return v;
+}
+
+function render(){
+  const c=compose(scope,loss/100,mode);
+  const base=compose(scope,0,mode).seats;
+  const ni=c.seats[NI]||0, oppo=c.total-ni;
+  $('scopeName').textContent = scope==='NACIONAL'?'· Nacional':'· '+scope;
+
+  // KPIs
+  const isNat=scope==='NACIONAL';
+  const bpAbs=isNat?breakPoint('NACIONAL',mode,31):null;
+  const bpCal=isNat?breakPoint('NACIONAL',mode,40):null;
+  const majAbs = ni>=31, majCal = ni>=40;
+  const niVotesNow = baseVotesLabel(scope)*(1-loss/100);
+  $('kpis').innerHTML = `
+    <div class="kpi"><div class="k">Escaños NI</div><div class="v" style="color:${PC[NI]}">${ni}<span style="font-size:15px;color:var(--muted)"> / ${c.total}</span></div><div class="s">${(ni/c.total*100).toFixed(0)}% del ámbito</div></div>
+    <div class="kpi"><div class="k">Oposición</div><div class="v">${oppo}</div><div class="s">${Object.keys(c.seats).filter(p=>p!==NI).length} partidos</div></div>
+    <div class="kpi"><div class="k">Mayoría absoluta (31)</div><div class="v">${isNat?ni:'—'}</div>${isNat?`<span class="badge ${majAbs?'ok':'bad'}">${majAbs?'La mantiene':'La pierde'}</span>`:'<div class="s">solo nacional</div>'}</div>
+    <div class="kpi"><div class="k">Mayoría calificada (40)</div><div class="v">${isNat?ni:'—'}</div>${isNat?`<span class="badge ${majCal?'ok':'bad'}">${majCal?'La mantiene':'La pierde'}</span>`:'<div class="s">solo nacional</div>'}</div>
+    <div class="kpi"><div class="k">Punto de quiebre</div><div class="v" style="color:var(--red)">${isNat?(bpAbs!==null?'-'+bpAbs+'%':'>50%'):'—'}</div><div class="s">${isNat?'pierde absoluta / 2/3 a -'+(bpCal!==null?bpCal:'>50')+'%':'no aplica'}</div></div>`;
+
+  // composition bar
+  const order=Object.keys(c.seats).sort((a,b)=> (b===NI?1:0)-(a===NI?1:0) || c.seats[b]-c.seats[a]);
+  $('compo').innerHTML=order.map(p=>{
+    const w=c.seats[p]/c.total*100;
+    return `<div class="s" style="flex:0 0 ${w}%;background:${PC[p]||'#888'};color:${textOn(PC[p]||'#888')}" title="${p}: ${c.seats[p]}">${c.seats[p]}</div>`;
+  }).join('');
+  // threshold markers (national only)
+  $('thr').innerHTML = isNat? `<span style="left:${31/c.total*100}%">▲ 31 · absoluta</span><span style="left:${40/c.total*100}%">▲ 40 · 2/3</span>`:'';
+  // legend
+  $('legend').innerHTML=order.map(p=>`<span><i style="background:${PC[p]||'#888'}"></i>${p} · ${c.seats[p]}</span>`).join('');
+
+  // table
+  const rows=order.map(p=>{
+    const d=(c.seats[p]||0)-(base[p]||0);
+    const dtxt = d===0?'—':(d>0?'+'+d:d);
+    const dcol = d<0?'var(--red)':(d>0?'var(--green)':'var(--muted)');
+    let vv=0; const keys=isNat?DEPTS:[scope];
+    for(const k of keys) vv+=scenVotes(DATA[k],loss/100,mode)[p]||0;
+    return `<tr><td><span class="dot" style="background:${PC[p]||'#888'}"></span>${p}</td><td class="n">${c.seats[p]}</td><td class="n" style="color:${dcol};font-weight:600">${dtxt}</td><td class="n">${fmt(vv)}</td></tr>`;
+  }).join('');
+  $('tbl').querySelector('tbody').innerHTML=rows;
+
+  // per-district grid + exterior card
+  const ORD=[...DEPTS].sort((a,b)=>DATA[b].seats-DATA[a].seats);
+  const niD=(d,l)=>dhondt(scenVotes(DATA[d],l,mode),DATA[d].seats)[NI]||0;
+  const gridEl=$('grid');
+  if(gridEl){ gridEl.innerHTML=ORD.map(d=>{
+      const s=niD(d,loss/100), lost=niD(d,0)-s, risk=lost>0, isExt=d==='EXTRANJERO';
+      return `<div class="dcard ${risk?'risk':''}" data-d="${d}"><div class="dn">${isExt?'🌐 ':''}${d}</div><div class="ds" style="color:${risk?'#E2231A':PC[NI]}">${s}<span style="font-size:12px;color:var(--muted)">/${DATA[d].seats}</span></div><div class="dd">${risk?('−'+lost+' vs base'):'sin cambio'}</div></div>`;
+    }).join('');
+    gridEl.querySelectorAll('.dcard').forEach(cd=>cd.onclick=()=>{scope=cd.dataset.d;sel.value=scope;render();});
+  }
+  const ext=$('extCard');
+  if(ext){ const s=niD('EXTRANJERO',loss/100), lost=niD('EXTRANJERO',0)-s;
+    ext.innerHTML=`<div class="h">🌐 Exterior</div><div class="big" style="color:${lost>0?'#E2231A':'var(--cyan)'}">${s}<span style="font-size:15px;color:var(--muted)">/6</span></div><div class="dd">escaños NI en el Exterior${lost>0?'<br><b style="color:#E2231A">−'+lost+' vs base</b>':''}<br>(no se dibuja en el mapa)</div>`;
+    ext.onclick=()=>{scope='EXTRANJERO';sel.value='EXTRANJERO';render();};
+  }
+
+  // chart
+  const xs=[...Array(21).keys()].map(i=>i*5);
+  const line=xs.map(p=>niSeats(scope,p/100,mode));
+  const dsets=[{label:'Escaños NI',data:line,borderColor:PC[NI],backgroundColor:'rgba(41,171,226,.12)',fill:true,tension:.25,pointRadius:3,borderWidth:2.5}];
+  if(isNat){
+    dsets.push({label:'Mayoría absoluta (31)',data:xs.map(()=>31),borderColor:'#C0454A',borderDash:[6,4],pointRadius:0,borderWidth:1.5,fill:false});
+    dsets.push({label:'Mayoría 2/3 (40)',data:xs.map(()=>40),borderColor:'#F4A300',borderDash:[6,4],pointRadius:0,borderWidth:1.5,fill:false});
+  }
+  chart.data.datasets=dsets; chart.data.labels=xs.map(p=>'-'+p+'%');
+  chart.options.scales.y.max = isNat? Math.max(60,...line)+2 : DATA[scope].seats+1;
+  chart.update();
+  $('chartNote').textContent = isNat
+    ? (bpAbs!==null? `NI baja de 31 escaños (pierde mayoría absoluta) al perder ${bpAbs}% de sus votos en este escenario.` : 'NI conserva la mayoría absoluta aun perdiendo 50% de sus votos en este escenario.')
+    : `En ${scope}, NI parte de ${DATA[scope].votes[NI]?niSeats(scope,0,mode):0} de ${DATA[scope].seats} escaños.`;
+
+  renderRisk();
+
+  // votos exactos que baja NI
+  const baseV=baseVotesLabel(scope), lostV=baseV*loss/100;
+  $('lossVotes').innerHTML = loss===0
+    ? `NI parte de <b style="color:var(--navy)">${fmt(baseV)}</b> votos válidos en este ámbito. Mové el deslizador para ver cuántos pierde.`
+    : `A -${loss}%, NUEVAS IDEAS baja <b>${fmt(lostV)}</b> votos → queda con <b style="color:var(--navy)">${fmt(baseV-lostV)}</b> de ${fmt(baseV)}. <span style="color:var(--muted)">(cada 1% ≈ ${fmt(baseV/100)} votos)</span>`;
+
+  colorMap(c);
+}
+
+// ---- MAP ----
+function niByDept(loss,mode){ const o={}; for(const d of DEPTS){ if(d==='EXTRANJERO')continue; const c=dhondt(scenVotes(DATA[d],loss,mode),DATA[d].seats); o[norm(d)]=c[NI]||0;} return o; }
+function colorMap(){
+  if(!geoLayer) return;
+  const cur=niByDept(loss/100,mode), base=niByDept(0,mode);
+  geoLayer.eachLayer(l=>{
+    const key=norm(l.feature.properties.DEPARTAMENTO);
+    const d=DEPTS.find(x=>norm(x)===key);
+    const seats=cur[key], tot=d?DATA[d].seats:0, lost=(base[key]||0)-(seats||0);
+    const share=tot?seats/tot:0;
+    const fill = lost>0? '#E2231A' : `rgba(41,171,226,${0.25+0.6*share})`;
+    l.setStyle({fillColor:fill,fillOpacity: lost>0?0.6:1,color:'#fff',weight:1});
+    l.setTooltipContent(String(seats||0));
+    const te=l.getTooltip(); const el=te&&te.getElement&&te.getElement(); if(el) el.classList.toggle('risk',lost>0);
+  });
+}
+function initMap(){
+  map=L.map('map',{zoomControl:true,attributionControl:false,scrollWheelZoom:false});
+  const url='https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/DIFERENCIA_DEPARTAMENTOS_VISTA/FeatureServer/0/query?where=1%3D1&outFields=DEPARTAMENTO&returnGeometry=true&outSR=4326&f=geojson';
+  fetch(url).then(r=>r.json()).then(gj=>{
+    geoLayer=L.geoJSON(gj,{style:{color:'#fff',weight:1,fillColor:'#29ABE2',fillOpacity:1},
+      onEachFeature:(f,l)=>{ l.bindTooltip('',{permanent:true,direction:'center',className:'maplbl',opacity:1}); l.on('click',()=>{ const d=DEPTS.find(x=>norm(x)===norm(f.properties.DEPARTAMENTO)); if(d){scope=d; sel.value=d; render();} }); }
+    }).addTo(map);
+    map.fitBounds(geoLayer.getBounds(),{padding:[10,10]});
+    $('maphint').textContent='Toca un departamento para analizarlo. Rojo = NI pierde ≥1 escaño respecto a la base.';
+    colorMap();
+  }).catch(e=>{ $('maphint').innerHTML='No se pudo cargar el mapa (revisa tu conexión). El resto del análisis funciona igual.'; $('map').style.display='none'; });
+}
+
+initChart(); initRisk(); initMap(); render();
+$('lossOut').textContent='0%';
+</script>
+</body>
+</html>
