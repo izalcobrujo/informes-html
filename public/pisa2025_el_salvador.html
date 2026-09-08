@@ -196,6 +196,14 @@ td.m{color:var(--ink3)}
 .subjrow{display:grid;grid-template-columns:104px 1fr;align-items:center;gap:14px;margin:0 0 9px}
 .subjname{font-size:13.5px;color:var(--ink2);text-align:right}
 .subjnote{font-size:12.5px;color:var(--ink3);margin:14px 0 0}
+/* ---------- deciles ---------- */
+.decgrid{display:grid;grid-template-columns:auto 1fr;gap:7px 14px;align-items:center;margin:4px 0 0}
+.decname{font-size:13.5px;color:var(--ink2);text-align:right;white-space:nowrap}
+.deccells{display:flex;gap:3px}
+.dc{flex:1;height:22px;border-radius:3px;background:var(--rule2);display:flex;align-items:center;justify-content:center;
+    font-size:11.5px;font-weight:700;color:#fff}
+.dc.on{background:#AFC3E4}
+.dc.hi{background:var(--slv)}
 /* ---------- key/legend ---------- */
 .key{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--ink2);margin:18px 0 0}
 .key span{display:inline-flex;align-items:center;gap:7px}
@@ -245,6 +253,9 @@ ol.src li{margin-bottom:7px}
   .delta .val{font-size:30px}
   .bar{grid-template-columns:88px 1fr 50px;gap:8px;font-size:12px}
   .subjrow{grid-template-columns:78px 1fr;gap:9px}
+  .decgrid{grid-template-columns:1fr;gap:2px 0}
+  .decname{text-align:left;font-size:12.5px;white-space:normal;margin-top:9px}
+  .dc{height:20px;font-size:11px}
   .subjname{font-size:12px}
   .stack{height:30px}
   .stack.sm{height:24px}
@@ -442,6 +453,34 @@ ol.src li{margin-bottom:7px}
       El Salvador, y varios de estos sistemas —incluido el salvadoreño— parten de niveles muy bajos, donde es más
       fácil ganar puntos. El Reino Unido y Mongolia subieron exactamente lo mismo que El Salvador en ciencias, 12
       puntos, desde puntos de partida completamente distintos: 511 y 424 contra 385.
+    </p>
+  </section>
+
+  <div class="panel">
+    <h3>El puesto mundial y por qué conviene desconfiar de él</h3>
+    <div class="tablewrap">
+      <table id="rankTable">
+        <caption>Posición de El Salvador entre todos los sistemas evaluados.</caption>
+        <thead><tr><th>Área</th><th>Puesto 2025</th><th>Cambio desde 2022</th><th style="text-align:left;padding-left:16px">Cómo se movió el resto</th></tr></thead>
+        <tbody>
+          <tr class="slv"><td>Ciencias</td><td>73</td><td class="flat">−3</td><td class="read">52 de 75 sistemas bajaron de puesto; la mediana del cambio fue −3, exactamente lo mismo</td></tr>
+          <tr><td>Lectura</td><td>72</td><td class="flat">−4</td><td class="read">51 de 77 bajaron; mediana −2</td></tr>
+          <tr><td>Matemáticas</td><td>82</td><td class="flat">−7</td><td class="read">57 de 74 bajaron; mediana −3</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="cap">
+      Fuente: OCDE, <em>PISA 2025: Insights and Interpretations</em>.
+    </p>
+  </div>
+
+  <section class="col">
+    <p>
+      El Salvador subió 12 puntos en ciencias y aun así bajó tres puestos. No es una contradicción: el retroceso
+      de posiciones fue casi universal porque el campo de participantes creció, y −3 fue justo la mediana. En
+      lectura y matemáticas el país cedió algo más de lo típico. La OCDE advierte además que estos rankings no
+      incorporan el margen de error de cada puntaje; con ese margen, El Salvador no es distinguible de Indonesia
+      ni de Camboya en ciencias.
     </p>
   </section>
 
@@ -716,6 +755,35 @@ ol.src li{margin-bottom:7px}
     </p>
   </section>
 
+  <section class="col">
+    <h2 class="sec">Actitudes: en qué décimo del mundo está</h2>
+    <p class="lede">
+      La OCDE agrupa a los países en diez tramos según cada indicador de actitud, donde 1 es el 10 % más bajo del
+      mundo y 10 el más alto. El contraste con el desempeño es fuerte: El Salvador está en el tramo más bajo en
+      puntajes, pero en el más alto del mundo en adaptabilidad cognitiva.
+    </p>
+  </section>
+
+  <div class="panel">
+    <div id="decileChart"></div>
+    <p class="cap">
+      El tramo del 1 al 10 compara los promedios nacionales entre sí. «Valor de la escuela» se calcula aquí con
+      un ítem distinto al de la tabla anterior —«la escuela me ha enseñado cosas que podrían servirme en un
+      trabajo»— y por eso los dos indicadores no coinciden. Fuente: OCDE, <em>PISA 2025: Insights and
+      Interpretations</em>.
+    </p>
+  </div>
+
+  <section class="col">
+    <p>
+      Los cuatro indicadores altos —adaptabilidad, búsqueda de ayuda, perseverancia y curiosidad— describen a
+      estudiantes dispuestos a intentarlo y a pedir ayuda. Los cuatro bajos —mentalidad de crecimiento,
+      establecimiento de metas, valor de la escuela y sentido de pertenencia— describen a estudiantes que no
+      creen que el esfuerzo cambie su capacidad, que no organizan hacia dónde va ese esfuerzo y que no ven
+      claro para qué sirve la escuela. La disposición existe; falta el marco que la oriente.
+    </p>
+  </section>
+
   <!-- ============ 6b. CIENCIAS AMBIENTALES ============ -->
   <section class="col">
     <h2 class="sec">Ciencias ambientales: mucha disposición, poco conocimiento</h2>
@@ -795,7 +863,9 @@ ol.src li{margin-bottom:7px}
   <footer class="col">
     <p>
       Elaborado a partir de OECD (2026), <em>PISA 2025 Results (Volume I): Future-Ready Students</em>, PISA,
-      OECD Publishing, París. https://doi.org/10.1787/73451bc5-en
+      OECD Publishing, París (https://doi.org/10.1787/73451bc5-en), y de Andreas Schleicher, OECD (2026),
+      <em>PISA 2025: Insights and Interpretations</em>, de donde provienen los puestos en el ranking mundial,
+      sus cambios desde 2022 y los tramos de actitudes.
     </p>
     <p>
       Tablas utilizadas: I.1, I.2, I.3, I.4, I.5, I.6, I.7, I.8, I.2.2, I.2.3, I.2.5, I.2.6, I.2.8, I.2.10,
@@ -1104,6 +1174,29 @@ const WORLD14 = [
     tr.innerHTML = `<td>${r[0]}</td>${c(r[1])}${c(r[2])}${c(r[3])}`;
     tb.appendChild(tr);
   });
+})();
+
+/* ---------- 4c. deciles de actitudes ---------- */
+(function(){
+  const host = document.getElementById("decileChart");
+  if(!host) return;
+  const D = [
+    ["Adaptabilidad cognitiva",10],["Búsqueda de ayuda",8],["Perseverancia",7],
+    ["Curiosidad",4],["Sentido de pertenencia",4],["Establecimiento de metas",3],
+    ["Valor de la escuela",3],["Mentalidad de crecimiento",2]
+  ];
+  let s = '<div class="decgrid">';
+  D.forEach(([n,v])=>{
+    s += `<div class="decname">${n}</div><div class="deccells">`;
+    for(let i=1;i<=10;i++){
+      const on = i<=v;
+      const hi = i===v;
+      s += `<span class="dc${on?" on":""}${hi?" hi":""}">${hi?v:""}</span>`;
+    }
+    s += '</div>';
+  });
+  s += '</div><p class="subjnote">1 = el 10 % más bajo del mundo · 10 = el 10 % más alto</p>';
+  host.innerHTML = s;
 })();
 
 /* ---------- 5. tabla América Latina ---------- */

@@ -5,3 +5,10 @@ git push
 
 para lista
 Get-ChildItem -Path public -Filter *.html -Recurse | ForEach-Object { "https://dashboard-datos.web.app/" + ($_.FullName.Substring($_.FullName.IndexOf("public\") + 7) -replace '\\', '/') }
+
+
+
+actualizar índice 
+git add public/index.html generar_indice.py
+git commit -m "actualizar catalogo visual con diseno editorial y previews graficos"
+git push origin main
