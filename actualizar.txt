@@ -1,3 +1,7 @@
 git add .
 git commit -m "actualiza informe"
 git push
+
+
+para lista
+Get-ChildItem -Path public -Filter *.html -Recurse | ForEach-Object { "https://dashboard-datos.web.app/" + ($_.FullName.Substring($_.FullName.IndexOf("public\") + 7) -replace '\\', '/') }
