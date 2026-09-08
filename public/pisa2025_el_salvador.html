@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PISA 2025 — El Salvador frente a América Latina</title>
+<style>
+:root{
+  --paper:#E8ECEF;
+  --panel:#FFFFFF;
+  --ink:#16232E;
+  --ink2:#5C6873;
+  --ink3:#8D97A0;
+  --rule:#D2D9DE;
+  --rule2:#EAEEF1;
+  --slv:#0F47AF;
+  --slv-soft:#DCE6F7;
+  --up:#1B7A55;
+  --down:#A6382C;
+  --flat:#9AA4AD;
+  --oecd:#2C3A46;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:"Helvetica Neue",Helvetica,Arial,"Liberation Sans",sans-serif;
+  font-size:16px;
+  line-height:1.55;
+  font-variant-numeric:tabular-nums;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px 96px}
+.col{max-width:760px}
+
+/* ---------- masthead ---------- */
+header.mast{
+  background:var(--ink);
+  color:#fff;
+  padding:56px 0 0;
+}
+header.mast .wrap{padding-bottom:0}
+.kicker{
+  font-size:13px;
+  letter-spacing:.02em;
+  color:#9FB3CC;
+  margin:0 0 14px;
+}
+h1{
+  font-size:clamp(30px,4.6vw,52px);
+  line-height:1.04;
+  font-weight:800;
+  letter-spacing:-.025em;
+  margin:0 0 18px;
+  max-width:16ch;
+}
+.standfirst{
+  font-size:clamp(16px,1.6vw,19px);
+  line-height:1.5;
+  color:#C7D3DF;
+  max-width:60ch;
+  margin:0 0 40px;
+}
+
+/* ---------- hero ruler ---------- */
+.ruler{
+  background:#FFFFFF;
+  color:var(--ink);
+  border-radius:2px;
+  padding:26px 26px 18px;
+  margin:0 0 -46px;
+  box-shadow:0 18px 40px rgba(10,20,30,.22);
+}
+.ruler h2{
+  font-size:15px;font-weight:700;margin:0 0 2px;letter-spacing:-.005em;
+}
+.ruler p.sub{font-size:13px;color:var(--ink2);margin:0 0 18px}
+.ruler svg{display:block;width:100%;height:auto}
+
+main{padding-top:74px}
+
+/* ---------- typography ---------- */
+h2.sec{
+  font-size:clamp(22px,2.6vw,30px);
+  font-weight:800;
+  letter-spacing:-.022em;
+  line-height:1.15;
+  margin:64px 0 6px;
+  max-width:22ch;
+}
+h3{
+  font-size:17px;font-weight:700;letter-spacing:-.01em;margin:36px 0 8px;
+}
+p{margin:0 0 15px;max-width:68ch}
+.lede{font-size:18px;color:var(--ink2);margin-bottom:26px;max-width:62ch}
+.note{font-size:13.5px;color:var(--ink2);line-height:1.5}
+a{color:var(--slv)}
+
+/* ---------- panels ---------- */
+.panel{
+  background:var(--panel);
+  border-radius:2px;
+  padding:24px 26px;
+  margin:26px 0;
+  box-shadow:0 1px 0 rgba(22,35,46,.06),0 6px 18px rgba(22,35,46,.05);
+}
+.panel > h3:first-child{margin-top:0}
+.panel .cap{font-size:12.5px;color:var(--ink3);margin:16px 0 0;line-height:1.45}
+
+/* ---------- delta cards ---------- */
+.deltas{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border-radius:2px;overflow:hidden}
+.delta{background:#fff;padding:20px 18px 18px}
+.delta .dom{font-size:13px;color:var(--ink2);margin:0 0 10px}
+.delta .val{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1;margin:0}
+.delta .val.up{color:var(--up)}
+.delta .val.ns{color:var(--flat)}
+.delta .score{font-size:13px;color:var(--ink2);margin:8px 0 0}
+.delta .sig{font-size:12px;margin:10px 0 0;line-height:1.35}
+.delta .sig.yes{color:var(--up)}
+.delta .sig.no{color:var(--ink3)}
+
+/* ---------- tables ---------- */
+.tablewrap{overflow-x:auto;margin:22px 0 0}
+table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
+caption{text-align:left;font-size:13px;color:var(--ink2);padding-bottom:12px}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--rule2);white-space:nowrap}
+th{font-weight:600;font-size:12.5px;color:var(--ink2);border-bottom:1.5px solid var(--rule);vertical-align:bottom;line-height:1.25}
+th:first-child,td:first-child{text-align:left;padding-left:12px}
+tbody tr.slv td{background:var(--slv-soft);font-weight:700;color:var(--ink)}
+.expandall{
+  appearance:none;border:1px solid var(--rule);background:#fff;color:var(--slv);
+  font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:2px;
+  cursor:pointer;margin:0 0 4px;
+}
+.expandall:hover{background:var(--slv-soft);border-color:#B9CCEC}
+.expandall:focus-visible{outline:2px solid var(--slv);outline-offset:2px}
+tbody tr.row{cursor:pointer}
+tbody tr.row:hover td{background:#F6F8FA}
+tbody tr.row:focus-visible{outline:2px solid var(--slv);outline-offset:-2px}
+tbody tr.row.open td{background:var(--slv-soft);border-bottom-color:transparent}
+.chev{
+  display:inline-block;width:0;height:0;margin-right:9px;vertical-align:1px;
+  border-left:5px solid var(--ink3);border-top:4px solid transparent;border-bottom:4px solid transparent;
+  transition:transform .12s ease;
+}
+tbody tr.row.open .chev{transform:rotate(90deg);border-left-color:var(--slv)}
+tbody tr.def td{background:var(--slv-soft);padding:0 10px 16px 12px;border-bottom:1px solid var(--rule)}
+.defbox{
+  white-space:normal;max-width:78ch;font-size:13.5px;line-height:1.55;color:#2C3A46;
+  text-align:left;padding:2px 0 0 14px;border-left:2px solid #B9CCEC;
+}
+td.read{text-align:left;padding-left:16px;white-space:normal;color:var(--ink2)}
+tbody tr.cat td{background:#F3F6F8;font-weight:700;font-size:12.5px;color:var(--ink);padding-top:14px;padding-bottom:7px;border-bottom:1px solid var(--rule)}
+tbody tr.oecd td{border-top:1.5px solid var(--rule);color:var(--oecd);font-style:italic}
+td.up{color:var(--up);font-weight:600}
+td.down{color:var(--down);font-weight:600}
+td.flat{color:var(--flat)}
+td.m{color:var(--ink3)}
+.sigmark{font-size:10px;vertical-align:super;margin-left:1px}
+
+/* ---------- bar chart rows ---------- */
+.bars{margin:20px 0 0}
+.bar{display:grid;grid-template-columns:132px 1fr 56px;align-items:center;gap:12px;padding:3px 0;font-size:13.5px}
+.bar .name{color:var(--ink2);text-align:right;overflow:hidden;text-overflow:ellipsis}
+.bar.is-slv .name{color:var(--ink);font-weight:700}
+.bar .track{position:relative;height:15px;background:var(--rule2);border-radius:1px}
+.bar .fill{position:absolute;top:0;bottom:0;border-radius:1px}
+.bar .num{font-size:13px;color:var(--ink2)}
+.bar.is-slv .num{color:var(--ink);font-weight:700}
+.zeroline{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--ink3)}
+
+/* ---------- key/legend ---------- */
+.key{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--ink2);margin:18px 0 0}
+.key span{display:inline-flex;align-items:center;gap:7px}
+.key i{width:11px;height:11px;border-radius:1px;display:inline-block}
+
+/* ---------- pull ---------- */
+.pull{
+  border-left:3px solid var(--slv);
+  padding:2px 0 2px 20px;
+  margin:30px 0;
+  font-size:19px;
+  line-height:1.42;
+  letter-spacing:-.012em;
+  max-width:52ch;
+  font-weight:600;
+}
+
+/* ---------- two-up ---------- */
+.twoup{display:grid;grid-template-columns:1fr 1fr;gap:26px;margin:26px 0}
+.twoup .panel{margin:0}
+
+/* ---------- footnotes ---------- */
+footer{margin-top:72px;border-top:1px solid var(--rule);padding-top:24px}
+footer p{font-size:13px;color:var(--ink2);max-width:74ch}
+ol.src{font-size:13px;color:var(--ink2);padding-left:20px;max-width:74ch}
+ol.src li{margin-bottom:7px}
+
+@media (max-width:820px){
+  .deltas{grid-template-columns:repeat(2,1fr)}
+  .twoup{grid-template-columns:1fr}
+  .bar{grid-template-columns:106px 1fr 48px;font-size:12.5px}
+  .ruler{padding:18px 16px 12px}
+}
+@media print{
+  body{background:#fff}
+  header.mast{background:#fff;color:var(--ink);padding-top:0}
+  .kicker,.standfirst{color:var(--ink2)}
+  .ruler,.panel{box-shadow:none;border:1px solid var(--rule)}
+  .ruler{margin-bottom:0}
+  main{padding-top:24px}
+  h2.sec{page-break-after:avoid}
+  .panel{page-break-inside:avoid}
+  .expandall{display:none}
+  tr.def[hidden]{display:table-row!important}
+  .chev{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="mast">
+  <div class="wrap">
+    <p class="kicker">PISA 2025 — Resultados Volumen I · OCDE, 2026</p>
+    <h1>El Salvador sube en ciencias mientras la región retrocede</h1>
+    <p class="standfirst">
+      Segunda participación del país en PISA. Entre 2022 y 2025 El Salvador ganó 12 puntos en ciencias
+      y no perdió terreno en lectura ni en matemáticas, algo que solo Costa Rica logró también en América Latina.
+      Sigue, aun así, en el décimo lugar de trece sistemas latinoamericanos evaluados.
+    </p>
+
+    <div class="ruler">
+      <h2>Dónde queda El Salvador en la escala de ciencias</h2>
+      <p class="sub">Cada marca es uno de los 88 países y economías con resultado publicado en PISA 2025.</p>
+      <div id="rulerChart"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+<div class="wrap">
+
+  <!-- ============ 1. QUÉ CAMBIÓ ============ -->
+  <section class="col">
+    <h2 class="sec">Qué cambió respecto a 2022</h2>
+    <p class="lede">
+      El único cambio estadísticamente significativo es la subida de 12 puntos en ciencias.
+      Lectura y matemáticas se mantuvieron estables: los +2 y +3 puntos están dentro del margen de error.
+    </p>
+  </section>
+
+  <div class="panel">
+    <div class="deltas" id="deltaCards"></div>
+    <p class="cap">
+      Diferencia de puntaje medio entre PISA 2022 y PISA 2025. Un año de escolaridad equivale, en promedio,
+      a unos 20 puntos de la escala PISA. Fuente: Tabla I.1 y Tabla I.2.6 del informe.
+    </p>
+  </div>
+
+  <section class="col">
+    <p>
+      El prefacio del informe incluye a El Salvador en la lista de participantes no miembros de la OCDE cuyos
+      puntajes de ciencias subieron, junto con Camboya, Georgia, Jordania, Mongolia, Montenegro, Filipinas,
+      Arabia Saudita, Tailandia, Emiratos Árabes Unidos, Uruguay y Uzbekistán. Al analizar las tendencias, la
+      OCDE lo agrupa explícitamente con Camboya, Jordania y Filipinas como «sistemas de bajo desempeño que
+      parecen estar recuperando terreno», a veces por la vía de ampliar el acceso a una escolaridad efectiva.
+    </p>
+    <p>
+      El contraste regional importa: en el mismo período Guatemala perdió 22 puntos en ciencias y 37 en lectura,
+      Argentina y Paraguay cayeron 13 en ciencias, y el promedio OCDE bajó 14 puntos en lectura y 9 en matemáticas.
+    </p>
+  </section>
+
+  <div class="panel">
+    <h3>Cambio en ciencias 2022 → 2025, América Latina</h3>
+    <div class="bars" id="deltaBars"></div>
+    <div class="key">
+      <span><i style="background:var(--up)"></i>Mejora significativa</span>
+      <span><i style="background:var(--down)"></i>Caída significativa</span>
+      <span><i style="background:var(--flat)"></i>Cambio no significativo</span>
+    </div>
+    <p class="cap">Ecuador no tiene comparación válida entre ciclos. Fuente: Tabla I.2.6.</p>
+  </div>
+
+  <!-- ============ 2. POSICIÓN REGIONAL ============ -->
+  <section class="col">
+    <h2 class="sec">La posición frente a América Latina</h2>
+    <p class="lede">
+      Trece sistemas latinoamericanos participaron en PISA 2025. El Salvador ocupa el puesto 10 en las cuatro
+      áreas evaluadas, por encima de República Dominicana, Paraguay y Guatemala, y por debajo del resto.
+    </p>
+  </section>
+
+  <div class="panel">
+    <div class="tablewrap">
+      <table id="latamTable">
+        <caption>Puntaje medio en PISA 2025 y cambio respecto a 2022. Ordenado por ciencias.</caption>
+        <thead>
+          <tr>
+            <th>País</th>
+            <th>Ciencias</th><th>Lectura</th><th>Matem.</th><th>Resolución<br>computacional</th>
+            <th>Δ Cien.</th><th>Δ Lect.</th><th>Δ Mat.</th>
+            <th>Alto<br>desempeño %</th><th>Bajo<br>desempeño %</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="cap">
+      <span class="sigmark">▲</span> marca los cambios estadísticamente significativos.
+      «Alto desempeño» = nivel 5 o 6 en ciencias, lectura o matemáticas. «Bajo desempeño» = por debajo del
+      nivel 2 en las tres áreas a la vez. Fuente: Tabla I.1.
+    </p>
+  </div>
+
+  <section class="col">
+    <p class="pull">
+      La distancia con el promedio OCDE es de 97 puntos en ciencias y 117 en matemáticas:
+      con un año de escolaridad valuado en unos 20 puntos, eso equivale a cerca de cinco años en ciencias y casi seis en matemáticas.
+    </p>
+    <p>
+      El área donde El Salvador queda relativamente mejor colocado es la nueva prueba de resolución
+      computacional de problemas. Con 401 puntos, su resultado no es estadísticamente distinto del de Brasil (406),
+      Argentina (403), Uzbekistán (402) y Jordania (408), países que lo superan por 8 a 24 puntos en ciencias.
+      El informe sitúa a El Salvador entre los sistemas donde la mayoría de estudiantes rinde por encima de lo
+      esperado en resolución computacional dado su desempeño en matemáticas.
+    </p>
+  </section>
+
+  <!-- ============ 3. BASE DE LA PIRÁMIDE ============ -->
+  <section class="col">
+    <h2 class="sec">La mejora vino de abajo</h2>
+    <p class="lede">
+      La proporción de estudiantes por debajo del nivel 2 en ciencias cayó 6,0 puntos porcentuales entre 2022
+      y 2025 — la segunda mayor reducción de América Latina, detrás de Costa Rica. La proporción de estudiantes
+      de alto desempeño no se movió.
+    </p>
+  </section>
+
+  <div class="twoup">
+    <div class="panel">
+      <h3>Cambio en el porcentaje de bajo desempeño en ciencias</h3>
+      <div class="bars" id="lowBars"></div>
+      <p class="cap">Puntos porcentuales, 2022 → 2025. Fuente: Tabla I.2.8.</p>
+    </div>
+    <div class="panel">
+      <h3>Estudiantes bajo el nivel 2 en las tres áreas, 2025</h3>
+      <div class="bars" id="lowLevelBars"></div>
+      <p class="cap">Porcentaje del total de estudiantes evaluados. Fuente: Tabla I.1.</p>
+    </div>
+  </div>
+
+  <section class="col">
+    <p>
+      El punto de partida sigue siendo muy alto: 61,3 % de los estudiantes salvadoreños de 15 años no alcanza
+      el nivel básico en ninguna de las tres áreas, frente a 19,7 % en promedio en la OCDE. Solo Guatemala,
+      Paraguay y República Dominicana registran cifras peores en la región. Y apenas 0,2 % llega al nivel 5 o 6
+      en alguna materia, cifra que no varió respecto a 2022.
+    </p>
+    <p>
+      La reducción del bajo desempeño fue algo mayor entre los varones (−6,6 puntos porcentuales) que entre
+      las mujeres (−5,4).
+    </p>
+  </section>
+
+  <!-- ============ 4. EQUIDAD ============ -->
+  <section class="col">
+    <h2 class="sec">Equidad: brecha socioeconómica estrecha, nivel general bajo</h2>
+    <p class="lede">
+      La diferencia entre estudiantes aventajados y desaventajados es de 73 puntos, menor que el promedio OCDE
+      (85) y una de las más bajas de América Latina. Eso no refleja movilidad: refleja que el rendimiento es
+      bajo en todos los estratos.
+    </p>
+  </section>
+
+  <div class="panel">
+    <h3>Brecha entre estudiantes aventajados y desaventajados en ciencias, 2025</h3>
+    <div class="bars" id="gapBars"></div>
+    <p class="cap">
+      Diferencia de puntaje entre el cuartil superior e inferior del índice de estatus económico, social y
+      cultural (ESCS) de cada país. Costa Rica no reporta el dato. Fuente: Tabla I.2.
+    </p>
+  </div>
+
+  <section class="col">
+    <p>
+      El ESCS explica 13,7 % de la varianza en ciencias en El Salvador, algo más que en la OCDE (11,6 %).
+      El 10,3 % de los estudiantes desaventajados son académicamente resilientes, es decir, se ubican en el
+      cuartil superior de su propio país: por debajo del 11,9 % de la OCDE.
+    </p>
+    <p>
+      Entre 2022 y 2025 los estudiantes desaventajados ganaron 8 puntos y los aventajados 14, pero ninguno de
+      esos movimientos ni la ampliación de 6 puntos en la brecha son estadísticamente significativos. Es un
+      contraste con el patrón OCDE, donde la brecha se estrechó 13 puntos porque cayó el rendimiento de los
+      estudiantes aventajados.
+    </p>
+    <p>
+      Los estudiantes con antecedente migratorio obtienen 359 puntos frente a 390 de los no migrantes,
+      una diferencia significativa de 31 puntos.
+    </p>
+    <p>
+      El informe también señala a El Salvador entre los sistemas donde más de una cuarta parte de los
+      estudiantes reporta privación material o social, y donde más de la mitad de los estudiantes desaventajados
+      reporta privación social.
+    </p>
+  </section>
+
+  <!-- ============ 5. GÉNERO ============ -->
+  <section class="col">
+    <h2 class="sec">Brechas de género</h2>
+    <p class="lede">
+      El patrón salvadoreño es el latinoamericano típico: los varones adelante en ciencias y matemáticas,
+      las mujeres adelante en lectura.
+    </p>
+  </section>
+
+  <div class="panel">
+    <div class="tablewrap">
+      <table id="genderTable">
+        <caption>Puntaje medio por sexo, PISA 2025. Diferencia = varones − mujeres.</caption>
+        <thead>
+          <tr>
+            <th>País</th>
+            <th>Ciencias<br>mujeres</th><th>Ciencias<br>varones</th><th>Dif.</th>
+            <th>Lectura<br>mujeres</th><th>Lectura<br>varones</th><th>Dif.</th>
+            <th>Matem.<br>mujeres</th><th>Matem.<br>varones</th><th>Dif.</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="cap">Todas las diferencias mostradas para El Salvador son estadísticamente significativas. Fuente: Tabla I.3.</p>
+  </div>
+
+  <!-- ============ 6. CONTEXTO ESCOLAR ============ -->
+  <section class="col">
+    <h2 class="sec">Lo que reportan los estudiantes</h2>
+    <p class="lede">
+      Los indicadores de clima y apoyo dibujan un sistema con docentes percibidos como cercanos, familias
+      ausentes y una relación débil con la idea de conocimiento verificable.
+    </p>
+  </section>
+
+  <div class="panel">
+    <button type="button" id="expandAll" class="expandall">Abrir todas las fichas</button>
+    <div class="tablewrap">
+      <table id="ctxTable">
+        <caption>Indicadores de contexto: El Salvador frente al promedio OCDE. Toque cualquier fila para ver qué mide exactamente el indicador.</caption>
+        <thead>
+          <tr><th>Indicador</th><th>El Salvador</th><th>Promedio OCDE</th><th style="text-align:left;padding-left:16px">Lectura del dato</th></tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="cap">Los valores sin signo de porcentaje son índices, no proporciones: están estandarizados con media 0 y desviación estándar 1 en la OCDE, de modo que −0,50 significa media desviación estándar por debajo del promedio. El informe advierte que estos indicadores de cuestionario deben leerse con cautela, porque las respuestas están influidas por estilos de respuesta y normas culturales que varían entre países. Fuente: Tablas I.4, I.5, I.6 y I.7 del informe y sus notas metodológicas.</p>
+  </div>
+
+  <section class="col">
+    <p>
+      Dos señales llaman la atención. El índice de creencias sobre la naturaleza de la ciencia es −0,47, uno de
+      los más bajos del conjunto: los estudiantes tienden a no ver el conocimiento científico como algo que se
+      construye, revisa y corrige. En la misma línea, El Salvador aparece entre los seis sistemas —con Armenia,
+      Paraguay, Bulgaria, Guatemala y República Dominicana— donde más de 30 % de los estudiantes con mayor
+      disposición a pedir ayuda están en desacuerdo con que una información deba contrastarse con otras fuentes
+      confiables antes de aceptarse.
+    </p>
+    <p>
+      En digitalización el retrato es mixto. Solo 40,1 % de los estudiantes usa inteligencia artificial al menos
+      una vez por semana para aprender, frente a 45,5 % en la OCDE, y 60,5 % dice que en su escuela se enseña a
+      evaluar información generada por IA. En cambio, El Salvador está claramente por encima del promedio en
+      control del aula: 71,2 % asiste a escuelas donde no se permiten celulares —contra 49,5 % en la OCDE— y
+      54,6 % no reporta distracción por dispositivos durante la clase, frente a 39,2 %. El informe encuentra que
+      el uso moderado de dispositivos se asocia a mejor desempeño en ciencias y el uso excesivo a peores
+      resultados.
+    </p>
+    <p>
+      En el eje ambiental, El Salvador obtiene 381 puntos en la subescala de ciencias ambientales, con una brecha
+      socioeconómica de 75 puntos. El índice de conciencia ambiental es −0,61, pero 74,7 % de los estudiantes
+      participa en al menos una actividad relacionada con el medio ambiente y 75,2 % declara interés en contribuir
+      a la protección ambiental en su futuro laboral.
+    </p>
+  </section>
+
+  <!-- ============ 7. ADVERTENCIAS ============ -->
+  <section class="col">
+    <h2 class="sec">Cómo leer estas cifras</h2>
+  </section>
+
+  <div class="panel col">
+    <h3>La serie salvadoreña empieza en 2022</h3>
+    <p class="note">
+      El Salvador se incorporó a PISA en 2022. Todas las tendencias disponibles son de tres años; no hay
+      comparación decenal como en Brasil, Chile, Colombia, Costa Rica, México, Perú o Uruguay.
+    </p>
+    <h3>La cobertura creció, y eso presiona los promedios a la baja</h3>
+    <p class="note">
+      El informe agrupa a El Salvador con Camboya, Ecuador, Líbano, Marruecos y Paraguay entre los países cuyo
+      índice de cobertura —la proporción de jóvenes de 15 años elegibles para la prueba sobre el total de
+      jóvenes de 15 años— aumentó entre 11 y 24 puntos porcentuales en la última década. Cuando entran al
+      sistema poblaciones antes excluidas, lo esperable es que el promedio baje. Que haya subido refuerza la
+      lectura positiva, pero también significa que la muestra de 2025 no es idéntica a la de 2022.
+    </p>
+    <h3>De los siete países con cobertura en expansión, tres mejoraron</h3>
+    <p class="note">
+      Entre los sistemas que ampliaron la participación en secundaria en 2015–2025, la OCDE reporta mejoras solo
+      en Camboya (las tres áreas), República Dominicana (dos áreas) y El Salvador (una área). Guatemala cayó en
+      las tres; Costa Rica, México, Marruecos y Paraguay cayeron en al menos una.
+    </p>
+    <h3>Significancia estadística</h3>
+    <p class="note">
+      A lo largo del informe, los cambios marcados como significativos son los que la OCDE resalta en negrita en
+      sus tablas. Un cambio de 2 o 3 puntos, como el de lectura y matemáticas en El Salvador, no puede
+      distinguirse del error de medición y debe leerse como estabilidad, no como mejora.
+    </p>
+  </div>
+
+  <footer class="col">
+    <p>
+      Elaborado a partir de OECD (2026), <em>PISA 2025 Results (Volume I): Future-Ready Students</em>, PISA,
+      OECD Publishing, París. https://doi.org/10.1787/73451bc5-en
+    </p>
+    <p>
+      Tablas utilizadas: I.1, I.2, I.3, I.4, I.5, I.6, I.7, I.2.6, I.2.8, I.2.13, y las referencias de la base
+      PISA 2025 citadas en cada nota al pie del informe original.
+    </p>
+  </footer>
+
+</div>
+</main>
+
+<script>
+/* ------------------------------------------------------------------ */
+/* Datos extraídos del informe PISA 2025 (Volumen I), OCDE 2026        */
+/* sig: true = cambio estadísticamente significativo (negrita en la    */
+/* tabla original del informe)                                         */
+/* ------------------------------------------------------------------ */
+
+const ALL = [{"n": "OECD average", "sci": "482", "rea": "461", "mat": "463", "cps": "500", "dsci": "-3", "drea": "-14", "dmat": "-9", "top": "11.9", "low": "19.7"}, {"n": "B-S-J-Z (China)", "sci": "597", "rea": "527", "mat": "612", "cps": "560", "dsci": "m", "drea": "m", "dmat": "m", "top": "55.5", "low": "1.8"}, {"n": "Singapore", "sci": "560", "rea": "535", "mat": "563", "cps": "563", "dsci": "-2", "drea": "-8", "dmat": "-12", "top": "42.3", "low": "6.8"}, {"n": "Macao (China)", "sci": "541", "rea": "501", "mat": "549", "cps": "572", "dsci": "-2", "drea": "-9", "dmat": "-3", "top": "30.8", "low": "5.2"}, {"n": "Chinese Taipei", "sci": "540", "rea": "508", "mat": "546", "cps": "551", "dsci": "2", "drea": "-7", "dmat": "-1", "top": "35.0", "low": "9.1"}, {"n": "Japan", "sci": "538", "rea": "503", "mat": "525", "cps": "557", "dsci": "-9", "drea": "-13", "dmat": "-10", "top": "27.1", "low": "8.8"}, {"n": "Estonia", "sci": "527", "rea": "499", "mat": "508", "cps": "541", "dsci": "1", "drea": "-12", "dmat": "-2", "top": "18.0", "low": "7.4"}, {"n": "Korea", "sci": "526", "rea": "501", "mat": "522", "cps": "538", "dsci": "-2", "drea": "-15", "dmat": "-5", "top": "28.1", "low": "9.4"}, {"n": "United Kingdom", "sci": "511", "rea": "494", "mat": "488", "cps": "523", "dsci": "12", "drea": "0", "dmat": "-1", "top": "18.2", "low": "12.0"}, {"n": "Canada*", "sci": "510", "rea": "490", "mat": "485", "cps": "525", "dsci": "-5", "drea": "-17", "dmat": "-12", "top": "17.4", "low": "12.0"}, {"n": "New Zealand*", "sci": "509", "rea": "497", "mat": "480", "cps": "531", "dsci": "5", "drea": "-4", "dmat": "1", "top": "20.8", "low": "13.8"}, {"n": "Australia", "sci": "509", "rea": "491", "mat": "478", "cps": "532", "dsci": "2", "drea": "-7", "dmat": "-10", "top": "18.2", "low": "14.0"}, {"n": "Finland", "sci": "504", "rea": "474", "mat": "469", "cps": "507", "dsci": "-7", "drea": "-16", "dmat": "-15", "top": "14.0", "low": "15.7"}, {"n": "United States*", "sci": "502", "rea": "490", "mat": "463", "cps": "513", "dsci": "2", "drea": "-14", "dmat": "-2", "top": "17.8", "low": "17.5"}, {"n": "Switzerland", "sci": "501", "rea": "470", "mat": "499", "cps": "520", "dsci": "-1", "drea": "-13", "dmat": "-9", "top": "18.1", "low": "15.0"}, {"n": "Ireland", "sci": "500", "rea": "500", "mat": "480", "cps": "511", "dsci": "-4", "drea": "-16", "dmat": "-12", "top": "12.7", "low": "11.2"}, {"n": "Austria", "sci": "497", "rea": "467", "mat": "477", "cps": "509", "dsci": "6", "drea": "-13", "dmat": "-10", "top": "12.6", "low": "16.5"}, {"n": "Hong Kong (China)", "sci": "496", "rea": "480", "mat": "522", "cps": "545", "dsci": "-25", "drea": "-20", "dmat": "-19", "top": "22.9", "low": "10.0"}, {"n": "Poland", "sci": "495", "rea": "482", "mat": "484", "cps": "507", "dsci": "-4", "drea": "-7", "dmat": "-5", "top": "14.4", "low": "14.0"}, {"n": "Türkiye", "sci": "494", "rea": "472", "mat": "462", "cps": "473", "dsci": "18", "drea": "16", "dmat": "8", "top": "11.1", "low": "15.4"}, {"n": "Czechia", "sci": "490", "rea": "468", "mat": "477", "cps": "517", "dsci": "-7", "drea": "-20", "dmat": "-10", "top": "12.8", "low": "15.4"}, {"n": "Belgium", "sci": "490", "rea": "466", "mat": "480", "cps": "508", "dsci": "-1", "drea": "-13", "dmat": "-10", "top": "13.4", "low": "18.1"}, {"n": "Lithuania", "sci": "488", "rea": "464", "mat": "470", "cps": "512", "dsci": "3", "drea": "-8", "dmat": "-5", "top": "8.7", "low": "15.2"}, {"n": "Germany", "sci": "486", "rea": "465", "mat": "464", "cps": "498", "dsci": "-7", "drea": "-15", "dmat": "-11", "top": "14.0", "low": "20.7"}, {"n": "Netherlands*", "sci": "485", "rea": "441", "mat": "483", "cps": "506", "dsci": "-3", "drea": "-18", "dmat": "-9", "top": "15.7", "low": "21.3"}, {"n": "Sweden", "sci": "485", "rea": "466", "mat": "464", "cps": "503", "dsci": "-8", "drea": "-21", "dmat": "-18", "top": "14.1", "low": "19.4"}, {"n": "Slovenia", "sci": "484", "rea": "445", "mat": "460", "cps": "486", "dsci": "-16", "drea": "-24", "dmat": "-25", "top": "10.1", "low": "18.8"}, {"n": "France", "sci": "483", "rea": "456", "mat": "458", "cps": "497", "dsci": "-4", "drea": "-18", "dmat": "-16", "top": "9.8", "low": "21.3"}, {"n": "Italy", "sci": "483", "rea": "474", "mat": "468", "cps": "490", "dsci": "6", "drea": "-7", "dmat": "-3", "top": "10.1", "low": "15.8"}, {"n": "Portugal", "sci": "482", "rea": "462", "mat": "460", "cps": "501", "dsci": "-3", "drea": "-15", "dmat": "-12", "top": "9.0", "low": "18.6"}, {"n": "Hungary", "sci": "480", "rea": "452", "mat": "459", "cps": "495", "dsci": "-6", "drea": "-21", "dmat": "-13", "top": "7.6", "low": "19.7"}, {"n": "Denmark", "sci": "478", "rea": "460", "mat": "471", "cps": "506", "dsci": "-16", "drea": "-29", "dmat": "-19", "top": "8.9", "low": "16.0"}, {"n": "Spain", "sci": "477", "rea": "451", "mat": "457", "cps": "499", "dsci": "-7", "drea": "-23", "dmat": "-16", "top": "7.0", "low": "18.4"}, {"n": "Croatia", "sci": "476", "rea": "453", "mat": "455", "cps": "464", "dsci": "-6", "drea": "-22", "dmat": "-8", "top": "7.8", "low": "20.3"}, {"n": "Slovak Republic", "sci": "475", "rea": "448", "mat": "469", "cps": "497", "dsci": "13", "drea": "1", "dmat": "5", "top": "11.0", "low": "21.1"}, {"n": "Luxembourg", "sci": "474", "rea": "443", "mat": "458", "cps": "506", "dsci": "m", "drea": "m", "dmat": "m", "top": "11.4", "low": "25.0"}, {"n": "Norway*", "sci": "470", "rea": "453", "mat": "452", "cps": "491", "dsci": "-8", "drea": "-24", "dmat": "-17", "top": "9.7", "low": "22.0"}, {"n": "Latvia", "sci": "468", "rea": "430", "mat": "460", "cps": "507", "dsci": "-25", "drea": "-45", "dmat": "-23", "top": "6.7", "low": "21.6"}, {"n": "United Arab Emirates", "sci": "458", "rea": "433", "mat": "453", "cps": "476", "dsci": "26", "drea": "15", "dmat": "21", "top": "10.3", "low": "26.6"}, {"n": "Viet Nam", "sci": "457", "rea": "392", "mat": "443", "cps": "461", "dsci": "m", "drea": "m", "dmat": "m", "top": "4.2", "low": "26.0"}, {"n": "Malta", "sci": "453", "rea": "415", "mat": "439", "cps": "463", "dsci": "-13", "drea": "-31", "dmat": "-27", "top": "8.3", "low": "29.4"}, {"n": "Ukrainian regions (17 of 27)", "sci": "448", "rea": "418", "mat": "431", "cps": "478", "dsci": "-1", "drea": "-8", "dmat": "-9", "top": "3.6", "low": "29.3"}, {"n": "Uruguay", "sci": "445", "rea": "423", "mat": "405", "cps": "462", "dsci": "9", "drea": "-7", "dmat": "-4", "top": "2.8", "low": "30.2"}, {"n": "Chile", "sci": "442", "rea": "436", "mat": "403", "cps": "466", "dsci": "-1", "drea": "-12", "dmat": "-9", "top": "2.6", "low": "28.8"}, {"n": "Israel", "sci": "442", "rea": "436", "mat": "433", "cps": "444", "dsci": "-23", "drea": "-38", "dmat": "-25", "top": "8.8", "low": "29.0"}, {"n": "Iceland", "sci": "441", "rea": "422", "mat": "450", "cps": "490", "dsci": "-6", "drea": "-14", "dmat": "-9", "top": "5.9", "low": "27.6"}, {"n": "Brunei Darussalam", "sci": "439", "rea": "426", "mat": "435", "cps": "496", "dsci": "-6", "drea": "-4", "dmat": "-7", "top": "3.4", "low": "33.0"}, {"n": "Mauritius", "sci": "438", "rea": "405", "mat": "407", "cps": "m", "dsci": "m", "drea": "m", "dmat": "m", "top": "3.0", "low": "35.1"}, {"n": "Uzbekistan", "sci": "438", "rea": "m", "mat": "m", "cps": "402", "dsci": "83", "drea": "m", "dmat": "m", "top": "m", "low": "m"}, {"n": "Montenegro", "sci": "435", "rea": "418", "mat": "411", "cps": "423", "dsci": "32", "drea": "13", "dmat": "5", "top": "1.8", "low": "33.0"}, {"n": "Albania*", "sci": "435", "rea": "408", "mat": "433", "cps": "437", "dsci": "m", "drea": "m", "dmat": "m", "top": "1.9", "low": "27.8"}, {"n": "Thailand", "sci": "432", "rea": "392", "mat": "407", "cps": "476", "dsci": "23", "drea": "13", "dmat": "13", "top": "1.2", "low": "36.9"}, {"n": "Serbia", "sci": "429", "rea": "415", "mat": "417", "cps": "437", "dsci": "-18", "drea": "-26", "dmat": "-23", "top": "3.4", "low": "34.1"}, {"n": "Romania", "sci": "425", "rea": "413", "mat": "419", "cps": "442", "dsci": "-3", "drea": "-16", "dmat": "-9", "top": "4.8", "low": "38.5"}, {"n": "Mongolia", "sci": "424", "rea": "374", "mat": "419", "cps": "443", "dsci": "12", "drea": "-4", "dmat": "-6", "top": "1.4", "low": "38.6"}, {"n": "Costa Rica", "sci": "424", "rea": "416", "mat": "387", "cps": "452", "dsci": "13", "drea": "1", "dmat": "3", "top": "0.9", "low": "36.7"}, {"n": "Georgia", "sci": "422", "rea": "384", "mat": "416", "cps": "413", "dsci": "38", "drea": "10", "dmat": "26", "top": "2.3", "low": "36.2"}, {"n": "Moldova", "sci": "422", "rea": "404", "mat": "410", "cps": "452", "dsci": "5", "drea": "-7", "dmat": "-4", "top": "1.5", "low": "39.0"}, {"n": "Bulgaria", "sci": "421", "rea": "387", "mat": "405", "cps": "425", "dsci": "0", "drea": "-18", "dmat": "-12", "top": "4.1", "low": "41.9"}, {"n": "Kazakhstan", "sci": "420", "rea": "385", "mat": "414", "cps": "449", "dsci": "-4", "drea": "-1", "dmat": "-12", "top": "1.4", "low": "41.1"}, {"n": "Malaysia", "sci": "419", "rea": "393", "mat": "397", "cps": "484", "dsci": "3", "drea": "5", "dmat": "-11", "top": "0.8", "low": "42.3"}, {"n": "Colombia", "sci": "414", "rea": "399", "mat": "381", "cps": "432", "dsci": "3", "drea": "-9", "dmat": "-2", "top": "1.1", "low": "43.9"}, {"n": "Mexico", "sci": "414", "rea": "408", "mat": "388", "cps": "453", "dsci": "4", "drea": "-7", "dmat": "-7", "top": "0.5", "low": "41.8"}, {"n": "Saudi Arabia", "sci": "413", "rea": "387", "mat": "390", "cps": "426", "dsci": "23", "drea": "5", "dmat": "1", "top": "0.6", "low": "44.0"}, {"n": "Cyprus", "sci": "411", "rea": "379", "mat": "412", "cps": "427", "dsci": "0", "drea": "-2", "dmat": "-7", "top": "4.6", "low": "43.5"}, {"n": "Azerbaijan", "sci": "409", "rea": "374", "mat": "422", "cps": "388", "dsci": "m", "drea": "m", "dmat": "m", "top": "4.8", "low": "42.9"}, {"n": "Brazil", "sci": "409", "rea": "408", "mat": "377", "cps": "406", "dsci": "6", "drea": "-2", "dmat": "-2", "top": "1.8", "low": "43.8"}, {"n": "Jordan", "sci": "407", "rea": "363", "mat": "388", "cps": "408", "dsci": "32", "drea": "20", "dmat": "26", "top": "0.3", "low": "48.1"}, {"n": "Peru", "sci": "406", "rea": "390", "mat": "382", "cps": "436", "dsci": "-2", "drea": "-18", "dmat": "-9", "top": "0.5", "low": "46.6"}, {"n": "Ecuador", "sci": "393", "rea": "385", "mat": "366", "cps": "422", "dsci": "m", "drea": "m", "dmat": "m", "top": "0.2", "low": "53.6"}, {"n": "Argentina", "sci": "393", "rea": "389", "mat": "367", "cps": "403", "dsci": "-13", "drea": "-12", "dmat": "-11", "top": "1.2", "low": "48.8"}, {"n": "Indonesia", "sci": "389", "rea": "365", "mat": "364", "cps": "427", "dsci": "6", "drea": "7", "dmat": "-2", "top": "0.1", "low": "60.9"}, {"n": "El Salvador", "sci": "385", "rea": "366", "mat": "346", "cps": "401", "dsci": "12", "drea": "2", "dmat": "3", "top": "0.2", "low": "61.3"}, {"n": "Cambodia", "sci": "382", "rea": "347", "mat": "366", "cps": "m", "dsci": "35", "drea": "18", "dmat": "29", "top": "0.0", "low": "61.7"}, {"n": "North Macedonia", "sci": "378", "rea": "357", "mat": "380", "cps": "389", "dsci": "-1", "drea": "-1", "dmat": "-9", "top": "0.9", "low": "55.8"}, {"n": "Philippines", "sci": "373", "rea": "367", "mat": "371", "cps": "434", "dsci": "17", "drea": "20", "dmat": "16", "top": "0.3", "low": "64.3"}, {"n": "Lebanon", "sci": "372", "rea": "331", "mat": "377", "cps": "358", "dsci": "m", "drea": "m", "dmat": "m", "top": "1.1", "low": "58.4"}, {"n": "Armenia", "sci": "369", "rea": "348", "mat": "376", "cps": "354", "dsci": "m", "drea": "m", "dmat": "m", "top": "0.8", "low": "58.1"}, {"n": "Kyrgyzstan", "sci": "363", "rea": "344", "mat": "364", "cps": "388", "dsci": "m", "drea": "m", "dmat": "m", "top": "0.0", "low": "70.9"}, {"n": "Dominican Republic", "sci": "361", "rea": "346", "mat": "339", "cps": "379", "dsci": "0", "drea": "-6", "dmat": "0", "top": "0.0", "low": "69.3"}, {"n": "Palestinian Authority", "sci": "359", "rea": "350", "mat": "354", "cps": "393", "dsci": "-17", "drea": "-6", "dmat": "-18", "top": "0.1", "low": "68.4"}, {"n": "Morocco", "sci": "358", "rea": "321", "mat": "355", "cps": "374", "dsci": "-7", "drea": "-18", "dmat": "-10", "top": "0.1", "low": "73.2"}, {"n": "Kosovo", "sci": "357", "rea": "340", "mat": "350", "cps": "359", "dsci": "0", "drea": "-2", "dmat": "-5", "top": "0.0", "low": "73.8"}, {"n": "Paraguay", "sci": "355", "rea": "352", "mat": "334", "cps": "352", "dsci": "-13", "drea": "-21", "dmat": "-4", "top": "0.1", "low": "69.4"}, {"n": "Kurdistan Region (Iraq)", "sci": "352", "rea": "312", "mat": "339", "cps": "m", "dsci": "m", "drea": "m", "dmat": "m", "top": "0.0", "low": "76.8"}, {"n": "Guatemala", "sci": "351", "rea": "337", "mat": "334", "cps": "369", "dsci": "-22", "drea": "-37", "dmat": "-10", "top": "0.0", "low": "75.6"}, {"n": "Zambia", "sci": "337", "rea": "325", "mat": "314", "cps": "m", "dsci": "m", "drea": "m", "dmat": "m", "top": "0.2", "low": "72.5"}, {"n": "Kenya", "sci": "335", "rea": "320", "mat": "326", "cps": "278", "dsci": "m", "drea": "m", "dmat": "m", "top": "0.0", "low": "82.1"}, {"n": "Dushanbe (Tajikistan)", "sci": "334", "rea": "368", "mat": "382", "cps": "m", "dsci": "m", "drea": "m", "dmat": "m", "top": "0.0", "low": "67.2"}];
+
+const LATAM = [
+  {n:"Uruguay",     es:"Uruguay",              sci:445,rea:423,mat:405,cps:462, d:[9,-7,-4],  sig:[1,1,0], top:2.8, low:30.2, dlow:-4.7, siglow:true, gap:87},
+  {n:"Chile",       es:"Chile",                sci:442,rea:436,mat:403,cps:466, d:[-1,-12,-9],sig:[0,1,1], top:2.6, low:28.8, dlow:0.3, siglow:false,  gap:76},
+  {n:"Costa Rica",  es:"Costa Rica",           sci:424,rea:416,mat:387,cps:452, d:[13,1,3],   sig:[1,0,0], top:0.9, low:36.7, dlow:-6.3, siglow:true, gap:null},
+  {n:"Colombia",    es:"Colombia",             sci:414,rea:399,mat:381,cps:432, d:[3,-9,-2],  sig:[0,0,0], top:1.1, low:43.9, dlow:-1.4, siglow:false, gap:93},
+  {n:"Mexico",      es:"México",               sci:414,rea:408,mat:388,cps:453, d:[4,-7,-7],  sig:[0,0,1], top:0.5, low:41.8, dlow:-1.2, siglow:false, gap:68},
+  {n:"Brazil",      es:"Brasil",               sci:409,rea:408,mat:377,cps:406, d:[6,-2,-2],  sig:[0,0,0], top:1.8, low:43.8, dlow:-2.9, siglow:false, gap:96},
+  {n:"Peru",        es:"Perú",                 sci:406,rea:390,mat:382,cps:436, d:[-2,-18,-9],sig:[0,1,1], top:0.5, low:46.6, dlow:-0.1, siglow:false, gap:78},
+  {n:"Ecuador",     es:"Ecuador",              sci:393,rea:385,mat:366,cps:422, d:[null,null,null],sig:[0,0,0], top:0.2, low:53.6, dlow:null, siglow:false, gap:86},
+  {n:"Argentina",   es:"Argentina",            sci:393,rea:389,mat:367,cps:403, d:[-13,-12,-11],sig:[1,1,1],top:1.2, low:48.8, dlow:5.3, siglow:true,  gap:82},
+  {n:"El Salvador", es:"El Salvador",          sci:385,rea:366,mat:346,cps:401, d:[12,2,3],   sig:[1,0,0], top:0.2, low:61.3, dlow:-6.0, siglow:true, gap:73},
+  {n:"Dominican Republic",es:"Rep. Dominicana",sci:361,rea:346,mat:339,cps:379, d:[0,-6,0],   sig:[0,0,0], top:0.0, low:69.3, dlow:-2.6, siglow:false, gap:69},
+  {n:"Paraguay",    es:"Paraguay",             sci:355,rea:352,mat:334,cps:352, d:[-13,-21,-4],sig:[1,1,0],top:0.1, low:69.4, dlow:4.5, siglow:true,  gap:72},
+  {n:"Guatemala",   es:"Guatemala",            sci:351,rea:337,mat:334,cps:369, d:[-22,-37,-10],sig:[1,1,1],top:0.0, low:75.6, dlow:6.2, siglow:true,  gap:76}
+];
+
+const OECD = {es:"Promedio OCDE", sci:482,rea:461,mat:463,cps:500, d:[-3,-14,-9], sig:[0,1,1], top:11.9, low:19.7, dlow:1.2, gap:85};
+
+const GENDER = [
+  {es:"El Salvador", g:[382,388,6, 375,358,-17, 340,353,13], slv:true},
+  {es:"Chile",       g:[438,447,9, 446,425,-21, 394,411,18]},
+  {es:"Costa Rica",  g:[418,430,11,423,409,-14, 376,398,22]},
+  {es:"México",      g:[407,420,13,414,402,-12, 380,396,16]},
+  {es:"Colombia",    g:[410,418,7, 407,391,-16, 374,388,14]},
+  {es:"Argentina",   g:[390,397,7, 394,385,-9,  358,376,18]},
+  {es:"Brasil",      g:[408,409,2, 419,397,-21, 373,380,7]},
+  {es:"Uruguay",     g:[443,446,2, 436,411,-25, 398,412,13]},
+  {es:"Perú",        g:[400,411,11,399,382,-17, 376,389,13]},
+  {es:"Ecuador",     g:[391,396,4, 394,376,-18, 360,372,12]},
+  {es:"Paraguay",    g:[353,357,4, 361,343,-18, 326,341,15]},
+  {es:"Guatemala",   g:[347,356,9, 342,333,-9,  330,339,9]},
+  {es:"Promedio OCDE",g:[483,481,-1,476,446,-30,456,470,13], oecd:true}
+];
+
+const CTX = [
+  ["cat","Clima escolar",""],
+  ["Clima disciplinario en clase de ciencias","0,09","0,14","Apenas por debajo de la OCDE",
+   "Índice, no porcentaje. Recoge la percepción de los estudiantes sobre lo que ocurre en sus clases de ciencias. Se estandarizó en 2015 con media 0 y desviación estándar 1 en la OCDE, y en 2025 se construyó un índice comparable. El informe advierte que cada estudiante responde pensando en una asignatura de ciencias que él mismo elige, de modo que la materia de referencia puede variar entre países según el currículo."],
+  ["Estudiantes que no reportan acoso escolar","35,4 %","52,5 %","Muy por debajo: el acoso es frecuente",
+   "Porcentaje que respondió «nunca o casi nunca» a <em>los cinco</em> actos de acoso que pregunta PISA, referidos a los 12 meses previos a la prueba: se burlaron de mí; fui amenazado; me golpearon o empujaron; difundieron rumores desagradables sobre mí; se publicó en línea información sobre mí que me molestó, sin mi consentimiento (ítem de ciberacoso, nuevo en 2025).<br><br>La escala es «nunca o casi nunca» / «algunas veces al año» / «algunas veces al mes» / «una vez por semana o más». Por lo tanto el 64,6 % restante reportó al menos uno de esos actos <em>al menos algunas veces al año</em>: es una red muy amplia, que no equivale a acoso sistemático. Con la vara más estricta que usa el informe en su capítulo sobre el tema —al menos algunas veces al mes— el promedio OCDE baja a 20 %."],
+  ["Estudiantes que no reportan ausentismo","55,8 %","66,1 %","Casi la mitad falta a clases",
+   "Porcentaje que <em>no</em> reportó haber faltado a al menos una clase o a un día completo de escuela en las dos semanas previas a la prueba. El complemento, 44,2 %, sí faltó al menos una vez en ese lapso."],
+  ["Sentido de pertenencia a la escuela","−0,08","0,09","Ligeramente por debajo",
+   "Índice estandarizado con media 0 en la OCDE, construido a partir de autorreportes de los estudiantes sobre su vínculo con la escuela. El informe lo asocia negativamente con la exposición al acoso."],
+  ["Valor atribuido a aprender en la escuela","62,3 %","51,4 %","Alto pese al bajo desempeño",
+   "Porcentaje que está en desacuerdo o muy en desacuerdo con la afirmación «la escuela ha hecho poco para prepararme para la vida adulta cuando la deje». El ítem está redactado en negativo: estar en desacuerdo significa valorar lo que la escuela aporta."],
+  ["Creen en la movilidad social vía educación","56,2 %","66,4 %","Por debajo de la OCDE",
+   "Porcentaje en desacuerdo o muy en desacuerdo con «tu posición en la sociedad es algo que realmente no puedes cambiar mucho». También es un ítem en negativo: el desacuerdo indica creer que la posición social sí puede cambiarse."],
+
+  ["cat","Apoyo recibido",""],
+  ["Apoyo familiar percibido","−0,50","−0,19","Entre los más bajos del estudio",
+   "Índice basado en si los padres o tutores muestran interés en el aprendizaje del estudiante, conversan sobre sus actividades escolares y hablan de su educación futura. <strong>No mide apoyo económico.</strong> El informe registra una caída de este índice entre 2022 y 2025 en casi todos los países, más marcada entre varones y estudiantes desaventajados."],
+  ["Apoyo docente percibido","0,65","0,03","Entre los más altos del estudio",
+   "Índice basado en con qué frecuencia («cada clase», «la mayoría de las clases», «algunas clases», «nunca o casi nunca») el docente de ciencias muestra interés en el aprendizaje de cada estudiante, da ayuda adicional cuando se necesita, ayuda con el aprendizaje, sigue enseñando hasta que los estudiantes entienden y da oportunidad de expresar opiniones. Estandarizado en 2015 con media 0 y desviación estándar 1 en la OCDE."],
+  ["En escuelas sin escasez de docentes","56,2 %","28,8 %","Casi el doble que la OCDE",
+   "Porcentaje de estudiantes en escuelas cuyo <em>director</em> reportó que la capacidad de la escuela para impartir enseñanza <em>no se ve obstaculizada en absoluto</em> por falta de personal docente. Es opinión del director, no un conteo de plazas, y la categoría es estricta: cualquier grado de afectación deja a la escuela fuera de este porcentaje."],
+  ["En escuelas con tutoría entre pares","73,8 %","51,2 %","Práctica asociada a mejor desempeño",
+   "Porcentaje de estudiantes en escuelas cuyo director reportó que se ofrece tutoría entre pares. El informe encuentra que la provisión de ayuda para el estudio, incluida esta modalidad, se asocia a mejor desempeño en ciencias."],
+  ["En escuelas sin escasez de materiales","45,1 %","43,8 %","Similar a la OCDE",
+   "Misma lógica que el indicador de docentes: porcentaje en escuelas cuyo director reportó que la capacidad de enseñar no se ve obstaculizada en absoluto por falta de materiales. A nivel global, los directores reportaron en 2025 más preocupación por carencias materiales que en 2022."],
+
+  ["cat","Disposición a aprender",""],
+  ["Perseverancia","0,06","0,00","En línea con la OCDE",
+   "Índice estandarizado con media 0 y desviación estándar 1 en la OCDE, construido con autorreportes sobre el esfuerzo sostenido frente a tareas difíciles."],
+  ["Curiosidad","−0,10","0,00","Ligeramente por debajo",
+   "Índice estandarizado sobre el interés declarado por aprender cosas nuevas. El informe lo analiza junto con las creencias sobre la naturaleza de la ciencia, con las que aparece positivamente relacionado."],
+  ["Búsqueda de ayuda","0,16","0,00","Por encima de la OCDE",
+   "Índice estandarizado sobre la disposición del estudiante a pedir ayuda o retroalimentación cuando la necesita. Forma parte del bloque de aprendizaje autorregulado."],
+  ["Creencias sobre la naturaleza de la ciencia","−0,47","0,00","Uno de los valores más bajos del estudio",
+   "Índice construido con el grado de acuerdo («muy en desacuerdo», «en desacuerdo», «de acuerdo», «muy de acuerdo») con cinco afirmaciones: las buenas respuestas se basan en evidencia de muchos experimentos distintos; una parte importante de la ciencia es hacer experimentos para generar ideas sobre cómo funcionan las cosas; la información de una fuente debe contrastarse con otras fuentes confiables antes de aceptarse; hay preguntas que los científicos no pueden responder; los nuevos descubrimientos pueden cambiar lo que los científicos creen verdadero.<br><br>Mide si el estudiante entiende el conocimiento como algo que se construye y se revisa, o como información que se recibe pasivamente."],
+  ["Mentalidad de crecimiento","49,3 %","69,3 %","Brecha de 20 puntos porcentuales",
+   "Porcentaje en desacuerdo o muy en desacuerdo con «tienes cierta cantidad de inteligencia y realmente no puedes hacer mucho para cambiarla». Estar en desacuerdo equivale a creer que la capacidad se desarrolla con esfuerzo."],
+  ["Respuestas apresuradas e incorrectas","11,8 %","8,9 %","Más alta que la OCDE",
+   "<strong>No es un autorreporte.</strong> Se calcula desde el registro de tiempos de la prueba: una respuesta cuenta como apresurada si fue incorrecta <em>y</em> el estudiante tardó menos que el percentil 1 del tiempo empleado por quienes sí acertaron ese ítem, con un piso de 10 segundos. El valor mostrado es el promedio entre los ítems de lectura. En la OCDE esta proporción subió más de 4 puntos porcentuales entre 2018 y 2025."],
+
+  ["cat","Digitalización e inteligencia artificial",""],
+  ["Capacidad de la escuela para enseñar con dispositivos","−0,14","−0,03","Cerca del promedio",
+   "Índice estandarizado que resume lo que reportan los directores sobre la capacidad de la escuela para mejorar la enseñanza y el aprendizaje mediante dispositivos digitales."],
+  ["Usan IA al menos una vez por semana para aprender","40,1 %","45,5 %","Por debajo de la OCDE",
+   "Porcentaje de estudiantes que reportó usar herramientas de inteligencia artificial al menos semanalmente para apoyar su aprendizaje. El informe encuentra que el uso moderado de dispositivos digitales se asocia a mejor desempeño en ciencias, y el uso excesivo a peores resultados."],
+  ["Aprenden en la escuela a evaluar información generada por IA","60,5 %","62,6 %","Similar a la OCDE",
+   "Porcentaje que reportó que, en sus clases, evalúan la calidad de la información generada por chatbots de inteligencia artificial —por ejemplo ChatGPT— a veces, a menudo o muy a menudo."],
+  ["No reportan distracción con dispositivos en clase","54,6 %","39,2 %","Bastante mejor que la OCDE",
+   "Porcentaje de estudiantes que reportó no distraerse con dispositivos digitales durante la clase. A nivel OCDE, más de uno de cada cuatro estudiantes dice que sus compañeros se distraen con dispositivos en la mayoría de las clases de ciencias o en todas."],
+  ["En escuelas donde no se permiten celulares","71,2 %","49,5 %","Restricción mucho más extendida",
+   "Porcentaje de estudiantes en escuelas cuyo director reportó que no se permite el uso de celulares en las instalaciones del centro."],
+  ["En escuelas con reglas de uso por asignatura","75,8 %","71,2 %","Por encima de la OCDE",
+   "Porcentaje de estudiantes en escuelas cuyo director reportó que el centro tiene lineamientos formales para el uso de dispositivos digitales en la enseñanza de asignaturas específicas."]
+];
+
+/* ---------- utilidades ---------- */
+const el = (t,c,h)=>{const e=document.createElement(t); if(c)e.className=c; if(h!==undefined)e.innerHTML=h; return e;};
+const fmt = v => v===null||v===undefined ? "—" : (v>0?"+":(v<0?"\u2212":""))+String(Math.abs(v)).replace(".",",");
+const fmt1 = v => v===null||v===undefined ? "—" : (v>0?"+":(v<0?"\u2212":""))+Math.abs(v).toFixed(1).replace(".",",");
+const dec1 = v => Number(v).toFixed(1).replace(".",",");
+const cls = (v,sig) => v===null?"m":(!sig?"flat":(v>0?"up":"down"));
+
+/* ---------- 1. regla de escala (hero) ---------- */
+(function(){
+  const host = document.getElementById("rulerChart");
+  const W=1000, H=132, PADL=8, PADR=8;
+  const vals = ALL.filter(d=>d.n!=="OECD average" && d.sci!=="m").map(d=>({n:d.n, v:+d.sci}));
+  const MIN=300, MAX=620;
+  const x = v => PADL + (v-MIN)/(MAX-MIN)*(W-PADL-PADR);
+  const BASE=78;
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Escala de puntajes de ciencias PISA 2025 con la posición de El Salvador">`;
+  // eje
+  s += `<line x1="${PADL}" y1="${BASE}" x2="${W-PADR}" y2="${BASE}" stroke="#D2D9DE" stroke-width="1"/>`;
+  for(let v=300; v<=620; v+=20){
+    const big = v%100===0;
+    s += `<line x1="${x(v)}" y1="${BASE}" x2="${x(v)}" y2="${BASE+(big?9:5)}" stroke="#B9C2C9" stroke-width="1"/>`;
+    if(big) s += `<text x="${x(v)}" y="${BASE+24}" font-size="11" fill="#8D97A0" text-anchor="middle">${v}</text>`;
+  }
+  // marcas de países
+  vals.forEach(d=>{
+    const isSlv = d.n==="El Salvador";
+    if(isSlv) return;
+    s += `<line x1="${x(d.v)}" y1="${BASE-16}" x2="${x(d.v)}" y2="${BASE}" stroke="#9AA4AD" stroke-width="1.4" opacity=".55"/>`;
+  });
+  // OCDE
+  const oe = 482;
+  s += `<line x1="${x(oe)}" y1="${BASE-46}" x2="${x(oe)}" y2="${BASE+2}" stroke="#2C3A46" stroke-width="1.6"/>`;
+  s += `<text x="${x(oe)}" y="${BASE-52}" font-size="12" fill="#2C3A46" text-anchor="middle" font-weight="600">Promedio OCDE 482</text>`;
+  // El Salvador
+  const sv = 385;
+  s += `<line x1="${x(sv)}" y1="${BASE-46}" x2="${x(sv)}" y2="${BASE+2}" stroke="#0F47AF" stroke-width="3"/>`;
+  s += `<circle cx="${x(sv)}" cy="${BASE-46}" r="4.5" fill="#0F47AF"/>`;
+  s += `<text x="${x(sv)}" y="${BASE-56}" font-size="13" fill="#0F47AF" text-anchor="middle" font-weight="800">El Salvador 385</text>`;
+  // etiquetas vecinos
+  const marks = [
+    {n:"Guatemala 351", v:351, anchor:"middle", dy:-20},
+    {n:"Argentina 393", v:393, anchor:"start", dy:-20},
+    {n:"Chile 442", v:442, anchor:"middle", dy:-20},
+    {n:"Singapur 560", v:560, anchor:"middle", dy:-20}
+  ];
+  marks.forEach(m=>{
+    s += `<line x1="${x(m.v)}" y1="${BASE-14}" x2="${x(m.v)}" y2="${BASE}" stroke="#5C6873" stroke-width="1.6"/>`;
+    s += `<text x="${x(m.v)}" y="${BASE+m.dy}" font-size="11.5" fill="#5C6873" text-anchor="${m.anchor}">${m.n}</text>`;
+  });
+  s += `</svg>`;
+  host.innerHTML = s;
+})();
+
+/* ---------- 2. tarjetas de cambio ---------- */
+(function(){
+  const host = document.getElementById("deltaCards");
+  const doms = [
+    {dom:"Ciencias", d:12, sc:385, sig:true},
+    {dom:"Lectura", d:2, sc:366, sig:false},
+    {dom:"Matemáticas", d:3, sc:346, sig:false},
+    {dom:"Resolución computacional", d:null, sc:401, sig:false}
+  ];
+  doms.forEach(o=>{
+    const c = el("div","delta");
+    c.appendChild(el("p","dom",o.dom));
+    if(o.d===null){
+      c.appendChild(el("p","val ns","nuevo"));
+      c.appendChild(el("p","score",`${o.sc} puntos en 2025`));
+      c.appendChild(el("p","sig no","Área evaluada por primera vez en 2025"));
+    } else {
+      c.appendChild(el("p","val "+(o.sig?"up":"ns"), fmt(o.d)));
+      c.appendChild(el("p","score",`${o.sc} puntos en 2025`));
+      c.appendChild(el("p","sig "+(o.sig?"yes":"no"), o.sig?"Cambio significativo":"Dentro del margen de error"));
+    }
+    host.appendChild(c);
+  });
+})();
+
+/* ---------- 3. barras divergentes: cambio en ciencias ---------- */
+function divergingBars(hostId, rows, opts){
+  const host = document.getElementById(hostId);
+  const max = Math.max(...rows.filter(r=>r.v!==null).map(r=>Math.abs(r.v)));
+  rows.forEach(r=>{
+    const row = el("div","bar"+(r.slv?" is-slv":""));
+    row.appendChild(el("div","name",r.es));
+    const track = el("div","track");
+    if(r.v!==null){
+      const half = 50;
+      const w = Math.abs(r.v)/max*48;
+      const fill = el("div","fill");
+      fill.style.background = r.sig ? (r.v>0? (opts.invert?"var(--down)":"var(--up)") : (opts.invert?"var(--up)":"var(--down)")) : "var(--flat)";
+      if(r.v>=0){ fill.style.left = half+"%"; fill.style.width = w+"%"; }
+      else { fill.style.left = (half-w)+"%"; fill.style.width = w+"%"; }
+      track.appendChild(fill);
+    }
+    const zl = el("div","zeroline"); zl.style.left="50%"; track.appendChild(zl);
+    row.appendChild(track);
+    row.appendChild(el("div","num", r.v===null?"—":(opts.dec?fmt1(r.v):fmt(r.v))+(opts.unit||"")));
+    host.appendChild(row);
+  });
+}
+
+divergingBars("deltaBars",
+  LATAM.slice().sort((a,b)=> (b.d[0]===null?-999:b.d[0]) - (a.d[0]===null?-999:a.d[0]))
+    .map(c=>({es:c.es, v:c.d[0], sig:c.sig[0], slv:c.n==="El Salvador"}))
+    .concat([{es:"Promedio OCDE", v:-3, sig:false}]),
+  {});
+
+divergingBars("lowBars",
+  LATAM.filter(c=>c.dlow!==null).slice().sort((a,b)=>a.dlow-b.dlow)
+    .map(c=>({es:c.es, v:c.dlow, sig:c.siglow, slv:c.n==="El Salvador"})),
+  {invert:true, dec:true, unit:" pp"});
+
+/* ---------- 4. barras simples ---------- */
+function simpleBars(hostId, rows, opts){
+  const host = document.getElementById(hostId);
+  const max = Math.max(...rows.map(r=>r.v));
+  rows.forEach(r=>{
+    const row = el("div","bar"+(r.slv?" is-slv":""));
+    row.appendChild(el("div","name",r.es));
+    const track = el("div","track");
+    const fill = el("div","fill");
+    fill.style.left="0"; fill.style.width=(r.v/max*100)+"%";
+    fill.style.background = r.slv ? "var(--slv)" : (r.oecd ? "var(--oecd)" : "#B7C1CA");
+    track.appendChild(fill);
+    row.appendChild(track);
+    row.appendChild(el("div","num", (opts.dec?dec1(r.v):String(r.v).replace(".",","))+(opts.unit||"")));
+    host.appendChild(row);
+  });
+}
+
+simpleBars("lowLevelBars",
+  LATAM.slice().sort((a,b)=>b.low-a.low)
+    .map(c=>({es:c.es, v:c.low, slv:c.n==="El Salvador"}))
+    .concat([{es:"Promedio OCDE", v:19.7, oecd:true}]),
+  {dec:true, unit:" %"});
+
+simpleBars("gapBars",
+  LATAM.filter(c=>c.gap!==null).slice().sort((a,b)=>b.gap-a.gap)
+    .map(c=>({es:c.es, v:c.gap, slv:c.n==="El Salvador"}))
+    .concat([{es:"Promedio OCDE", v:85, oecd:true}]),
+  {unit:" pts"});
+
+/* ---------- 5. tabla América Latina ---------- */
+(function(){
+  const tb = document.querySelector("#latamTable tbody");
+  const mk = (v,sig)=> v===null? "—" : fmt(v)+(sig?'<span class="sigmark">▲</span>':'');
+  LATAM.forEach(c=>{
+    const tr = el("tr", c.n==="El Salvador"?"slv":"");
+    tr.innerHTML =
+      `<td>${c.es}</td><td>${c.sci}</td><td>${c.rea}</td><td>${c.mat}</td><td>${c.cps}</td>`+
+      `<td class="${cls(c.d[0],c.sig[0])}">${mk(c.d[0],c.sig[0])}</td>`+
+      `<td class="${cls(c.d[1],c.sig[1])}">${mk(c.d[1],c.sig[1])}</td>`+
+      `<td class="${cls(c.d[2],c.sig[2])}">${mk(c.d[2],c.sig[2])}</td>`+
+      `<td>${dec1(c.top)}</td><td>${dec1(c.low)}</td>`;
+    tb.appendChild(tr);
+  });
+  const tr = el("tr","oecd");
+  tr.innerHTML = `<td>${OECD.es}</td><td>${OECD.sci}</td><td>${OECD.rea}</td><td>${OECD.mat}</td><td>${OECD.cps}</td>`+
+    `<td class="flat">−3</td><td class="down">−14<span class="sigmark">▲</span></td><td class="down">−9<span class="sigmark">▲</span></td>`+
+    `<td>11,9</td><td>19,7</td>`;
+  tb.appendChild(tr);
+})();
+
+/* ---------- 6. tabla de género ---------- */
+(function(){
+  const tb = document.querySelector("#genderTable tbody");
+  GENDER.forEach(c=>{
+    const tr = el("tr", c.slv?"slv":(c.oecd?"oecd":""));
+    const g=c.g;
+    const dcell = v => `<td class="${v>0?'up':(v<0?'down':'flat')}">${fmt(v)}</td>`;
+    tr.innerHTML = `<td>${c.es}</td><td>${g[0]}</td><td>${g[1]}</td>${dcell(g[2])}`+
+      `<td>${g[3]}</td><td>${g[4]}</td>${dcell(g[5])}`+
+      `<td>${g[6]}</td><td>${g[7]}</td>${dcell(g[8])}`;
+    tb.appendChild(tr);
+  });
+})();
+
+/* ---------- 7. tabla de contexto con fichas desplegables ---------- */
+(function(){
+  const tb = document.querySelector("#ctxTable tbody");
+  let i = 0;
+  CTX.forEach(r=>{
+    if(r[0]==="cat"){
+      const tr = el("tr","cat");
+      tr.innerHTML = `<td colspan="4">${r[1]}</td>`;
+      tb.appendChild(tr);
+      return;
+    }
+    i++;
+    const id = "def"+i;
+    const tr = el("tr","row");
+    tr.setAttribute("tabindex","0");
+    tr.setAttribute("role","button");
+    tr.setAttribute("aria-expanded","false");
+    tr.setAttribute("aria-controls",id);
+    tr.innerHTML =
+      `<td><span class="chev" aria-hidden="true"></span>${r[0]}</td>`+
+      `<td><strong>${r[1]}</strong></td><td>${r[2]}</td>`+
+      `<td class="read">${r[3]}</td>`;
+    const dr = el("tr","def");
+    dr.id = id;
+    dr.hidden = true;
+    dr.innerHTML = `<td colspan="4"><div class="defbox">${r[4]}</div></td>`;
+    const toggle = ()=>{
+      const open = !dr.hidden;
+      dr.hidden = open;
+      tr.setAttribute("aria-expanded", String(!open));
+      tr.classList.toggle("open", !open);
+    };
+    tr.addEventListener("click", toggle);
+    tr.addEventListener("keydown", e=>{
+      if(e.key==="Enter"||e.key===" "){ e.preventDefault(); toggle(); }
+    });
+    tb.appendChild(tr);
+    tb.appendChild(dr);
+  });
+
+  const btn = document.getElementById("expandAll");
+  btn.addEventListener("click", ()=>{
+    const anyClosed = [...tb.querySelectorAll("tr.def")].some(d=>d.hidden);
+    tb.querySelectorAll("tr.def").forEach(d=>{ d.hidden = !anyClosed; });
+    tb.querySelectorAll("tr.row").forEach(t=>{
+      t.setAttribute("aria-expanded", String(anyClosed));
+      t.classList.toggle("open", anyClosed);
+    });
+    btn.textContent = anyClosed ? "Cerrar todas las fichas" : "Abrir todas las fichas";
+  });
+})();
+</script>
+</body>
+</html>
