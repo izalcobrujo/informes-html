@@ -3,18 +3,18 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PISA 2025 — El Salvador frente a América Latina</title>
+<title>PISA 2025 — El Salvador frente a América Latina y el mundo</title>
 <style>
 :root{
-  --paper:#E8ECEF;
+  --paper:#F6F8FA;
   --panel:#FFFFFF;
-  --ink:#16232E;
+  --ink:#152230;
   --ink2:#5C6873;
   --ink3:#8D97A0;
-  --rule:#D2D9DE;
-  --rule2:#EAEEF1;
+  --rule:#DFE5EA;
+  --rule2:#EFF2F5;
   --slv:#0F47AF;
-  --slv-soft:#DCE6F7;
+  --slv-soft:#E4ECFA;
   --up:#1B7A55;
   --down:#A6382C;
   --flat:#9AA4AD;
@@ -67,10 +67,10 @@ h1{
 .ruler{
   background:#FFFFFF;
   color:var(--ink);
-  border-radius:2px;
-  padding:26px 26px 18px;
+  border-radius:16px;
+  padding:26px 26px 14px;
   margin:0 0 -46px;
-  box-shadow:0 18px 40px rgba(10,20,30,.22);
+  box-shadow:0 20px 50px rgba(8,17,26,.28);
 }
 .ruler h2{
   font-size:15px;font-weight:700;margin:0 0 2px;letter-spacing:-.005em;
@@ -100,16 +100,17 @@ a{color:var(--slv)}
 /* ---------- panels ---------- */
 .panel{
   background:var(--panel);
-  border-radius:2px;
-  padding:24px 26px;
-  margin:26px 0;
-  box-shadow:0 1px 0 rgba(22,35,46,.06),0 6px 18px rgba(22,35,46,.05);
+  border:1px solid var(--rule);
+  border-radius:14px;
+  padding:26px 28px;
+  margin:28px 0;
+  box-shadow:0 1px 2px rgba(21,34,48,.04),0 10px 28px rgba(21,34,48,.05);
 }
 .panel > h3:first-child{margin-top:0}
 .panel .cap{font-size:12.5px;color:var(--ink3);margin:16px 0 0;line-height:1.45}
 
 /* ---------- delta cards ---------- */
-.deltas{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border-radius:2px;overflow:hidden}
+.deltas{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--rule);border-radius:10px;overflow:hidden}
 .delta{background:#fff;padding:20px 18px 18px}
 .delta .dom{font-size:13px;color:var(--ink2);margin:0 0 10px}
 .delta .val{font-size:38px;font-weight:800;letter-spacing:-.03em;line-height:1;margin:0}
@@ -121,16 +122,23 @@ a{color:var(--slv)}
 .delta .sig.no{color:var(--ink3)}
 
 /* ---------- tables ---------- */
-.tablewrap{overflow-x:auto;margin:22px 0 0}
+.tablewrap{overflow-x:auto;margin:22px 0 0;-webkit-overflow-scrolling:touch;position:relative}
+.scrollhint{display:none;font-size:12px;color:var(--ink3);margin:14px 0 -8px}
+.scrollhint::after{content:" \2192"}
 table{border-collapse:collapse;width:100%;font-size:14px;min-width:640px}
 caption{text-align:left;font-size:13px;color:var(--ink2);padding-bottom:12px}
 th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--rule2);white-space:nowrap}
 th{font-weight:600;font-size:12.5px;color:var(--ink2);border-bottom:1.5px solid var(--rule);vertical-align:bottom;line-height:1.25}
 th:first-child,td:first-child{text-align:left;padding-left:12px}
+th:first-child,td:first-child{position:sticky;left:0;background:#fff;z-index:1}
+tbody tr.slv td:first-child{background:var(--slv-soft)}
+tbody tr.cat td:first-child{background:#F1F4F7}
+tbody tr.def td:first-child{background:var(--slv-soft)}
+tbody tr.row.open td:first-child{background:var(--slv-soft)}
 tbody tr.slv td{background:var(--slv-soft);font-weight:700;color:var(--ink)}
 .expandall{
   appearance:none;border:1px solid var(--rule);background:#fff;color:var(--slv);
-  font:inherit;font-size:13px;font-weight:600;padding:7px 14px;border-radius:2px;
+  font:inherit;font-size:13px;font-weight:600;padding:8px 15px;border-radius:999px;
   cursor:pointer;margin:0 0 4px;
 }
 .expandall:hover{background:var(--slv-soft);border-color:#B9CCEC}
@@ -164,12 +172,30 @@ td.m{color:var(--ink3)}
 .bar{display:grid;grid-template-columns:132px 1fr 56px;align-items:center;gap:12px;padding:3px 0;font-size:13.5px}
 .bar .name{color:var(--ink2);text-align:right;overflow:hidden;text-overflow:ellipsis}
 .bar.is-slv .name{color:var(--ink);font-weight:700}
-.bar .track{position:relative;height:15px;background:var(--rule2);border-radius:1px}
-.bar .fill{position:absolute;top:0;bottom:0;border-radius:1px}
+.bar .track{position:relative;height:15px;background:var(--rule2);border-radius:4px}
+.bar .fill{position:absolute;top:0;bottom:0;border-radius:4px}
 .bar .num{font-size:13px;color:var(--ink2)}
 .bar.is-slv .num{color:var(--ink);font-weight:700}
 .zeroline{position:absolute;top:-3px;bottom:-3px;width:1px;background:var(--ink3)}
 
+/* ---------- barras apiladas mundiales ---------- */
+.stack{display:flex;height:34px;border-radius:8px;overflow:hidden;margin:18px 0 0;gap:2px;background:#fff}
+.stack.sm{height:26px;margin:0}
+.stack .seg{position:relative;display:flex;align-items:center;justify-content:center;min-width:14px}
+.stack .seg:first-child{border-radius:8px 0 0 8px}
+.stack .seg:last-child{border-radius:0 8px 8px 0}
+.stack .seg.slv{box-shadow:inset 0 0 0 2.5px var(--slv)}
+.stack .seg span{font-size:12px;font-weight:700;color:#fff}
+.stack .seg span.dark{color:#404C56}
+.stacklegend{margin:16px 0 0;display:grid;gap:7px}
+.stacklegend .sl{font-size:13.5px;color:var(--ink2);display:flex;align-items:baseline;gap:9px}
+.stacklegend .sl strong{color:var(--ink);font-size:15px;min-width:22px}
+.stacklegend .sl.slv{color:var(--ink)}
+.stacklegend .sl.slv em{color:var(--slv);font-style:normal;font-weight:600}
+.stacklegend .dot{width:11px;height:11px;border-radius:3px;flex:none;position:relative;top:2px}
+.subjrow{display:grid;grid-template-columns:104px 1fr;align-items:center;gap:14px;margin:0 0 9px}
+.subjname{font-size:13.5px;color:var(--ink2);text-align:right}
+.subjnote{font-size:12.5px;color:var(--ink3);margin:14px 0 0}
 /* ---------- key/legend ---------- */
 .key{display:flex;flex-wrap:wrap;gap:16px;font-size:12.5px;color:var(--ink2);margin:18px 0 0}
 .key span{display:inline-flex;align-items:center;gap:7px}
@@ -200,8 +226,62 @@ ol.src li{margin-bottom:7px}
 @media (max-width:820px){
   .deltas{grid-template-columns:repeat(2,1fr)}
   .twoup{grid-template-columns:1fr}
-  .bar{grid-template-columns:106px 1fr 48px;font-size:12.5px}
-  .ruler{padding:18px 16px 12px}
+  .panel{padding:22px 18px;border-radius:12px}
+  .ruler{padding:18px 16px 10px;border-radius:12px}
+}
+@media (max-width:620px){
+  body{font-size:15.5px}
+  .wrap{padding:0 15px 64px}
+  header.mast{padding-top:34px}
+  h1{max-width:none}
+  .standfirst{margin-bottom:28px}
+  main{padding-top:64px}
+  h2.sec{margin:48px 0 6px;max-width:none}
+  .lede{font-size:16.5px}
+  .pull{font-size:17px;padding-left:15px;margin:24px 0}
+  .panel{padding:18px 14px;margin:20px 0}
+  .panel .cap{font-size:12px}
+  .delta{padding:15px 13px}
+  .delta .val{font-size:30px}
+  .bar{grid-template-columns:88px 1fr 50px;gap:8px;font-size:12px}
+  .subjrow{grid-template-columns:78px 1fr;gap:9px}
+  .subjname{font-size:12px}
+  .stack{height:30px}
+  .stack.sm{height:24px}
+  .stack .seg span{font-size:11px}
+  .stacklegend .sl{font-size:12.5px}
+  .bar .num{font-size:11.5px}
+  .key{gap:11px;font-size:11.5px}
+  table{font-size:12.5px;min-width:0}
+  th,td{padding:8px 7px}
+  th:first-child,td:first-child{padding-left:9px}
+  caption{font-size:12px}
+  .scrollhint{display:block}
+  /* tablas anchas: el ancho mínimo lo fija el contenido, con scroll horizontal */
+  #latamTable,#genderTable{min-width:560px}
+  /* en la tabla de contexto la 4.ª columna duplica la ficha desplegable */
+  #ctxTable td.read,#ctxTable th:nth-child(4){display:none}
+  /* tablas estrechas: caben completas, sin columna fija y con nombre que envuelve */
+  #ctxTable,#subTable,#envTable,#worldTable{width:100%;min-width:0;table-layout:fixed}
+  #ctxTable th:first-child,#ctxTable td:first-child,
+  #subTable th:first-child,#subTable td:first-child,
+  #envTable th:first-child,#envTable td:first-child,
+  #worldTable th:first-child,#worldTable td:first-child{position:static;white-space:normal}
+  #ctxTable th:nth-child(2),#ctxTable th:nth-child(3),
+  #envTable th:nth-child(2),#envTable th:nth-child(3),
+  #subTable th:nth-child(2),#subTable th:nth-child(3){width:19%}
+  #ctxTable,#envTable,#subTable{font-size:12px}
+  #ctxTable th,#envTable th,#subTable th{white-space:normal;line-height:1.3}
+  #ctxTable th,#ctxTable td,#envTable th,#envTable td,#subTable th,#subTable td{padding:8px 5px}
+  #ctxTable td:first-child,#envTable td:first-child,#subTable td:first-child{padding-left:8px;line-height:1.35}
+  #subTable td.read,#subTable th:nth-child(4),
+  #envTable td.read,#envTable th:nth-child(4){white-space:normal;padding-left:10px}
+  .defbox{font-size:13px;padding-left:11px;max-width:none}
+  footer p,ol.src{font-size:12.5px}
+}
+@media (max-width:400px){
+  .deltas{grid-template-columns:1fr}
+  .bar{grid-template-columns:80px 1fr 46px}
 }
 @media print{
   body{background:#fff}
@@ -215,6 +295,8 @@ ol.src li{margin-bottom:7px}
   .expandall{display:none}
   tr.def[hidden]{display:table-row!important}
   .chev{display:none}
+  th:first-child,td:first-child{position:static}
+  .scrollhint{display:none}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
@@ -224,11 +306,11 @@ ol.src li{margin-bottom:7px}
 <header class="mast">
   <div class="wrap">
     <p class="kicker">PISA 2025 — Resultados Volumen I · OCDE, 2026</p>
-    <h1>El Salvador sube en ciencias mientras la región retrocede</h1>
+    <h1>El Salvador sube en ciencias mientras casi todo el mundo retrocede</h1>
     <p class="standfirst">
-      Segunda participación del país en PISA. Entre 2022 y 2025 El Salvador ganó 12 puntos en ciencias
-      y no perdió terreno en lectura ni en matemáticas, algo que solo Costa Rica logró también en América Latina.
-      Sigue, aun así, en el décimo lugar de trece sistemas latinoamericanos evaluados.
+      Segunda participación del país en PISA. Entre 2022 y 2025 El Salvador ganó 12 puntos en ciencias y no
+      perdió terreno en lectura ni en matemáticas. Solo 14 de los 75 sistemas con datos comparables lograron
+      eso, y apenas dos son latinoamericanos. Sigue, aun así, en el décimo lugar de trece países de la región.
     </p>
 
     <div class="ruler">
@@ -284,6 +366,85 @@ ol.src li{margin-bottom:7px}
     <p class="cap">Ecuador no tiene comparación válida entre ciclos. Fuente: Tabla I.2.6.</p>
   </div>
 
+  <!-- ============ 1b. PANORAMA MUNDIAL ============ -->
+  <section class="col">
+    <h2 class="sec">No subir mucho, pero no bajar</h2>
+    <p class="lede">
+      Ese es el dato que separa a El Salvador del resto. De los 91 sistemas evaluados en 2025, 75 tienen
+      resultados comparables con 2022. Dos de cada tres retrocedieron de forma significativa en al menos una
+      materia. El Salvador está en el grupo de 14 que mejoró en algo y no perdió en nada.
+    </p>
+  </section>
+
+  <div class="panel">
+    <h3>Los 75 sistemas con datos comparables, según lo que les pasó entre 2022 y 2025</h3>
+    <div id="worldSplit"></div>
+    <p class="cap">
+      Un sistema cuenta como «retrocedió» si su caída es estadísticamente significativa en al menos una de las
+      tres materias. Uruguay es el único caso mixto: subió en ciencias y bajó en lectura. Fuente: Tabla I.2.6.
+    </p>
+  </div>
+
+  <section class="col">
+    <p>
+      El desplome no fue parejo entre materias. En ciencias, la materia principal de este ciclo, la mayoría de
+      los sistemas se mantuvo estable. En lectura ocurrió lo contrario: <strong>42 de 75 sistemas cayeron</strong>,
+      y solo 8 subieron. Matemáticas quedó en medio.
+    </p>
+  </section>
+
+  <div class="panel">
+    <h3>Qué pasó en cada materia, en los 75 sistemas</h3>
+    <div id="subjectSplit"></div>
+    <div class="key">
+      <span><i style="background:var(--up)"></i>Subieron</span>
+      <span><i style="background:#C9D2D9"></i>Sin cambio significativo</span>
+      <span><i style="background:var(--down)"></i>Bajaron</span>
+    </div>
+    <p class="cap">
+      El Salvador está entre los 15 que subieron en ciencias, y entre los que no cayeron en lectura ni en
+      matemáticas. Fuente: Tabla I.2.6.
+    </p>
+  </div>
+
+  <section class="col">
+    <p class="pull">
+      En lectura, mientras el promedio OCDE perdía 14 puntos y Letonia 45,
+      El Salvador se quedó donde estaba.
+    </p>
+    <p>
+      Quedarse quieto no suena a logro, pero en este ciclo lo fue. Las caídas superaron los 30 puntos en lectura
+      en Letonia, Israel, Guatemala y Malta, y otros diez sistemas perdieron entre 20 y 30. Como un año de
+      escolaridad equivale a unos 20 puntos, eso significa que sus jóvenes de 15 años leían en 2025 como los de
+      14 en 2022.
+    </p>
+  </section>
+
+  <div class="panel">
+    <h3>Los 14 sistemas que mejoraron sin retroceder</h3>
+    <p class="scrollhint">Deslice la tabla para ver todas las columnas</p>
+    <div class="tablewrap">
+      <table id="worldTable">
+        <caption>Cambio 2022 → 2025. Ordenado por ciencias.</caption>
+        <thead><tr><th>Sistema</th><th>Δ Ciencias</th><th>Δ Lectura</th><th>Δ Matem.</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+    <p class="cap">
+      Solo dos son latinoamericanos: Costa Rica y El Salvador. Ocho del grupo mejoraron en las tres materias a la
+      vez; El Salvador mejoró en una y se mantuvo en las otras dos. Fuente: Tabla I.2.6.
+    </p>
+  </div>
+
+  <section class="col">
+    <p>
+      Conviene no sobreinterpretar la compañía. Georgia, Camboya, Jordania o Filipinas subieron mucho más que
+      El Salvador, y varios de estos sistemas —incluido el salvadoreño— parten de niveles muy bajos, donde es más
+      fácil ganar puntos. El Reino Unido y Mongolia subieron exactamente lo mismo que El Salvador en ciencias, 12
+      puntos, desde puntos de partida completamente distintos: 511 y 424 contra 385.
+    </p>
+  </section>
+
   <!-- ============ 2. POSICIÓN REGIONAL ============ -->
   <section class="col">
     <h2 class="sec">La posición frente a América Latina</h2>
@@ -294,6 +455,7 @@ ol.src li{margin-bottom:7px}
   </section>
 
   <div class="panel">
+    <p class="scrollhint">Deslice la tabla para ver todas las columnas</p>
     <div class="tablewrap">
       <table id="latamTable">
         <caption>Puntaje medio en PISA 2025 y cambio respecto a 2022. Ordenado por ciencias.</caption>
@@ -486,6 +648,7 @@ ol.src li{margin-bottom:7px}
   </section>
 
   <div class="panel">
+    <p class="scrollhint">Deslice la tabla para ver todas las columnas</p>
     <div class="tablewrap">
       <table id="genderTable">
         <caption>Puntaje medio por sexo, PISA 2025. Diferencia = varones − mujeres.</caption>
@@ -751,51 +914,49 @@ const dec1 = v => Number(v).toFixed(1).replace(".",",");
 const cls = (v,sig) => v===null?"m":(!sig?"flat":(v>0?"up":"down"));
 
 /* ---------- 1. regla de escala (hero) ---------- */
-(function(){
+function drawRuler(){
   const host = document.getElementById("rulerChart");
-  const W=1000, H=132, PADL=8, PADR=8;
+  const narrow = window.innerWidth < 620;
+  const W=1000, H = narrow ? 172 : 132, PADL = narrow ? 24 : 8, PADR = narrow ? 24 : 8;
   const vals = ALL.filter(d=>d.n!=="OECD average" && d.sci!=="m").map(d=>({n:d.n, v:+d.sci}));
   const MIN=300, MAX=620;
   const x = v => PADL + (v-MIN)/(MAX-MIN)*(W-PADL-PADR);
-  const BASE=78;
+  const BASE = narrow ? 120 : 78;
+  const fs = narrow ? 1.7 : 1;   // factor de escala tipográfica para móvil
 
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Escala de puntajes de ciencias PISA 2025 con la posición de El Salvador">`;
-  // eje
-  s += `<line x1="${PADL}" y1="${BASE}" x2="${W-PADR}" y2="${BASE}" stroke="#D2D9DE" stroke-width="1"/>`;
+  s += `<line x1="${PADL}" y1="${BASE}" x2="${W-PADR}" y2="${BASE}" stroke="#DFE5EA" stroke-width="${1*fs}"/>`;
   for(let v=300; v<=620; v+=20){
     const big = v%100===0;
-    s += `<line x1="${x(v)}" y1="${BASE}" x2="${x(v)}" y2="${BASE+(big?9:5)}" stroke="#B9C2C9" stroke-width="1"/>`;
-    if(big) s += `<text x="${x(v)}" y="${BASE+24}" font-size="11" fill="#8D97A0" text-anchor="middle">${v}</text>`;
+    if(narrow && !big && v%40!==0) continue;
+    s += `<line x1="${x(v)}" y1="${BASE}" x2="${x(v)}" y2="${BASE+(big?9:5)*fs}" stroke="#B9C2C9" stroke-width="${1*fs}"/>`;
+    if(big) s += `<text x="${x(v)}" y="${BASE+24*fs}" font-size="${11*fs}" fill="#8D97A0" text-anchor="middle">${v}</text>`;
   }
-  // marcas de países
   vals.forEach(d=>{
-    const isSlv = d.n==="El Salvador";
-    if(isSlv) return;
-    s += `<line x1="${x(d.v)}" y1="${BASE-16}" x2="${x(d.v)}" y2="${BASE}" stroke="#9AA4AD" stroke-width="1.4" opacity=".55"/>`;
+    if(d.n==="El Salvador") return;
+    s += `<line x1="${x(d.v)}" y1="${BASE-16*fs}" x2="${x(d.v)}" y2="${BASE}" stroke="#9AA4AD" stroke-width="${1.4*fs}" opacity=".55"/>`;
   });
-  // OCDE
   const oe = 482;
-  s += `<line x1="${x(oe)}" y1="${BASE-46}" x2="${x(oe)}" y2="${BASE+2}" stroke="#2C3A46" stroke-width="1.6"/>`;
-  s += `<text x="${x(oe)}" y="${BASE-52}" font-size="12" fill="#2C3A46" text-anchor="middle" font-weight="600">Promedio OCDE 482</text>`;
-  // El Salvador
+  s += `<line x1="${x(oe)}" y1="${BASE-46*fs}" x2="${x(oe)}" y2="${BASE+2}" stroke="#2C3A46" stroke-width="${1.6*fs}"/>`;
+  s += `<text x="${x(oe)}" y="${BASE-52*fs}" font-size="${12*fs}" fill="#2C3A46" text-anchor="middle" font-weight="600">${narrow?"OCDE 482":"Promedio OCDE 482"}</text>`;
   const sv = 385;
-  s += `<line x1="${x(sv)}" y1="${BASE-46}" x2="${x(sv)}" y2="${BASE+2}" stroke="#0F47AF" stroke-width="3"/>`;
-  s += `<circle cx="${x(sv)}" cy="${BASE-46}" r="4.5" fill="#0F47AF"/>`;
-  s += `<text x="${x(sv)}" y="${BASE-56}" font-size="13" fill="#0F47AF" text-anchor="middle" font-weight="800">El Salvador 385</text>`;
-  // etiquetas vecinos
-  const marks = [
-    {n:"Guatemala 351", v:351, anchor:"middle", dy:-20},
-    {n:"Argentina 393", v:393, anchor:"start", dy:-20},
-    {n:"Chile 442", v:442, anchor:"middle", dy:-20},
-    {n:"Singapur 560", v:560, anchor:"middle", dy:-20}
-  ];
+  s += `<line x1="${x(sv)}" y1="${BASE-46*fs}" x2="${x(sv)}" y2="${BASE+2}" stroke="#0F47AF" stroke-width="${3*fs}"/>`;
+  s += `<circle cx="${x(sv)}" cy="${BASE-46*fs}" r="${4.5*fs}" fill="#0F47AF"/>`;
+  s += `<text x="${x(sv)}" y="${BASE-56*fs}" font-size="${13*fs}" fill="#0F47AF" text-anchor="middle" font-weight="800">El Salvador 385</text>`;
+  const marks = narrow
+    ? [{n:"Guatemala", v:351, anchor:"end"},{n:"Chile", v:442, anchor:"middle"},{n:"Singapur", v:560, anchor:"middle"}]
+    : [{n:"Guatemala 351", v:351, anchor:"middle"},{n:"Argentina 393", v:393, anchor:"start"},
+       {n:"Chile 442", v:442, anchor:"middle"},{n:"Singapur 560", v:560, anchor:"middle"}];
   marks.forEach(m=>{
-    s += `<line x1="${x(m.v)}" y1="${BASE-14}" x2="${x(m.v)}" y2="${BASE}" stroke="#5C6873" stroke-width="1.6"/>`;
-    s += `<text x="${x(m.v)}" y="${BASE+m.dy}" font-size="11.5" fill="#5C6873" text-anchor="${m.anchor}">${m.n}</text>`;
+    s += `<line x1="${x(m.v)}" y1="${BASE-14*fs}" x2="${x(m.v)}" y2="${BASE}" stroke="#5C6873" stroke-width="${1.6*fs}"/>`;
+    s += `<text x="${x(m.v)}" y="${BASE-20*fs}" font-size="${11.5*fs}" fill="#5C6873" text-anchor="${m.anchor}">${m.n}</text>`;
   });
   s += `</svg>`;
   host.innerHTML = s;
-})();
+}
+drawRuler();
+let rulerT;
+window.addEventListener("resize", ()=>{ clearTimeout(rulerT); rulerT=setTimeout(drawRuler,180); });
 
 /* ---------- 2. tarjetas de cambio ---------- */
 (function(){
@@ -886,6 +1047,64 @@ simpleBars("gapBars",
     .map(c=>({es:c.es, v:c.gap, slv:c.n==="El Salvador"}))
     .concat([{es:"Promedio OCDE", v:85, oecd:true}]),
   {unit:" pts"});
+
+/* ---------- 4b. panorama mundial ---------- */
+const WORLD14 = [
+  ["Georgia",38,10,26],["Camboya",35,18,29],["Montenegro",32,13,5],["Jordania",32,20,26],
+  ["Emiratos Árabes Unidos",26,15,21],["Tailandia",23,13,13],["Arabia Saudita",23,5,1],
+  ["Türkiye",18,16,8],["Filipinas",17,20,16],["República Eslovaca",13,1,5],["Costa Rica",13,1,3],
+  ["Reino Unido",12,0,-1],["Mongolia",12,-4,-6],["El Salvador",12,2,3]
+];
+
+(function(){
+  // reparto general de los 75 sistemas
+  const host = document.getElementById("worldSplit");
+  const groups = [
+    {n:"Retrocedieron en al menos una materia", v:50, c:"var(--down)"},
+    {n:"Sin cambios significativos", v:11, c:"#C9D2D9"},
+    {n:"Mejoraron sin retroceder", v:14, c:"var(--up)", slv:true}
+  ];
+  let s = '<div class="stack">';
+  groups.forEach(g=>{
+    s += `<div class="seg${g.slv?" slv":""}" style="flex:${g.v};background:${g.c}" title="${g.n}: ${g.v}"></div>`;
+  });
+  s += '</div><div class="stacklegend">';
+  groups.forEach(g=>{
+    s += `<div class="sl${g.slv?" slv":""}"><span class="dot" style="background:${g.c}"></span>`+
+         `<strong>${g.v}</strong> ${g.n}${g.slv?' <em>— incluye a El Salvador</em>':''}</div>`;
+  });
+  s += '</div>';
+  host.innerHTML = s;
+})();
+
+(function(){
+  const host = document.getElementById("subjectSplit");
+  const rows = [
+    {n:"Ciencias", up:15, flat:49, down:11, slv:"up"},
+    {n:"Lectura", up:8, flat:25, down:42, slv:"flat"},
+    {n:"Matemáticas", up:8, flat:28, down:39, slv:"flat"}
+  ];
+  let s = "";
+  rows.forEach(r=>{
+    s += `<div class="subjrow"><div class="subjname">${r.n}</div><div class="stack sm">`+
+      `<div class="seg${r.slv==="up"?" slv":""}" style="flex:${r.up};background:var(--up)"><span>${r.up}</span></div>`+
+      `<div class="seg${r.slv==="flat"?" slv":""}" style="flex:${r.flat};background:#C9D2D9"><span class="dark">${r.flat}</span></div>`+
+      `<div class="seg" style="flex:${r.down};background:var(--down)"><span>${r.down}</span></div>`+
+      `</div></div>`;
+  });
+  s += '<p class="subjnote">El bloque con contorno azul es el que contiene a El Salvador.</p>';
+  host.innerHTML = s;
+})();
+
+(function(){
+  const tb = document.querySelector("#worldTable tbody");
+  WORLD14.forEach(r=>{
+    const tr = el("tr", r[0]==="El Salvador"?"slv":"");
+    const c = v => `<td class="${v>0?'up':(v<0?'down':'flat')}">${fmt(v)}</td>`;
+    tr.innerHTML = `<td>${r[0]}</td>${c(r[1])}${c(r[2])}${c(r[3])}`;
+    tb.appendChild(tr);
+  });
+})();
 
 /* ---------- 5. tabla América Latina ---------- */
 (function(){
