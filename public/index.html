@@ -224,7 +224,7 @@
 
         <section class="stats-bar">
             <div class="stat-item">
-                <span class="stat-number" id="total-stat">9</span>
+                <span class="stat-number" id="total-stat">10</span>
                 <span class="stat-label">Informes<br>Publicados</span>
             </div>
             <div class="stat-item">
@@ -239,7 +239,7 @@
 
         <section class="search-container">
             <input type="text" id="buscador" class="search-box" placeholder="Buscar por título, archivo o palabras clave..." onkeyup="filtrarTarjetas()">
-            <div class="results-count" id="contador-resultados">9 de 9 informes</div>
+            <div class="results-count" id="contador-resultados">10 de 10 informes</div>
         </section>
 
         <main class="grid-cards" id="grid">
@@ -387,6 +387,35 @@
                 </div>
             </div>
         </article>
+        <article class="card-item" data-busqueda="evaluar cambio de ruta · sedes de transmisión evaluador_cambios_rutas.html evaluador cambios rutas">
+            <div class="card-preview">
+                <div class="card-badge">Mapa / GIS</div>
+                
+        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
+            <rect width="260" height="130" fill="#f0fdf4"/>
+            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
+            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
+            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
+            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
+            <!-- Pines de ubicación -->
+            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
+            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
+            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
+        </svg>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">
+                    <a href="evaluador_cambios_rutas.html" target="_blank">Evaluar cambio de ruta · Sedes de transmisión</a>
+                </h3>
+                <p class="card-path">evaluador_cambios_rutas.html</p>
+                <div class="card-footer">
+                    <div class="tags-container">
+                        <span class="tag">Evaluador</span><span class="tag">Cambios</span><span class="tag">Rutas</span>
+                    </div>
+                    <a href="evaluador_cambios_rutas.html" target="_blank" class="btn-abrir">Abrir ↗</a>
+                </div>
+            </div>
+        </article>
         <article class="card-item" data-busqueda="metodología · población salvadoreña en el exterior metodologia.html metodologia">
             <div class="card-preview">
                 <div class="card-badge">Matriz / Datos</div>
@@ -444,7 +473,7 @@
                 </div>
             </div>
         </article>
-        <article class="card-item" data-busqueda="pisa 2025 — el salvador frente a américa latina pisa2025_el_salvador.html pisa2025 salvador">
+        <article class="card-item" data-busqueda="pisa 2025 — el salvador frente a américa latina y el mundo pisa2025_el_salvador.html pisa2025 salvador">
             <div class="card-preview">
                 <div class="card-badge">Matriz / Datos</div>
                 
@@ -461,7 +490,7 @@
             </div>
             <div class="card-content">
                 <h3 class="card-title">
-                    <a href="pisa2025_el_salvador.html" target="_blank">PISA 2025 — El Salvador frente a América Latina</a>
+                    <a href="pisa2025_el_salvador.html" target="_blank">PISA 2025 — El Salvador frente a América Latina y el mundo</a>
                 </h3>
                 <p class="card-path">pisa2025_el_salvador.html</p>
                 <div class="card-footer">
@@ -504,7 +533,7 @@
     </div>
 
     <script>
-        const totalOriginal = 9;
+        const totalOriginal = 10;
         function filtrarTarjetas() {
             const query = document.getElementById('buscador').value.toLowerCase().trim();
             const tarjetas = document.querySelectorAll('.card-item');
