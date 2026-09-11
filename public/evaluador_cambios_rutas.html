@@ -128,6 +128,12 @@ textarea{min-height:3.2rem;resize:vertical}
 .registrados button.item:hover,.registrados button.item:focus-visible{background:var(--petroleo-claro)}
 .errores-hoja{font-size:.82rem;color:var(--exceso);margin:.4rem 0 0}
 .subtitulo{font-weight:600;font-size:.92rem;margin:.9rem 0 0}
+.lista-ruta{margin:.4rem 0 0;padding-left:1.5rem;font-size:.86rem}
+.lista-ruta li{padding:.12rem 0}
+.lista-ruta li.entra{font-weight:600;color:#8A6100}
+.lista-ruta button{border:0;background:none;padding:0;text-align:left;cursor:pointer;color:inherit;font:inherit}
+.lista-ruta button:hover{text-decoration:underline}
+.lista-ruta small{color:var(--tinta-suave)}
 @media (max-width:900px){
   .app{grid-template-columns:1fr;grid-template-rows:auto 45vh auto;height:auto}
   aside{border-left:0;border-top:1px solid var(--linea)}
@@ -159,6 +165,10 @@ textarea{min-height:3.2rem;resize:vertical}
       <div class="fila-2">
         <div><label for="f-sede">Sede</label><select id="f-sede"><option value="">Todas</option></select></div>
         <div><label for="f-ruta">Ruta</label><select id="f-ruta" disabled><option value="">Todas</option></select></div>
+      </div>
+      <div id="f-lista-wrap" hidden>
+        <p class="nota" id="f-lista-titulo"></p>
+        <ol class="lista-ruta" id="f-lista"></ol>
       </div>
       <label class="check"><input type="checkbox" id="f-cambios"><span>Solo centros con cambio registrado</span></label>
       <div class="botones"><button type="button" class="btn chico" id="quitar-filtros">Quitar filtros</button></div>
@@ -725,7 +735,19 @@ require([
   const linea = paths => ({ type: "polyline", paths, spatialReference: { wkid: 4326 } });
   const punto = p => ({ type: "point", longitude: p.lng, latitude: p.lat });
 
-  // Círculos numerados con el orden de visita; el centro destacado va en ámbar.
+  // Nombre corto para etiquetas del mapa
+  function abreviar(nombre) {
+    const menores = new Set(["de", "del", "y", "e", "en"]);
+    const titulo = String(nombre).replace(/\s+/g, " ").trim().toLowerCase().split(" ").map((w, i) =>
+      /^(i{1,3}|iv|v|vi{0,3}|ix|x)$/.test(w) ? w.toUpperCase()
+        : (i > 0 && menores.has(w)) ? w : w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+    const t = titulo
+      .replace(/^CENTRO ESCOLAR\b/i, "C.E.").replace(/^COMPLEJO EDUCATIVO\b/i, "Complejo Ed.")
+      .replace(/^INSTITUTO NACIONAL\b/i, "I.N.").replace(/^ESCUELA DE EDUCACION PARVULARIA\b/i, "Parvularia")
+      .replace(/\bCASERIO\b/gi, "Cas.").replace(/\bCANTON\b/gi, "Cantón").replace(/\bCOLONIA\b/gi, "Col.");
+    return t.length > 42 ? t.slice(0, 40) + "…" : t;
+  }
+  // Círculos numerados con el orden de visita y el nombre del centro; el destacado va en ámbar.
   function marcarMiembros(capa, cods, destacado, extent) {
     cods.forEach((k, i) => {
       const m = modelo.centros.get(k), esSel = k === destacado;
@@ -735,6 +757,10 @@ require([
       capa.add(new Graphic({ geometry: punto(m),
         symbol: { type: "text", text: String(i + 1), color: esSel ? "#1E2A2F" : "#FFFFFF",
           verticalAlignment: "middle", horizontalAlignment: "center", font: { size: 9, weight: "bold", family: "Arial" } } }));
+      capa.add(new Graphic({ geometry: punto(m), attributes: { etiqueta: true },
+        symbol: { type: "text", text: abreviar(m.nombre), color: esSel ? "#8A6100" : "#1E2A2F", haloColor: "#FFFFFF", haloSize: 1.6,
+          horizontalAlignment: "left", verticalAlignment: "middle", xoffset: 14,
+          font: { size: 9.5, weight: esSel ? "bold" : "normal", family: "Arial" } } }));
       extent.push([m.lng, m.lat]);
     });
   }
@@ -774,10 +800,27 @@ require([
     acercar(extent, 1.35);
   }
 
+  function listaRutaFiltro(rid) {
+    const cods = rid ? (estado.orden.get(rid) || []) : [];
+    $("f-lista-wrap").hidden = !cods.length;
+    if (!cods.length) { $("f-lista").innerHTML = ""; return; }
+    $("f-lista-titulo").textContent = `${N.etiquetaRuta(rid)} de ${modelo.sedes.get(N.sedeDeRuta(rid))?.nombre}: ` +
+      `${cods.length} centros, ${N.sumaBultos(modelo, cods)} bultos, en orden de visita`;
+    $("f-lista").innerHTML = "";
+    for (const k of cods) {
+      const c = modelo.centros.get(k), li = document.createElement("li");
+      const ch = combinados().find(x => x.cod === k);
+      li.innerHTML = `<button type="button">${esc(c.nombre)}</button> <small>(${c.bultos} bultos${ch ? ", entró por cambio" : ""})</small>`;
+      li.querySelector("button").addEventListener("click", () => seleccionarCentro(k));
+      $("f-lista").appendChild(li);
+    }
+  }
+
   // Ruta elegida en "Ver en el mapa" (cuando no hay un centro seleccionado)
   function pintarRutaFiltro(zoom) {
     capaRutaFiltro.removeAll();
     const rid = $("f-ruta").value;
+    listaRutaFiltro(rid);
     if (!rid || seleccion) return;
     const extent = [], paths = pathsReales(rid), cods = estado.orden.get(rid) || [];
     if (paths) {
@@ -902,7 +945,9 @@ require([
     const kmDAntes = d.kmAntes.km, kmOAntes = o.kmAntes.km;
     $("impacto").innerHTML =
       caja(nombreD, `${d.bultosAntes} → ${d.bultosDespues} bultos`, bloquesD, d.bultosDespues, cap, d.despues.length, CONFIG.maxCentros) +
-      `<p class="nota">El centro ${entre}.</p>` +
+      `<p class="nota">El centro ${entre}. Orden de visita estimado:</p>` +
+      `<ol class="lista-ruta">${d.despues.map(k => { const x = modelo.centros.get(k);
+        return `<li class="${k === ev.cod ? "entra" : ""}">${esc(x.nombre)} <small>(${x.bultos} bultos)</small></li>`; }).join("")}</ol>` +
       caja(`${N.etiquetaRuta(o.rutaId)} de ${esc(o.sede.nombre)} (origen)`, `${o.bultosAntes} → ${o.bultosDespues} bultos`,
         bloquesO, o.bultosAntes, cap, o.despues.length, CONFIG.maxCentros) +
       `<div class="km">
