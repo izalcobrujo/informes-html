@@ -109,6 +109,8 @@ textarea{min-height:3.2rem;resize:vertical}
   border-radius:4px;padding:.45rem .6rem;font-size:.8rem;z-index:5}
 .leyenda div{display:flex;align-items:center;gap:.45rem}
 .leyenda i{display:inline-block;width:22px;height:0;border-top:3px solid}
+.leyenda i.num{width:18px;height:18px;border:1.5px solid #fff;border-radius:50%;background:#0E5A66;color:#fff;
+  font-style:normal;font-size:.68rem;font-weight:600;display:inline-grid;place-items:center;margin:0 2px;box-shadow:0 0 0 1px #0E5A66}
 .leyenda i.rombo{width:10px;height:10px;border:0;transform:rotate(45deg);margin:0 6px}
 .fila-2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
 .buscar-fila{display:flex;gap:.4rem}
@@ -144,7 +146,7 @@ textarea{min-height:3.2rem;resize:vertical}
     <div class="leyenda" aria-hidden="true">
       <div><i style="border-color:#B83B27;border-top-style:dashed"></i>Ruta actual del centro</div>
       <div><i style="border-color:#0E5A66;border-top-width:5px"></i>Ruta destino</div>
-      <div><i style="border-color:#E0A526;border-top-style:dashed"></i>Entrada estimada del centro</div>
+      <div><i class="num">3</i>Centros de la ruta destino (número = orden de visita)</div>
       <div><i class="rombo" style="background:#E0A526"></i>Cambio pendiente de pasar a la capa</div>
       <div><i class="rombo" style="background:#2F7D5C"></i>Cambio ya en la capa</div>
       <div><i class="rombo" style="background:#0E5A66"></i>Cambio de esta sesión</div>
@@ -259,7 +261,7 @@ const CONFIG = {
   retorno: true,             // las rutas incluyen regreso a la sede
   correccionDeptoSedes: { "Cojutepeque": "CUSCATLAN" },
   correoDestino: "",         // a quién se envía el correo (mailto)
-  appsScriptUrl: "https://script.google.com/macros/s/AKfycbyXf_X04pSLrhnebISHS8KswT3uDrhUyklnzFm8a9-XfifFprJLe0TqSf-F6kb1pEmH/exec",         // URL /exec de la app web de Apps Script (guarda, envía correo y lee la hoja)
+  appsScriptUrl: "https://script.google.com/macros/s/AKfycbyXf_X04pSLrhnebISHS8KswT3uDrhUyklnzFm8a9-XfifFprJLe0TqSf-F6kb1pEmH/exec",   // URL /exec de la app web de Apps Script (guarda, envía correo y lee la hoja)
   hojaId: "14ntrRi0r0UdBUeYQyp4ONdN9Uv0ad6mCZHfnoGquLow",   // respaldo: lectura directa si la hoja es visible con enlace
   hojaPestana: "Cambios"
 };
@@ -612,6 +614,7 @@ require([
     constraints: { minZoom: 7 }, popupEnabled: false });
   const capaResaltado = new GraphicsLayer({ title: "resaltado" });
   const capaCambios = new GraphicsLayer({ title: "cambios registrados" });
+  const capaRutaFiltro = new GraphicsLayer({ title: "ruta filtrada" });
 
   // ---------- Carga de datos ----------
   const minusculas = o => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k.toLowerCase(), v]));
@@ -707,7 +710,7 @@ require([
       labelingInfo: [{ labelExpressionInfo: { expression: "$feature.nombre" }, labelPlacement: "above-center",
         symbol: { type: "text", color: "#1E2A2F", haloColor: "white", haloSize: 1.5, font: { size: 10, weight: "bold", family: "Arial" } } }] });
 
-    mapa.addMany([capaRutas, capaParadas, capaSedes, capaCambios, capaResaltado]);
+    mapa.addMany([capaRutas, capaParadas, capaSedes, capaCambios, capaRutaFiltro, capaResaltado]);
     vista.whenLayerView(capaParadas).then(lv => { lvParadas = lv; aplicarFiltros(false); });
     vista.whenLayerView(capaRutas).then(lv => { lvRutas = lv; aplicarFiltros(false); });
     vista.on("click", async ev => {
@@ -717,48 +720,78 @@ require([
     });
   }
 
-  function lineaDe(cods, sede, retorno) {
-    const pts = cods.map(k => modelo.centros.get(k));
-    const cadena = [sede, ...pts, ...(retorno ? [sede] : [])];
-    return cadena.map(p => [p.lng, p.lat]);
+  // Geometría real (Google) de una ruta. No se redibuja aunque cambien sus centros.
+  const pathsReales = rid => { const r = modelo.rutas.get(rid); return r && r.paths.length ? r.paths : null; };
+  const linea = paths => ({ type: "polyline", paths, spatialReference: { wkid: 4326 } });
+  const punto = p => ({ type: "point", longitude: p.lng, latitude: p.lat });
+
+  // Círculos numerados con el orden de visita; el centro destacado va en ámbar.
+  function marcarMiembros(capa, cods, destacado, extent) {
+    cods.forEach((k, i) => {
+      const m = modelo.centros.get(k), esSel = k === destacado;
+      capa.add(new Graphic({ geometry: punto(m), attributes: { cod: k },
+        symbol: { type: "simple-marker", size: esSel ? 22 : 19, color: esSel ? "#E0A526" : "#0E5A66",
+          outline: { color: esSel ? "#1E2A2F" : "#FFFFFF", width: esSel ? 2 : 1.5 } } }));
+      capa.add(new Graphic({ geometry: punto(m),
+        symbol: { type: "text", text: String(i + 1), color: esSel ? "#1E2A2F" : "#FFFFFF",
+          verticalAlignment: "middle", horizontalAlignment: "center", font: { size: 9, weight: "bold", family: "Arial" } } }));
+      extent.push([m.lng, m.lat]);
+    });
   }
-  function geometriaRuta(rid, cods, sede) {
-    const r = modelo.rutas.get(rid);
-    const base = modelo.base.orden.get(rid);
-    if (r && r.paths.length && base && base.length === cods.length && base.every((v, i) => v === cods[i])) return r.paths;
-    return [lineaDe(cods, sede, cal.retorno)];      // ruta modificada: trazo recto referencial
-  }
-  function resaltar(ev) {
-    capaResaltado.removeAll();
-    const c = modelo.centros.get(seleccion);
-    const add = (geom, symbol) => capaResaltado.add(new Graphic({ geometry: geom, symbol }));
-    const extent = [];
-    const oRid = estado.rutaDe.get(seleccion), oSid = estado.sedeDe.get(seleccion), sO = modelo.sedes.get(oSid);
-    const pathsO = geometriaRuta(oRid, estado.orden.get(oRid) || [seleccion], sO);
-    add({ type: "polyline", paths: pathsO, spatialReference: { wkid: 4326 } },
-      { type: "simple-line", color: "#B83B27", width: 2.5, style: "dash" });
-    extent.push(...pathsO.flat());
-    if (ev && !ev.sinCambio) {
-      const d = ev.destino;
-      if (d.antes.length) {
-        const pathsD = geometriaRuta(d.rutaId, d.antes, d.sede);
-        add({ type: "polyline", paths: pathsD, spatialReference: { wkid: 4326 } },
-          { type: "simple-line", color: "#0E5A66", width: 4 });
-        extent.push(...pathsD.flat());
-      }
-      const conector = [d.anterior, c, d.siguiente].filter(Boolean).map(p => [p.lng, p.lat]);
-      add({ type: "polyline", paths: [conector], spatialReference: { wkid: 4326 } },
-        { type: "simple-line", color: "#E0A526", width: 3, style: "short-dash" });
-      add({ type: "point", longitude: d.sede.lng, latitude: d.sede.lat },
-        { type: "simple-marker", style: "square", size: 18, color: [0, 0, 0, 0], outline: { color: "#0E5A66", width: 3 } });
-      extent.push([d.sede.lng, d.sede.lat]);
-    }
-    add({ type: "point", longitude: c.lng, latitude: c.lat },
-      { type: "simple-marker", size: 17, color: [224, 165, 38, 0.35], outline: { color: "#1E2A2F", width: 2 } });
-    extent.push([c.lng, c.lat]);
+  function acercar(extent, factor) {
+    if (!extent.length) return;
     const xs = extent.map(p => p[0]), ys = extent.map(p => p[1]);
     vista.goTo(new Extent({ xmin: Math.min(...xs), ymin: Math.min(...ys), xmax: Math.max(...xs), ymax: Math.max(...ys),
-      spatialReference: { wkid: 4326 } }).expand(1.4), { duration: 400 }).catch(() => {});
+      spatialReference: { wkid: 4326 } }).expand(factor), { duration: 400 }).catch(() => {});
+  }
+
+  function resaltar(ev) {
+    capaResaltado.removeAll();
+    capaRutaFiltro.removeAll();
+    const c = modelo.centros.get(seleccion);
+    const add = (geometry, symbol) => capaResaltado.add(new Graphic({ geometry, symbol }));
+    const extent = [];
+    const oRid = estado.rutaDe.get(seleccion);
+    // ruta actual del centro: su trazo de Google (si está en una ruta nueva sin trazo, la ruta original)
+    const pathsO = pathsReales(oRid) || pathsReales(c.rutaId);
+    if (pathsO) {
+      add(linea(pathsO), { type: "simple-line", color: "#B83B27", width: 2.5, style: "dash" });
+      extent.push(...pathsO.flat());
+    }
+    if (ev && !ev.sinCambio) {
+      const d = ev.destino;
+      const pathsD = pathsReales(d.rutaId);          // ruta destino tal como existe hoy
+      if (pathsD) {
+        add(linea(pathsD), { type: "simple-line", color: "#0E5A66", width: 4.5 });
+        extent.push(...pathsD.flat());
+      }
+      add(punto(d.sede), { type: "simple-marker", style: "square", size: 20, color: [0, 0, 0, 0], outline: { color: "#0E5A66", width: 3 } });
+      extent.push([d.sede.lng, d.sede.lat]);
+      marcarMiembros(capaResaltado, d.despues, seleccion, extent);   // orden como quedaría con el centro
+    } else {
+      marcarMiembros(capaResaltado, estado.orden.get(oRid) || [seleccion], seleccion, extent);
+    }
+    acercar(extent, 1.35);
+  }
+
+  // Ruta elegida en "Ver en el mapa" (cuando no hay un centro seleccionado)
+  function pintarRutaFiltro(zoom) {
+    capaRutaFiltro.removeAll();
+    const rid = $("f-ruta").value;
+    if (!rid || seleccion) return;
+    const extent = [], paths = pathsReales(rid), cods = estado.orden.get(rid) || [];
+    if (paths) {
+      capaRutaFiltro.add(new Graphic({ geometry: linea(paths), symbol: { type: "simple-line", color: "#0E5A66", width: 4.5 } }));
+      extent.push(...paths.flat());
+    }
+    const sede = modelo.sedes.get(N.sedeDeRuta(rid));
+    if (sede) {
+      capaRutaFiltro.add(new Graphic({ geometry: punto(sede), symbol: { type: "simple-marker", style: "square", size: 20,
+        color: [0, 0, 0, 0], outline: { color: "#0E5A66", width: 3 } } }));
+      extent.push([sede.lng, sede.lat]);
+    }
+    marcarMiembros(capaRutaFiltro, cods, null, extent);
+    if (zoom) acercar(extent, 1.3);
   }
 
   // ---------- Paso 1: centro ----------
@@ -1061,6 +1094,8 @@ require([
     }
     pintarCambios();
     pintarRegistrados();
+    pintarRutaFiltro(zoom && !!rid);
+    if (zoom && rid) return;
     if (zoom) {
       const pts = hayFiltro ? visibles : [];
       if (sid !== null) pts.push(modelo.sedes.get(sid));
