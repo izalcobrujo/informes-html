@@ -109,6 +109,23 @@ textarea{min-height:3.2rem;resize:vertical}
   border-radius:4px;padding:.45rem .6rem;font-size:.8rem;z-index:5}
 .leyenda div{display:flex;align-items:center;gap:.45rem}
 .leyenda i{display:inline-block;width:22px;height:0;border-top:3px solid}
+.leyenda i.rombo{width:10px;height:10px;border:0;transform:rotate(45deg);margin:0 6px}
+.fila-2{display:grid;grid-template-columns:1fr 1fr;gap:.6rem}
+.buscar-fila{display:flex;gap:.4rem}
+.buscar-fila input{flex:1}
+.btn.chico{padding:.35rem .7rem;font-size:.88rem}
+.paso h2.sin-n{font-size:1.1rem}
+.chip{display:inline-block;padding:0 .4rem;border-radius:3px;font-size:.76rem;font-weight:600;white-space:nowrap}
+.chip.capa{background:var(--ok-claro);color:var(--ok)}
+.chip.pendiente{background:var(--senal-claro);color:#8A6100}
+.chip.sesion{background:var(--petroleo-claro);color:var(--petroleo)}
+.registrados{list-style:none;padding:0;margin:.5rem 0 0;max-height:320px;overflow-y:auto}
+.registrados li{border-top:1px solid var(--papel)}
+.registrados button.item{display:grid;grid-template-columns:1fr auto;gap:.4rem;width:100%;text-align:left;padding:.45rem .2rem;
+  border:0;background:none;cursor:pointer;font-size:.88rem}
+.registrados button.item:hover,.registrados button.item:focus-visible{background:var(--petroleo-claro)}
+.errores-hoja{font-size:.82rem;color:var(--exceso);margin:.4rem 0 0}
+.subtitulo{font-weight:600;font-size:.92rem;margin:.9rem 0 0}
 @media (max-width:900px){
   .app{grid-template-columns:1fr;grid-template-rows:auto 45vh auto;height:auto}
   aside{border-left:0;border-top:1px solid var(--linea)}
@@ -128,14 +145,30 @@ textarea{min-height:3.2rem;resize:vertical}
       <div><i style="border-color:#B83B27;border-top-style:dashed"></i>Ruta actual del centro</div>
       <div><i style="border-color:#0E5A66;border-top-width:5px"></i>Ruta destino</div>
       <div><i style="border-color:#E0A526;border-top-style:dashed"></i>Entrada estimada del centro</div>
+      <div><i class="rombo" style="background:#E0A526"></i>Cambio pendiente de pasar a la capa</div>
+      <div><i class="rombo" style="background:#2F7D5C"></i>Cambio ya en la capa</div>
+      <div><i class="rombo" style="background:#0E5A66"></i>Cambio de esta sesión</div>
     </div>
   </div>
 
   <aside>
+    <section class="paso" id="filtros">
+      <h2 class="sin-n">Ver en el mapa</h2>
+      <div class="fila-2">
+        <div><label for="f-sede">Sede</label><select id="f-sede"><option value="">Todas</option></select></div>
+        <div><label for="f-ruta">Ruta</label><select id="f-ruta" disabled><option value="">Todas</option></select></div>
+      </div>
+      <label class="check"><input type="checkbox" id="f-cambios"><span>Solo centros con cambio registrado</span></label>
+      <div class="botones"><button type="button" class="btn chico" id="quitar-filtros">Quitar filtros</button></div>
+    </section>
+
     <section class="paso" id="paso1">
       <h2><span class="n">1</span>Centro de votación</h2>
       <label for="buscar">Busca por nombre, código o municipio, o haz clic en un punto del mapa</label>
-      <input type="text" id="buscar" autocomplete="off" placeholder="Ej. Cara Sucia, 01020304">
+      <div class="buscar-fila">
+        <input type="text" id="buscar" autocomplete="off" placeholder="Ej. Cara Sucia, 01020304">
+        <button type="button" class="btn chico" id="limpiar">Limpiar</button>
+      </div>
       <ul class="resultados" id="resultados" aria-label="Resultados de búsqueda"></ul>
       <div id="ficha"></div>
     </section>
@@ -165,18 +198,30 @@ textarea{min-height:3.2rem;resize:vertical}
       </label>
       <label class="check">
         <input type="checkbox" id="acumular" checked>
-        <span>Sumar los cambios guardados al evaluar los siguientes</span>
+        <span>Sumar los cambios ya registrados (hoja y esta sesión) al evaluar</span>
       </label>
       <div class="botones">
         <button class="btn primario" id="guardar" disabled>Guardar cambio</button>
       </div>
       <div class="estado-envio" id="estado-envio" role="status"></div>
+    </section>
+
+    <section class="paso" id="registro">
+      <h2 class="sin-n">Cambios registrados</h2>
+      <div class="fila-2">
+        <div><label for="reg-estado">Mostrar</label>
+          <select id="reg-estado"><option value="">Todos</option><option value="pendiente">Pendientes de pasar a la capa</option><option value="capa">Ya en la capa</option></select></div>
+        <div style="align-self:end"><button type="button" class="btn chico" id="actualizar-hoja">Actualizar desde la hoja</button></div>
+      </div>
+      <p class="nota" id="reg-resumen" role="status">La hoja se lee al abrir el evaluador.</p>
+      <div class="errores-hoja" id="reg-errores"></div>
+      <ul class="registrados" id="registrados"></ul>
       <div id="lista-wrap" hidden>
-        <p class="nota">Cambios guardados en esta sesión</p>
+        <p class="subtitulo">De esta sesión</p>
         <ul class="guardados" id="guardados"></ul>
         <div class="botones">
-          <button class="btn" id="descargar">Descargar CSV</button>
-          <button class="btn" id="correo-todos">Enviar todos por correo</button>
+          <button class="btn chico" id="descargar">Descargar CSV</button>
+          <button class="btn chico" id="correo-todos">Enviar todos por correo</button>
         </div>
       </div>
     </section>
@@ -214,7 +259,9 @@ const CONFIG = {
   retorno: true,             // las rutas incluyen regreso a la sede
   correccionDeptoSedes: { "Cojutepeque": "CUSCATLAN" },
   correoDestino: "",         // a quién se envía el correo (mailto)
-  appsScriptUrl: ""          "https://script.google.com/macros/s/AKfycbwLFbJ52LZqDH9hfQuGrdym7zhn5gMOhjxDtrAtnHGXztfb4d3BVpPu2gvKARtKoen6/exec"
+  appsScriptUrl: "https://script.google.com/macros/s/AKfycbyXf_X04pSLrhnebISHS8KswT3uDrhUyklnzFm8a9-XfifFprJLe0TqSf-F6kb1pEmH/exec",         // URL /exec de la app web de Apps Script (guarda, envía correo y lee la hoja)
+  hojaId: "14ntrRi0r0UdBUeYQyp4ONdN9Uv0ad6mCZHfnoGquLow",   // respaldo: lectura directa si la hoja es visible con enlace
+  hojaPestana: "Cambios"
 };
 </script>
 
@@ -263,6 +310,65 @@ const Nucleo = (() => {
   }
 
   // crudo: { paradas:[attrs+lat,lng], rutas:[attrs+paths], sedes:[attrs+lat,lng] } con claves en minúscula
+  const pad2 = n => String(n).padStart(2, "0");
+  function parseValorRuta(v) {
+    const s = norm(v).replace(/^'/, "");
+    if (!s) return null;
+    let mm = s.match(/^(?:NUEVA|NUEVO|N)\s*[-_ ]?\s*(\d+)(?:\.0+)?$/);
+    if (mm) return { tipo: "N", n: parseInt(mm[1], 10) };
+    mm = s.match(/^(?:RUTA|R)?\s*[-_ ]?\s*(\d+)(?:\.0+)?$/);
+    if (mm) return { tipo: "R", n: parseInt(mm[1], 10) };
+    return null;
+  }
+  function sedePorValor(m, v) {
+    const s = norm(v).replace(/^'/, "");
+    if (!s) return null;
+    if (/^\d+$/.test(s)) return m.sedes.has(parseInt(s, 10)) ? parseInt(s, 10) : null;
+    for (const x of m.sedes.values()) if (norm(x.nombre) === s) return x.id;
+    return null;
+  }
+  function parseCSV(texto) {
+    const filas = []; let fila = [], campo = "", comillas = false;
+    for (let i = 0; i < texto.length; i++) {
+      const ch = texto[i];
+      if (comillas) {
+        if (ch === '"') { if (texto[i + 1] === '"') { campo += '"'; i++; } else comillas = false; }
+        else campo += ch;
+      } else if (ch === '"') comillas = true;
+      else if (ch === ",") { fila.push(campo); campo = ""; }
+      else if (ch === "\n" || ch === "\r") {
+        if (ch === "\r" && texto[i + 1] === "\n") i++;
+        fila.push(campo); filas.push(fila); fila = []; campo = "";
+      } else campo += ch;
+    }
+    if (campo !== "" || fila.length) { fila.push(campo); filas.push(fila); }
+    const enc = (filas.shift() || []).map(h => h.trim());
+    return filas.filter(r => r.some(v => v !== "")).map(r => Object.fromEntries(enc.map((h, i) => [h, r[i] ?? ""])));
+  }
+  // Filas de la hoja -> cambios aplicables. Si un centro aparece varias veces, gana la última fila.
+  function cambiosDesdeHoja(m, filas) {
+    const porCod = new Map(), errores = [];
+    filas.forEach((f0, i) => {
+      const f = Object.fromEntries(Object.entries(f0).map(([k, v]) =>
+        [String(k).trim().toLowerCase(), typeof v === "string" ? v.replace(/^'/, "").trim() : v]));
+      if (!f.codigo_cv) return;
+      const cod = String(f.codigo_cv).replace(/\.0+$/, "").trim().padStart(8, "0");
+      const fila = i + 2;
+      if (!m.centros.has(cod)) { errores.push(`Fila ${fila}: el código ${f.codigo_cv} no está en la capa de paradas.`); return; }
+      const sid = sedePorValor(m, f.nueva_sede), rv = parseValorRuta(f.nueva_ruta);
+      if (sid === null || !rv) { errores.push(`Fila ${fila}: sede o ruta no reconocida (${f.nueva_sede || "vacía"}, ${f.nueva_ruta || "vacía"}).`); return; }
+      const rid = rv.tipo === "R" ? `S${pad2(sid)}-R${pad2(rv.n)}` : idNueva(sid, rv.n);
+      if (rv.tipo === "R" && !m.base.orden.has(rid)) { errores.push(`Fila ${fila}: la ruta ${rv.n} no existe en ${m.sedes.get(sid).nombre}.`); return; }
+      const c = m.centros.get(cod), rc = parseValorRuta(c.nuevaRuta);
+      const enCapa = sedePorValor(m, c.nuevaSede) === sid && !!rc && rc.tipo === rv.tipo && rc.n === rv.n;
+      const marcado = ["SI", "X", "TRUE", "1", "APLICADO", "YES", "OK", "HECHO"].includes(norm(f.aplicado_en_capa));
+      porCod.delete(cod);
+      porCod.set(cod, { cod, sedeDestId: sid, rutaDestId: rid, origen: "hoja", fila, aplicado: enCapa || marcado,
+        aplicadoPor: enCapa ? "capa" : (marcado ? "hoja" : ""), registro: f });
+    });
+    return { cambios: [...porCod.values()], errores };
+  }
+
   function construirModelo(crudo, cfg) {
     const correc = Object.fromEntries(Object.entries(cfg.correccionDeptoSedes || {}).map(([k, v]) => [norm(k), norm(v)]));
     const sedes = new Map();
@@ -470,7 +576,7 @@ const Nucleo = (() => {
 
   return { norm, txt, toInt, hav, circuito, mejorInsercion, deptoDeMunicipio, sedeDeRuta, idNueva,
     valorCampoRuta, etiquetaRuta, construirModelo, calibrar, aplicarCambios, siguienteNueva,
-    opcionesRutas, evaluar, sumaBultos, kmRuta };
+    opcionesRutas, evaluar, sumaBultos, kmRuta, parseValorRuta, sedePorValor, parseCSV, cambiosDesdeHoja };
 })();
 if (typeof module !== "undefined") module.exports = Nucleo;
 </script>
@@ -489,7 +595,11 @@ require([
   const fmt = (x, d = 1) => Number(x).toLocaleString("es", { minimumFractionDigits: d, maximumFractionDigits: d });
   const esc = s => String(s ?? "").replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
 
-  let modelo = null, cal = null, estado = null, cambios = [];
+  let modelo = null, cal = null, estado = null, cambios = [], cambiosHoja = [], erroresHoja = [];
+  let filtroActivo = null, lvParadas = null, lvRutas = null;
+  const oidDeCentro = new Map(), oidDeRuta = new Map();
+  // cambios de la hoja + los de esta sesión (los de la sesión reemplazan a los de la hoja del mismo centro)
+  const combinados = () => [...cambiosHoja.filter(h => !cambios.some(c => c.cod === h.cod)), ...cambios];
   let seleccion = null, evaluacion = null;
 
   esriConfig.portalUrl = CONFIG.portalUrl;
@@ -501,6 +611,7 @@ require([
   const vista = new MapView({ container: "mapa", map: mapa, center: [-88.9, 13.75], zoom: 8,
     constraints: { minZoom: 7 }, popupEnabled: false });
   const capaResaltado = new GraphicsLayer({ title: "resaltado" });
+  const capaCambios = new GraphicsLayer({ title: "cambios registrados" });
 
   // ---------- Carga de datos ----------
   const minusculas = o => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k.toLowerCase(), v]));
@@ -556,7 +667,9 @@ require([
     pintarMapa();
     pintarReferencia();
     llenarSedes();
+    llenarFiltroSedes();
     $("carga-inicial").remove();
+    cargarHoja();
   }
 
   function pintarReferencia() {
@@ -571,14 +684,14 @@ require([
   function pintarMapa() {
     const lineas = [...modelo.rutas.values()].filter(r => r.paths.length).map((r, i) => new Graphic({
       geometry: { type: "polyline", paths: r.paths, spatialReference: { wkid: 4326 } },
-      attributes: { oid: i + 1, ruta_id: r.rid } }));
+      attributes: { oid: (oidDeRuta.set(r.rid, i + 1), i + 1), ruta_id: r.rid } }));
     const capaRutas = new FeatureLayer({ source: lineas, objectIdField: "oid", title: "Rutas",
       fields: [{ name: "oid", type: "oid" }, { name: "ruta_id", type: "string" }],
       renderer: { type: "simple", symbol: { type: "simple-line", color: [14, 90, 102, 0.35], width: 1.2 } } });
 
     const puntos = [...modelo.centros.values()].map((c, i) => new Graphic({
       geometry: { type: "point", longitude: c.lng, latitude: c.lat },
-      attributes: { oid: i + 1, cod: c.cod, etiqueta: `${N.etiquetaRuta(c.rutaId).replace("Ruta ", "R").replace("Nueva ", "N")}-${c.sec}` } }));
+      attributes: { oid: (oidDeCentro.set(c.cod, i + 1), i + 1), cod: c.cod, etiqueta: `${N.etiquetaRuta(c.rutaId).replace("Ruta ", "R").replace("Nueva ", "N")}-${c.sec}` } }));
     const capaParadas = new FeatureLayer({ source: puntos, objectIdField: "oid", title: "Centros", outFields: ["*"],
       fields: [{ name: "oid", type: "oid" }, { name: "cod", type: "string" }, { name: "etiqueta", type: "string" }],
       renderer: { type: "simple", symbol: { type: "simple-marker", size: 6, color: [14, 90, 102, 0.9], outline: { color: "white", width: 0.8 } } },
@@ -594,10 +707,12 @@ require([
       labelingInfo: [{ labelExpressionInfo: { expression: "$feature.nombre" }, labelPlacement: "above-center",
         symbol: { type: "text", color: "#1E2A2F", haloColor: "white", haloSize: 1.5, font: { size: 10, weight: "bold", family: "Arial" } } }] });
 
-    mapa.addMany([capaRutas, capaParadas, capaSedes, capaResaltado]);
+    mapa.addMany([capaRutas, capaParadas, capaSedes, capaCambios, capaResaltado]);
+    vista.whenLayerView(capaParadas).then(lv => { lvParadas = lv; aplicarFiltros(false); });
+    vista.whenLayerView(capaRutas).then(lv => { lvRutas = lv; aplicarFiltros(false); });
     vista.on("click", async ev => {
-      const hit = await vista.hitTest(ev, { include: [capaParadas] });
-      const g = hit.results[0]?.graphic;
+      const hit = await vista.hitTest(ev, { include: [capaCambios, capaParadas] });
+      const g = hit.results.find(r => r.graphic?.attributes?.cod)?.graphic;
       if (g) seleccionarCentro(g.attributes.cod);
     });
   }
@@ -652,8 +767,8 @@ require([
     const ul = $("resultados");
     ul.innerHTML = "";
     if (q.length < 2 || !modelo) return;
-    const hallados = [...modelo.centros.values()].filter(c =>
-      c.cod.includes(q) || N.norm(c.nombre).includes(q) || N.norm(c.municipio).includes(q) || N.norm(c.distrito).includes(q)).slice(0, 25);
+    const hallados = [...modelo.centros.values()].filter(c => (!filtroActivo || filtroActivo.has(c.cod)) && (
+      c.cod.includes(q) || N.norm(c.nombre).includes(q) || N.norm(c.municipio).includes(q) || N.norm(c.distrito).includes(q))).slice(0, 25);
     for (const c of hallados) {
       const li = document.createElement("li");
       const sede = modelo.sedes.get(estado.sedeDe.get(c.cod));
@@ -671,17 +786,22 @@ require([
     const rid = estado.rutaDe.get(cod), sid = estado.sedeDe.get(cod), s = modelo.sedes.get(sid);
     const miembros = estado.orden.get(rid) || [];
     const km = kmTexto(rid, miembros, sid);
-    const movido = cambios.some(ch => ch.cod === cod);
+    const ch = combinados().find(x => x.cod === cod);
+    const movido = !ch ? "" : ch.origen === "hoja"
+      ? ` (cambio en la hoja, fila ${ch.fila}${ch.aplicado ? ", ya en la capa" : ", pendiente de pasar a la capa"})`
+      : " (cambio de esta sesión)";
+    const incluido = ch && $("acumular").checked;
     $("ficha").innerHTML = `<div class="ficha">
       <div class="nombre">${esc(c.nombre)}</div>
       <dl>
         <dt>Código</dt><dd>${c.cod}</dd>
         <dt>Municipio</dt><dd>${esc(c.municipio)}, ${esc(c.distrito)}</dd>
         <dt>Bultos</dt><dd>${c.bultos} (${c.electores.toLocaleString("es")} electores)</dd>
-        <dt>Sede</dt><dd>${esc(s.nombre)}${movido ? " (cambio guardado)" : ""}</dd>
+        <dt>Sede</dt><dd>${esc(s.nombre)}${movido}</dd>
         <dt>Ruta</dt><dd>${N.etiquetaRuta(rid)}, parada ${miembros.indexOf(cod) + 1} de ${miembros.length}</dd>
         <dt>Carga de la ruta</dt><dd>${N.sumaBultos(modelo, miembros)} bultos, ${km}</dd>
       </dl>
+      ${ch && !incluido ? `<div class="aviso-campo">Tiene un cambio registrado que no se está sumando (desmarcaste "Sumar los cambios ya registrados").</div>` : ""}
       ${c.nuevaSede || c.nuevaRuta ? `<div class="aviso-campo">En la capa ya hay una propuesta de campo: sede ${esc(c.nuevaSede || "(igual)")}, ruta ${esc(c.nuevaRuta || "(vacía)")}.</div>` : ""}
     </div>`;
     $("paso2").classList.remove("inactivo");
@@ -788,10 +908,12 @@ require([
   }
   ["autor", "obs", "forzar"].forEach(id => $(id).addEventListener("input", actualizarGuardar));
   $("forzar").addEventListener("change", actualizarGuardar);
-  $("acumular").addEventListener("change", () => { recalcularEstado(); if (seleccion) seleccionarCentro(seleccion); });
+  $("acumular").addEventListener("change", () => { recalcularEstado(); refrescarFiltroRutas(); aplicarFiltros(false);
+    if (seleccion) seleccionarCentro(seleccion); });
 
   function recalcularEstado() {
-    estado = N.aplicarCambios(modelo, $("acumular").checked ? cambios : []);
+    estado = N.aplicarCambios(modelo, $("acumular").checked ? combinados() : []);
+    pintarCambios();
   }
 
   function registro(ev) {
@@ -841,6 +963,9 @@ require([
     cambios.push({ cod: ev.cod, sedeDestId: ev.destino.sedeId, rutaDestId: ev.destino.rutaId, retorno: cal.retorno, registro: r });
     recalcularEstado();
     pintarGuardados();
+    pintarRegistrados();
+    refrescarFiltroRutas();
+    aplicarFiltros(false);
     $("obs").value = ""; $("forzar").checked = false;
     const msg = $("estado-envio");
     try {
@@ -860,7 +985,7 @@ require([
       const li = document.createElement("li");
       li.innerHTML = `<span><b>${esc(ch.registro.centro)}</b><br>${esc(ch.registro.sede_actual)} ${esc(ch.registro.ruta_actual)} a ${esc(ch.registro.nueva_sede)}, ruta ${esc(ch.registro.nueva_ruta)} (${esc(ch.registro.veredicto)})</span><button type="button">Quitar</button>`;
       li.querySelector("button").addEventListener("click", () => {
-        cambios.splice(i, 1); recalcularEstado(); pintarGuardados();
+        cambios.splice(i, 1); recalcularEstado(); pintarGuardados(); pintarRegistrados(); refrescarFiltroRutas(); aplicarFiltros(false);
         if (seleccion) seleccionarCentro(seleccion);
       });
       $("guardados").appendChild(li);
@@ -881,6 +1006,163 @@ require([
     abrirCorreo(`Cambios de ruta propuestos (${cambios.length})`, cuerpo.slice(0, 1800) +
       (cuerpo.length > 1800 ? "\n\n(Lista recortada: adjunta el CSV descargado)" : ""));
   });
+
+  // ---------- Limpiar selección ----------
+  function limpiarSeleccion() {
+    seleccion = null; evaluacion = null;
+    $("buscar").value = ""; $("resultados").innerHTML = ""; $("ficha").innerHTML = "";
+    ["paso2", "paso3", "paso4"].forEach(id => $(id).classList.add("inactivo"));
+    $("ruta").innerHTML = "";
+    $("impacto").innerHTML = `<p class="vacio-txt">Elige un centro y un destino.</p>`;
+    $("forzar").checked = false; $("forzar-wrap").hidden = true;
+    $("guardar").disabled = true; $("estado-envio").textContent = "";
+    capaResaltado.removeAll();
+    aplicarFiltros(true);
+    $("buscar").focus();
+  }
+  $("limpiar").addEventListener("click", limpiarSeleccion);
+
+  // ---------- Filtros del mapa ----------
+  function llenarFiltroSedes() {
+    $("f-sede").innerHTML = `<option value="">Todas</option>` + [...modelo.sedes.values()]
+      .sort((a, b) => a.nombre.localeCompare(b.nombre, "es")).map(s => `<option value="${s.id}">${esc(s.nombre)}</option>`).join("");
+  }
+  function refrescarFiltroRutas() {
+    const sid = $("f-sede").value ? parseInt($("f-sede").value, 10) : null, previo = $("f-ruta").value;
+    if (sid === null) { $("f-ruta").innerHTML = `<option value="">Todas</option>`; $("f-ruta").disabled = true; return; }
+    const rutas = [...estado.orden].filter(([rid, cods]) => N.sedeDeRuta(rid) === sid && cods.length)
+      .sort(([a], [b]) => a.localeCompare(b, "es", { numeric: true }));
+    $("f-ruta").innerHTML = `<option value="">Todas</option>` + rutas.map(([rid, cods]) =>
+      `<option value="${rid}">${N.etiquetaRuta(rid)} (${cods.length} centros, ${N.sumaBultos(modelo, cods)} bultos)</option>`).join("");
+    $("f-ruta").disabled = false;
+    if (rutas.some(([rid]) => rid === previo)) $("f-ruta").value = previo;
+  }
+  function aplicarFiltros(zoom) {
+    if (!modelo) return;
+    const sid = $("f-sede").value ? parseInt($("f-sede").value, 10) : null;
+    const rid = $("f-ruta").value || null, solo = $("f-cambios").checked;
+    const conCambio = new Set(combinados().map(c => c.cod));
+    const hayFiltro = sid !== null || !!rid || solo;
+    const visibles = [...modelo.centros.values()].filter(c => {
+      if (solo && !conCambio.has(c.cod)) return false;
+      if (rid) return estado.rutaDe.get(c.cod) === rid || c.rutaId === rid;
+      if (sid !== null) return estado.sedeDe.get(c.cod) === sid || c.sedeId === sid;
+      return true;
+    });
+    filtroActivo = hayFiltro ? new Set(visibles.map(c => c.cod)) : null;
+    const porIds = ids => ids.length ? { objectIds: ids } : { where: "1=0" };
+    if (lvParadas) lvParadas.filter = hayFiltro ? porIds(visibles.map(c => oidDeCentro.get(c.cod))) : null;
+    if (lvRutas) {
+      let rids = null;
+      if (rid) rids = [rid];
+      else if (sid !== null) rids = [...oidDeRuta.keys()].filter(r => N.sedeDeRuta(r) === sid);
+      else if (solo) rids = [...new Set(visibles.flatMap(c => [c.rutaId, estado.rutaDe.get(c.cod)]))];
+      lvRutas.filter = rids ? porIds(rids.map(r => oidDeRuta.get(r)).filter(Boolean)) : null;
+    }
+    pintarCambios();
+    pintarRegistrados();
+    if (zoom) {
+      const pts = hayFiltro ? visibles : [];
+      if (sid !== null) pts.push(modelo.sedes.get(sid));
+      if (!pts.length) { vista.goTo({ center: [-88.9, 13.75], zoom: 8 }).catch(() => {}); return; }
+      const xs = pts.map(p => p.lng), ys = pts.map(p => p.lat);
+      vista.goTo(new Extent({ xmin: Math.min(...xs), ymin: Math.min(...ys), xmax: Math.max(...xs), ymax: Math.max(...ys),
+        spatialReference: { wkid: 4326 } }).expand(1.3), { duration: 400 }).catch(() => {});
+    }
+  }
+  $("f-sede").addEventListener("change", () => { $("f-ruta").value = ""; refrescarFiltroRutas(); aplicarFiltros(true); });
+  $("f-ruta").addEventListener("change", () => aplicarFiltros(true));
+  $("f-cambios").addEventListener("change", () => aplicarFiltros(true));
+  $("quitar-filtros").addEventListener("click", () => {
+    $("f-sede").value = ""; $("f-cambios").checked = false; refrescarFiltroRutas(); aplicarFiltros(true);
+  });
+
+  // ---------- Cambios registrados en la hoja ----------
+  async function leerHoja() {
+    let errorScript = null;
+    if (CONFIG.appsScriptUrl) {
+      try {
+        const r = await fetch(CONFIG.appsScriptUrl + (CONFIG.appsScriptUrl.includes("?") ? "&" : "?") + "accion=cambios&t=" + Date.now());
+        const j = await r.json();
+        if (j && j.ok) return { filas: j.filas || [], via: "Apps Script" };
+        errorScript = new Error("el Apps Script no devolvió datos (¿falta publicar la versión con doGet?)");
+      } catch (e) { errorScript = e; }
+    }
+    if (CONFIG.hojaId) {
+      const url = `https://docs.google.com/spreadsheets/d/${CONFIG.hojaId}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(CONFIG.hojaPestana)}&t=${Date.now()}`;
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`la hoja respondió ${r.status}`);
+      const filas = N.parseCSV(await r.text());
+      if (filas.length && !("codigo_cv" in filas[0])) throw new Error(`la pestaña "${CONFIG.hojaPestana}" no existe o no tiene encabezados`);
+      return { filas, via: "hoja compartida" };
+    }
+    throw errorScript || new Error("configura appsScriptUrl u hojaId");
+  }
+  async function cargarHoja() {
+    if (!modelo) return;
+    $("reg-resumen").textContent = "Leyendo la hoja…";
+    try {
+      const { filas, via } = await leerHoja();
+      const res = N.cambiosDesdeHoja(modelo, filas);
+      cambiosHoja = res.cambios; erroresHoja = res.errores;
+      // los de la sesión que ya llegaron a la hoja con el mismo destino se quitan de la sesión
+      cambios = cambios.filter(c => !cambiosHoja.some(h => h.cod === c.cod && h.sedeDestId === c.sedeDestId && h.rutaDestId === c.rutaDestId));
+      recalcularEstado();
+      pintarGuardados(); refrescarFiltroRutas(); aplicarFiltros(false);
+      const enCapa = cambiosHoja.filter(c => c.aplicado).length;
+      const pl = (n, uno, varios) => `${n} ${n === 1 ? uno : varios}`;
+      $("reg-resumen").textContent = `${pl(cambiosHoja.length, "centro", "centros")} con cambio en la hoja: ` +
+        `${enCapa} ya en la capa y ${cambiosHoja.length - enCapa} por pasar. Leído por ${via}, ${new Date().toLocaleTimeString("es-SV")}`;
+      if (seleccion) seleccionarCentro(seleccion);
+    } catch (e) {
+      console.error(e);
+      $("reg-resumen").textContent = `No se pudo leer la hoja: ${e.message}.`;
+    }
+  }
+  $("actualizar-hoja").addEventListener("click", cargarHoja);
+  $("reg-estado").addEventListener("change", pintarRegistrados);
+
+  function pintarRegistrados() {
+    const ul = $("registrados");
+    if (!ul || !modelo) return;
+    const filtro = $("reg-estado").value, sid = $("f-sede").value ? parseInt($("f-sede").value, 10) : null;
+    const lista = cambiosHoja.filter(ch => {
+      if (filtro === "capa" && !ch.aplicado) return false;
+      if (filtro === "pendiente" && ch.aplicado) return false;
+      if (filtroActivo && !filtroActivo.has(ch.cod) && ch.sedeDestId !== sid) return false;
+      return true;
+    });
+    ul.innerHTML = "";
+    for (const ch of lista) {
+      const c = modelo.centros.get(ch.cod), r = ch.registro;
+      const li = document.createElement("li");
+      li.innerHTML = `<button type="button" class="item"><span><b>${esc(c.nombre)}</b><br>` +
+        `${esc(modelo.sedes.get(c.sedeId)?.nombre)} ${N.etiquetaRuta(c.rutaId)} a ${esc(modelo.sedes.get(ch.sedeDestId).nombre)}, ` +
+        `${N.etiquetaRuta(ch.rutaDestId)}${r.propuesto_por ? `<br><small>${esc(r.propuesto_por)}, ${esc(r.fecha || r.recibido || "")}</small>` : ""}</span>` +
+        `<span class="chip ${ch.aplicado ? "capa" : "pendiente"}">${ch.aplicado ? "En la capa" : "Pendiente"}</span></button>`;
+      li.firstChild.addEventListener("click", () => seleccionarCentro(ch.cod));
+      ul.appendChild(li);
+    }
+    if (!lista.length && cambiosHoja.length) ul.innerHTML = `<li class="vacio-txt" style="padding:.4rem 0">Ningún cambio con estos filtros.</li>`;
+    $("reg-errores").innerHTML = erroresHoja.length
+      ? `${erroresHoja.length} filas de la hoja no se pudieron usar: ${erroresHoja.slice(0, 3).map(esc).join(" ")}${erroresHoja.length > 3 ? "…" : ""}` : "";
+  }
+
+  function pintarCambios() {
+    capaCambios.removeAll();
+    if (!modelo) return;
+    const sid = $("f-sede").value ? parseInt($("f-sede").value, 10) : null;
+    for (const ch of combinados()) {
+      if (filtroActivo && !filtroActivo.has(ch.cod) && ch.sedeDestId !== sid) continue;
+      const c = modelo.centros.get(ch.cod), sd = modelo.sedes.get(ch.sedeDestId);
+      const color = ch.origen !== "hoja" ? "#0E5A66" : ch.aplicado ? "#2F7D5C" : "#E0A526";
+      capaCambios.add(new Graphic({ geometry: { type: "polyline", paths: [[[c.lng, c.lat], [sd.lng, sd.lat]]], spatialReference: { wkid: 4326 } },
+        symbol: { type: "simple-line", color, width: 1.5, style: "dot" } }));
+      capaCambios.add(new Graphic({ geometry: { type: "point", longitude: c.lng, latitude: c.lat },
+        symbol: { type: "simple-marker", style: "diamond", size: 12, color, outline: { color: "#1E2A2F", width: 1 } },
+        attributes: { cod: ch.cod } }));
+    }
+  }
 
   // ---------- Arranque ----------
   cargarDesdePortal().then(iniciar).catch(err => {
