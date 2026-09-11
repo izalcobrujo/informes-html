@@ -1,0 +1,900 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evaluar cambio de ruta · Sedes de transmisión</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500;600&family=Barlow+Condensed:wght@500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css">
+<script src="https://js.arcgis.com/4.30/"></script>
+<style>
+:root{
+  --papel:#F1F3F0; --blanco:#FFFFFF; --tinta:#1E2A2F; --tinta-suave:#56656B;
+  --petroleo:#0E5A66; --petroleo-claro:#D6E6E7; --senal:#E0A526; --senal-claro:#FBF0D6;
+  --exceso:#B83B27; --exceso-claro:#F6DDD8; --ok:#2F7D5C; --ok-claro:#DCEEE5; --linea:#CBD3D0;
+  --panel:430px;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{margin:0;height:100%;background:var(--papel);color:var(--tinta);
+  font-family:"Barlow",system-ui,sans-serif;font-size:15px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--senal);outline-offset:2px}
+.app{display:grid;grid-template-columns:1fr var(--panel);grid-template-rows:auto 1fr;height:100vh}
+header{grid-column:1/-1;display:flex;align-items:baseline;gap:1.5rem;flex-wrap:wrap;
+  padding:.7rem 1.2rem;background:var(--petroleo);color:#fff}
+header h1{margin:0;font-family:"Barlow Condensed";font-weight:600;font-size:1.55rem;letter-spacing:.01em}
+header .ref{font-size:.9rem;opacity:.9}
+header .ref b{font-family:"Barlow Condensed";font-size:1.05rem;font-weight:600}
+#mapa{position:relative;min-height:300px}
+aside{overflow-y:auto;background:var(--blanco);border-left:1px solid var(--linea)}
+.paso{padding:1rem 1.2rem 1.1rem;border-bottom:1px solid var(--linea)}
+.paso h2{display:flex;align-items:center;gap:.6rem;margin:0 0 .7rem;font-family:"Barlow Condensed";
+  font-weight:600;font-size:1.2rem}
+.paso h2 .n{display:inline-grid;place-items:center;width:1.6rem;height:1.6rem;border-radius:50%;
+  background:var(--petroleo);color:#fff;font-size:.95rem}
+.paso.inactivo{opacity:.45;pointer-events:none}
+label{display:block;font-size:.85rem;color:var(--tinta-suave);margin:.55rem 0 .2rem}
+input[type=text],select,textarea{width:100%;padding:.5rem .6rem;border:1px solid var(--linea);
+  border-radius:4px;background:#fff}
+textarea{min-height:3.2rem;resize:vertical}
+.resultados{list-style:none;margin:.3rem 0 0;padding:0;max-height:220px;overflow-y:auto;
+  border:1px solid var(--linea);border-radius:4px}
+.resultados:empty{display:none}
+.resultados button{display:block;width:100%;text-align:left;padding:.45rem .6rem;border:0;
+  border-bottom:1px solid var(--papel);background:#fff;cursor:pointer}
+.resultados button:hover,.resultados button:focus-visible{background:var(--petroleo-claro)}
+.resultados small{display:block;color:var(--tinta-suave)}
+.ficha{margin-top:.7rem;padding:.6rem .7rem;background:var(--papel);border-radius:4px}
+.ficha .nombre{font-weight:600}
+.ficha dl{display:grid;grid-template-columns:auto 1fr;gap:.1rem .8rem;margin:.4rem 0 0;font-size:.9rem}
+.ficha dt{color:var(--tinta-suave)}
+.ficha dd{margin:0}
+.aviso-campo{margin-top:.5rem;font-size:.85rem;padding:.35rem .5rem;background:var(--senal-claro);border-radius:3px}
+/* Carga: la caja del vehículo */
+.carga{margin:.9rem 0 .2rem}
+.carga .titulo{display:flex;justify-content:space-between;align-items:baseline;gap:.5rem}
+.carga .titulo strong{font-family:"Barlow Condensed";font-size:1.05rem;font-weight:600}
+.carga .titulo span{font-size:.85rem;color:var(--tinta-suave)}
+.caja{position:relative;height:38px;margin:.35rem 0 .3rem;background:
+  repeating-linear-gradient(90deg,transparent 0 9px,rgba(30,42,47,.05) 9px 10px),var(--papel);
+  border:1.5px solid var(--tinta);border-radius:2px 7px 7px 2px;display:flex;overflow:hidden}
+.bloque{height:100%;border-right:2px solid var(--blanco);background:var(--petroleo);
+  display:grid;place-items:center;color:#fff;font-size:.72rem;font-weight:600;min-width:3px;overflow:hidden}
+.bloque.entra{background:var(--senal);color:var(--tinta)}
+.bloque.sale{background:repeating-linear-gradient(135deg,var(--exceso-claro) 0 5px,#fff 5px 10px);color:var(--exceso)}
+.caja.excede .bloque:not(.entra):not(.sale){background:#6E3A30}
+.tope{position:absolute;top:-6px;bottom:-6px;width:0;border-left:2px dashed var(--exceso);z-index:2}
+.tope::after{content:attr(data-cap);position:absolute;top:-2px;left:4px;font-size:.7rem;color:var(--exceso);
+  background:var(--blanco);padding:0 2px;line-height:1}
+.cifras{display:flex;justify-content:space-between;font-size:.88rem}
+.cifras .grande{font-family:"Barlow Condensed";font-size:1.25rem;font-weight:600}
+.puntos{letter-spacing:.12em;color:var(--petroleo)}
+.puntos .vacio{color:var(--linea)}
+.puntos .de-mas{color:var(--exceso)}
+.km{display:grid;grid-template-columns:1fr auto;gap:.2rem .8rem;margin:.9rem 0 .2rem;font-size:.92rem}
+.km .v{text-align:right;font-variant-numeric:tabular-nums}
+.km .total{font-weight:600;border-top:1px solid var(--linea);padding-top:.25rem}
+.nota{font-size:.8rem;color:var(--tinta-suave);margin:.35rem 0 0}
+.veredicto{margin:1rem -1.2rem 0;padding:.8rem 1.2rem}
+.veredicto .etq{font-family:"Barlow Condensed";font-size:1.5rem;font-weight:700;line-height:1.1}
+.veredicto ul{margin:.4rem 0 0;padding-left:1.1rem;font-size:.9rem}
+.veredicto.FACTIBLE{background:var(--ok-claro)} .veredicto.FACTIBLE .etq{color:var(--ok)}
+.veredicto.OBS{background:var(--senal-claro)} .veredicto.OBS .etq{color:#8A6100}
+.veredicto.NO{background:var(--exceso-claro)} .veredicto.NO .etq{color:var(--exceso)}
+.valores{display:flex;gap:.5rem;margin-top:.7rem}
+.valores div{flex:1;padding:.45rem .6rem;border:1px dashed var(--petroleo);border-radius:4px}
+.valores small{display:block;color:var(--tinta-suave);font-size:.78rem}
+.valores b{font-family:"Barlow Condensed";font-size:1.15rem;font-weight:600}
+.botones{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.8rem}
+.btn{padding:.55rem .9rem;border-radius:4px;border:1.5px solid var(--petroleo);background:#fff;
+  color:var(--petroleo);font-weight:600;cursor:pointer}
+.btn.primario{background:var(--petroleo);color:#fff}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.check{display:flex;gap:.45rem;align-items:flex-start;margin-top:.6rem;font-size:.9rem}
+.check input{margin-top:.25rem}
+.guardados{list-style:none;padding:0;margin:.6rem 0 0}
+.guardados li{display:grid;grid-template-columns:1fr auto;gap:.4rem;padding:.45rem 0;border-top:1px solid var(--papel);font-size:.88rem}
+.guardados li button{border:0;background:none;color:var(--exceso);cursor:pointer;font-size:.85rem}
+.estado-envio{font-size:.85rem;margin-top:.5rem;min-height:1.2em}
+.vacio-txt{color:var(--tinta-suave);font-size:.9rem}
+#carga-inicial{position:fixed;inset:0;background:rgba(241,243,240,.96);display:grid;place-items:center;z-index:50;padding:1rem}
+#carga-inicial .caja-msg{max-width:440px;background:#fff;border:1px solid var(--linea);border-radius:6px;padding:1.2rem 1.4rem}
+#carga-inicial h2{font-family:"Barlow Condensed";margin:.1rem 0 .5rem;font-weight:600}
+#carga-inicial .error{color:var(--exceso)}
+#carga-inicial .archivos{display:none;margin-top:.8rem}
+#carga-inicial .archivos label{margin-top:.6rem}
+.leyenda{position:absolute;left:12px;bottom:18px;background:rgba(255,255,255,.94);border:1px solid var(--linea);
+  border-radius:4px;padding:.45rem .6rem;font-size:.8rem;z-index:5}
+.leyenda div{display:flex;align-items:center;gap:.45rem}
+.leyenda i{display:inline-block;width:22px;height:0;border-top:3px solid}
+@media (max-width:900px){
+  .app{grid-template-columns:1fr;grid-template-rows:auto 45vh auto;height:auto}
+  aside{border-left:0;border-top:1px solid var(--linea)}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>Evaluar cambio de ruta</h1>
+    <div class="ref" id="ref">Cargando capas…</div>
+  </header>
+
+  <div id="mapa">
+    <div class="leyenda" aria-hidden="true">
+      <div><i style="border-color:#B83B27;border-top-style:dashed"></i>Ruta actual del centro</div>
+      <div><i style="border-color:#0E5A66;border-top-width:5px"></i>Ruta destino</div>
+      <div><i style="border-color:#E0A526;border-top-style:dashed"></i>Entrada estimada del centro</div>
+    </div>
+  </div>
+
+  <aside>
+    <section class="paso" id="paso1">
+      <h2><span class="n">1</span>Centro de votación</h2>
+      <label for="buscar">Busca por nombre, código o municipio, o haz clic en un punto del mapa</label>
+      <input type="text" id="buscar" autocomplete="off" placeholder="Ej. Cara Sucia, 01020304">
+      <ul class="resultados" id="resultados" aria-label="Resultados de búsqueda"></ul>
+      <div id="ficha"></div>
+    </section>
+
+    <section class="paso inactivo" id="paso2">
+      <h2><span class="n">2</span>Destino propuesto</h2>
+      <label for="sede">Sede</label>
+      <select id="sede"></select>
+      <label for="ruta">Ruta (ordenadas por menor desvío estimado)</label>
+      <select id="ruta"></select>
+    </section>
+
+    <section class="paso inactivo" id="paso3" aria-live="polite">
+      <h2><span class="n">3</span>Impacto</h2>
+      <div id="impacto"><p class="vacio-txt">Elige un centro y un destino.</p></div>
+    </section>
+
+    <section class="paso inactivo" id="paso4">
+      <h2><span class="n">4</span>Guardar y enviar</h2>
+      <label for="autor">Propuesto por</label>
+      <input type="text" id="autor" autocomplete="name">
+      <label for="obs">Motivo del cambio</label>
+      <textarea id="obs"></textarea>
+      <label class="check" id="forzar-wrap" hidden>
+        <input type="checkbox" id="forzar">
+        <span>Guardar aunque no se recomienda (el motivo es obligatorio)</span>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="acumular" checked>
+        <span>Sumar los cambios guardados al evaluar los siguientes</span>
+      </label>
+      <div class="botones">
+        <button class="btn primario" id="guardar" disabled>Guardar cambio</button>
+      </div>
+      <div class="estado-envio" id="estado-envio" role="status"></div>
+      <div id="lista-wrap" hidden>
+        <p class="nota">Cambios guardados en esta sesión</p>
+        <ul class="guardados" id="guardados"></ul>
+        <div class="botones">
+          <button class="btn" id="descargar">Descargar CSV</button>
+          <button class="btn" id="correo-todos">Enviar todos por correo</button>
+        </div>
+      </div>
+    </section>
+  </aside>
+</div>
+
+<div id="carga-inicial" role="dialog" aria-modal="true" aria-labelledby="carga-titulo">
+  <div class="caja-msg">
+    <h2 id="carga-titulo">Cargando paradas, rutas y sedes</h2>
+    <p id="carga-msg">Conectando con ArcGIS Online. Si las capas no son públicas se pedirá iniciar sesión.</p>
+    <button class="btn" id="usar-archivos" hidden>Cargar desde archivos GeoJSON</button>
+    <div class="archivos" id="archivos">
+      <label for="f-paradas">paradas (paradas_2024.geojson)</label><input type="file" id="f-paradas" accept=".geojson,.json">
+      <label for="f-rutas">rutas (rutas_2024_completas.geojson)</label><input type="file" id="f-rutas" accept=".geojson,.json">
+      <label for="f-sedes">sedes (sedes_2024.geojson)</label><input type="file" id="f-sedes" accept=".geojson,.json">
+      <div class="botones"><button class="btn primario" id="cargar-archivos">Cargar archivos</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- ======================= CONFIGURACIÓN ======================= -->
+<script>
+const CONFIG = {
+  portalUrl: "https://geodatossv.maps.arcgis.com",
+  items: {
+    paradas: "0ecc48671d5c440d9b55c9b03dfd90f7",
+    rutas:   "a56aaafc52ca4d918143f722516ed726",
+    sedes:   "b62e051f8c2c4a0f941a1aac36444c12"
+  },
+  oauthAppId: "",            // opcional: ID de app OAuth si tu organización usa inicio de sesión institucional
+  capacidadBultos: null,     // null = promedio de bultos por ruta calculado de la capa de paradas
+  maxCentros: 4,             // máximo práctico del libro 2024
+  maxKmDesvio: 15,           // desvío estimado a partir del cual se marca observación
+  factorRespaldo: 1.35,      // si no se puede calibrar con las rutas de Google
+  retorno: true,             // las rutas incluyen regreso a la sede
+  correccionDeptoSedes: { "Cojutepeque": "CUSCATLAN" },
+  correoDestino: "",         // a quién se envía el correo (mailto)
+  appsScriptUrl: ""          "https://script.google.com/macros/s/AKfycbwLFbJ52LZqDH9hfQuGrdym7zhn5gMOhjxDtrAtnHGXztfb4d3BVpPu2gvKARtKoen6/exec"
+};
+</script>
+
+<!-- ======================= NÚCLEO (sin mapa, sin DOM) ======================= -->
+<script id="nucleo">
+const Nucleo = (() => {
+  const norm = s => String(s ?? "").normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+    .toUpperCase().replace(/\s+/g, " ").trim();
+  const txt = s => (s === null || s === undefined) ? "" : String(s).trim();
+  const toInt = v => { const n = parseInt(String(v ?? "").replace(/\.0+$/, ""), 10); return Number.isFinite(n) ? n : null; };
+  const esVerdadero = v => [true, 1, "1", "TRUE", "SI", "YES"].includes(typeof v === "string" ? norm(v) : v);
+
+  function hav(a, b) {
+    const R = 6371, rad = Math.PI / 180;
+    const dLat = (b.lat - a.lat) * rad, dLng = (b.lng - a.lng) * rad;
+    const x = Math.sin(dLat / 2) ** 2 + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLng / 2) ** 2;
+    return 2 * R * Math.asin(Math.sqrt(x));
+  }
+  function circuito(sede, pts, retorno) {
+    if (!pts.length) return 0;
+    let d = 0, prev = sede;
+    for (const p of pts) { d += hav(prev, p); prev = p; }
+    return retorno ? d + hav(prev, sede) : d;
+  }
+  function mejorInsercion(sede, pts, p, retorno) {
+    const base = circuito(sede, pts, retorno);
+    let mejor = { pos: 0, delta: Infinity };
+    for (let k = 0; k <= pts.length; k++) {
+      const d = circuito(sede, [...pts.slice(0, k), p, ...pts.slice(k)], retorno) - base;
+      if (d < mejor.delta) mejor = { pos: k, delta: d };
+    }
+    return mejor;
+  }
+  const deptoDeMunicipio = m => norm(m).replace(/\s+(NORTE|SUR|ESTE|OESTE|CENTRO|COSTA)$/, "");
+  const sedeDeRuta = rid => toInt((String(rid).match(/^S(\d+)-/) || [])[1]);
+  const idNueva = (sid, n) => `S${String(sid).padStart(2, "0")}-N${String(n).padStart(2, "0")}`;
+  function valorCampoRuta(rid) {
+    const m = String(rid).match(/-([RN])(\d+)$/);
+    if (!m) return rid;
+    return m[1] === "R" ? String(parseInt(m[2], 10)) : `nueva_${parseInt(m[2], 10)}`;
+  }
+  function etiquetaRuta(rid) {
+    const m = String(rid).match(/-([RN])(\d+)$/);
+    if (!m) return rid;
+    return (m[1] === "R" ? "Ruta " : "Nueva ") + parseInt(m[2], 10);
+  }
+
+  // crudo: { paradas:[attrs+lat,lng], rutas:[attrs+paths], sedes:[attrs+lat,lng] } con claves en minúscula
+  function construirModelo(crudo, cfg) {
+    const correc = Object.fromEntries(Object.entries(cfg.correccionDeptoSedes || {}).map(([k, v]) => [norm(k), norm(v)]));
+    const sedes = new Map();
+    for (const s of crudo.sedes) {
+      const id = toInt(s.sede_id); if (id === null) continue;
+      const nombre = txt(s.sede);
+      sedes.set(id, { id, nombre, zona: txt(s.zona), estado: txt(s.estado),
+        depto: correc[norm(nombre)] || norm(s.departamento), lat: +s.lat, lng: +s.lng });
+    }
+    const centros = new Map();
+    for (const p of crudo.paradas) {
+      const cod = String(p.codigo_cv ?? "").replace(/\.0+$/, "").trim().padStart(8, "0");
+      if (!/^\d{8}$/.test(cod)) continue;
+      centros.set(cod, { cod, nombre: txt(p.centro), sedeId: toInt(p.sede_id), rutaId: txt(p.ruta_id),
+        sec: toInt(p.secuencia) || 0, bultos: toInt(p.bultos) || 0, electores: toInt(p.electores) || 0,
+        municipio: txt(p.municipio), distrito: txt(p.distrito), depto: deptoDeMunicipio(p.municipio),
+        tipo: norm(p.tipo_ruta) || "TERRESTRE", nuevaSede: txt(p.nueva_sede), nuevaRuta: txt(p.nueva_ruta),
+        lat: +p.lat, lng: +p.lng, oid: p.__oid });
+    }
+    const rutas = new Map();
+    for (const r of crudo.rutas) {
+      const rid = txt(r.ruta_id); if (!rid) continue;
+      let e = rutas.get(rid);
+      if (!e) { e = { rid, km: 0, min: 0, fuente: txt(r.fuente), retorno: null, total: false, paths: [] }; rutas.set(rid, e); }
+      if (r.km_total !== undefined && r.km_total !== null) { e.km = +r.km_total; e.min = +(r.min_total || 0); e.total = true; }
+      else if (r.km !== undefined && r.km !== null && !e.total) { e.km += +r.km; e.min += +(r.min || 0); }
+      if (r.incluye_retorno !== undefined && r.incluye_retorno !== null) e.retorno = esVerdadero(r.incluye_retorno);
+      if (r.paths) e.paths.push(...r.paths);
+    }
+    const modelo = { sedes, centros, rutas };
+    modelo.base = estadoBase(modelo);
+    return modelo;
+  }
+
+  function estadoBase(m) {
+    const rutaDe = new Map(), sedeDe = new Map(), grupos = new Map();
+    for (const c of m.centros.values()) {
+      rutaDe.set(c.cod, c.rutaId); sedeDe.set(c.cod, c.sedeId);
+      if (!grupos.has(c.rutaId)) grupos.set(c.rutaId, []);
+      grupos.get(c.rutaId).push(c);
+    }
+    const orden = new Map();
+    for (const [rid, arr] of grupos) orden.set(rid, arr.sort((a, b) => a.sec - b.sec).map(c => c.cod));
+    return { rutaDe, sedeDe, orden };
+  }
+  const clonar = e => ({ rutaDe: new Map(e.rutaDe), sedeDe: new Map(e.sedeDe),
+    orden: new Map([...e.orden].map(([k, v]) => [k, [...v]])) });
+
+  function calibrar(m, cfg) {
+    const base = m.base, porSede = new Map();
+    const G = { km: 0, lin: 0, min: 0, n: 0 };
+    const retornos = [...m.rutas.values()].map(r => r.retorno).filter(v => v !== null);
+    const retorno = retornos.length ? retornos.filter(Boolean).length >= retornos.length / 2 : cfg.retorno;
+    for (const [rid, cods] of base.orden) {
+      const r = m.rutas.get(rid);
+      if (!r || !(r.km > 0) || /LINEA|SIMULADO/i.test(r.fuente)) continue;
+      const sid = base.sedeDe.get(cods[0]), s = m.sedes.get(sid);
+      if (!s) continue;
+      const lin = circuito(s, cods.map(k => m.centros.get(k)), r.retorno ?? retorno);
+      if (lin < 0.5) continue;
+      const a = porSede.get(sid) || { km: 0, lin: 0, min: 0, n: 0 };
+      a.km += r.km; a.lin += lin; a.min += r.min; a.n++;
+      porSede.set(sid, a);
+      G.km += r.km; G.lin += lin; G.min += r.min; G.n++;
+    }
+    const lim = f => Math.min(3, Math.max(1, f));
+    const factorGlobal = G.lin ? lim(G.km / G.lin) : cfg.factorRespaldo;
+    const velGlobal = G.min ? G.km / (G.min / 60) : 35;
+    const factores = new Map(), velocidades = new Map();
+    for (const [sid, a] of porSede) {
+      if (a.n >= 3) {
+        factores.set(sid, lim(a.km / a.lin));
+        if (a.min > 0) velocidades.set(sid, a.km / (a.min / 60));
+      }
+    }
+    const totalBultos = [...m.centros.values()].reduce((s, c) => s + c.bultos, 0);
+    const capacidad = cfg.capacidadBultos || Math.round(totalBultos / Math.max(1, base.orden.size));
+    return { retorno, factorGlobal, velGlobal, factores, velocidades, rutasCalibradas: G.n, capacidad,
+      fuenteCapacidad: cfg.capacidadBultos ? "fija" : `promedio de ${totalBultos.toLocaleString("es")} bultos en ${base.orden.size} rutas`,
+      factor: sid => factores.get(sid) || factorGlobal,
+      vel: sid => velocidades.get(sid) || velGlobal };
+  }
+
+  function aplicarCambios(m, cambios) {
+    const est = clonar(m.base);
+    for (const ch of cambios) moverEnEstado(m, est, ch.cod, ch.sedeDestId, ch.rutaDestId, ch.retorno ?? true);
+    return est;
+  }
+  function moverEnEstado(m, est, cod, sid, rid, retorno) {
+    const oRid = est.rutaDe.get(cod);
+    est.orden.set(oRid, (est.orden.get(oRid) || []).filter(k => k !== cod));
+    if (!est.orden.get(oRid).length) est.orden.delete(oRid);
+    const miembros = est.orden.get(rid) || [];
+    const ins = mejorInsercion(m.sedes.get(sid), miembros.map(k => m.centros.get(k)), m.centros.get(cod), retorno);
+    miembros.splice(ins.pos, 0, cod);
+    est.orden.set(rid, miembros);
+    est.rutaDe.set(cod, rid); est.sedeDe.set(cod, sid);
+  }
+  function siguienteNueva(est, sid) {
+    let n = 0;
+    for (const rid of est.orden.keys()) {
+      const mm = String(rid).match(/^S(\d+)-N(\d+)$/);
+      if (mm && parseInt(mm[1], 10) === sid) n = Math.max(n, parseInt(mm[2], 10));
+    }
+    return n + 1;
+  }
+  const sumaBultos = (m, cods) => cods.reduce((s, k) => s + m.centros.get(k).bultos, 0);
+  const mismosMiembros = (a, b) => a && b && a.length === b.length && a.every((v, i) => v === b[i]);
+
+  function kmRuta(m, cal, rid, cods, sid) {
+    if (!cods.length) return { km: 0, real: true };
+    const r = m.rutas.get(rid);
+    if (r && r.km > 0 && mismosMiembros(m.base.orden.get(rid), cods)) return { km: r.km, real: !/LINEA|SIMULADO/i.test(r.fuente) };
+    const s = m.sedes.get(sid);
+    return { km: circuito(s, cods.map(k => m.centros.get(k)), cal.retorno) * cal.factor(sid), real: false };
+  }
+
+  function opcionesRutas(m, est, cal, cod, sid, cfg) {
+    const c = m.centros.get(cod), s = m.sedes.get(sid), actual = est.rutaDe.get(cod), out = [];
+    for (const [rid, cods] of est.orden) {
+      if (rid === actual || sedeDeRuta(rid) !== sid || !cods.length) continue;
+      const ins = mejorInsercion(s, cods.map(k => m.centros.get(k)), c, cal.retorno);
+      const bultos = sumaBultos(m, cods);
+      out.push({ rid, n: cods.length, bultos, delta: ins.delta * cal.factor(sid),
+        cabe: cods.length + 1 <= cfg.maxCentros && bultos + c.bultos <= cal.capacidad });
+    }
+    out.sort((a, b) => (b.cabe - a.cabe) || (a.delta - b.delta));
+    return out;
+  }
+
+  function evaluar(m, est, cal, cod, sid, rutaSel, cfg) {
+    const c = m.centros.get(cod);
+    const oRid = est.rutaDe.get(cod), oSid = est.sedeDe.get(cod);
+    const esNueva = rutaSel === "__nueva__";
+    const dRid = esNueva ? idNueva(sid, siguienteNueva(est, sid)) : rutaSel;
+    if (dRid === oRid) return { sinCambio: true };
+    const sO = m.sedes.get(oSid), sD = m.sedes.get(sid);
+    const pts = ks => ks.map(k => m.centros.get(k));
+
+    const miembrosO = est.orden.get(oRid) || [];
+    const sinO = miembrosO.filter(k => k !== cod);
+    const kmOAntes = kmRuta(m, cal, oRid, miembrosO, oSid);
+    const ahorroLin = circuito(sO, pts(miembrosO), cal.retorno) - circuito(sO, pts(sinO), cal.retorno);
+    const ahorro = ahorroLin * cal.factor(oSid);
+
+    const miembrosD = esNueva ? [] : (est.orden.get(dRid) || []);
+    const ins = mejorInsercion(sD, pts(miembrosD), c, cal.retorno);
+    const nuevoD = [...miembrosD.slice(0, ins.pos), cod, ...miembrosD.slice(ins.pos)];
+    const kmDAntes = esNueva ? { km: 0, real: true } : kmRuta(m, cal, dRid, miembrosD, sid);
+    const agregado = ins.delta * cal.factor(sid);
+
+    const bultosSede = id => {
+      let t = 0;
+      for (const [k, s] of est.sedeDe) if (s === id) t += m.centros.get(k).bultos;
+      return t;
+    };
+    const bSedeO = bultosSede(oSid), bSedeD = oSid === sid ? bSedeO : bultosSede(sid);
+
+    const r = {
+      sinCambio: false, cod, centro: c,
+      origen: { sedeId: oSid, sede: sO, rutaId: oRid, antes: miembrosO, despues: sinO,
+        bultosAntes: sumaBultos(m, miembrosO), bultosDespues: sumaBultos(m, sinO),
+        kmAntes: kmOAntes, kmAhorro: ahorro, minAhorro: ahorro / cal.vel(oSid) * 60 },
+      destino: { sedeId: sid, sede: sD, rutaId: dRid, esNueva, antes: miembrosD, despues: nuevoD, pos: ins.pos,
+        bultosAntes: sumaBultos(m, miembrosD), bultosDespues: sumaBultos(m, nuevoD),
+        kmAntes: kmDAntes, kmAgregado: agregado, minAgregado: agregado / cal.vel(sid) * 60,
+        anterior: ins.pos === 0 ? sD : m.centros.get(nuevoD[ins.pos - 1]),
+        siguiente: ins.pos === nuevoD.length - 1 ? (cal.retorno ? sD : null) : m.centros.get(nuevoD[ins.pos + 1]) },
+      kmNeto: agregado - ahorro,
+      sedes: { origen: { antes: bSedeO, despues: oSid === sid ? bSedeO : bSedeO - c.bultos },
+               destino: { antes: bSedeD, despues: oSid === sid ? bSedeD : bSedeD + c.bultos } },
+      directo: { actual: hav(sO, c) * cal.factor(oSid), destino: hav(sD, c) * cal.factor(sid) },
+      valores: { nueva_sede: sD.nombre, nueva_ruta: valorCampoRuta(dRid) },
+      motivos: []
+    };
+    const cap = cal.capacidad, maxC = cfg.maxCentros, d = r.destino, mot = r.motivos;
+    const f1 = x => x.toFixed(1);
+    if (d.despues.length > maxC)
+      mot.push({ nivel: "NO", texto: `La ruta destino quedaría con ${d.despues.length} centros (máximo ${maxC}).` });
+    if (d.bultosDespues > cap) {
+      if (d.esNueva || d.antes.length === 0)
+        mot.push({ nivel: "OBS", texto: `El centro solo lleva ${c.bultos} bultos, más que la capacidad de referencia (${cap}).` });
+      else if (d.bultosAntes > cap)
+        mot.push({ nivel: "NO", texto: `La ruta ya llevaba ${d.bultosAntes} bultos (sobre ${cap}) y subiría a ${d.bultosDespues}.` });
+      else
+        mot.push({ nivel: "NO", texto: `La ruta pasaría de ${d.bultosAntes} a ${d.bultosDespues} bultos (capacidad ${cap}).` });
+    }
+    if (d.esNueva)
+      mot.push({ nivel: "OBS", texto: `Se crea una ruta nueva (${r.valores.nueva_ruta}): requiere un recorrido y vehículo adicional.` });
+    else if (d.kmAgregado > cfg.maxKmDesvio)
+      mot.push({ nivel: "OBS", texto: `Desvío estimado de ${f1(d.kmAgregado)} km en la ruta destino (más de ${cfg.maxKmDesvio}).` });
+    if (!d.esNueva && r.kmNeto > cfg.maxKmDesvio)
+      mot.push({ nivel: "OBS", texto: `El recorrido total aumenta cerca de ${f1(r.kmNeto)} km.` });
+    if (sD.depto && c.depto && sD.depto !== c.depto)
+      mot.push({ nivel: "OBS", texto: `La sede destino es de otro departamento (${sD.depto}; el centro es de ${c.depto}).` });
+    if (c.tipo === "ACUATICA")
+      mot.push({ nivel: "OBS", texto: "Centro de ruta acuática: los km estimados no son representativos." });
+    if (sD.estado && !/CON RUTAS/i.test(sD.estado))
+      mot.push({ nivel: "OBS", texto: `La sede ${sD.nombre} está marcada como ${sD.estado}.` });
+    if (!sinO.length)
+      mot.push({ nivel: "INFO", texto: "La ruta de origen queda vacía: se libera ese recorrido." });
+    r.veredicto = mot.some(x => x.nivel === "NO") ? "NO" : mot.some(x => x.nivel === "OBS") ? "OBS" : "FACTIBLE";
+    return r;
+  }
+
+  return { norm, txt, toInt, hav, circuito, mejorInsercion, deptoDeMunicipio, sedeDeRuta, idNueva,
+    valorCampoRuta, etiquetaRuta, construirModelo, calibrar, aplicarCambios, siguienteNueva,
+    opcionesRutas, evaluar, sumaBultos, kmRuta };
+})();
+if (typeof module !== "undefined") module.exports = Nucleo;
+</script>
+
+<!-- ======================= INTERFAZ Y MAPA ======================= -->
+<script>
+require([
+  "esri/config", "esri/identity/OAuthInfo", "esri/identity/IdentityManager",
+  "esri/Map", "esri/views/MapView", "esri/layers/FeatureLayer", "esri/layers/GraphicsLayer",
+  "esri/Graphic", "esri/geometry/Extent"
+], (esriConfig, OAuthInfo, IdentityManager, EsriMap, MapView, FeatureLayer, GraphicsLayer, Graphic, Extent) => {
+
+  const N = Nucleo;
+  const $ = id => document.getElementById(id);
+  const VEREDICTO = { FACTIBLE: "Factible", OBS: "Factible con observaciones", NO: "No recomendado" };
+  const fmt = (x, d = 1) => Number(x).toLocaleString("es", { minimumFractionDigits: d, maximumFractionDigits: d });
+  const esc = s => String(s ?? "").replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+
+  let modelo = null, cal = null, estado = null, cambios = [];
+  let seleccion = null, evaluacion = null;
+
+  esriConfig.portalUrl = CONFIG.portalUrl;
+  if (CONFIG.oauthAppId) {
+    IdentityManager.registerOAuthInfos([new OAuthInfo({ appId: CONFIG.oauthAppId, portalUrl: CONFIG.portalUrl, popup: false })]);
+  }
+
+  const mapa = new EsriMap({ basemap: "gray-vector" });
+  const vista = new MapView({ container: "mapa", map: mapa, center: [-88.9, 13.75], zoom: 8,
+    constraints: { minZoom: 7 }, popupEnabled: false });
+  const capaResaltado = new GraphicsLayer({ title: "resaltado" });
+
+  // ---------- Carga de datos ----------
+  const minusculas = o => Object.fromEntries(Object.entries(o || {}).map(([k, v]) => [k.toLowerCase(), v]));
+
+  async function consultarTodo(capa) {
+    await capa.load();
+    const total = await capa.queryFeatureCount({ where: "1=1" });
+    const pagina = Math.min(capa.sourceJSON?.maxRecordCount || 1000, 2000);
+    const out = [];
+    for (let inicio = 0; inicio < total; inicio += pagina) {
+      const q = capa.createQuery();
+      Object.assign(q, { where: "1=1", outFields: ["*"], returnGeometry: true,
+        outSpatialReference: { wkid: 4326 }, start: inicio, num: pagina, orderByFields: [capa.objectIdField] });
+      const res = await capa.queryFeatures(q);
+      out.push(...res.features);
+    }
+    return out;
+  }
+  const aPunto = (f, oidField) => ({ ...minusculas(f.attributes), lat: f.geometry?.y, lng: f.geometry?.x,
+    __oid: f.attributes?.[oidField] });
+  const aLinea = f => ({ ...minusculas(f.attributes), paths: f.geometry?.paths || [] });
+
+  async function cargarDesdePortal() {
+    const capa = id => new FeatureLayer({ portalItem: { id, portal: { url: CONFIG.portalUrl } } });
+    const [lp, lr, ls] = [capa(CONFIG.items.paradas), capa(CONFIG.items.rutas), capa(CONFIG.items.sedes)];
+    $("carga-msg").textContent = "Leyendo paradas…";
+    const fp = await consultarTodo(lp);
+    $("carga-msg").textContent = "Leyendo rutas…";
+    const fr = await consultarTodo(lr);
+    $("carga-msg").textContent = "Leyendo sedes…";
+    const fs = await consultarTodo(ls);
+    return { paradas: fp.map(f => aPunto(f, lp.objectIdField)), rutas: fr.map(aLinea), sedes: fs.map(f => aPunto(f, ls.objectIdField)) };
+  }
+
+  async function leerGeoJSON(input) {
+    const archivo = input.files[0];
+    if (!archivo) throw new Error(`Falta el archivo de ${input.id.replace("f-", "")}.`);
+    return JSON.parse(await archivo.text()).features;
+  }
+  async function cargarDesdeArchivos() {
+    const [p, r, s] = await Promise.all([leerGeoJSON($("f-paradas")), leerGeoJSON($("f-rutas")), leerGeoJSON($("f-sedes"))]);
+    const punto = f => ({ ...minusculas(f.properties), lng: f.geometry.coordinates[0], lat: f.geometry.coordinates[1] });
+    const linea = f => ({ ...minusculas(f.properties),
+      paths: f.geometry.type === "MultiLineString" ? f.geometry.coordinates : [f.geometry.coordinates] });
+    return { paradas: p.map((f, i) => ({ ...punto(f), __oid: i + 1 })), rutas: r.map(linea), sedes: s.map(punto) };
+  }
+
+  async function iniciar(crudo) {
+    modelo = N.construirModelo(crudo, CONFIG);
+    if (!modelo.centros.size || !modelo.sedes.size) throw new Error("Las capas no tienen los campos esperados (codigo_cv, ruta_id, sede_id…).");
+    cal = N.calibrar(modelo, CONFIG);
+    estado = N.aplicarCambios(modelo, cambios);
+    pintarMapa();
+    pintarReferencia();
+    llenarSedes();
+    $("carga-inicial").remove();
+  }
+
+  function pintarReferencia() {
+    const f = cal.rutasCalibradas
+      ? `factor carretera <b>${fmt(cal.factorGlobal, 2)}</b> promedio de ${cal.rutasCalibradas} rutas de Google`
+      : `factor carretera <b>${fmt(cal.factorGlobal, 2)}</b> (valor de respaldo)`;
+    $("ref").innerHTML = `Capacidad de referencia <b>${cal.capacidad} bultos</b> por ruta (${esc(cal.fuenteCapacidad)}), ` +
+      `máximo <b>${CONFIG.maxCentros} centros</b>, ${f}`;
+  }
+
+  // ---------- Mapa ----------
+  function pintarMapa() {
+    const lineas = [...modelo.rutas.values()].filter(r => r.paths.length).map((r, i) => new Graphic({
+      geometry: { type: "polyline", paths: r.paths, spatialReference: { wkid: 4326 } },
+      attributes: { oid: i + 1, ruta_id: r.rid } }));
+    const capaRutas = new FeatureLayer({ source: lineas, objectIdField: "oid", title: "Rutas",
+      fields: [{ name: "oid", type: "oid" }, { name: "ruta_id", type: "string" }],
+      renderer: { type: "simple", symbol: { type: "simple-line", color: [14, 90, 102, 0.35], width: 1.2 } } });
+
+    const puntos = [...modelo.centros.values()].map((c, i) => new Graphic({
+      geometry: { type: "point", longitude: c.lng, latitude: c.lat },
+      attributes: { oid: i + 1, cod: c.cod, etiqueta: `${N.etiquetaRuta(c.rutaId).replace("Ruta ", "R").replace("Nueva ", "N")}-${c.sec}` } }));
+    const capaParadas = new FeatureLayer({ source: puntos, objectIdField: "oid", title: "Centros", outFields: ["*"],
+      fields: [{ name: "oid", type: "oid" }, { name: "cod", type: "string" }, { name: "etiqueta", type: "string" }],
+      renderer: { type: "simple", symbol: { type: "simple-marker", size: 6, color: [14, 90, 102, 0.9], outline: { color: "white", width: 0.8 } } },
+      labelingInfo: [{ labelExpressionInfo: { expression: "$feature.etiqueta" }, minScale: 120000,
+        symbol: { type: "text", color: "#1E2A2F", haloColor: "white", haloSize: 1.2, font: { size: 9, family: "Arial" } } }] });
+
+    const pSedes = [...modelo.sedes.values()].map((s, i) => new Graphic({
+      geometry: { type: "point", longitude: s.lng, latitude: s.lat },
+      attributes: { oid: i + 1, nombre: s.nombre } }));
+    const capaSedes = new FeatureLayer({ source: pSedes, objectIdField: "oid", title: "Sedes",
+      fields: [{ name: "oid", type: "oid" }, { name: "nombre", type: "string" }],
+      renderer: { type: "simple", symbol: { type: "simple-marker", style: "square", size: 11, color: "#E0A526", outline: { color: "#1E2A2F", width: 1.2 } } },
+      labelingInfo: [{ labelExpressionInfo: { expression: "$feature.nombre" }, labelPlacement: "above-center",
+        symbol: { type: "text", color: "#1E2A2F", haloColor: "white", haloSize: 1.5, font: { size: 10, weight: "bold", family: "Arial" } } }] });
+
+    mapa.addMany([capaRutas, capaParadas, capaSedes, capaResaltado]);
+    vista.on("click", async ev => {
+      const hit = await vista.hitTest(ev, { include: [capaParadas] });
+      const g = hit.results[0]?.graphic;
+      if (g) seleccionarCentro(g.attributes.cod);
+    });
+  }
+
+  function lineaDe(cods, sede, retorno) {
+    const pts = cods.map(k => modelo.centros.get(k));
+    const cadena = [sede, ...pts, ...(retorno ? [sede] : [])];
+    return cadena.map(p => [p.lng, p.lat]);
+  }
+  function geometriaRuta(rid, cods, sede) {
+    const r = modelo.rutas.get(rid);
+    const base = modelo.base.orden.get(rid);
+    if (r && r.paths.length && base && base.length === cods.length && base.every((v, i) => v === cods[i])) return r.paths;
+    return [lineaDe(cods, sede, cal.retorno)];      // ruta modificada: trazo recto referencial
+  }
+  function resaltar(ev) {
+    capaResaltado.removeAll();
+    const c = modelo.centros.get(seleccion);
+    const add = (geom, symbol) => capaResaltado.add(new Graphic({ geometry: geom, symbol }));
+    const extent = [];
+    const oRid = estado.rutaDe.get(seleccion), oSid = estado.sedeDe.get(seleccion), sO = modelo.sedes.get(oSid);
+    const pathsO = geometriaRuta(oRid, estado.orden.get(oRid) || [seleccion], sO);
+    add({ type: "polyline", paths: pathsO, spatialReference: { wkid: 4326 } },
+      { type: "simple-line", color: "#B83B27", width: 2.5, style: "dash" });
+    extent.push(...pathsO.flat());
+    if (ev && !ev.sinCambio) {
+      const d = ev.destino;
+      if (d.antes.length) {
+        const pathsD = geometriaRuta(d.rutaId, d.antes, d.sede);
+        add({ type: "polyline", paths: pathsD, spatialReference: { wkid: 4326 } },
+          { type: "simple-line", color: "#0E5A66", width: 4 });
+        extent.push(...pathsD.flat());
+      }
+      const conector = [d.anterior, c, d.siguiente].filter(Boolean).map(p => [p.lng, p.lat]);
+      add({ type: "polyline", paths: [conector], spatialReference: { wkid: 4326 } },
+        { type: "simple-line", color: "#E0A526", width: 3, style: "short-dash" });
+      add({ type: "point", longitude: d.sede.lng, latitude: d.sede.lat },
+        { type: "simple-marker", style: "square", size: 18, color: [0, 0, 0, 0], outline: { color: "#0E5A66", width: 3 } });
+      extent.push([d.sede.lng, d.sede.lat]);
+    }
+    add({ type: "point", longitude: c.lng, latitude: c.lat },
+      { type: "simple-marker", size: 17, color: [224, 165, 38, 0.35], outline: { color: "#1E2A2F", width: 2 } });
+    extent.push([c.lng, c.lat]);
+    const xs = extent.map(p => p[0]), ys = extent.map(p => p[1]);
+    vista.goTo(new Extent({ xmin: Math.min(...xs), ymin: Math.min(...ys), xmax: Math.max(...xs), ymax: Math.max(...ys),
+      spatialReference: { wkid: 4326 } }).expand(1.4), { duration: 400 }).catch(() => {});
+  }
+
+  // ---------- Paso 1: centro ----------
+  $("buscar").addEventListener("input", () => {
+    const q = N.norm($("buscar").value);
+    const ul = $("resultados");
+    ul.innerHTML = "";
+    if (q.length < 2 || !modelo) return;
+    const hallados = [...modelo.centros.values()].filter(c =>
+      c.cod.includes(q) || N.norm(c.nombre).includes(q) || N.norm(c.municipio).includes(q) || N.norm(c.distrito).includes(q)).slice(0, 25);
+    for (const c of hallados) {
+      const li = document.createElement("li");
+      const sede = modelo.sedes.get(estado.sedeDe.get(c.cod));
+      li.innerHTML = `<button type="button">${esc(c.nombre)}<small>${c.cod}, ${esc(c.distrito)}, sede ${esc(sede?.nombre)}</small></button>`;
+      li.firstChild.addEventListener("click", () => seleccionarCentro(c.cod));
+      ul.appendChild(li);
+    }
+  });
+
+  function seleccionarCentro(cod) {
+    seleccion = cod;
+    $("resultados").innerHTML = "";
+    const c = modelo.centros.get(cod);
+    $("buscar").value = c.nombre;
+    const rid = estado.rutaDe.get(cod), sid = estado.sedeDe.get(cod), s = modelo.sedes.get(sid);
+    const miembros = estado.orden.get(rid) || [];
+    const km = kmTexto(rid, miembros, sid);
+    const movido = cambios.some(ch => ch.cod === cod);
+    $("ficha").innerHTML = `<div class="ficha">
+      <div class="nombre">${esc(c.nombre)}</div>
+      <dl>
+        <dt>Código</dt><dd>${c.cod}</dd>
+        <dt>Municipio</dt><dd>${esc(c.municipio)}, ${esc(c.distrito)}</dd>
+        <dt>Bultos</dt><dd>${c.bultos} (${c.electores.toLocaleString("es")} electores)</dd>
+        <dt>Sede</dt><dd>${esc(s.nombre)}${movido ? " (cambio guardado)" : ""}</dd>
+        <dt>Ruta</dt><dd>${N.etiquetaRuta(rid)}, parada ${miembros.indexOf(cod) + 1} de ${miembros.length}</dd>
+        <dt>Carga de la ruta</dt><dd>${N.sumaBultos(modelo, miembros)} bultos, ${km}</dd>
+      </dl>
+      ${c.nuevaSede || c.nuevaRuta ? `<div class="aviso-campo">En la capa ya hay una propuesta de campo: sede ${esc(c.nuevaSede || "(igual)")}, ruta ${esc(c.nuevaRuta || "(vacía)")}.</div>` : ""}
+    </div>`;
+    $("paso2").classList.remove("inactivo");
+    $("sede").value = String(sid);
+    llenarRutas();
+  }
+  function kmTexto(rid, cods, sid) {
+    const k = N.kmRuta(modelo, cal, rid, cods, sid);
+    return k.real ? `${fmt(k.km)} km según Google` : `≈ ${fmt(k.km)} km estimados`;
+  }
+
+  // ---------- Paso 2: destino ----------
+  function llenarSedes() {
+    const sel = $("sede");
+    sel.innerHTML = [...modelo.sedes.values()].sort((a, b) => a.nombre.localeCompare(b.nombre, "es"))
+      .map(s => `<option value="${s.id}">${esc(s.nombre)}${/CON RUTAS/i.test(s.estado) || !s.estado ? "" : " (sin rutas)"}</option>`).join("");
+    sel.addEventListener("change", llenarRutas);
+    $("ruta").addEventListener("change", recalcular);
+  }
+  function llenarRutas() {
+    if (!seleccion) return;
+    const sid = parseInt($("sede").value, 10);
+    const ops = N.opcionesRutas(modelo, estado, cal, seleccion, sid, CONFIG);
+    const nuevaN = N.siguienteNueva(estado, sid);
+    const opts = ops.map(o => `<option value="${o.rid}">${N.etiquetaRuta(o.rid)}: +${fmt(o.delta)} km, ${o.n} centros, ${o.bultos} bultos${o.cabe ? "" : " (sin espacio)"}</option>`);
+    opts.push(`<option value="__nueva__">Ruta nueva (nueva_${nuevaN})</option>`);
+    $("ruta").innerHTML = opts.join("");
+    const conEspacio = ops.find(o => o.cabe);
+    $("ruta").value = conEspacio ? conEspacio.rid : "__nueva__";   // sugiere la mejor con espacio, o ruta nueva
+    recalcular();
+  }
+
+  // ---------- Paso 3: impacto ----------
+  function caja(titulo, sub, bloques, total, cap, n, maxC) {
+    const escala = Math.max(cap * 1.6, total * 1.08, 1);
+    const excede = total > cap;
+    const bl = bloques.map(b => `<div class="bloque ${b.clase || ""}" style="width:${(b.bultos / escala * 100).toFixed(2)}%" title="${esc(b.nombre)}: ${b.bultos} bultos">${b.bultos / escala > 0.07 ? b.bultos : ""}</div>`).join("");
+    const puntos = Array.from({ length: Math.max(maxC, n) }, (_, i) =>
+      `<span class="${i < n ? (i >= maxC ? "de-mas" : "") : "vacio"}">${i < n ? "●" : "○"}</span>`).join("");
+    return `<div class="carga">
+      <div class="titulo"><strong>${titulo}</strong><span>${sub}</span></div>
+      <div class="caja${excede ? " excede" : ""}" role="img" aria-label="${total} de ${cap} bultos">${bl}
+        <div class="tope" style="left:${(cap / escala * 100).toFixed(2)}%" data-cap="${cap}"></div></div>
+      <div class="cifras"><span><span class="grande">${total}</span> de ${cap} bultos</span>
+        <span class="puntos" aria-label="${n} de ${maxC} centros">${puntos}</span></div>
+    </div>`;
+  }
+
+  function recalcular() {
+    if (!seleccion) return;
+    const sid = parseInt($("sede").value, 10), ruta = $("ruta").value;
+    evaluacion = N.evaluar(modelo, estado, cal, seleccion, sid, ruta, CONFIG);
+    $("paso3").classList.remove("inactivo");
+    if (evaluacion.sinCambio) {
+      $("impacto").innerHTML = `<p class="vacio-txt">Es la ruta actual del centro. Elige otra ruta o sede.</p>`;
+      actualizarGuardar();
+      resaltar(null);
+      return;
+    }
+    const ev = evaluacion, o = ev.origen, d = ev.destino, cap = cal.capacidad, c = ev.centro;
+    const bloquesD = d.despues.map(k => ({ nombre: modelo.centros.get(k).nombre, bultos: modelo.centros.get(k).bultos, clase: k === ev.cod ? "entra" : "" }));
+    const bloquesO = o.antes.map(k => ({ nombre: modelo.centros.get(k).nombre, bultos: modelo.centros.get(k).bultos, clase: k === ev.cod ? "sale" : "" }));
+    const nombreD = d.esNueva ? `Ruta nueva en ${esc(d.sede.nombre)}` : `${N.etiquetaRuta(d.rutaId)} de ${esc(d.sede.nombre)}`;
+    const entre = `entraría ${d.pos === 0 ? "como primera parada" : `después de ${esc(d.anterior.nombre)}`}`;
+    const kmDAntes = d.kmAntes.km, kmOAntes = o.kmAntes.km;
+    $("impacto").innerHTML =
+      caja(nombreD, `${d.bultosAntes} → ${d.bultosDespues} bultos`, bloquesD, d.bultosDespues, cap, d.despues.length, CONFIG.maxCentros) +
+      `<p class="nota">El centro ${entre}.</p>` +
+      caja(`${N.etiquetaRuta(o.rutaId)} de ${esc(o.sede.nombre)} (origen)`, `${o.bultosAntes} → ${o.bultosDespues} bultos`,
+        bloquesO, o.bultosAntes, cap, o.despues.length, CONFIG.maxCentros) +
+      `<div class="km">
+        <span>Ruta destino: ${d.esNueva ? "recorrido nuevo" : `${fmt(kmDAntes)} km${d.kmAntes.real ? "" : " est."} →`}</span>
+        <span class="v">${d.esNueva ? "" : fmt(kmDAntes + d.kmAgregado) + " km, "}+${fmt(d.kmAgregado)} km (≈ +${Math.round(d.minAgregado)} min)</span>
+        <span>Ruta origen: ${fmt(kmOAntes)} km${o.kmAntes.real ? "" : " est."} →</span>
+        <span class="v">${fmt(Math.max(0, kmOAntes - o.kmAhorro))} km, −${fmt(o.kmAhorro)} km</span>
+        <span class="total">Balance de recorrido</span>
+        <span class="v total">${ev.kmNeto >= 0 ? "+" : "−"}${fmt(Math.abs(ev.kmNeto))} km</span>
+        <span>Sede ${esc(d.sede.nombre)} al centro</span><span class="v">≈ ${fmt(ev.directo.destino)} km</span>
+        <span>Sede ${esc(o.sede.nombre)} al centro</span><span class="v">≈ ${fmt(ev.directo.actual)} km</span>
+      </div>
+      <p class="nota">Km estimados: distancia en línea recta por factor carretera de la sede (${fmt(cal.factor(d.sedeId), 2)} destino, ${fmt(cal.factor(o.sedeId), 2)} origen), calibrado con las rutas de Google. Carga de sedes: ${esc(o.sede.nombre)} ${ev.sedes.origen.antes} → ${ev.sedes.origen.despues}, ${esc(d.sede.nombre)} ${ev.sedes.destino.antes} → ${ev.sedes.destino.despues} bultos.</p>
+      <div class="veredicto ${ev.veredicto}">
+        <div class="etq">${VEREDICTO[ev.veredicto]}</div>
+        ${ev.motivos.length ? `<ul>${ev.motivos.map(m => `<li>${esc(m.texto)}</li>`).join("")}</ul>` : `<ul><li>Hay espacio en la ruta y el desvío es menor a ${CONFIG.maxKmDesvio} km.</li></ul>`}
+      </div>
+      <div class="valores">
+        <div><small>nueva_sede</small><b>${esc(ev.valores.nueva_sede)}</b></div>
+        <div><small>nueva_ruta</small><b>${esc(ev.valores.nueva_ruta)}</b></div>
+      </div>`;
+    $("paso4").classList.remove("inactivo");
+    actualizarGuardar();
+    resaltar(ev);
+  }
+
+  // ---------- Paso 4: guardar ----------
+  function actualizarGuardar() {
+    const ev = evaluacion;
+    const valido = ev && !ev.sinCambio;
+    $("forzar-wrap").hidden = !(valido && ev.veredicto === "NO");
+    if ($("forzar-wrap").hidden) $("forzar").checked = false;
+    const permitido = valido && (ev.veredicto !== "NO" || ($("forzar").checked && $("obs").value.trim().length > 3));
+    $("guardar").disabled = !permitido || !$("autor").value.trim();
+    $("guardar").title = !$("autor").value.trim() ? "Escribe quién propone el cambio" : "";
+  }
+  ["autor", "obs", "forzar"].forEach(id => $(id).addEventListener("input", actualizarGuardar));
+  $("forzar").addEventListener("change", actualizarGuardar);
+  $("acumular").addEventListener("change", () => { recalcularEstado(); if (seleccion) seleccionarCentro(seleccion); });
+
+  function recalcularEstado() {
+    estado = N.aplicarCambios(modelo, $("acumular").checked ? cambios : []);
+  }
+
+  function registro(ev) {
+    const c = ev.centro;
+    return {
+      fecha: new Date().toLocaleString("es-SV"), propuesto_por: $("autor").value.trim(),
+      codigo_cv: c.cod, centro: c.nombre, municipio: c.municipio, distrito: c.distrito,
+      sede_actual: modelo.sedes.get(modelo.base.sedeDe.get(c.cod))?.nombre, ruta_actual: modelo.base.rutaDe.get(c.cod),
+      nueva_sede: ev.valores.nueva_sede, nueva_ruta: ev.valores.nueva_ruta, ruta_destino_id: ev.destino.rutaId,
+      bultos_centro: c.bultos, capacidad_referencia: cal.capacidad,
+      centros_destino: `${ev.destino.antes.length} -> ${ev.destino.despues.length}`,
+      bultos_destino: `${ev.destino.bultosAntes} -> ${ev.destino.bultosDespues}`,
+      bultos_origen: `${ev.origen.bultosAntes} -> ${ev.origen.bultosDespues}`,
+      km_agregado_est: +ev.destino.kmAgregado.toFixed(1), km_ahorro_origen_est: +ev.origen.kmAhorro.toFixed(1),
+      km_neto_est: +ev.kmNeto.toFixed(1), veredicto: VEREDICTO[ev.veredicto],
+      motivos: ev.motivos.map(m => m.texto).join(" | "), forzado: ev.veredicto === "NO" ? "sí" : "no",
+      observacion: $("obs").value.trim()
+    };
+  }
+  const textoRegistro = r =>
+    `Cambio propuesto (${r.fecha}) por ${r.propuesto_por}\n\n` +
+    `Centro: ${r.centro} (${r.codigo_cv}), ${r.municipio}\n` +
+    `De: sede ${r.sede_actual}, ${r.ruta_actual}\n` +
+    `A:  nueva_sede = ${r.nueva_sede} | nueva_ruta = ${r.nueva_ruta}\n\n` +
+    `Carga destino: ${r.bultos_destino} bultos (capacidad ${r.capacidad_referencia}), centros ${r.centros_destino}\n` +
+    `Carga origen: ${r.bultos_origen} bultos\n` +
+    `Km estimados: +${r.km_agregado_est} destino, -${r.km_ahorro_origen_est} origen, neto ${r.km_neto_est}\n` +
+    `Evaluación: ${r.veredicto}${r.motivos ? ` (${r.motivos})` : ""}\n` +
+    `Motivo: ${r.observacion || "(sin motivo)"}\n`;
+
+  async function enviarHoja(r) {
+    if (!CONFIG.appsScriptUrl) return false;
+    await fetch(CONFIG.appsScriptUrl, { method: "POST", mode: "no-cors",
+      headers: { "Content-Type": "text/plain;charset=utf-8" }, body: JSON.stringify({ ...r, resumen_texto: textoRegistro(r) }) });
+    return true;
+  }
+  function abrirCorreo(asunto, cuerpo) {
+    location.href = `mailto:${encodeURIComponent(CONFIG.correoDestino)}?subject=${encodeURIComponent(asunto)}&body=${encodeURIComponent(cuerpo)}`;
+  }
+
+  $("guardar").addEventListener("click", async () => {
+    const ev = evaluacion;
+    if (!ev || ev.sinCambio) return;
+    const r = registro(ev);
+    const previo = cambios.findIndex(ch => ch.cod === ev.cod);
+    if (previo >= 0) cambios.splice(previo, 1);
+    cambios.push({ cod: ev.cod, sedeDestId: ev.destino.sedeId, rutaDestId: ev.destino.rutaId, retorno: cal.retorno, registro: r });
+    recalcularEstado();
+    pintarGuardados();
+    $("obs").value = ""; $("forzar").checked = false;
+    const msg = $("estado-envio");
+    try {
+      if (await enviarHoja(r)) msg.textContent = `Guardado y enviado a la hoja: ${r.centro} a ${r.nueva_sede}, ruta ${r.nueva_ruta}.`;
+      else { msg.textContent = `Guardado: ${r.centro} a ${r.nueva_sede}, ruta ${r.nueva_ruta}. Se abrió tu correo para enviarlo.`;
+        abrirCorreo(`Cambio de ruta: ${r.centro} a ${r.nueva_sede} (${r.nueva_ruta})`, textoRegistro(r)); }
+    } catch (e) {
+      msg.textContent = `Guardado en la sesión, pero no se pudo enviar a la hoja (${e.message}). Usa "Enviar todos por correo".`;
+    }
+    seleccionarCentro(ev.cod);
+  });
+
+  function pintarGuardados() {
+    $("lista-wrap").hidden = !cambios.length;
+    $("guardados").innerHTML = "";
+    cambios.forEach((ch, i) => {
+      const li = document.createElement("li");
+      li.innerHTML = `<span><b>${esc(ch.registro.centro)}</b><br>${esc(ch.registro.sede_actual)} ${esc(ch.registro.ruta_actual)} a ${esc(ch.registro.nueva_sede)}, ruta ${esc(ch.registro.nueva_ruta)} (${esc(ch.registro.veredicto)})</span><button type="button">Quitar</button>`;
+      li.querySelector("button").addEventListener("click", () => {
+        cambios.splice(i, 1); recalcularEstado(); pintarGuardados();
+        if (seleccion) seleccionarCentro(seleccion);
+      });
+      $("guardados").appendChild(li);
+    });
+  }
+
+  $("descargar").addEventListener("click", () => {
+    const filas = cambios.map(ch => ch.registro);
+    const cols = Object.keys(filas[0]);
+    const csv = [cols.join(","), ...filas.map(f => cols.map(k => `"${String(f[k] ?? "").replace(/"/g, '""')}"`).join(","))].join("\n");
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(new Blob(["\ufeff" + csv], { type: "text/csv;charset=utf-8" }));
+    a.download = `cambios_rutas_${new Date().toISOString().slice(0, 10)}.csv`;
+    a.click();
+  });
+  $("correo-todos").addEventListener("click", () => {
+    const cuerpo = cambios.map((ch, i) => `${i + 1}. ${textoRegistro(ch.registro)}`).join("\n----------\n");
+    abrirCorreo(`Cambios de ruta propuestos (${cambios.length})`, cuerpo.slice(0, 1800) +
+      (cuerpo.length > 1800 ? "\n\n(Lista recortada: adjunta el CSV descargado)" : ""));
+  });
+
+  // ---------- Arranque ----------
+  cargarDesdePortal().then(iniciar).catch(err => {
+    console.error(err);
+    $("carga-titulo").textContent = "No se pudieron leer las capas";
+    $("carga-msg").innerHTML = `<span class="error">${esc(err.message || err)}</span><br>Revisa que tu usuario tenga acceso a los elementos, o carga los GeoJSON exportados.`;
+    $("usar-archivos").hidden = false;
+  });
+  $("usar-archivos").addEventListener("click", () => { $("archivos").style.display = "block"; $("usar-archivos").hidden = true; });
+  $("cargar-archivos").addEventListener("click", () => {
+    $("carga-msg").textContent = "Leyendo archivos…";
+    cargarDesdeArchivos().then(iniciar).catch(err => { $("carga-msg").innerHTML = `<span class="error">${esc(err.message)}</span>`; });
+  });
+});
+</script>
+</body>
+</html>
