@@ -76,6 +76,7 @@ textarea{min-height:3.2rem;resize:vertical}
 .km{display:grid;grid-template-columns:1fr auto;gap:.2rem .8rem;margin:.9rem 0 .2rem;font-size:.92rem}
 .km .v{text-align:right;font-variant-numeric:tabular-nums}
 .km .total{font-weight:600;border-top:1px solid var(--linea);padding-top:.25rem}
+.km .sube{color:#8A6100} .km .baja{color:var(--ok)}
 .nota{font-size:.8rem;color:var(--tinta-suave);margin:.35rem 0 0}
 .veredicto{margin:1rem -1.2rem 0;padding:.8rem 1.2rem}
 .veredicto .etq{font-family:"Barlow Condensed";font-size:1.5rem;font-weight:700;line-height:1.1}
@@ -108,6 +109,7 @@ textarea{min-height:3.2rem;resize:vertical}
 .leyenda{position:absolute;left:12px;bottom:18px;background:rgba(255,255,255,.94);border:1px solid var(--linea);
   border-radius:4px;padding:.45rem .6rem;font-size:.8rem;z-index:5}
 .leyenda div{display:flex;align-items:center;gap:.45rem}
+.leyenda .ayuda{display:block;font-weight:600;max-width:230px;margin-bottom:.3rem}
 .leyenda i{display:inline-block;width:22px;height:0;border-top:3px solid}
 .leyenda i.num{width:18px;height:18px;border:1.5px solid #fff;border-radius:50%;background:#0E5A66;color:#fff;
   font-style:normal;font-size:.68rem;font-weight:600;display:inline-grid;place-items:center;margin:0 2px;box-shadow:0 0 0 1px #0E5A66}
@@ -150,6 +152,7 @@ textarea{min-height:3.2rem;resize:vertical}
 
   <div id="mapa">
     <div class="leyenda" aria-hidden="true">
+      <div class="ayuda">Toca una línea para ver sus centros. Toca un punto para evaluar un cambio.</div>
       <div><i style="border-color:#B83B27;border-top-style:dashed"></i>Ruta actual del centro</div>
       <div><i style="border-color:#0E5A66;border-top-width:5px"></i>Ruta destino</div>
       <div><i class="num">3</i>Centros de la ruta destino (número = orden de visita)</div>
@@ -169,6 +172,7 @@ textarea{min-height:3.2rem;resize:vertical}
       <div id="f-lista-wrap" hidden>
         <p class="nota" id="f-lista-titulo"></p>
         <ol class="lista-ruta" id="f-lista"></ol>
+        <div class="botones"><button type="button" class="btn chico" id="cerrar-ruta">Cerrar ruta</button></div>
       </div>
       <label class="check"><input type="checkbox" id="f-cambios"><span>Solo centros con cambio registrado</span></label>
       <div class="botones"><button type="button" class="btn chico" id="quitar-filtros">Quitar filtros</button></div>
@@ -608,7 +612,7 @@ require([
   const esc = s => String(s ?? "").replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
 
   let modelo = null, cal = null, estado = null, cambios = [], cambiosHoja = [], erroresHoja = [];
-  let filtroActivo = null, lvParadas = null, lvRutas = null;
+  let filtroActivo = null, lvParadas = null, lvRutas = null, rutaConsulta = null;
   const oidDeCentro = new Map(), oidDeRuta = new Map();
   // cambios de la hoja + los de esta sesión (los de la sesión reemplazan a los de la hoja del mismo centro)
   const combinados = () => [...cambiosHoja.filter(h => !cambios.some(c => c.cod === h.cod)), ...cambios];
@@ -698,7 +702,7 @@ require([
     const lineas = [...modelo.rutas.values()].filter(r => r.paths.length).map((r, i) => new Graphic({
       geometry: { type: "polyline", paths: r.paths, spatialReference: { wkid: 4326 } },
       attributes: { oid: (oidDeRuta.set(r.rid, i + 1), i + 1), ruta_id: r.rid } }));
-    const capaRutas = new FeatureLayer({ source: lineas, objectIdField: "oid", title: "Rutas",
+    const capaRutas = new FeatureLayer({ source: lineas, objectIdField: "oid", title: "Rutas", outFields: ["*"],
       fields: [{ name: "oid", type: "oid" }, { name: "ruta_id", type: "string" }],
       renderer: { type: "simple", symbol: { type: "simple-line", color: [14, 90, 102, 0.35], width: 1.2 } } });
 
@@ -723,10 +727,16 @@ require([
     mapa.addMany([capaRutas, capaParadas, capaSedes, capaCambios, capaRutaFiltro, capaResaltado]);
     vista.whenLayerView(capaParadas).then(lv => { lvParadas = lv; aplicarFiltros(false); });
     vista.whenLayerView(capaRutas).then(lv => { lvRutas = lv; aplicarFiltros(false); });
+    const ridDeOid = new Map([...oidDeRuta].map(([rid, oid]) => [oid, rid]));
     vista.on("click", async ev => {
-      const hit = await vista.hitTest(ev, { include: [capaCambios, capaParadas] });
+      const hit = await vista.hitTest(ev, { include: [capaCambios, capaParadas, capaRutas] });
+      // un punto (centro) tiene prioridad: abre la evaluación
       const g = hit.results.find(r => r.graphic?.attributes?.cod)?.graphic;
-      if (g) seleccionarCentro(g.attributes.cod);
+      if (g) { rutaConsulta = null; seleccionarCentro(g.attributes.cod); return; }
+      // una línea de ruta: solo muestra la ruta y sus centros
+      const l = hit.results.find(r => r.graphic?.layer === capaRutas)?.graphic;
+      const rid = l && (l.attributes?.ruta_id || ridDeOid.get(l.attributes?.oid));
+      if (rid) consultarRuta(rid);
     });
   }
 
@@ -805,7 +815,7 @@ require([
     $("f-lista-wrap").hidden = !cods.length;
     if (!cods.length) { $("f-lista").innerHTML = ""; return; }
     $("f-lista-titulo").textContent = `${N.etiquetaRuta(rid)} de ${modelo.sedes.get(N.sedeDeRuta(rid))?.nombre}: ` +
-      `${cods.length} centros, ${N.sumaBultos(modelo, cods)} bultos, en orden de visita`;
+      `${cods.length} centros, ${N.sumaBultos(modelo, cods)} bultos, en orden de visita. Toca un nombre para evaluar un cambio.`;
     $("f-lista").innerHTML = "";
     for (const k of cods) {
       const c = modelo.centros.get(k), li = document.createElement("li");
@@ -819,7 +829,7 @@ require([
   // Ruta elegida en "Ver en el mapa" (cuando no hay un centro seleccionado)
   function pintarRutaFiltro(zoom) {
     capaRutaFiltro.removeAll();
-    const rid = $("f-ruta").value;
+    const rid = rutaConsulta || $("f-ruta").value;
     listaRutaFiltro(rid);
     if (!rid || seleccion) return;
     const extent = [], paths = pathsReales(rid), cods = estado.orden.get(rid) || [];
@@ -856,6 +866,8 @@ require([
 
   function seleccionarCentro(cod) {
     seleccion = cod;
+    rutaConsulta = null;
+    listaRutaFiltro($("f-ruta").value);
     $("resultados").innerHTML = "";
     const c = modelo.centros.get(cod);
     $("buscar").value = c.nombre;
@@ -926,6 +938,9 @@ require([
     </div>`;
   }
 
+  const kmTxt = x => x < 1 ? "menos de 1 km" : `${Math.round(x)} km`;
+  const lineaKm = (etq, valor, clase) => `<span>${etq}</span><span class="v ${clase}">${valor}</span>`;
+
   function recalcular() {
     if (!seleccion) return;
     const sid = parseInt($("sede").value, 10), ruta = $("ruta").value;
@@ -942,7 +957,6 @@ require([
     const bloquesO = o.antes.map(k => ({ nombre: modelo.centros.get(k).nombre, bultos: modelo.centros.get(k).bultos, clase: k === ev.cod ? "sale" : "" }));
     const nombreD = d.esNueva ? `Ruta nueva en ${esc(d.sede.nombre)}` : `${N.etiquetaRuta(d.rutaId)} de ${esc(d.sede.nombre)}`;
     const entre = `entraría ${d.pos === 0 ? "como primera parada" : `después de ${esc(d.anterior.nombre)}`}`;
-    const kmDAntes = d.kmAntes.km, kmOAntes = o.kmAntes.km;
     $("impacto").innerHTML =
       caja(nombreD, `${d.bultosAntes} → ${d.bultosDespues} bultos`, bloquesD, d.bultosDespues, cap, d.despues.length, CONFIG.maxCentros) +
       `<p class="nota">El centro ${entre}. Orden de visita estimado:</p>` +
@@ -950,17 +964,17 @@ require([
         return `<li class="${k === ev.cod ? "entra" : ""}">${esc(x.nombre)} <small>(${x.bultos} bultos)</small></li>`; }).join("")}</ol>` +
       caja(`${N.etiquetaRuta(o.rutaId)} de ${esc(o.sede.nombre)} (origen)`, `${o.bultosAntes} → ${o.bultosDespues} bultos`,
         bloquesO, o.bultosAntes, cap, o.despues.length, CONFIG.maxCentros) +
-      `<div class="km">
-        <span>Ruta destino: ${d.esNueva ? "recorrido nuevo" : `${fmt(kmDAntes)} km${d.kmAntes.real ? "" : " est."} →`}</span>
-        <span class="v">${d.esNueva ? "" : fmt(kmDAntes + d.kmAgregado) + " km, "}+${fmt(d.kmAgregado)} km (≈ +${Math.round(d.minAgregado)} min)</span>
-        <span>Ruta origen: ${fmt(kmOAntes)} km${o.kmAntes.real ? "" : " est."} →</span>
-        <span class="v">${fmt(Math.max(0, kmOAntes - o.kmAhorro))} km, −${fmt(o.kmAhorro)} km</span>
-        <span class="total">Balance de recorrido</span>
-        <span class="v total">${ev.kmNeto >= 0 ? "+" : "−"}${fmt(Math.abs(ev.kmNeto))} km</span>
-        <span>Sede ${esc(d.sede.nombre)} al centro</span><span class="v">≈ ${fmt(ev.directo.destino)} km</span>
-        <span>Sede ${esc(o.sede.nombre)} al centro</span><span class="v">≈ ${fmt(ev.directo.actual)} km</span>
+      `<p class="subtitulo">Kilómetros (aproximado)</p>
+      <div class="km">
+        ${lineaKm(d.esNueva ? "Ruta nueva" : `${N.etiquetaRuta(d.rutaId)}, a donde va`,
+          d.esNueva ? `recorrido propio de unos ${kmTxt(d.kmAgregado)}` : `aumenta unos ${kmTxt(d.kmAgregado)}`, "sube")}
+        ${lineaKm(`${N.etiquetaRuta(o.rutaId)}, de donde sale`,
+          o.despues.length ? `se reduce unos ${kmTxt(o.kmAhorro)}` : "queda sin centros", "baja")}
+        <span class="total">En total</span>
+        <span class="v total">${Math.abs(ev.kmNeto) < 1 ? "casi igual" : `${kmTxt(Math.abs(ev.kmNeto))} ${ev.kmNeto > 0 ? "más" : "menos"}`}</span>
       </div>
-      <p class="nota">Km estimados: distancia en línea recta por factor carretera de la sede (${fmt(cal.factor(d.sedeId), 2)} destino, ${fmt(cal.factor(o.sedeId), 2)} origen), calibrado con las rutas de Google. Carga de sedes: ${esc(o.sede.nombre)} ${ev.sedes.origen.antes} → ${ev.sedes.origen.despues}, ${esc(d.sede.nombre)} ${ev.sedes.destino.antes} → ${ev.sedes.destino.despues} bultos.</p>
+      <p class="nota">Cuánto cambia el recorrido de cada vehículo al mover el centro. Es un cálculo aproximado, no la distancia exacta.${
+        o.sedeId !== d.sedeId ? ` La sede ${esc(o.sede.nombre)} pasa de ${ev.sedes.origen.antes} a ${ev.sedes.origen.despues} bultos y ${esc(d.sede.nombre)} de ${ev.sedes.destino.antes} a ${ev.sedes.destino.despues}.` : ""}</p>
       <div class="veredicto ${ev.veredicto}">
         <div class="etq">${VEREDICTO[ev.veredicto]}</div>
         ${ev.motivos.length ? `<ul>${ev.motivos.map(m => `<li>${esc(m.texto)}</li>`).join("")}</ul>` : `<ul><li>Hay espacio en la ruta y el desvío es menor a ${CONFIG.maxKmDesvio} km.</li></ul>`}
@@ -1086,8 +1100,9 @@ require([
   });
 
   // ---------- Limpiar selección ----------
-  function limpiarSeleccion() {
+  function limpiarSeleccion(acercarMapa = true) {
     seleccion = null; evaluacion = null;
+    if (acercarMapa !== false) rutaConsulta = null;
     $("buscar").value = ""; $("resultados").innerHTML = ""; $("ficha").innerHTML = "";
     ["paso2", "paso3", "paso4"].forEach(id => $(id).classList.add("inactivo"));
     $("ruta").innerHTML = "";
@@ -1095,10 +1110,18 @@ require([
     $("forzar").checked = false; $("forzar-wrap").hidden = true;
     $("guardar").disabled = true; $("estado-envio").textContent = "";
     capaResaltado.removeAll();
-    aplicarFiltros(true);
-    $("buscar").focus();
+    aplicarFiltros(acercarMapa !== false);
+    if (acercarMapa !== false) $("buscar").focus();
   }
-  $("limpiar").addEventListener("click", limpiarSeleccion);
+  $("limpiar").addEventListener("click", () => limpiarSeleccion(true));
+
+  // Clic en una línea: muestra la ruta y sus centros sin abrir la evaluación
+  function consultarRuta(rid) {
+    if (seleccion) limpiarSeleccion(false);
+    rutaConsulta = rid;
+    pintarRutaFiltro(true);
+    $("f-lista-wrap").scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }
 
   // ---------- Filtros del mapa ----------
   function llenarFiltroSedes() {
@@ -1139,8 +1162,8 @@ require([
     }
     pintarCambios();
     pintarRegistrados();
-    pintarRutaFiltro(zoom && !!rid);
-    if (zoom && rid) return;
+    pintarRutaFiltro(zoom && !!(rid || rutaConsulta));
+    if (zoom && (rid || rutaConsulta)) return;
     if (zoom) {
       const pts = hayFiltro ? visibles : [];
       if (sid !== null) pts.push(modelo.sedes.get(sid));
@@ -1150,11 +1173,14 @@ require([
         spatialReference: { wkid: 4326 } }).expand(1.3), { duration: 400 }).catch(() => {});
     }
   }
-  $("f-sede").addEventListener("change", () => { $("f-ruta").value = ""; refrescarFiltroRutas(); aplicarFiltros(true); });
-  $("f-ruta").addEventListener("change", () => aplicarFiltros(true));
+  $("f-sede").addEventListener("change", () => { rutaConsulta = null; $("f-ruta").value = ""; refrescarFiltroRutas(); aplicarFiltros(true); });
+  $("f-ruta").addEventListener("change", () => { rutaConsulta = null; aplicarFiltros(true); });
   $("f-cambios").addEventListener("change", () => aplicarFiltros(true));
+  $("cerrar-ruta").addEventListener("click", () => {
+    rutaConsulta = null; $("f-ruta").value = ""; aplicarFiltros(false);
+  });
   $("quitar-filtros").addEventListener("click", () => {
-    $("f-sede").value = ""; $("f-cambios").checked = false; refrescarFiltroRutas(); aplicarFiltros(true);
+    rutaConsulta = null; $("f-sede").value = ""; $("f-cambios").checked = false; refrescarFiltroRutas(); aplicarFiltros(true);
   });
 
   // ---------- Cambios registrados en la hoja ----------
