@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Densidad de centros de votación · El Salvador 2024</title>
+<link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css" />
+<style>
+:root{
+  --paper:#eef2f7;
+  --card:#ffffff;
+  --ink:#16202e;
+  --ink2:#5b6675;
+  --ink3:#93a0b0;
+  --line:#dbe2ec;
+  --line2:#eaeff5;
+  --navy:#1c2a5c;        /* azul TSE oscuro (logo) */
+  --navy2:#3b5bd0;       /* azul royal TSE (barra del logo) */
+  --heat:#f47b20;        /* acento cálido para puntos/densidad */
+  --heat2:#e0562a;
+  --ok:#2f8f5b;
+  --shadow:0 1px 2px rgba(13,44,110,.05),0 10px 30px rgba(13,44,110,.07);
+  --sans:"Inter",-apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+  --mono:ui-monospace,"SF Mono","JetBrains Mono",Menlo,monospace;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{font-family:var(--sans);background:var(--paper);color:var(--ink);
+  padding-top:env(safe-area-inset-top,0px);-webkit-font-smoothing:antialiased}
+
+/* Cabecera */
+header{position:fixed;top:0;left:0;right:0;height:56px;z-index:60;background:var(--navy);
+  display:flex;align-items:center;gap:16px;padding:0 22px;border-bottom:2px solid var(--heat)}
+.brand{display:flex;align-items:center;gap:11px}
+.brand svg{flex:0 0 auto}
+header h1{margin:0;font-size:15.5px;font-weight:800;letter-spacing:.02em;color:#fff;line-height:1}
+.tag{color:#a9c0e8;font-size:11px;padding-left:14px;border-left:1px solid #2a4a8f}
+@media(max-width:820px){.tag{display:none}}
+.spacer{flex:1}
+.hcount{display:flex;flex-direction:column;align-items:flex-end;line-height:1.1}
+.hcount b{font-family:var(--mono);font-size:16px;color:#fff}
+.hcount span{font-size:10px;color:#a9c0e8;text-transform:uppercase;letter-spacing:.06em}
+
+/* Barra de filtros */
+.filterbar{position:fixed;top:56px;left:0;right:0;z-index:59;background:var(--navy);
+  border-bottom:1px solid #2a4a8f;display:flex;gap:12px;align-items:flex-end;
+  padding:11px 22px;overflow-x:auto}
+.field{display:flex;flex-direction:column;gap:4px;min-width:150px;flex:1 1 150px}
+.field label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#a9c0e8;font-weight:600}
+.field select{background:#16388a;color:#fff;border:1px solid #2a4a8f;border-radius:7px;
+  padding:8px 10px;font-size:13px;font-family:inherit}
+.field select:focus{outline:none;border-color:var(--heat)}
+.modewrap{display:flex;flex-direction:column;gap:4px}
+.modewrap label{font-size:10px;text-transform:uppercase;letter-spacing:.07em;color:#a9c0e8;font-weight:600}
+.modes{display:flex;background:#16388a;border:1px solid #2a4a8f;border-radius:7px;overflow:hidden}
+.modes button{background:transparent;border:none;color:#a9c0e8;font-size:12.5px;font-weight:600;
+  padding:8px 14px;cursor:pointer;font-family:inherit;white-space:nowrap}
+.modes button.on{background:var(--heat);color:#fff}
+.btns{display:flex;align-items:flex-end}
+.btns button{background:transparent;color:#cfe0ec;border:1px solid #2a4a8f;border-radius:7px;
+  padding:8px 14px;font-size:12.5px;font-weight:600;cursor:pointer;font-family:inherit}
+.btns button:hover{border-color:var(--heat);color:#fff}
+
+/* Escenario */
+.stage{margin-top:118px;padding:20px 22px 40px;max-width:1600px;margin-left:auto;margin-right:auto}
+.kpis{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:18px}
+@media(max-width:1100px){.kpis{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:620px){.kpis{grid-template-columns:repeat(2,1fr);gap:9px}}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:var(--shadow)}
+.kpi .v{font-family:var(--mono);font-size:26px;font-weight:700;letter-spacing:-.02em;color:var(--navy);line-height:1}
+.kpi.heat .v{color:var(--heat2)}
+.kpi .l{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);margin-top:7px;font-weight:600}
+.kpi .s{font-size:11px;color:var(--ink3);margin-top:3px}
+
+.maprow{display:grid;grid-template-columns:1fr 320px;gap:16px}
+@media(max-width:1000px){.maprow{grid-template-columns:1fr}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden}
+.panel .ph{padding:14px 18px 10px}
+.panel .ph h2{margin:0;font-size:15px;font-weight:700;color:var(--navy)}
+.panel .ph p{margin:2px 0 0;font-size:12px;color:var(--ink3)}
+#map{height:clamp(440px,74vh,1000px);width:100%}
+#map canvas{max-height:none!important}
+
+/* Panel lateral: ranking */
+.side{padding:14px 18px 18px;max-height:clamp(440px,74vh,1000px);overflow-y:auto}
+.side h3{margin:0 0 3px;font-size:14px;font-weight:700;color:var(--navy)}
+.side .sub{font-size:11.5px;color:var(--ink3);margin-bottom:12px}
+.rank{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--line2)}
+.rank .rk{width:18px;font-family:var(--mono);font-size:12px;color:var(--ink3);text-align:right}
+.rank .nm{flex:1;font-size:12.5px;font-weight:600;line-height:1.2}
+.rank .nm small{display:block;font-weight:400;color:var(--ink3);font-size:10.5px;margin-top:1px}
+.rank .bar{width:64px;height:7px;background:var(--line2);border-radius:3px;overflow:hidden}
+.rank .bar span{display:block;height:100%;background:linear-gradient(90deg,var(--heat),var(--heat2))}
+.rank .val{width:56px;text-align:right;font-family:var(--mono);font-size:12px;font-weight:700;color:var(--navy)}
+.cxrow{cursor:pointer;border-radius:6px;transition:background .12s}
+.cxrow:hover{background:#f2f6fb}
+.cxrow:hover .nm{color:var(--navy2)}
+
+.legend{display:flex;flex-wrap:wrap;gap:12px;padding:10px 18px;border-top:1px solid var(--line2);
+  font-size:11px;color:var(--ink2)}
+.legend .it{display:flex;align-items:center;gap:6px}
+.legend .it i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.legend .dot{border-radius:50%!important}
+
+/* Carga */
+.loading{position:fixed;inset:0;background:#eef2f7;display:grid;place-items:center;z-index:999}
+.loading.hide{display:none}
+.lc{text-align:center}
+.lc .dots{display:flex;gap:8px;justify-content:center;margin-bottom:16px}
+.lc .dots i{width:10px;height:10px;border-radius:50%;background:var(--navy2);animation:pulse 1.2s ease-in-out infinite}
+.lc .dots i:nth-child(2){animation-delay:.2s}
+.lc .dots i:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,100%{opacity:.25;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+.lc .t{font-size:13px;color:var(--ink2);font-weight:500}
+.lc .m{font-size:11px;color:var(--ink3);font-family:var(--mono);margin-top:6px;min-height:14px}
+
+@media(max-width:760px){
+  header{position:static;height:auto;flex-wrap:wrap;padding:10px 14px;gap:10px}
+  .filterbar{position:static;flex-wrap:wrap;padding:12px 14px;overflow:visible}
+  .field{flex:1 1 46%;min-width:0}
+  .stage{margin-top:0;padding:14px 12px 40px}
+}
+</style>
+</head>
+<body>
+
+<div class="loading" id="loading">
+  <div class="lc">
+    <div class="dots"><i></i><i></i><i></i></div>
+    <div class="t">Cargando centros de votación</div>
+    <div class="m" id="loadmsg"></div>
+  </div>
+</div>
+
+<header>
+  <div class="brand">
+    <svg viewBox="0 0 132 54" width="80" height="33" aria-hidden="true">
+      <text x="0" y="30" font-family="Arial,Helvetica,sans-serif" font-weight="800" font-size="30" fill="#fff">TSE</text>
+      <rect x="0" y="38" width="132" height="9" fill="#3b5bd0"/>
+      <text x="4" y="45" font-family="Arial,Helvetica,sans-serif" font-weight="700" font-size="6.2" letter-spacing="1.1" fill="#fff">TRIBUNAL SUPREMO ELECTORAL</text>
+    </svg>
+    <h1>Centros de votación nacionales</h1>
+    <span class="tag">El Salvador · 2024</span>
+  </div>
+  <div class="spacer"></div>
+  <div class="hcount"><b id="h_centros">—</b><span>centros</span></div>
+</header>
+
+<div class="filterbar">
+  <div class="field"><label>Departamento</label><select id="f_depto"><option value="">Todos</option></select></div>
+  <div class="field"><label>Municipio</label><select id="f_muni"><option value="">Todos</option></select></div>
+  <div class="field"><label>Distrito</label><select id="f_dist"><option value="">Todos</option></select></div>
+  <div class="modewrap"><label>Vista del mapa</label>
+    <div class="modes" id="modes">
+      <button data-m="sector" class="on">Sector + centros</button>
+      <button data-m="dot">Solo puntos</button>
+    </div>
+  </div>
+  <div class="btns"><button id="reset">Limpiar</button></div>
+</div>
+
+<div class="stage">
+  <div class="kpis" id="kpis"></div>
+  <div class="maprow">
+    <div class="panel">
+      <div class="ph"><h2 id="map_title">Distribución territorial</h2><p id="map_sub">Cada punto es un centro de votación</p></div>
+      <div id="map"></div>
+      <div class="legend" id="legend"></div>
+    </div>
+    <div class="panel">
+      <div class="side">
+        <h3>Centros por votantes</h3>
+        <div class="sub">Clic en un centro para ubicarlo en el mapa</div>
+        <div id="centros_list"></div>
+        <h3 style="margin-top:20px" id="rank_title">Distritos por electores</h3>
+        <div class="sub">Ordenados por número de electores</div>
+        <div id="ranking"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+window.__ready=new Promise(res=>{window.__res=res;});
+</script>
+<script src="https://js.arcgis.com/4.30/" onload="window.__res()" onerror="document.getElementById('loadmsg').textContent='No se pudo cargar el SDK de ArcGIS'"></script>
+<script>
+const CFG={
+  ZONAS:"https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/zonas_cruce_final/FeatureServer/0",
+  MUNICIPIOS:"https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/CAPA_GANADORES_MUNICIPIOS/FeatureServer/0",
+  MUNIS2024:"https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/Municipios_2024_concejos/FeatureServer/0",
+  EXTENT:{xmin:-90.15,ymin:13.12,xmax:-87.68,ymax:14.45,spatialReference:{wkid:4326}}
+};
+const F={ID:"CAT_COD_CENTRO",CENTRO:"CAT_CENTRO",DEPTO:"CAT_DEPARTAMENTO",MUNI:"CAT_MUNICIPIO",
+  DIST:"CAT_DISTRITO",ELECT:"CAT_ELECTORES",JRV:"CAT_TOTAL_JRV",LAT:"LATITUD",LON:"LONGITUD"};
+
+const $=id=>document.getElementById(id);
+const num=x=>isFinite(x)?Math.round(x).toLocaleString("es-SV"):"—";
+const msg=t=>{const m=$("loadmsg");if(m)m.textContent=t;};
+
+let M={}, DATA=[], ZONA_FEATS=[], VIEW, LYR={}, MODO="sector";
+
+window.__ready.then(()=>{
+  require(["esri/Map","esri/views/MapView","esri/layers/FeatureLayer","esri/layers/GraphicsLayer",
+    "esri/Graphic","esri/Basemap","esri/layers/WebTileLayer","esri/widgets/Expand","esri/widgets/Legend",
+    "esri/geometry/geometryEngineAsync"],
+    (Map,MapView,FeatureLayer,GraphicsLayer,Graphic,Basemap,WebTileLayer,Expand,Legend,geAsync)=>{
+    M={Map,MapView,FeatureLayer,GraphicsLayer,Graphic,Basemap,WebTileLayer,Expand,Legend,geAsync};
+    boot();
+  });
+});
+
+function q(url,campos,geom){
+  const l=new M.FeatureLayer({url});
+  return l.queryFeatures({where:"1=1",outFields:campos,returnGeometry:!!geom,
+    outSpatialReference:{wkid:4326},num:20000,maxRecordCountFactor:5})
+    .then(r=>r.features);
+}
+
+function capaMunicipios(){
+  return new M.FeatureLayer({url:CFG.MUNICIPIOS,popupEnabled:false,legendEnabled:false,listMode:"hide",
+    minScale:300000,   // solo visible al acercarse (nivel municipio)
+    renderer:{type:"simple",symbol:{type:"simple-fill",color:[0,0,0,0],
+      outline:{color:[28,42,92,.55],width:.9}}}});
+}
+
+async function boot(){
+  msg("Consultando zonas_cruce_final…");
+  try{
+    // CON geometría: el polígono es el sector electoral (coropleta de densidad)
+    const feats=await q(CFG.ZONAS,[F.ID,F.CENTRO,F.DEPTO,F.MUNI,F.DIST,F.ELECT,F.JRV,F.LAT,F.LON],true);
+    ZONA_FEATS=feats.filter(f=>f.geometry);   // polígonos para la coropleta
+    // atributos deduplicados por centro con coordenadas válidas (puntos + KPIs + filtros)
+    const seen=new Set();
+    DATA=feats.map(f=>f.attributes).filter(a=>{
+      const id=a[F.ID]; if(seen.has(id))return false; seen.add(id);
+      return a[F.LAT]&&a[F.LON]&&Math.abs(a[F.LAT])<20&&Math.abs(a[F.LON])<95;
+    });
+    if(!DATA.length){ msg("Sin centros con coordenadas"); return; }
+  }catch(e){ msg("Error: "+(e.message||e)); console.error(e); return; }
+
+  // mapa — base gris de ArcGIS (público, institucional, sin API key)
+  const map=new M.Map({basemap:"gray-vector"});
+  VIEW=new M.MapView({container:"map",map,extent:CFG.EXTENT,popupEnabled:true,
+    constraints:{snapToZoom:false}});
+  VIEW.ui.add(new M.Expand({view:VIEW,content:new M.Legend({view:VIEW}),expanded:false}),"bottom-left");
+
+  poblar();
+  wire();
+  render();
+  $("loading").classList.add("hide");
+  capaDepartamentos();   // se agrega en segundo plano (disuelve zonas por depto)
+}
+
+// Límites de departamento: disuelve Municipios_2024_concejos por su campo DEPTO
+// (44 municipios limpios -> 14 departamentos), mucho más limpio que las zonas.
+async function capaDepartamentos(){
+  try{
+    const feats=await q(CFG.MUNIS2024,["DEPTO"],true);
+    const byDep={};
+    feats.forEach(f=>{const d=f.attributes.DEPTO; if(!d||!f.geometry)return;
+      (byDep[d]=byDep[d]||[]).push(f.geometry);});
+    const graphics=[];
+    for(const dep in byDep){
+      let u; try{ u=byDep[dep].length>1?await M.geAsync.union(byDep[dep]):byDep[dep][0]; }
+      catch(_){ continue; }
+      if(u) graphics.push(new M.Graphic({geometry:u,attributes:{dep}}));
+    }
+    if(!graphics.length) return;
+    if(LYR.deptos){VIEW.map.remove(LYR.deptos);}
+    LYR.deptos=new M.FeatureLayer({source:graphics,objectIdField:"OBJECTID",
+      geometryType:"polygon",spatialReference:{wkid:4326},
+      fields:[{name:"OBJECTID",type:"oid"},{name:"dep",type:"string"}],
+      renderer:{type:"simple",symbol:{type:"simple-fill",color:[0,0,0,0],
+        outline:{color:[28,42,92,.95],width:1.7}}},
+      labelingInfo:[{labelExpressionInfo:{expression:"$feature.dep"},
+        symbol:{type:"text",color:[28,42,92,1],haloColor:[255,255,255,.9],haloSize:1.6,
+          font:{size:11,weight:"bold"}}}],
+      legendEnabled:false,popupEnabled:false,listMode:"hide"});
+    VIEW.map.add(LYR.deptos);
+    if(LYR.centros){ try{VIEW.map.reorder(LYR.centros,VIEW.map.layers.length-1);}catch(_){}}
+  }catch(e){ console.warn("capaDepartamentos:",e); }
+}
+
+function uniq(rows,key){return [...new Set(rows.map(r=>r[key]).filter(Boolean))].sort();}
+function opts(sel,vals,ph){sel.innerHTML=`<option value="">${ph}</option>`+vals.map(v=>`<option>${v}</option>`).join("");}
+
+function poblar(){ opts($("f_depto"),uniq(DATA,F.DEPTO),"Todos"); cascada(); }
+
+function cascada(){
+  const d=$("f_depto").value, mu=$("f_muni").value;
+  const munis=uniq(DATA.filter(r=>!d||r[F.DEPTO]===d),F.MUNI);
+  opts($("f_muni"),munis,"Todos"); if(munis.includes(mu))$("f_muni").value=mu;
+  const mu2=$("f_muni").value;
+  const dists=uniq(DATA.filter(r=>(!d||r[F.DEPTO]===d)&&(!mu2||r[F.MUNI]===mu2)),F.DIST);
+  const di=$("f_dist").value;
+  opts($("f_dist"),dists,"Todos"); if(dists.includes(di))$("f_dist").value=di;
+}
+
+function filtrados(){
+  const d=$("f_depto").value, mu=$("f_muni").value, di=$("f_dist").value;
+  return DATA.filter(r=>(!d||r[F.DEPTO]===d)&&(!mu||r[F.MUNI]===mu)&&(!di||r[F.DIST]===di));
+}
+
+function wire(){
+  $("f_depto").onchange=()=>{cascada();render(true);};
+  $("f_muni").onchange=()=>{cascada();render(true);};
+  $("f_dist").onchange=()=>render(true);
+  $("reset").onclick=()=>{["f_depto","f_muni","f_dist"].forEach(i=>$(i).value="");
+    cascada();render(true);VIEW.goTo(CFG.EXTENT,{duration:600}).catch(()=>{});};
+  $("modes").onclick=e=>{const b=e.target.closest("button");if(!b)return;
+    MODO=b.dataset.m;[...$("modes").children].forEach(x=>x.classList.toggle("on",x===b));render();};
+}
+
+// rampa de color para electores
+function colorElect(v,max){
+  const t=Math.min(1,v/(max||1));
+  // navy -> heat
+  const a=[59,91,208], b=[244,123,32];
+  return [Math.round(a[0]+(b[0]-a[0])*t),Math.round(a[1]+(b[1]-a[1])*t),Math.round(a[2]+(b[2]-a[2])*t)];
+}
+
+function render(zoom){
+  const FIL=filtrados();
+  const maxE=Math.max(...FIL.map(r=>r[F.ELECT]||0),1);
+
+  // KPIs
+  const sinFiltros=!$("f_depto").value&&!$("f_muni").value&&!$("f_dist").value;
+  const totC=sinFiltros?1595:FIL.length;
+  const totE=FIL.reduce((a,r)=>a+(r[F.ELECT]||0),0);
+  const totJ=FIL.reduce((a,r)=>a+(r[F.JRV]||0),0);
+  const prom=FIL.length?totE/FIL.length:0;
+  const nDep=new Set(FIL.map(r=>r[F.DEPTO])).size;
+  const nMun=new Set(FIL.map(r=>r[F.MUNI])).size;
+  $("h_centros").textContent=num(totC);
+  const kpi=(v,l,s,c)=>`<div class="kpi ${c||''}"><div class="v">${v}</div><div class="l">${l}</div>${s?`<div class="s">${s}</div>`:""}</div>`;
+  $("kpis").innerHTML=[
+    kpi(num(totC),"Centros","en la selección"),
+    kpi(num(totE),"Electores","habilitados","heat"),
+    kpi(num(Math.round(prom)),"Electores por centro","promedio"),
+    kpi(num(totJ),"JRV","juntas receptoras"),
+    kpi(nMun+" / "+nDep,"Municipios / deptos","con centros")
+  ].join("");
+
+  // ---- capa de SECTORES (polígonos) coloreados por densidad de electores ----
+  const minE=Math.min(...FIL.map(r=>r[F.ELECT]||0),0);
+  if(LYR.sector){VIEW.map.remove(LYR.sector);LYR.sector=null;}
+  if(MODO==="sector"){
+    // filtrar polígonos por la misma selección geográfica
+    const d=$("f_depto").value,mu=$("f_muni").value,di=$("f_dist").value;
+    const polys=ZONA_FEATS.filter(f=>{const a=f.attributes;
+      return (!d||a[F.DEPTO]===d)&&(!mu||a[F.MUNI]===mu)&&(!di||a[F.DIST]===di);});
+    const gp=polys.map((f,i)=>new M.Graphic({geometry:f.geometry,
+      attributes:{OBJECTID:i+1,e:f.attributes[F.ELECT]||0,c:f.attributes[F.CENTRO]||"",
+        m:f.attributes[F.MUNI]||"",d:f.attributes[F.DIST]||""}}));
+    const bks=quiebres(FIL.map(r=>r[F.ELECT]||0));
+    LYR.sector=new M.FeatureLayer({source:gp,objectIdField:"OBJECTID",
+      geometryType:"polygon",spatialReference:{wkid:4326},
+      fields:[{name:"OBJECTID",type:"oid"},{name:"e",type:"double"},{name:"c",type:"string"},
+        {name:"m",type:"string"},{name:"d",type:"string"}],
+      renderer:rendererSector(bks),
+      popupTemplate:{title:"{c}",content:"Sector electoral<br>Municipio: {m} · Distrito: {d}<br>Electores: {e}"}});
+    VIEW.map.add(LYR.sector);
+    window.__bks=bks;
+  }
+
+  // ---- capa de CENTROS (puntos) con tamaño según votantes ----
+  const graphics=FIL.map((r,i)=>new M.Graphic({
+    geometry:{type:"point",longitude:r[F.LON],latitude:r[F.LAT]},
+    attributes:{OBJECTID:i+1,e:r[F.ELECT]||0,c:r[F.CENTRO]||"",m:r[F.MUNI]||"",d:r[F.DIST]||""}}));
+  if(LYR.centros){VIEW.map.remove(LYR.centros);}
+  const modoPts=MODO==="heat"?"heat":MODO==="dot"?"dot":MODO==="sector"?"sector":"size";
+  LYR.centros=new M.FeatureLayer({source:graphics,objectIdField:"OBJECTID",
+    geometryType:"point",spatialReference:{wkid:4326},
+    fields:[{name:"OBJECTID",type:"oid"},{name:"e",type:"double"},
+      {name:"c",type:"string"},{name:"m",type:"string"},{name:"d",type:"string"}],
+    renderer:renderer(modoPts,minE,maxE),
+    popupTemplate:modoPts==="heat"?null:{title:"{c}",content:"Municipio: {m} · Distrito: {d}<br>Electores: {e}"}});
+  VIEW.map.add(LYR.centros);
+  // orden: relleno de sector abajo, límite de depto en medio, puntos arriba
+  if(LYR.deptos){ try{VIEW.map.reorder(LYR.deptos,VIEW.map.layers.length-1);}catch(_){}}
+  if(LYR.centros){ try{VIEW.map.reorder(LYR.centros,VIEW.map.layers.length-1);}catch(_){}}
+
+  legenda(maxE);
+  centrosList(FIL);
+  ranking(FIL);
+
+  if(zoom&&FIL.length){
+    const xs=FIL.map(r=>r[F.LON]),ys=FIL.map(r=>r[F.LAT]);
+    const ext={xmin:Math.min(...xs),ymin:Math.min(...ys),xmax:Math.max(...xs),ymax:Math.max(...ys),
+      spatialReference:{wkid:4326}};
+    setTimeout(()=>VIEW.goTo(ext,{duration:600}).catch(()=>{}),100);
+  }
+}
+
+// cortes por cuantiles para la coropleta
+function quiebres(vals){
+  const v=vals.filter(x=>isFinite(x)&&x>0).sort((a,b)=>a-b);
+  if(!v.length) return [1,2,3,4];
+  const qi=p=>v[Math.min(v.length-1,Math.floor(p*v.length))];
+  return [qi(.2),qi(.4),qi(.6),qi(.8)];
+}
+function rendererSector(bks){
+  const ramp=["#e4e8f4","#b6c1e6","#8194d6","#4a5fc0","#1c2a5c"]; // azul claro -> navy TSE
+  const info=[];
+  const lim=[0,...bks,Infinity];
+  for(let i=0;i<5;i++){
+    info.push({minValue:lim[i],maxValue:lim[i+1],
+      symbol:{type:"simple-fill",color:ramp[i],outline:{color:[255,255,255,.5],width:.3}},
+      label:num(Math.round(lim[i]))+(lim[i+1]===Infinity?"+":" – "+num(Math.round(lim[i+1])))});
+  }
+  return {type:"class-breaks",field:"e",classBreakInfos:info,
+    defaultSymbol:{type:"simple-fill",color:[219,231,243,.6],outline:{color:[255,255,255,.5],width:.3}},
+    legendOptions:{title:"Electores por sector"}};
+}
+
+function renderer(modo,minE,maxE){
+  if(modo==="heat"){
+    return {type:"heatmap",
+      field:"e",radius:22,
+      colorStops:[
+        {ratio:0,   color:"rgba(59,91,208,0)"},
+        {ratio:.15, color:"rgba(59,91,208,.45)"},
+        {ratio:.4,  color:"rgba(90,120,210,.7)"},
+        {ratio:.65, color:"rgba(244,123,32,.85)"},
+        {ratio:1,   color:"rgba(224,86,42,1)"}]};
+  }
+  if(modo==="sector"){
+    // puntos naranja (contrastan con la coropleta azul), tamaño por votantes
+    return {type:"simple",
+      symbol:{type:"simple-marker",color:[244,123,32,.9],outline:{color:[255,255,255,.95],width:.8}},
+      visualVariables:[{type:"size",field:"e",minDataValue:Math.max(minE,1),maxDataValue:maxE||1,minSize:4,maxSize:26}]};
+  }
+  if(modo==="size"){
+    return {type:"simple",
+      symbol:{type:"simple-marker",color:[59,91,208,.65],outline:{color:[255,255,255,.85],width:.6}},
+      visualVariables:[
+        {type:"size",field:"e",minDataValue:Math.max(minE,1),maxDataValue:maxE||1,minSize:5,maxSize:32},
+        {type:"color",field:"e",stops:[
+          {value:Math.max(minE,1),color:[59,91,208,.7]},
+          {value:(maxE||1)*.5,color:[140,110,180,.8]},
+          {value:maxE||1,color:[224,86,42,.92]}]}]};
+  }
+  // puntos simples, tamaño fijo
+  return {type:"simple",
+    symbol:{type:"simple-marker",size:5,color:[59,91,208,.7],outline:{color:[255,255,255,.85],width:.5}}};
+}
+
+function legenda(maxE){
+  let html="";
+  if(MODO==="sector"){
+    const ramp=["#e4e8f4","#b6c1e6","#8194d6","#4a5fc0","#1c2a5c"];
+    html=`<div class="it"><span style="font-weight:600;color:var(--ink2)">Sector (densidad):</span></div>`+
+      ramp.map(c=>`<div class="it"><i style="background:${c}"></i></div>`).join("")+
+      `<div class="it" style="color:var(--ink3)">menos → más electores</div>`+
+      `<div class="it" style="margin-left:10px"><i class="dot" style="width:8px;height:8px;background:#f47b20"></i>centro (tamaño = votantes)</div>`;
+  }else if(MODO==="heat"){
+    html=`<div class="it"><i style="background:linear-gradient(90deg,rgba(59,91,208,.6),#f47b20,#e0562a)"></i>menor → mayor concentración de electores</div>`;
+  }else{
+    html=`<div class="it"><i class="dot" style="background:rgb(59,91,208)"></i>centro de votación</div>`;
+  }
+  $("legend").innerHTML=html;
+}
+
+function centrosList(FIL){
+  const top=[...FIL].sort((a,b)=>(b[F.ELECT]||0)-(a[F.ELECT]||0)).slice(0,40);
+  const mx=top[0]?.[F.ELECT]||1;
+  $("centros_list").innerHTML=top.map((r,i)=>`<div class="rank cxrow" data-lon="${r[F.LON]}" data-lat="${r[F.LAT]}"
+      data-c="${(r[F.CENTRO]||'').replace(/"/g,'&quot;')}">
+    <span class="rk">${i+1}</span>
+    <span class="nm">${r[F.CENTRO]||'—'}<small>${r[F.MUNI]||''}${r[F.DIST]?' · '+r[F.DIST]:''}</small></span>
+    <span class="bar"><span style="width:${(r[F.ELECT]||0)/mx*100}%"></span></span>
+    <span class="val">${num(r[F.ELECT]||0)}</span></div>`).join("")||"<p style='font-size:12px;color:var(--ink3)'>Sin datos.</p>";
+  $("centros_list").onclick=e=>{const row=e.target.closest(".cxrow");if(!row)return;
+    const lon=+row.dataset.lon,lat=+row.dataset.lat;
+    if(!isFinite(lon)||!isFinite(lat))return;
+    VIEW.goTo({center:[lon,lat],zoom:16},{duration:700}).then(()=>{
+      VIEW.openPopup({title:row.dataset.c,location:{longitude:lon,latitude:lat}});
+    }).catch(()=>{});
+  };
+}
+
+function ranking(FIL){
+  // lista de distritos por electores
+  $("rank_title").textContent="Distritos por electores";
+  const agg={};
+  FIL.forEach(r=>{const k=r[F.DIST]||"—";
+    (agg[k]=agg[k]||{e:0,c:0,mu:r[F.MUNI]||""}); agg[k].e+=r[F.ELECT]||0; agg[k].c++;});
+  const rows=Object.entries(agg).map(([k,o])=>({k,e:o.e,c:o.c,mu:o.mu})).sort((a,b)=>b.e-a.e).slice(0,20);
+  const mx=rows[0]?.e||1;
+  $("ranking").innerHTML=rows.map((r,i)=>`<div class="rank">
+    <span class="rk">${i+1}</span>
+    <span class="nm">${r.k}<small>${r.mu} · ${r.c} centro${r.c!==1?'s':''}</small></span>
+    <span class="bar"><span style="width:${r.e/mx*100}%"></span></span>
+    <span class="val">${num(r.e)}</span></div>`).join("")||"<p style='font-size:12px;color:var(--ink3)'>Sin datos.</p>";
+}
+</script>
+</body>
+</html>
