@@ -33,6 +33,7 @@ body{font-family:"IBM Plex Sans",system-ui,sans-serif;background:var(--bg);
 .pctlabel{display:flex;justify-content:space-between;margin-top:8px;
   font-size:13px;color:var(--mut)}
 .pctlabel b{color:var(--tx);font-weight:600}
+.mtotal{display:none}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);
   border-bottom:1px solid var(--line)}
 .kpi{background:var(--panel);padding:14px 18px}
@@ -107,6 +108,12 @@ button#reset{background:transparent;color:var(--mut);border:1px solid var(--line
     padding:14px 16px calc(16px + env(safe-area-inset-bottom))}
   button#play{padding:16px;font-size:16px}
   button#reset{padding:16px 14px}
+  .mtotal{display:flex;justify-content:space-between;align-items:center;gap:8px;
+    margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+    font-size:12.5px;color:var(--mut)}
+  .mtotal b{color:var(--amber);font-weight:600;font-size:15px}
+  .done-banner{top:auto;bottom:calc(88px + env(safe-area-inset-bottom));left:12px;right:12px;
+    transform:none;text-align:center;white-space:normal;font-size:12.5px;padding:11px 14px;line-height:1.4}
 }
 </style>
 </head>
@@ -122,6 +129,7 @@ button#reset{background:transparent;color:var(--mut);border:1px solid var(--line
       <div class="pct"><i id="pctbar"></i></div>
       <div class="pctlabel"><span><b id="pctnum">0%</b> cubierto</span>
         <span><b id="entregados" style="color:var(--green)">0</b> <span id="entregadostot">de 0</span> centros</span></div>
+      <div class="mtotal" id="mtotal"></div>
     </div>
     <div class="times">
       <div class="tkpi"><div class="tk-v amber" id="kte">–</div><div class="tk-l">última entrega</div><div class="tk-h" id="hte"></div></div>
@@ -188,6 +196,7 @@ kvel.textContent=D.vel_media; kpaq.textContent=D.paq_media;
 kte.textContent=reloj(D.t_entrega); hte.textContent=fmt(D.t_entrega);
 ktu.textContent=reloj(D.t_uso); htu.textContent=fmt(D.t_uso);
 document.getElementById('entregadostot').textContent='de '+D.n_centros;
+document.getElementById('mtotal').innerHTML='<span>Tiempo total de entrega</span><span><b>'+fmt(D.t_entrega)+'</b> · '+reloj(D.t_entrega)+'</span>';
 
 // lista de rutas
 const rows=D.rutas.map(r=>{
