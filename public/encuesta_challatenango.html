@@ -1,0 +1,732 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sondeo Chalatenango · Informe operativo</title>
+<meta name="description" content="Informe operativo del levantamiento del sondeo de opinión ciudadana en Chalatenango: avance, cobertura, duración y control de calidad por encuestador.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<style>
+:root{
+  color-scheme:light;
+  --bg:#f4f3ef; --surface:#fcfcfb; --surface-2:#f0efec; --line:#e2e0da;
+  --text:#0b0b0b; --text-2:#52514e; --muted:#7a7873;
+  --accent:#1c5cab; --s1:#2a78d6; --s1-soft:#cde2fb; --neutral:#a8a69f;
+  --good:#0ca30c; --warn:#fab219; --serious:#ec835a; --crit:#d03b3b;
+  --shadow:0 1px 2px rgba(0,0,0,.04),0 4px 16px rgba(0,0,0,.04);
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#121211; --surface:#1a1a19; --surface-2:#232321; --line:#33332f;
+    --text:#f0efec; --text-2:#c3c2b7; --muted:#8f8d86;
+    --accent:#86b6ef; --s1:#3987e5; --s1-soft:#184f95; --neutral:#6b6a64;
+    --shadow:none;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#121211; --surface:#1a1a19; --surface-2:#232321; --line:#33332f;
+  --text:#f0efec; --text-2:#c3c2b7; --muted:#8f8d86;
+  --accent:#86b6ef; --s1:#3987e5; --s1-soft:#184f95; --neutral:#6b6a64;
+  --shadow:none;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--text);font:15px/1.5 "IBM Plex Sans",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1240px;margin:0 auto;padding:0 16px 48px}
+header.top{background:var(--surface);border-bottom:1px solid var(--line)}
+header.top .wrap{padding-top:22px;padding-bottom:18px;display:flex;gap:16px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between}
+.eyebrow{font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);font-weight:600}
+h1{font-size:clamp(22px,3.2vw,30px);line-height:1.15;margin:4px 0 4px;font-weight:700;letter-spacing:-.01em}
+.sub{color:var(--text-2);font-size:14px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+button,.btn{font:inherit;font-size:14px;font-weight:500;border:1px solid var(--line);background:var(--surface);color:var(--text);padding:8px 12px;border-radius:8px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;min-height:38px}
+button:hover{border-color:var(--text-2)}
+button.primary{background:var(--accent);border-color:var(--accent);color:#fff}
+:root[data-theme="dark"] button.primary{color:#0b0b0b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) button.primary{color:#0b0b0b}}
+button:disabled{opacity:.5;cursor:default}
+.stamp{font-size:13px;color:var(--muted)}
+.demo-banner{background:#fff4d6;color:#5c4300;border-bottom:1px solid #f0d58a;font-size:13px;text-align:center;padding:6px 16px;display:none}
+.filters{display:flex;gap:10px;flex-wrap:wrap;margin:18px 0 6px;align-items:flex-end}
+.filters label{display:flex;flex-direction:column;font-size:12px;color:var(--muted);gap:4px;font-weight:500}
+select,input{font:inherit;font-size:14px;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:7px 10px;min-height:38px}
+.chip{font-size:12px;background:var(--surface-2);border:1px solid var(--line);padding:3px 10px;border-radius:999px;color:var(--text-2)}
+section{margin-top:28px}
+.sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:10px}
+h2{font-size:18px;margin:0;font-weight:600;letter-spacing:-.005em}
+.sec-head p{margin:0;color:var(--text-2);font-size:13px;max-width:640px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;box-shadow:var(--shadow);min-width:0}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-top:14px}
+.kpi .lbl{font-size:12px;color:var(--muted);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.kpi .val{font-size:34px;font-weight:700;line-height:1.1;margin-top:6px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.kpi .val small{font-size:15px;font-weight:500;color:var(--text-2);letter-spacing:0}
+.kpi .foot{font-size:13px;color:var(--text-2);margin-top:4px}
+.kpi.hero{background:var(--accent);border-color:var(--accent);color:#fff}
+.kpi.hero .lbl,.kpi.hero .foot,.kpi.hero .val small{color:rgba(255,255,255,.85)}
+:root[data-theme="dark"] .kpi.hero{color:#0b0b0b}
+:root[data-theme="dark"] .kpi.hero .lbl,:root[data-theme="dark"] .kpi.hero .foot,:root[data-theme="dark"] .kpi.hero .val small{color:rgba(0,0,0,.7)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi.hero{color:#0b0b0b}:root:not([data-theme="light"]) .kpi.hero .lbl,:root:not([data-theme="light"]) .kpi.hero .foot,:root:not([data-theme="light"]) .kpi.hero .val small{color:rgba(0,0,0,.7)}}
+.grid2{display:grid;grid-template-columns:1.35fr 1fr;gap:12px}
+@media (max-width:900px){.grid2{grid-template-columns:1fr}}
+#map{height:460px;border-radius:8px;background:var(--surface-2)}
+@media (max-width:600px){#map{height:340px}}
+.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--text-2);margin-top:10px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.dot{width:11px;height:11px;border-radius:50%;display:inline-block;box-shadow:0 0 0 2px var(--surface)}
+.sq{width:11px;height:11px;border-radius:3px;display:inline-block}
+svg.viz{display:block;width:100%;height:auto;overflow:visible}
+svg.viz text{font-family:"IBM Plex Sans",system-ui,sans-serif;fill:var(--text-2);font-size:11px}
+svg.viz .grid line{stroke:var(--line)}
+svg.viz .lbl-strong{fill:var(--text);font-weight:600}
+.tip{position:fixed;pointer-events:none;background:var(--text);color:var(--surface);font-size:12px;padding:7px 9px;border-radius:6px;z-index:9999;max-width:260px;line-height:1.4;opacity:0;transition:opacity .08s}
+.tip b{font-weight:600}
+.statline{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:12px}
+@media (max-width:600px){.statline{grid-template-columns:repeat(2,1fr)}}
+.statline div{background:var(--surface-2);border-radius:8px;padding:8px 10px}
+.statline b{display:block;font-size:20px;font-variant-numeric:tabular-nums}
+.statline span{font-size:12px;color:var(--muted)}
+.table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:14px;font-variant-numeric:tabular-nums}
+th,td{padding:9px 10px;text-align:right;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.04em;cursor:pointer;user-select:none;position:sticky;top:0;background:var(--surface)}
+th:first-child,td:first-child{text-align:left}
+td.l,th.l{text-align:left}
+tbody tr{cursor:pointer}
+tbody tr:hover{background:var(--surface-2)}
+tbody tr.sel{background:var(--s1-soft)}
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;border:1px solid var(--line);color:var(--text)}
+.badge i{font-style:normal;width:8px;height:8px;border-radius:50%;display:inline-block}
+.delta-pos{color:var(--text)}.delta-neg{color:var(--text)}
+.bar-cell{display:flex;align-items:center;gap:8px;justify-content:flex-end}
+.minibar{height:6px;border-radius:3px;background:var(--s1);display:inline-block}
+.empty{color:var(--muted);text-align:center;padding:28px 10px;font-size:14px}
+.login{max-width:420px;margin:40px auto}
+.login h2{margin-bottom:6px}
+.login p{color:var(--text-2);font-size:14px;margin:0 0 14px}
+.login form{display:flex;flex-direction:column;gap:10px}
+.login .err{color:var(--crit);font-size:13px;min-height:18px}
+.note{font-size:13px;color:var(--text-2)}
+.note li{margin:4px 0}
+.cov-group{font-size:12px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;margin:12px 0 4px}
+.cov-row{display:grid;grid-template-columns:150px 1fr 34px;align-items:center;gap:8px;font-size:13px;padding:2px 0}
+.cov-row .track{height:10px;background:var(--surface-2);border-radius:5px;position:relative;overflow:hidden}
+.cov-row .fill{height:100%;background:var(--s1);border-radius:0 4px 4px 0}
+.cov-row.zero{color:var(--muted)}
+.cov-row .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:600}
+#cov{max-height:460px;overflow:auto;padding-right:4px}
+.loader{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;background:color-mix(in srgb,var(--bg) 70%,transparent);z-index:5000;font-size:14px;color:var(--text-2)}
+.hidden{display:none!important}
+footer{margin-top:36px;color:var(--muted);font-size:12px;text-align:center}
+@media print{.actions,.filters,.loader{display:none!important}.card{box-shadow:none}#map{height:380px}}
+</style>
+</head>
+<body>
+<div class="demo-banner" id="demoBanner">Datos de demostración generados al azar — agregue <b>?demo=0</b> o quite el parámetro para ver los datos reales.</div>
+<header class="top">
+  <div class="wrap">
+    <div>
+      <div class="eyebrow">Informe operativo de campo</div>
+      <h1>Sondeo de opinión ciudadana — Chalatenango</h1>
+      <div class="sub">Avance, cobertura, duración y control de calidad del levantamiento</div>
+    </div>
+    <div class="actions">
+      <span class="stamp" id="stamp">—</span>
+      <button id="btnRefresh" title="Volver a cargar los datos">↻ Actualizar</button>
+      <button id="btnCsv" class="primary" title="Descargar todos los registros con todas las preguntas">⬇ Descargar base (CSV)</button>
+      <button id="btnTheme" title="Cambiar tema" aria-label="Cambiar tema">◐</button>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <div id="loginBox" class="card login hidden">
+    <h2>Acceso a los datos</h2>
+    <p>El servicio de la encuesta no permite consultas públicas. Ingrese con una cuenta de ArcGIS Online que tenga acceso a la encuesta (propietario o administrador).</p>
+    <form id="loginForm">
+      <input id="lu" autocomplete="username" placeholder="Usuario de ArcGIS Online" required>
+      <input id="lp" type="password" autocomplete="current-password" placeholder="Contraseña" required>
+      <button class="primary" type="submit">Ingresar</button>
+      <div class="err" id="loginErr"></div>
+    </form>
+    <p class="note" style="margin-top:8px">La sesión se guarda solo en esta pestaña del navegador.</p>
+  </div>
+
+  <main id="app" class="hidden">
+    <div class="filters">
+      <label>Día<select id="fDay"></select></label>
+      <label>Municipio<select id="fMun"></select></label>
+      <label>Encuestador<select id="fEnc"></select></label>
+      <label style="flex-direction:row;align-items:center;gap:6px;color:var(--text-2);font-size:13px"><input type="checkbox" id="fAuto" checked> Actualizar cada 2 min</label>
+      <span class="chip hidden" id="fClear" style="cursor:pointer">✕ Quitar filtros</span>
+    </div>
+
+    <div class="kpis" id="kpis"></div>
+
+    <section>
+      <div class="sec-head"><h2>Avance del levantamiento</h2><p>Encuestas recibidas por hora de inicio. Las barras azules son entrevistas completas y las grises, rechazos.</p></div>
+      <div class="card"><div id="chartHour"></div><div class="legend"><span><i class="sq" style="background:var(--s1)"></i>Completas</span><span><i class="sq" style="background:var(--neutral)"></i>Rechazos</span></div></div>
+    </section>
+
+    <section>
+      <div class="sec-head"><h2>Dónde se está levantando</h2><p>Ubicación GPS de cada encuesta, coloreada según su duración. Toque un punto para ver el detalle.</p></div>
+      <div class="grid2">
+        <div class="card">
+          <div id="map"></div>
+          <div class="legend" id="mapLegend"></div>
+        </div>
+        <div class="card">
+          <div class="sec-head" style="margin-bottom:0"><h2 style="font-size:15px">Cobertura por distrito</h2><span class="chip" id="covChip"></span></div>
+          <div id="cov"></div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head"><h2>Duración de las entrevistas</h2><p>Minutos entre que se abre el formulario y se envía (solo entrevistas completas). Las líneas marcan los límites de entrevista demasiado rápida o demasiado lenta.</p></div>
+      <div class="card">
+        <div id="chartHist"></div>
+        <div class="statline" id="durStats"></div>
+      </div>
+    </section>
+
+    <section>
+      <div class="sec-head"><h2>Desempeño por encuestador</h2><p>Duración mediana de cada encuestador frente a la mediana general. Toque una fila para filtrar el informe por esa persona.</p></div>
+      <div class="card" style="margin-bottom:12px"><div id="chartEnc"></div>
+        <div class="legend"><span><i class="dot" style="background:var(--good)"></i>✓ En rango</span><span><i class="dot" style="background:var(--crit)"></i>⚡ Muy rápido — revisar</span><span><i class="dot" style="background:var(--warn)"></i>⏳ Lento — revisar</span><span><i class="sq" style="background:var(--s1-soft)"></i>Banda en rango</span></div>
+      </div>
+      <div class="card"><div class="table-wrap"><table id="tblEnc"></table></div></div>
+    </section>
+
+    <section>
+      <div class="sec-head"><h2>Alertas de calidad</h2><p>Encuestas individuales que conviene revisar con el encuestador antes de cerrar la base.</p></div>
+      <div class="card"><div class="table-wrap"><table id="tblAlert"></table></div></div>
+    </section>
+
+    <section>
+      <div class="sec-head"><h2>Criterios</h2></div>
+      <div class="card note">
+        <ul style="margin:0;padding-left:18px">
+          <li><b>Levantamiento</b>: cada formulario enviado, acepte o no la persona. <b>Completa</b>: la persona aceptó participar.</li>
+          <li><b>Duración</b> = hora de envío − hora de apertura del formulario. Se excluyen de los promedios las duraciones menores de <span class="cfg-min"></span> min o mayores de <span class="cfg-max"></span> min (formulario olvidado abierto o error de reloj); aparecen como alerta.</li>
+          <li><b>Entrevista rápida</b>: dura menos del <span class="cfg-fast"></span>% de la mediana general. <b>Lenta</b>: más del <span class="cfg-slow"></span>%.</li>
+          <li><b>Encuestador “muy rápido”</b>: su mediana es menor al <span class="cfg-efast"></span>% de la mediana general, o un tercio o más de sus entrevistas son rápidas. <b>“Lento”</b>: su mediana supera el <span class="cfg-eslow"></span>%.</li>
+          <li><b>GPS</b>: se alerta si falta la ubicación, si cae fuera del área de Chalatenango o si la precisión es peor de <span class="cfg-gps"></span> m.</li>
+          <li>Los códigos de encuestador se agrupan sin distinguir mayúsculas ni espacios (p. ej. “ab 01” y “AB01” cuentan como la misma persona).</li>
+        </ul>
+      </div>
+    </section>
+    <footer>Fuente: servicio de Survey123 del sondeo · Horas en hora de El Salvador (UTC−6)</footer>
+  </main>
+</div>
+<div class="loader hidden" id="loader">Cargando datos…</div>
+<div class="tip" id="tip"></div>
+
+<script>
+/* ===================== CONFIGURACIÓN ===================== */
+const CONFIG = {
+  LAYER_URL: 'https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services/service_5f17a6e18d954937beee40ffb477927b/FeatureServer/0',
+  PORTAL: 'https://www.arcgis.com',
+  TZ: 'America/El_Salvador',
+  DUR_MIN: 2,          // min: duraciones menores se consideran inválidas
+  DUR_MAX: 120,        // min: duraciones mayores se consideran inválidas
+  FAST_PCT: 50,        // entrevista rápida si < 50% de la mediana
+  SLOW_PCT: 200,       // entrevista lenta si > 200% de la mediana
+  ENC_FAST_PCT: 70,    // encuestador muy rápido si su mediana < 70% de la general
+  ENC_SLOW_PCT: 150,   // encuestador lento si su mediana > 150% de la general
+  GPS_MAX_M: 100,      // precisión GPS aceptable (m)
+  BBOX: {minLat:13.80,maxLat:14.50,minLon:-89.50,maxLon:-88.55}, // área de Chalatenango
+  REFRESH_MS: 120000
+};
+const DISTRITOS = {
+  chal_norte:['Citalá','La Palma','San Ignacio'],
+  chal_centro:['Agua Caliente','Dulce Nombre de María','El Paraíso','La Reina','Nueva Concepción','San Fernando','San Francisco Morazán','San Rafael','Santa Rita','Tejutla'],
+  chal_sur:['Arcatao','Azacualpa','Chalatenango','Comalapa','Concepción Quezaltepeque','El Carrizal','La Laguna','Las Vueltas','Nombre de Jesús','Nueva Trinidad','Ojos de Agua','Potonico','San Antonio de La Cruz','San Antonio Los Ranchos','San Francisco Lempa','San Isidro Labrador','San José Cancasque','San José Las Flores','San Luis del Carmen','San Miguel de Mercedes']
+};
+const MUN_LBL = {chal_norte:'Chalatenango Norte',chal_centro:'Chalatenango Centro',chal_sur:'Chalatenango Sur'};
+const slug = s => s.normalize('NFKD').replace(/[̀-ͯ]/g,'').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_|_$/g,'');
+const DIST_LBL = {}, DIST_MUN = {};
+for (const m in DISTRITOS) for (const d of DISTRITOS[m]) { DIST_LBL[slug(d)] = d; DIST_MUN[slug(d)] = m; }
+const OPS_FIELDS = 'objectid,globalid,inicio,fin,encuestador,municipio,distrito,acepta,precision_gps,dispositivo,CreationDate';
+
+/* ===================== ESTADO ===================== */
+const qs = new URLSearchParams(location.search);
+const DEMO = qs.get('demo') === '1';
+let token = null; try { token = sessionStorage.getItem('agolToken'); } catch(e) {}
+let RAW = [], layerInfo = null, map, mapLayer, refreshTimer = null;
+const F = {day:'', mun:'', enc:''};
+const $ = id => document.getElementById(id);
+const fmtTime = new Intl.DateTimeFormat('es-SV',{timeZone:CONFIG.TZ,hour:'2-digit',minute:'2-digit',hour12:false});
+const fmtDay = new Intl.DateTimeFormat('es-SV',{timeZone:CONFIG.TZ,weekday:'short',day:'numeric',month:'short'});
+const fmtDayKey = new Intl.DateTimeFormat('en-CA',{timeZone:CONFIG.TZ,year:'numeric',month:'2-digit',day:'2-digit'});
+const fmtHourKey = ms => { const p = new Intl.DateTimeFormat('en-CA',{timeZone:CONFIG.TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',hour12:false}).formatToParts(ms); const g=t=>p.find(x=>x.type===t).value; return `${g('year')}-${g('month')}-${g('day')} ${g('hour')==='24'?'00':g('hour')}`; };
+const nf1 = new Intl.NumberFormat('es-SV',{maximumFractionDigits:1,minimumFractionDigits:1});
+const nf0 = new Intl.NumberFormat('es-SV');
+const esc = s => String(s ?? '').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const cssv = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ===================== DATOS ===================== */
+async function getJSON(url, params) {
+  const p = new URLSearchParams(params); if (token) p.set('token', token);
+  const r = await fetch(url + '?' + p.toString());
+  const j = await r.json();
+  if (j.error) { const e = new Error(j.error.message || (j.error.details||[]).join(' ') || 'Error del servicio'); e.code = j.error.code; throw e; }
+  return j;
+}
+async function queryAll(outFields) {
+  const out = []; let offset = 0; const page = 1000;
+  for (;;) {
+    const j = await getJSON(CONFIG.LAYER_URL + '/query', {where:'1=1', outFields, returnGeometry:'true', outSR:'4326', orderByFields:'objectid', resultOffset:offset, resultRecordCount:page, f:'json'});
+    out.push(...(j.features||[]));
+    if (!j.exceededTransferLimit && (j.features||[]).length < page) break;
+    offset += page; if (offset > 50000) break;
+  }
+  return out;
+}
+async function login(user, pass) {
+  const body = new URLSearchParams({username:user, password:pass, client:'referer', referer:location.origin, expiration:'240', f:'json'});
+  const r = await fetch(CONFIG.PORTAL + '/sharing/rest/generateToken', {method:'POST', body});
+  const j = await r.json();
+  if (j.error || !j.token) throw new Error((j.error && (j.error.details||[])[0]) || 'Usuario o contraseña incorrectos');
+  token = j.token; try { sessionStorage.setItem('agolToken', token); } catch(e) {}
+}
+function normEnc(s) { return String(s||'').trim().toUpperCase().replace(/\s+/g,'') || 'SIN CÓDIGO'; }
+function prep(features) {
+  return features.map(f => {
+    const a = f.attributes || {}, g = f.geometry;
+    const ini = a.inicio ?? null, fin = a.fin ?? null;
+    const dur = (ini && fin) ? (fin - ini) / 60000 : null;
+    const lat = g && isFinite(g.y) ? g.y : null, lon = g && isFinite(g.x) ? g.x : null;
+    const mun = a.municipio || DIST_MUN[a.distrito] || '';
+    return {
+      id:a.objectid, gid:a.globalid, ini, fin, t: ini || a.CreationDate || fin, dur,
+      encRaw:a.encuestador, enc:normEnc(a.encuestador), mun, dist:a.distrito || '',
+      ok: a.acepta === 'si', rej: a.acepta === 'no', prec:a.precision_gps, lat, lon, dev:a.dispositivo
+    };
+  });
+}
+async function loadData() {
+  showLoader(true);
+  try {
+    let feats;
+    if (DEMO) feats = demoData();
+    else {
+      feats = await queryAll(OPS_FIELDS);
+      if (!layerInfo) { try { layerInfo = await getJSON(CONFIG.LAYER_URL, {f:'json'}); } catch(e) {} }
+    }
+    RAW = prep(feats);
+    $('loginBox').classList.add('hidden'); $('app').classList.remove('hidden');
+    $('stamp').textContent = 'Actualizado ' + fmtTime.format(Date.now()) + ' · ' + nf0.format(RAW.length) + ' registros';
+    buildFilters(); render();
+  } catch (e) {
+    console.error(e);
+    if (!token || [498,499,403,401,400].includes(e.code)) {
+      if (token) { token = null; try { sessionStorage.removeItem('agolToken'); } catch(_) {} }
+      $('app').classList.add('hidden'); $('loginBox').classList.remove('hidden');
+      if (e.code === 498 || e.code === 499) $('loginErr').textContent = 'La sesión venció. Ingrese de nuevo.';
+    } else {
+      $('stamp').textContent = 'Error al cargar: ' + e.message;
+    }
+  } finally { showLoader(false); }
+}
+function showLoader(on){ $('loader').classList.toggle('hidden', !on); }
+
+/* ===================== FILTROS ===================== */
+function buildFilters() {
+  const days = [...new Set(RAW.filter(r=>r.t).map(r=>fmtDayKey.format(r.t)))].sort();
+  const encs = [...new Set(RAW.map(r=>r.enc))].sort();
+  const opt = (v,l,sel) => `<option value="${esc(v)}"${sel?' selected':''}>${esc(l)}</option>`;
+  $('fDay').innerHTML = opt('','Todos los días',!F.day) + days.map(d=>opt(d, fmtDay.format(new Date(d+'T12:00:00-06:00')), F.day===d)).join('');
+  $('fMun').innerHTML = opt('','Todos',!F.mun) + Object.keys(MUN_LBL).map(m=>opt(m,MUN_LBL[m],F.mun===m)).join('');
+  $('fEnc').innerHTML = opt('','Todos',!F.enc) + encs.map(e=>opt(e,e,F.enc===e)).join('');
+}
+function filtered(ignoreEnc=false) {
+  return RAW.filter(r => (!F.day || (r.t && fmtDayKey.format(r.t)===F.day)) && (!F.mun || r.mun===F.mun) && (ignoreEnc || !F.enc || r.enc===F.enc));
+}
+['fDay','fMun','fEnc'].forEach(id => $(id).addEventListener('change', e => { F[{fDay:'day',fMun:'mun',fEnc:'enc'}[id]] = e.target.value; render(); }));
+$('fClear').addEventListener('click', () => { F.day=F.mun=F.enc=''; buildFilters(); render(); });
+
+/* ===================== CÁLCULOS ===================== */
+const median = a => { if (!a.length) return null; const s=[...a].sort((x,y)=>x-y), m=s.length>>1; return s.length%2 ? s[m] : (s[m-1]+s[m])/2; };
+const quant = (a,q) => { if (!a.length) return null; const s=[...a].sort((x,y)=>x-y), p=(s.length-1)*q, b=Math.floor(p); return s[b] + (s[Math.min(b+1,s.length-1)]-s[b])*(p-b); };
+const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : null;
+const validDur = r => r.dur != null && r.dur >= CONFIG.DUR_MIN && r.dur <= CONFIG.DUR_MAX;
+function gpsIssue(r) {
+  if (r.lat == null || r.lon == null || (r.lat === 0 && r.lon === 0)) return 'Sin ubicación GPS';
+  const b = CONFIG.BBOX;
+  if (r.lat < b.minLat || r.lat > b.maxLat || r.lon < b.minLon || r.lon > b.maxLon) return 'GPS fuera de Chalatenango';
+  if (r.prec != null && r.prec > CONFIG.GPS_MAX_M) return `GPS impreciso (${Math.round(r.prec)} m)`;
+  return null;
+}
+function classify(rows, med) {
+  for (const r of rows) {
+    r.flags = [];
+    r.speed = 'na';
+    if (r.ok) {
+      if (r.dur == null) r.flags.push('Sin hora de inicio/fin');
+      else if (!validDur(r)) { r.flags.push(r.dur < CONFIG.DUR_MIN ? `Duración inválida (${nf1.format(r.dur)} min)` : `Duración atípica (${Math.round(r.dur)} min)`); r.speed = r.dur < CONFIG.DUR_MIN ? 'fast' : 'slow'; }
+      else if (med) {
+        if (r.dur < med*CONFIG.FAST_PCT/100) { r.speed='fast'; r.flags.push('Demasiado rápida'); }
+        else if (r.dur > med*CONFIG.SLOW_PCT/100) { r.speed='slow'; r.flags.push('Demasiado lenta'); }
+        else r.speed='ok';
+      }
+    } else if (r.rej) r.speed = 'rej';
+    const g = gpsIssue(r); if (g) r.flags.push(g);
+    if (!r.dist) r.flags.push('Sin distrito');
+  }
+}
+
+/* ===================== RENDER ===================== */
+function render() {
+  $('fClear').classList.toggle('hidden', !(F.day||F.mun||F.enc));
+  const all = filtered(true);              // para comparar encuestadores
+  const rows = filtered(false);
+  const baseMed = median(all.filter(r=>r.ok && validDur(r)).map(r=>r.dur));
+  classify(all, baseMed);
+  renderKpis(rows, baseMed);
+  renderHour(rows);
+  renderMap(rows);
+  renderCoverage(rows);
+  renderHist(rows, baseMed);
+  renderEnc(all, baseMed);
+  renderAlerts(rows);
+  document.querySelectorAll('.cfg-min').forEach(e=>e.textContent=CONFIG.DUR_MIN);
+  document.querySelectorAll('.cfg-max').forEach(e=>e.textContent=CONFIG.DUR_MAX);
+  document.querySelectorAll('.cfg-fast').forEach(e=>e.textContent=CONFIG.FAST_PCT);
+  document.querySelectorAll('.cfg-slow').forEach(e=>e.textContent=CONFIG.SLOW_PCT);
+  document.querySelectorAll('.cfg-efast').forEach(e=>e.textContent=CONFIG.ENC_FAST_PCT);
+  document.querySelectorAll('.cfg-eslow').forEach(e=>e.textContent=CONFIG.ENC_SLOW_PCT);
+  document.querySelectorAll('.cfg-gps').forEach(e=>e.textContent=CONFIG.GPS_MAX_M);
+}
+
+function renderKpis(rows, baseMed) {
+  const ok = rows.filter(r=>r.ok), rej = rows.filter(r=>r.rej);
+  const durs = ok.filter(validDur).map(r=>r.dur);
+  const encs = new Set(rows.map(r=>r.enc));
+  const dists = new Set(rows.filter(r=>r.dist).map(r=>r.dist));
+  const totalDist = F.mun ? DISTRITOS[F.mun].length : 33;
+  const flagged = rows.filter(r=>r.flags && r.flags.length).length;
+  const today = fmtDayKey.format(Date.now());
+  const nToday = rows.filter(r=>r.t && fmtDayKey.format(r.t)===today).length;
+  const last = rows.reduce((m,r)=>Math.max(m, r.t||0), 0);
+  const k = [
+    {cls:'hero', lbl:'Levantamientos', val:nf0.format(rows.length), foot:`${nf0.format(nToday)} hoy${last?' · último a las '+fmtTime.format(last):''}`},
+    {lbl:'Entrevistas completas', val:nf0.format(ok.length), foot:`${rows.length? Math.round(ok.length/rows.length*100):0}% de los contactos`},
+    {lbl:'Rechazos', val:nf0.format(rej.length), foot:`Tasa de rechazo ${rows.length? Math.round(rej.length/rows.length*100):0}%`},
+    {lbl:'Duración promedio', val: durs.length? nf1.format(mean(durs)) + '<small> min</small>' : '—', foot: durs.length? `Mediana ${nf1.format(median(durs))} min` : 'Sin entrevistas válidas'},
+    {lbl:'Encuestadores activos', val:nf0.format(encs.size), foot: encs.size? `${nf1.format(ok.length/encs.size)} entrevistas por persona` : ''},
+    {lbl:'Distritos con datos', val:`${dists.size}<small> / ${totalDist}</small>`, foot:`${totalDist-dists.size} sin levantamiento`},
+    {lbl:'Encuestas con alerta', val:nf0.format(flagged), foot:`${rows.length? Math.round(flagged/rows.length*100):0}% del total · ver abajo`}
+  ];
+  $('kpis').innerHTML = k.map(x=>`<div class="card kpi ${x.cls||''}"><div class="lbl">${x.lbl}</div><div class="val">${x.val}</div><div class="foot">${x.foot}</div></div>`).join('');
+}
+
+/* ---------- tooltip ---------- */
+const tip = $('tip');
+function showTip(html, ev) { tip.innerHTML = html; tip.style.opacity = 1; moveTip(ev); }
+function moveTip(ev) { const x = ev.clientX, y = ev.clientY, w = tip.offsetWidth, h = tip.offsetHeight; tip.style.left = Math.min(window.innerWidth - w - 8, x + 12) + 'px'; tip.style.top = (y - h - 12 < 0 ? y + 14 : y - h - 12) + 'px'; }
+function hideTip() { tip.style.opacity = 0; }
+function bindTips(root) {
+  root.querySelectorAll('[data-tip]').forEach(el => {
+    el.addEventListener('mouseenter', e => showTip(el.dataset.tip, e));
+    el.addEventListener('mousemove', moveTip);
+    el.addEventListener('mouseleave', hideTip);
+    el.addEventListener('touchstart', e => { showTip(el.dataset.tip, e.touches[0]); setTimeout(hideTip, 2200); }, {passive:true});
+  });
+}
+const niceMax = v => { if (v <= 5) return 5; const p = Math.pow(10, Math.floor(Math.log10(v))); const n = v/p; return (n<=1?1:n<=2?2:n<=5?5:10)*p; };
+
+/* ---------- avance por hora ---------- */
+function renderHour(rows) {
+  const el = $('chartHour');
+  const withT = rows.filter(r=>r.t);
+  if (!withT.length) { el.innerHTML = '<div class="empty">Aún no hay encuestas.</div>'; return; }
+  const buckets = new Map();
+  const t0 = Math.min(...withT.map(r=>r.t)), t1 = Math.max(...withT.map(r=>r.t));
+  for (let t = Math.floor(t0/3600000)*3600000; t <= t1; t += 3600000) buckets.set(fmtHourKey(t), {t, ok:0, rej:0});
+  for (const r of withT) { const k = fmtHourKey(r.t); if (!buckets.has(k)) buckets.set(k,{t:r.t,ok:0,rej:0}); const b = buckets.get(k); if (r.ok) b.ok++; else b.rej++; }
+  let data = [...buckets.entries()].sort((a,b)=>a[0]<b[0]?-1:1).map(([k,v])=>({k,...v}));
+  // quitar horas nocturnas vacías entre días
+  data = data.filter((d,i)=> d.ok+d.rej>0 || (+d.k.slice(11) >= 6 && +d.k.slice(11) <= 19));
+  const W = Math.max(300, el.clientWidth || 640), H = 230, m = {l:34,r:8,t:14,b:38};
+  const iw = W-m.l-m.r, ih = H-m.t-m.b;
+  const ymax = niceMax(Math.max(...data.map(d=>d.ok+d.rej)));
+  const bw = iw / data.length, gap = Math.min(4, bw*0.25);
+  const y = v => m.t + ih - v/ymax*ih;
+  let cum = 0; const multiDay = new Set(data.map(d=>d.k.slice(0,10))).size > 1;
+  let s = `<svg class="viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Encuestas por hora">`;
+  for (let i=0;i<=4;i++){ const v=ymax*i/4; s+=`<g class="grid"><line x1="${m.l}" x2="${W-m.r}" y1="${y(v)}" y2="${y(v)}"/></g><text x="${m.l-6}" y="${y(v)+4}" text-anchor="end">${Math.round(v)}</text>`; }
+  const every = Math.ceil(data.length / Math.max(1, Math.floor(iw/46)));
+  data.forEach((d,i) => {
+    cum += d.ok + d.rej;
+    const x = m.l + i*bw + gap/2, w = Math.max(1, bw-gap);
+    const hOk = d.ok/ymax*ih, hRej = d.rej/ymax*ih;
+    const hr = d.k.slice(11)+':00', dayLbl = fmtDay.format(new Date(d.k.slice(0,10)+'T12:00:00-06:00'));
+    const tipTxt = `<b>${dayLbl}, ${hr}</b><br>${d.ok} completas · ${d.rej} rechazos<br>Acumulado: ${cum}`;
+    if (d.ok) s += `<path d="${barPath(x, m.t+ih-hOk, w, hOk, !d.rej)}" fill="var(--s1)"/>`;
+    if (d.rej) s += `<path d="${barPath(x, m.t+ih-hOk-hRej-(d.ok?2:0), w, hRej, true)}" fill="var(--neutral)"/>`;
+    s += `<rect x="${m.l+i*bw}" y="${m.t}" width="${bw}" height="${ih}" fill="transparent" data-tip="${esc(tipTxt)}"/>`;
+    if (i % every === 0) s += `<text x="${x+w/2}" y="${H-m.b+16}" text-anchor="middle">${d.k.slice(11)}h</text>`;
+    if (multiDay && (i===0 || d.k.slice(0,10)!==data[i-1].k.slice(0,10))) s += `<text x="${x}" y="${H-4}" class="lbl-strong">${dayLbl}</text>`;
+  });
+  s += `<line x1="${m.l}" x2="${W-m.r}" y1="${m.t+ih}" y2="${m.t+ih}" stroke="var(--text-2)" stroke-width="1"/></svg>`;
+  el.innerHTML = s; bindTips(el);
+}
+function barPath(x, y, w, h, roundTop) {
+  const r = Math.min(4, w/2, h); if (!roundTop || h < 1) return `M${x},${y}h${w}v${h}h${-w}z`;
+  return `M${x},${y+h}V${y+r}Q${x},${y} ${x+r},${y}H${x+w-r}Q${x+w},${y} ${x+w},${y+r}V${y+h}z`;
+}
+
+/* ---------- mapa ---------- */
+const SPEED = {
+  ok:{c:'--good',l:'✓ Duración normal'}, fast:{c:'--crit',l:'⚡ Demasiado rápida'},
+  slow:{c:'--warn',l:'⏳ Demasiado lenta'}, rej:{c:'--neutral',l:'Rechazo'}, na:{c:'--muted',l:'Sin dato de duración'}
+};
+function renderMap(rows) {
+  if (!map) {
+    map = L.map('map', {scrollWheelZoom:false, zoomControl:true}).setView([14.1,-89.0], 10);
+    const esri = n => `https://server.arcgisonline.com/ArcGIS/rest/services/${n}/MapServer/tile/{z}/{y}/{x}`;
+    const calles = L.tileLayer(esri('World_Street_Map'), {maxZoom:19, attribution:'Esri, HERE, Garmin, © OpenStreetMap'}).addTo(map);
+    const sat = L.layerGroup([
+      L.tileLayer(esri('World_Imagery'), {maxZoom:19, attribution:'Esri, Maxar, Earthstar Geographics'}),
+      L.tileLayer(esri('Reference/World_Boundaries_and_Places'), {maxZoom:19})
+    ]);
+    L.control.layers({'Calles':calles, 'Satélite':sat}, null, {position:'topright'}).addTo(map);
+    map.on('click', () => map.scrollWheelZoom.enable());
+  }
+  if (mapLayer) mapLayer.remove();
+  mapLayer = L.layerGroup().addTo(map);
+  const pts = rows.filter(r => !gpsIssue(r) || (r.lat!=null && r.lat!==0));
+  const counts = {};
+  for (const r of pts) {
+    if (r.lat == null) continue;
+    counts[r.speed] = (counts[r.speed]||0)+1;
+    const col = cssv(SPEED[r.speed].c);
+    L.circleMarker([r.lat, r.lon], {radius:6, color:cssv('--surface'), weight:2, fillColor:col, fillOpacity:.95})
+      .bindPopup(`<b>${esc(r.enc)}</b> · ${esc(DIST_LBL[r.dist]||r.dist||'—')}<br>${r.t?fmtDay.format(r.t)+' '+fmtTime.format(r.t):''}<br>${r.ok? 'Duración: '+(r.dur!=null?nf1.format(r.dur)+' min':'—') : 'Rechazo'}${r.prec!=null?'<br>Precisión GPS: '+Math.round(r.prec)+' m':''}${r.flags.length?'<br><b>'+esc(r.flags.join(' · '))+'</b>':''}`)
+      .addTo(mapLayer);
+  }
+  const ll = pts.filter(r=>r.lat!=null).map(r=>[r.lat,r.lon]);
+  if (ll.length) map.fitBounds(ll, {padding:[24,24], maxZoom:15});
+  setTimeout(()=>map.invalidateSize(), 50);
+  $('mapLegend').innerHTML = Object.keys(SPEED).filter(k=>counts[k]).map(k=>`<span><i class="dot" style="background:var(${SPEED[k].c})"></i>${SPEED[k].l} (${counts[k]})</span>`).join('') || '<span>Sin puntos con GPS</span>';
+}
+
+/* ---------- cobertura ---------- */
+function renderCoverage(rows) {
+  const by = {}; rows.forEach(r=>{ if (r.dist) by[r.dist] = (by[r.dist]||0) + (r.ok?1:0); });
+  const muns = F.mun ? [F.mun] : Object.keys(DISTRITOS);
+  const max = Math.max(1, ...Object.values(by));
+  let html = '', covered = 0, total = 0;
+  for (const m of muns) {
+    html += `<div class="cov-group">${MUN_LBL[m]}</div>`;
+    const ds = DISTRITOS[m].map(d=>({d, k:slug(d), n:by[slug(d)]||0})).sort((a,b)=>b.n-a.n || a.d.localeCompare(b.d));
+    for (const x of ds) { total++; if (x.n) covered++;
+      html += `<div class="cov-row ${x.n?'':'zero'}" data-tip="<b>${esc(x.d)}</b><br>${x.n} entrevistas completas"><span>${esc(x.d)}</span><span class="track"><span class="fill" style="width:${x.n/max*100}%"></span></span><span class="n">${x.n||'—'}</span></div>`; }
+  }
+  $('cov').innerHTML = html; $('covChip').textContent = `${covered} de ${total} con entrevistas`; bindTips($('cov'));
+}
+
+/* ---------- histograma de duración ---------- */
+function renderHist(rows, med) {
+  const el = $('chartHist');
+  const d = rows.filter(r=>r.ok && validDur(r)).map(r=>r.dur);
+  if (!d.length) { el.innerHTML = '<div class="empty">Aún no hay entrevistas completas con duración válida.</div>'; $('durStats').innerHTML=''; return; }
+  const hi = Math.min(CONFIG.DUR_MAX, Math.ceil(Math.max(...d, med*CONFIG.SLOW_PCT/100)/5)*5 + 5);
+  const step = hi > 80 ? 5 : hi > 40 ? 2 : 1;
+  const bins = []; for (let x = 0; x < hi; x += step) bins.push({a:x, b:x+step, n:0});
+  d.forEach(v => { const i = Math.min(bins.length-1, Math.floor(v/step)); bins[i].n++; });
+  const W = Math.max(300, el.clientWidth || 640), H = 220, m = {l:34,r:10,t:22,b:34}, iw=W-m.l-m.r, ih=H-m.t-m.b;
+  const ymax = niceMax(Math.max(...bins.map(b=>b.n)));
+  const x = v => m.l + v/hi*iw, y = v => m.t + ih - v/ymax*ih;
+  const fast = med*CONFIG.FAST_PCT/100, slow = med*CONFIG.SLOW_PCT/100;
+  let s = `<svg class="viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Distribución de la duración">`;
+  for (let i=0;i<=4;i++){ const v=ymax*i/4; s+=`<g class="grid"><line x1="${m.l}" x2="${W-m.r}" y1="${y(v)}" y2="${y(v)}"/></g><text x="${m.l-6}" y="${y(v)+4}" text-anchor="end">${Math.round(v)}</text>`; }
+  bins.forEach(b => {
+    const bx = x(b.a)+1, bw = Math.max(1, x(b.b)-x(b.a)-2), h = b.n/ymax*ih;
+    const col = b.b <= fast ? 'var(--crit)' : b.a >= slow ? 'var(--warn)' : 'var(--s1)';
+    if (b.n) s += `<path d="${barPath(bx, y(b.n), bw, h, true)}" fill="${col}"/>`;
+    s += `<rect x="${x(b.a)}" y="${m.t}" width="${x(b.b)-x(b.a)}" height="${ih}" fill="transparent" data-tip="<b>${b.a}–${b.b} min</b><br>${b.n} entrevistas"/>`;
+  });
+  const vline = (v, lbl, col) => v < hi ? `<line x1="${x(v)}" x2="${x(v)}" y1="${m.t-6}" y2="${m.t+ih}" stroke="${col}" stroke-width="2" stroke-dasharray="4 3"/><text x="${x(v)+4}" y="${m.t-8}" class="lbl-strong">${lbl}</text>` : '';
+  s += vline(fast, `⚡ ${nf1.format(fast)}`, 'var(--crit)') + vline(med, `Mediana ${nf1.format(med)}`, 'var(--text)') + vline(slow, `⏳ ${nf1.format(slow)}`, 'var(--warn)');
+  for (let v = 0; v <= hi; v += (hi>60?10:5)) s += `<text x="${x(v)}" y="${H-m.b+16}" text-anchor="middle">${v}</text>`;
+  s += `<text x="${W-m.r}" y="${H-4}" text-anchor="end">minutos</text><line x1="${m.l}" x2="${W-m.r}" y1="${m.t+ih}" y2="${m.t+ih}" stroke="var(--text-2)"/></svg>`;
+  el.innerHTML = s; bindTips(el);
+  $('durStats').innerHTML = [['Promedio',mean(d)],['Mediana',median(d)],['25% más cortas, hasta',quant(d,.25)],['25% más largas, desde',quant(d,.75)]].map(([l,v])=>`<div><b>${nf1.format(v)} min</b><span>${l}</span></div>`).join('');
+}
+
+/* ---------- encuestadores ---------- */
+let encSort = {k:'n', dir:-1};
+function encStats(all, med) {
+  const g = {};
+  for (const r of all) (g[r.enc] ||= []).push(r);
+  return Object.entries(g).map(([enc, rs]) => {
+    const ok = rs.filter(r=>r.ok), durs = ok.filter(validDur).map(r=>r.dur);
+    const md = median(durs), av = mean(durs);
+    const fast = ok.filter(r=>r.speed==='fast').length, slow = ok.filter(r=>r.speed==='slow').length;
+    const gps = rs.filter(r=>gpsIssue(r)).length;
+    const ts = rs.filter(r=>r.t).map(r=>r.t);
+    const first = ts.length?Math.min(...ts):null, last = ts.length?Math.max(...ts):null;
+    const variants = [...new Set(rs.map(r=>String(r.encRaw??'').trim()))].filter(v=>v && v!==enc);
+    let st = 'ok';
+    if (md != null && med) { if (md < med*CONFIG.ENC_FAST_PCT/100 || (ok.length>=3 && fast/ok.length >= 1/3)) st = 'fast'; else if (md > med*CONFIG.ENC_SLOW_PCT/100) st = 'slow'; }
+    if (md == null) st = 'na';
+    return {enc, n:ok.length, rej:rs.filter(r=>r.rej).length, tot:rs.length, md, av, delta: (md!=null&&med)? (md/med-1)*100 : null, fast, slow, gps, first, last, variants, st,
+      rate: (first && last && last>first && ok.length>1) ? ok.length/((last-first)/3600000) : null};
+  });
+}
+const ST = {ok:{c:'--good',l:'✓ En rango'}, fast:{c:'--crit',l:'⚡ Muy rápido'}, slow:{c:'--warn',l:'⏳ Lento'}, na:{c:'--muted',l:'Sin datos'}};
+function renderEnc(all, med) {
+  const S = encStats(all, med);
+  // ---- gráfico de puntos ----
+  const el = $('chartEnc');
+  const pts = S.filter(s=>s.md!=null).sort((a,b)=>a.md-b.md);
+  if (!pts.length || !med) el.innerHTML = '<div class="empty">Aún no hay duraciones suficientes para comparar encuestadores.</div>';
+  else {
+    const rowH = 26, W = Math.max(300, el.clientWidth||560), m = {l:110,r:56,t:26,b:26}, H = m.t + m.b + pts.length*rowH, iw = W-m.l-m.r;
+    const hi = Math.ceil(Math.max(...pts.map(p=>p.md), med*CONFIG.ENC_SLOW_PCT/100)*1.1/5)*5;
+    const x = v => m.l + v/hi*iw;
+    const lo = med*CONFIG.ENC_FAST_PCT/100, up = med*CONFIG.ENC_SLOW_PCT/100;
+    let s = `<svg class="viz" viewBox="0 0 ${W} ${H}" role="img" aria-label="Duración mediana por encuestador">`;
+    s += `<rect x="${x(lo)}" y="${m.t-6}" width="${x(up)-x(lo)}" height="${H-m.t-m.b+6}" fill="var(--s1-soft)" opacity=".55" rx="4"/>`;
+    s += `<line x1="${x(med)}" x2="${x(med)}" y1="${m.t-10}" y2="${H-m.b}" stroke="var(--text)" stroke-width="2"/><text x="${x(med)}" y="${m.t-12}" text-anchor="middle" class="lbl-strong">Mediana general ${nf1.format(med)} min</text>`;
+    pts.forEach((p,i) => {
+      const cy = m.t + i*rowH + rowH/2;
+      const tipTxt = `<b>${esc(p.enc)}</b><br>Mediana ${nf1.format(p.md)} min (${p.delta>=0?'+':''}${Math.round(p.delta)}%)<br>${p.n} entrevistas · ${p.fast} rápidas · ${p.slow} lentas`;
+      s += `<g data-tip="${esc(tipTxt)}" style="cursor:pointer" data-enc="${esc(p.enc)}"><rect x="0" y="${cy-rowH/2}" width="${W}" height="${rowH}" fill="transparent"/>`;
+      s += `<text x="${m.l-10}" y="${cy+4}" text-anchor="end" class="lbl-strong">${esc(p.enc.length>14?p.enc.slice(0,13)+'…':p.enc)}</text>`;
+      s += `<line x1="${x(med)}" x2="${x(p.md)}" y1="${cy}" y2="${cy}" stroke="var(--line)" stroke-width="2"/>`;
+      s += `<circle cx="${x(p.md)}" cy="${cy}" r="6" fill="var(${ST[p.st].c})" stroke="var(--surface)" stroke-width="2"/>`;
+      s += `<text x="${x(p.md)+ (p.md>=med?12:-12)}" y="${cy+4}" text-anchor="${p.md>=med?'start':'end'}">${nf1.format(p.md)}</text></g>`;
+    });
+    for (let v=0; v<=hi; v+= (hi>60||iw<360)?10:5) s += `<text x="${x(v)}" y="${H-6}" text-anchor="middle">${v}</text>`;
+    s += `</svg>`;
+    el.innerHTML = s; bindTips(el);
+    el.querySelectorAll('[data-enc]').forEach(g=>g.addEventListener('click',()=>selectEnc(g.dataset.enc)));
+  }
+  // ---- tabla ----
+  const cols = [
+    {k:'enc',l:'Encuestador',cls:'l',f:s=>`<b>${esc(s.enc)}</b>${s.variants.length?`<br><span style="font-size:12px;color:var(--muted)">escrito también: ${esc(s.variants.slice(0,3).join(', '))}</span>`:''}`},
+    {k:'st',l:'Estado',cls:'l',f:s=>`<span class="badge"><i style="background:var(${ST[s.st].c})"></i>${ST[s.st].l}</span>`},
+    {k:'n',l:'Completas',f:s=>s.n},
+    {k:'rej',l:'Rechazos',f:s=>s.rej},
+    {k:'md',l:'Mediana (min)',f:s=>s.md!=null?nf1.format(s.md):'—'},
+    {k:'av',l:'Promedio (min)',f:s=>s.av!=null?nf1.format(s.av):'—'},
+    {k:'delta',l:'vs. general',f:s=>s.delta!=null?`${s.delta>=0?'+':'−'}${Math.abs(Math.round(s.delta))}%`:'—'},
+    {k:'fast',l:'⚡ Rápidas',f:s=>s.fast||'—'},
+    {k:'slow',l:'⏳ Lentas',f:s=>s.slow||'—'},
+    {k:'gps',l:'Alertas GPS',f:s=>s.gps||'—'},
+    {k:'rate',l:'Entrev./hora',f:s=>s.rate!=null?nf1.format(s.rate):'—'},
+    {k:'first',l:'Primera',f:s=>s.first?fmtTime.format(s.first):'—'},
+    {k:'last',l:'Última',f:s=>s.last?fmtTime.format(s.last):'—'}
+  ];
+  const stOrder = {fast:0, slow:1, ok:2, na:3};
+  S.sort((a,b)=>{ const k=encSort.k; let va=a[k], vb=b[k]; if (k==='st'){va=stOrder[va];vb=stOrder[vb];} if (va==null) return 1; if (vb==null) return -1; return (va<vb?-1:va>vb?1:0)*encSort.dir; });
+  const t = $('tblEnc');
+  t.innerHTML = `<thead><tr>${cols.map(c=>`<th class="${c.cls||''}" data-k="${c.k}">${c.l}${encSort.k===c.k?(encSort.dir<0?' ↓':' ↑'):''}</th>`).join('')}</tr></thead>` +
+    `<tbody>${S.map(s=>`<tr data-enc="${esc(s.enc)}" class="${F.enc===s.enc?'sel':''}">${cols.map(c=>`<td class="${c.cls||''}">${c.f(s)}</td>`).join('')}</tr>`).join('') || `<tr><td colspan="${cols.length}" class="empty">Sin encuestadores.</td></tr>`}</tbody>`;
+  t.querySelectorAll('th').forEach(th=>th.addEventListener('click',()=>{ const k=th.dataset.k; encSort = {k, dir: encSort.k===k ? -encSort.dir : (k==='enc'?1:-1)}; renderEnc(all, med); }));
+  t.querySelectorAll('tbody tr[data-enc]').forEach(tr=>tr.addEventListener('click',()=>selectEnc(tr.dataset.enc)));
+}
+function selectEnc(e) { F.enc = F.enc===e ? '' : e; $('fEnc').value = F.enc; render(); if (F.enc) $('kpis').scrollIntoView({behavior:'smooth', block:'start'}); }
+
+/* ---------- alertas ---------- */
+function renderAlerts(rows) {
+  const a = rows.filter(r=>r.flags && r.flags.length).sort((x,y)=>(y.t||0)-(x.t||0));
+  const t = $('tblAlert');
+  if (!a.length) { t.innerHTML = '<tbody><tr><td class="empty">Sin alertas con los filtros actuales. ✓</td></tr></tbody>'; return; }
+  const sev = f => /rápida|inválida|Sin ubicación|fuera/.test(f) ? '--crit' : '--warn';
+  t.innerHTML = `<thead><tr><th class="l">Hora</th><th class="l">Encuestador</th><th class="l">Distrito</th><th>Duración</th><th class="l">Motivo</th></tr></thead><tbody>` +
+    a.slice(0,300).map(r=>`<tr data-id="${r.id}"><td class="l">${r.t?fmtDay.format(r.t)+' '+fmtTime.format(r.t):'—'}</td><td class="l"><b>${esc(r.enc)}</b></td><td class="l">${esc(DIST_LBL[r.dist]||r.dist||'—')}</td><td>${r.ok?(r.dur!=null?nf1.format(r.dur)+' min':'—'):'Rechazo'}</td><td class="l">${r.flags.map(f=>`<span class="badge" style="margin:1px 4px 1px 0"><i style="background:var(${sev(f)})"></i>${esc(f)}</span>`).join('')}</td></tr>`).join('') +
+    (a.length>300?`<tr><td colspan="5" class="empty">… y ${a.length-300} más (descargue la base para verlas todas)</td></tr>`:'') + '</tbody>';
+  t.querySelectorAll('tbody tr[data-id]').forEach(tr=>tr.addEventListener('click',()=>{
+    const r = rows.find(x=>String(x.id)===tr.dataset.id); if (r && r.lat!=null && map) { map.setView([r.lat,r.lon], 16); $('map').scrollIntoView({behavior:'smooth',block:'center'});
+      mapLayer.eachLayer(l=>{ const p=l.getLatLng(); if (p.lat===r.lat && p.lng===r.lon) l.openPopup(); }); }
+  }));
+}
+
+/* ===================== EXPORTAR ===================== */
+async function exportCsv() {
+  const btn = $('btnCsv'); btn.disabled = true; const old = btn.textContent; btn.textContent = 'Preparando…';
+  try {
+    let feats, fields;
+    if (DEMO) { feats = demoData(); fields = Object.keys(feats[0].attributes).map(n=>({name:n,alias:n,type:''})); }
+    else {
+      if (!layerInfo) layerInfo = await getJSON(CONFIG.LAYER_URL, {f:'json'});
+      fields = layerInfo.fields.filter(f=>!/^(Saludo|fin_rechazo|bloque_|eval_ejecutivo|desempeno_alcaldia|importancia_prob_muni|nota_cierre)/.test(f.name));
+      feats = await queryAll('*');
+    }
+    const dom = {}; fields.forEach(f=>{ if (f.domain && f.domain.codedValues) dom[f.name] = Object.fromEntries(f.domain.codedValues.map(c=>[c.code,c.name])); });
+    const dateF = new Set(fields.filter(f=>f.type==='esriFieldTypeDate').map(f=>f.name));
+    const fmtDT = new Intl.DateTimeFormat('sv-SE',{timeZone:CONFIG.TZ,year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false});
+    const head = [...fields.map(f=>f.name), 'duracion_min', 'encuestador_normalizado', 'latitud', 'longitud'];
+    const q = v => { if (v==null) return ''; const s = String(v); return /[",\n;]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; };
+    const lines = [head.join(',')];
+    for (const ft of feats) {
+      const a = ft.attributes, g = ft.geometry||{};
+      const row = fields.map(f => { let v = a[f.name]; if (v==null) return ''; if (dateF.has(f.name)) return fmtDT.format(v); if (dom[f.name] && dom[f.name][v]!=null) v = dom[f.name][v]; return q(v); });
+      const dur = (a.inicio && a.fin) ? ((a.fin-a.inicio)/60000).toFixed(1) : '';
+      row.push(dur, q(normEnc(a.encuestador)), g.y??'', g.x??'');
+      lines.push(row.join(','));
+    }
+    const blob = new Blob(['﻿' + lines.join('\r\n')], {type:'text/csv;charset=utf-8'});
+    const aEl = document.createElement('a'); aEl.href = URL.createObjectURL(blob);
+    aEl.download = `sondeo_chalatenango_${fmtDayKey.format(Date.now())}_${fmtTime.format(Date.now()).replace(':','')}.csv`;
+    document.body.appendChild(aEl); aEl.click(); aEl.remove(); setTimeout(()=>URL.revokeObjectURL(aEl.href), 2000);
+  } catch (e) { alert('No se pudo exportar: ' + e.message); }
+  finally { btn.disabled = false; btn.textContent = old; }
+}
+
+/* ===================== DEMO ===================== */
+function demoData() {
+  let seed = 7; const rnd = () => (seed = (seed*16807) % 2147483647) / 2147483647;
+  const encs = ['EST01','EST02','EST03','EST04','EST05','EST06','EST07','EST08','EST09','EST10','EST11','EST12'];
+  const prof = {EST03:.45, EST08:1.7}; const all = [];
+  const day = Date.parse('2026-10-10T08:00:00-06:00');
+  const keys = Object.keys(DIST_LBL); const C = {};
+  keys.forEach((k,i)=>C[k]=[13.95+ rnd()*.40, -89.30 + rnd()*.60]);
+  let id = 1;
+  encs.forEach((e,ei) => {
+    const dists = [keys[(ei*3)%keys.length], keys[(ei*3+1)%keys.length]];
+    let t = day + rnd()*40*60000;
+    const n = 8 + Math.floor(rnd()*10);
+    for (let i=0;i<n;i++) {
+      const rej = rnd() < .15;
+      const dur = rej ? 1 + rnd()*2 : Math.max(4, (24 + (rnd()-.5)*14) * (prof[e]||1));
+      const d = dists[rnd()<.6?0:1], c = C[d];
+      const ini = t, fin = t + dur*60000;
+      all.push({attributes:{objectid:id++, globalid:'demo-'+id, inicio:ini, fin, encuestador: (e==='EST05' && i%3===0)? 'est 05' : e, municipio:DIST_MUN[d], distrito:d, acepta: rej?'no':'si', precision_gps: rnd()<.06? 180 : 5+rnd()*25, dispositivo:'demo', CreationDate:fin+60000},
+        geometry: rnd()<.03 ? null : {x:c[1]+(rnd()-.5)*.02, y:c[0]+(rnd()-.5)*.02}});
+      t = fin + (6 + rnd()*14)*60000;
+    }
+  });
+  return all;
+}
+
+/* ===================== ARRANQUE ===================== */
+function setAuto() { clearInterval(refreshTimer); if ($('fAuto').checked && !DEMO) refreshTimer = setInterval(loadData, CONFIG.REFRESH_MS); }
+$('fAuto').addEventListener('change', setAuto);
+$('btnRefresh').addEventListener('click', loadData);
+$('btnCsv').addEventListener('click', exportCsv);
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault(); $('loginErr').textContent = '';
+  try { await login($('lu').value.trim(), $('lp').value); $('lp').value=''; await loadData(); }
+  catch (err) { $('loginErr').textContent = err.message; }
+});
+$('btnTheme').addEventListener('click', () => {
+  const root = document.documentElement, cur = root.dataset.theme || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  root.dataset.theme = cur === 'dark' ? 'light' : 'dark'; try { localStorage.setItem('theme', root.dataset.theme); } catch(e) {}
+  if (RAW.length) render();
+});
+try { const th = localStorage.getItem('theme'); if (th) document.documentElement.dataset.theme = th; } catch(e) {}
+let rs; window.addEventListener('resize', () => { clearTimeout(rs); rs = setTimeout(()=>{ if (RAW.length) render(); }, 200); });
+if (DEMO) $('demoBanner').style.display = 'block';
+loadData(); setAuto();
+</script>
+</body>
+</html>
