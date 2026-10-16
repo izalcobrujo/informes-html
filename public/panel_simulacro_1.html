@@ -57,6 +57,9 @@ tbody tr.sel{background:#eef4fa}
 .lg{display:inline-flex;align-items:center;gap:6px}.lgd{width:11px;height:11px;border-radius:50%;display:inline-block}
 .note{padding:8px 18px;font-size:11px;color:var(--mut2);background:var(--card)}
 .leaflet-container{font-family:inherit}
+.lblc{background:rgba(10,16,23,.82);color:#fff;border:1px solid rgba(255,255,255,.28);border-radius:5px;
+  padding:1px 6px;font-size:11px;font-weight:600;white-space:nowrap;box-shadow:0 1px 3px rgba(0,0,0,.5)}
+.lblc::before{display:none}  /* sin flechita */
 </style></head><body>
 
 <div class="top">
@@ -138,6 +141,7 @@ function initMap(){
   L.control.layers({"Satélite":sat,"Calles":calles},null,{position:"topright"}).addTo(map);
   layer.addTo(map);
   map.on("zoomend",()=>{ layer.getLayers().forEach(m=>m.setRadius(radio(m._x))); });
+  map.on("zoomend moveend",updateLabels);
   C.forEach((x,i)=>{
     if(x.lat==null) return;
     const m=L.circleMarker([x.lat,x.lng], estilo(x));
@@ -173,6 +177,17 @@ function estilo(x){
   return {radius: radio(x), fillColor: sedeColor(x.sede), fillOpacity:.95,
           color: x.conectividad?BORDE_CON:BORDE_SIN, weight: x.conectividad?1.4:3};
 }
+const LBL_ZOOM = 15;   // a partir de este zoom aparecen los nombres
+function updateLabels(){
+  if(typeof map==="undefined" || !map) return;
+  const show = map.getZoom() >= LBL_ZOOM, b = map.getBounds();
+  layer.getLayers().forEach(m=>{
+    const inside = show && b.contains(m.getLatLng());
+    if(inside){ if(!m.getTooltip()) m.bindTooltip(m._x.centro_nuevo,
+       {permanent:true, direction:"top", className:"lblc", offset:[0,-2]}); }
+    else if(m.getTooltip()) m.unbindTooltip();
+  });
+}
 function pasa(x){
   if(S.sede && x.sede!==S.sede) return false;
   if(S.con==="con" && !x.conectividad) return false;
@@ -192,6 +207,7 @@ function render(){
   sedeLayer.clearLayers();
   sedeMarks.forEach(m=>{ if(!S.sede || m._sede===S.sede){ sedeLayer.addLayer(m);
      if(S.sede){ const ll=m.getLatLng(); b.push([ll.lat,ll.lng]); } }});
+  updateLabels();   // etiquetas de nombre según zoom
   // KPIs (filtrado)
   document.getElementById("kTot").textContent=vis.length;
   document.getElementById("kCon").textContent=vis.filter(x=>x.conectividad).length;
