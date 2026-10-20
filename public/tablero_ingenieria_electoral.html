@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tablero de Ingeniería Electoral · Nuevas Ideas</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2300ADEF'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='Montserrat,Arial' font-weight='900' font-size='40' fill='%23fff'%3EN%3C/text%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%2300ADEF'/%3E%3Cg transform='translate(16.15 14.4) scale(0.0529) translate(-700 -333)'%3E%3Cpolygon fill='%23FFFFFF' points='700,333 834,333 1156,771 1156,333 1299,333 1299,999 1163,999 843,565 843,999 700,999'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css">
@@ -552,23 +552,24 @@ function renderBalance(rows,N){
   $("tBal").querySelectorAll("th[data-k]").forEach(th=>th.onclick=()=>{const f=th.dataset.k;if(S.bsort===f)S.bdir*=-1;else{S.bsort=f;S.bdir=f==="name"?1:-1;}renderBalance(rowsF(),nivel());});
   $("tBal").querySelectorAll("tr[data-k]").forEach(tr=>tr.onclick=()=>drill(N,tr.dataset.k));
 }
-const PCOL={NI:"#00adef",AR:"#1f4e9c",FM:"#d6202a",GA:"#f28c28",PC:"#2a8a3e",PD:"#3a9b4f",CD:"#e8b100",VA:"#7b3fa0",NT:"#8a5a2b",FS:"#5b6b7a",FP:"#7a7a7a"};
+const PCOL={NI:"#01adef",AR:"#005aad",FM:"#d4202b",GA:"#df6f06",PN:"#1135b5",PC:"#1135b5",PD:"#00732e",CD:"#ffff00",VA:"#0f4a8b",NT:"#a6c56a",FS:"#dcde17",FP:"#f90200",PS:"#3750a0",OT:"#c9ced8"};
+const PDARK=new Set(["CD","FS","NT","NI","OT"]);
 function histSVG(h){
   if(!h)return '<div class="d" style="font-size:11px;color:var(--ink3)">Sin histórico para este centro.</div>';
-  const Y=DATA.histYrs, ser=[["Asamblea",[0,1,2,3],["2015","2018","2021","2024"],"#1565e6"],["Concejo",[4,5,6,7],["2015","2018","2021","2024"],"#f4a13b"],["Presidente",[8,9],["2019","2024"],"#0a2a6e"]];
-  const W=430,H=120,px=y=>34+(y-2015)/9*(W-50),py=v=>H-18-(v/100)*(H-30);
-  let g=`<line x1="34" y1="${py(0)}" x2="${W-10}" y2="${py(0)}" stroke="#e3e9f2"/><line x1="34" y1="${py(50)}" x2="${W-10}" y2="${py(50)}" stroke="#eef2f8" stroke-dasharray="3 3"/><text x="4" y="${py(50)+3}" font-size="9" fill="#8a96ab">50%</text><text x="4" y="${py(100)+3}" font-size="9" fill="#8a96ab">100%</text>`;
-  [2015,2018,2019,2021,2024].forEach(y=>g+=`<text x="${px(y)}" y="${H-4}" font-size="9" text-anchor="middle" fill="#8a96ab">${y}</text>`);
-  ser.forEach(([n,idx,yrs,col])=>{const pts=idx.map((j,q)=>[px(+yrs[q]),h[j]]).filter(p=>p[1]!=null);
-    g+=`<polyline fill="none" stroke="${col}" stroke-width="2" points="${pts.map(p=>p[0]+","+py(p[1])).join(" ")}"/>`+pts.map(p=>`<circle cx="${p[0]}" cy="${py(p[1])}" r="2.8" fill="${col}"><title>${n}: ${p[1]} %</title></circle>`).join("");});
-  const leg=ser.map(s=>`<span style="display:inline-flex;align-items:center;gap:4px;margin-right:10px"><span class="sq" style="background:${s[3]}"></span>${s[0]}</span>`).join("");
-  return `<svg width="100%" viewBox="0 0 ${W} ${H}">${g}</svg><div style="font-size:10px;color:var(--ink2)">${leg} · % de votos de NI en el centro</div>`;
+  // Solo 2021 y 2024: antes de 2021 Nuevas Ideas no existía (2015-2018 y la presidencial 2019 son de GANA).
+  const E=[["Diputados",h[2],h[3]],["Concejo / Alcalde",h[6],h[7]],["Presidente",null,h[9]]];
+  const bar=(v,col)=>v==null?'<span style="color:var(--ink3);font-size:10.5px">No aplica</span>':`<span style="display:flex;align-items:center;gap:6px"><span style="flex:1;height:10px;background:#eef2f8;border-radius:999px;overflow:hidden"><i style="display:block;height:100%;width:${v}%;background:${col}"></i></span><b style="font-size:11.5px;min-width:44px;text-align:right">${v.toFixed(1)} %</b></span>`;
+  const dl=(a,b)=>a==null||b==null?"":`<span style="font-size:10.5px;font-weight:700;color:${b>=a?"#1565e6":"#c2410c"}">${b>=a?"+":""}${(b-a).toFixed(1)} pts</span>`;
+  return `<div style="display:grid;grid-template-columns:110px 1fr 1fr 60px;gap:6px 10px;align-items:center;font-size:11.5px">
+    <span></span><span style="font-size:10px;color:var(--ink2);font-weight:700">2021</span><span style="font-size:10px;color:var(--ink2);font-weight:700">2024</span><span></span>
+    ${E.map(([n,a,b])=>`<span style="font-weight:600">${n}</span>${bar(a,"#93c5fd")}${bar(b,"#1565e6")}${dl(a,b)}`).join("")}</div>
+    <div style="font-size:10px;color:var(--ink2);margin-top:6px">% de votos válidos de Nuevas Ideas + GANA en el centro (así viene el histórico del Atlas). Nuevas Ideas solo compitió en 2021 y 2024; en 2021 no hubo elección presidencial.</div>`;
 }
 function hganHTML(hg){
   if(!hg)return"";
-  const L={A:["Asamblea",["2015","2018","2021","2024"]],C:["Concejo",["2015","2018","2021","2024"]],P:["Presidente",null]};
+  const L={A:["Diputados",["2015","2018","2021","2024"]],C:["Concejo",["2015","2018","2021","2024"]],P:["Presidente",null]};
   return '<div class="hgan">'+Object.entries(L).map(([k,[n,yrs]])=>{const v=hg[k];if(!v)return"";const ys=yrs||(v.length===3?["2014","2019","2024"]:["2019","2024"]);
-    return `<div style="font-weight:600;color:var(--ink2)">${n}</div><div class="cs">${v.map((p,q)=>`<span class="c" style="background:${PCOL[p]||"#8a96ab"}" title="${ys[q]||""}">${ys[q]?ys[q].slice(2)+" ":""}${p||"—"}</span>`).join("")}</div>`;}).join("")+'</div><div style="font-size:10px;color:var(--ink3);margin-top:4px">Ganador del centro por elección (NI = Nuevas Ideas, AR = ARENA, FM = FMLN, GA = GANA, PC = PCN, PD = PDC)</div>';
+    return `<div style="font-weight:600;color:var(--ink2)">${n}</div><div class="cs">${v.map((p,q)=>[p,ys[q]]).filter(([,y])=>+y>=2021).map(([p,y])=>`<span class="c" style="background:${PCOL[p]||"#c9ced8"};color:${PDARK.has(p)?"#0d2350":"#fff"};box-shadow:inset 0 0 0 1px rgba(0,0,0,.18)" title="${y}">${y} · ${p||"—"}</span>`).join("")}</div>`;}).join("")+'</div><div style="font-size:10px;color:var(--ink3);margin-top:4px">Ganador del centro en 2021 y 2024 (NI = Nuevas Ideas, AR = ARENA, FM = FMLN, GA = GANA, PN = PCN, PD = PDC, CD, VA = VAMOS, FS = Fuerza Solidaria, FP = FPS, PS = PSD, OT = otros)</div>';
 }
 function ficha(r){
   const q=(k,v,b)=>`<div class="fc"><div class="k">${k}</div><div class="v${b?" b":""}">${v}</div></div>`;
