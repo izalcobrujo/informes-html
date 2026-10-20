@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Tablero de Ingeniería Electoral · Nuevas Ideas</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='12' fill='%2300ADEF'/%3E%3Ctext x='32' y='46' text-anchor='middle' font-family='Montserrat,Arial' font-weight='900' font-size='40' fill='%23fff'%3EN%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://js.arcgis.com/4.30/esri/themes/light/main.css">
@@ -20,10 +21,10 @@ html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Montserrat,
 button,select,input{font-family:inherit}
 .topbar{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 28px;position:sticky;top:0;z-index:50}
 .brand{display:flex;align-items:center;gap:12px}
-.brand .logo{font-weight:800;font-size:22px;color:var(--navy);display:flex;align-items:center;gap:6px}
-.brand .logo b{color:var(--cyan);font-size:24px}
-.brand .sep{width:1px;height:22px;background:var(--line)}
-.brand .sub{color:var(--ink3);font-size:13px;font-weight:500}
+.brand .logo{font-family:Kollektif,Montserrat,sans-serif;font-weight:900;font-size:26px;letter-spacing:-.5px;color:#00adef;line-height:1;padding:4px 2px}
+.brand .sep{width:2px;height:26px;background:#00adef;border-radius:1px}
+.brand .sub{color:#001b71;font-size:15px;font-weight:700}
+@media(max-width:640px){.brand .logo .i{display:none}}
 .pill{background:#eaf2ff;color:var(--navy);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:600}
 .wrap{max-width:1500px;margin:0 auto;padding:18px 28px 60px}
 .title{display:flex;align-items:baseline;gap:16px;margin:4px 0 16px;flex-wrap:wrap}
@@ -200,7 +201,7 @@ body.nodef .deftog{background:#fff;color:var(--ink3);border-color:var(--line)}
 </head>
 <body>
 <div class="topbar">
-  <div class="brand"><div class="logo"><b>N</b> Nuevas Ideas</div><div class="sep"></div><div class="sub">Ingeniería Electoral</div></div>
+  <div class="brand" title="Nuevas Ideas"><div class="logo">N<span class="i">I</span></div><div class="sep"></div><div class="sub">Ingeniería Electoral</div></div>
   <div style="display:flex;align-items:center"><button class="deftog" id="defTog" title="Etiquetas temporales que explican cómo se calcula cada dato">Definiciones: visibles</button><div class="pill">Meta de 2,000,000 votos · aterrizada por centro</div></div>
 </div>
 <div class="wrap">
