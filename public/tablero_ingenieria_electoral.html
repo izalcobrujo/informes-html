@@ -19,12 +19,13 @@
 *{box-sizing:border-box}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:Montserrat,system-ui,-apple-system,"Segoe UI",sans-serif;font-size:14px}
 button,select,input{font-family:inherit}
-.topbar{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 28px;position:sticky;top:0;z-index:50}
+.topbar{background:#fff;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:12px 28px;position:sticky;top:0;z-index:1000}
 .brand{display:flex;align-items:center;gap:12px}
-.brand .logo{font-family:Kollektif,Montserrat,sans-serif;font-weight:900;font-size:26px;letter-spacing:-.5px;color:#00adef;line-height:1;padding:4px 2px}
-.brand .sep{width:2px;height:26px;background:#00adef;border-radius:1px}
+.brand .logo{line-height:0;padding:4px 0}
+.brand .nilogo{height:22px;width:auto;display:block}
+.brand .sep{width:2px;height:24px;background:#009fe3;border-radius:1px}
 .brand .sub{color:#001b71;font-size:15px;font-weight:700}
-@media(max-width:640px){.brand .logo .i{display:none}}
+@media(max-width:640px){.brand .nilogo{height:16px}}
 .pill{background:#eaf2ff;color:var(--navy);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:600}
 .wrap{max-width:1500px;margin:0 auto;padding:18px 28px 60px}
 .title{display:flex;align-items:baseline;gap:16px;margin:4px 0 16px;flex-wrap:wrap}
@@ -98,7 +99,7 @@ tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
 .tabs{background:#eef3fa;border-radius:10px;padding:5px;display:flex;flex-wrap:wrap;gap:2px}
 .tabs button{border:0;background:transparent;border-radius:8px;padding:8px 12px;font-size:12px;font-weight:600;color:var(--ink2);cursor:pointer}
 .tabs button.on{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(13,35,80,.12)}
-.mapbox{position:relative;margin-top:12px;border-radius:12px;overflow:hidden;height:560px;background:#dfe5ee}
+.mapbox{position:relative;isolation:isolate;z-index:0;margin-top:12px;border-radius:12px;overflow:hidden;height:560px;background:#dfe5ee}
 .mapbox.dark{background:#000}
 #map{position:absolute;inset:0}
 .ov{position:absolute;z-index:5;background:rgba(255,255,255,.96);border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12);padding:10px 12px;font-size:11px}
@@ -158,6 +159,9 @@ tr.tot td{font-weight:800;border-top:2px solid var(--line);border-bottom:none}
 .notes{font-size:11.5px;color:var(--ink2);line-height:1.6;padding:16px 18px}
 .notes b{color:var(--ink)}
 .bad{color:var(--rust)}
+.esri-view .esri-view-surface--inset-outline:focus::after,.esri-view-surface:focus::after{outline:none!important;content:none!important}
+.esri-view-surface:focus,.esri-view:focus,#map:focus,#mini:focus{outline:none!important}
+#mini{isolation:isolate}
 .rtabs{display:flex;justify-content:center;gap:4px;margin-top:10px}
 .rtabs button{border:1px solid var(--line);background:transparent;border-radius:999px;padding:5px 12px;font-size:11px;font-weight:600;color:var(--ink3);cursor:pointer}
 .rtabs button.on{background:#fff;color:var(--ink);border-color:#cfd8e6;box-shadow:0 1px 3px rgba(13,35,80,.08)}
@@ -201,7 +205,17 @@ body.nodef .deftog{background:#fff;color:var(--ink3);border-color:var(--line)}
 </head>
 <body>
 <div class="topbar">
-  <div class="brand" title="Nuevas Ideas"><div class="logo">N<span class="i">I</span></div><div class="sep"></div><div class="sub">Ingeniería Electoral</div></div>
+  <div class="brand" title="Nuevas Ideas"><div class="logo"><svg class="nilogo" viewBox="80 85 1665 195" role="img" aria-label="Nuevas Ideas" xmlns="http://www.w3.org/2000/svg"><g fill="#009fe3"><polygon points="211.25 93.1 249.07 93.1 249.07 269.53 212.99 269.53 128.38 154.32 128.38 269.53 90.56 269.53 90.56 93.1 125.9 93.1 211.25 209.06 211.25 93.1"/>
+  <path d="M362.43,93.1h37.82v112.73c0,8.8-1.83,17.25-5.49,25.38-3.65,8.13-8.64,15.26-14.96,21.4-6.32,6.14-13.67,11.03-22.06,14.68-8.39,3.65-17.41,5.48-27.04,5.48s-18.45-1.83-26.93-5.48c-8.48-3.65-15.83-8.54-22.06-14.68-6.23-6.14-11.18-13.27-14.83-21.4-3.65-8.13-5.48-16.59-5.48-25.38v-112.73h37.82v105.26c0,4.98.83,9.67,2.47,14.06,1.66,4.39,3.89,8.3,6.69,11.7,2.8,3.4,6.15,6.1,10.04,8.09,3.88,1.99,7.97,2.99,12.27,2.99s8.59-.99,12.39-2.99c3.8-1.99,7.15-4.69,10.04-8.09,2.89-3.4,5.16-7.3,6.81-11.7,1.65-4.39,2.48-9.08,2.48-14.06v-105.26Z"/>
+  <polygon points="412.58 93.1 522.82 93.1 522.82 127.44 450.41 127.44 450.41 159.29 514.11 159.29 514.11 193.63 450.41 193.63 450.41 235.19 522.82 235.19 522.82 269.53 412.58 269.53 412.58 93.1"/>
+  <polygon points="679.48 93.1 720.54 93.1 646.13 269.53 604.58 269.53 530.42 93.1 571.48 93.1 625.48 224.98 679.48 93.1"/>
+  <path d="M782.2,93.1l73.66,176.43h-40.81l-15.92-37.83h-74.9l-15.68,37.83h-41.06l73.66-176.43h41.06ZM784.94,197.36l-23.14-55.49-23.14,55.49h46.28Z"/>
+  <path d="M970.33,178.7c6.97,4.15,12.27,9.45,15.92,15.92,3.65,6.47,5.48,13.93,5.48,22.4,0,7.96-1.91,15.39-5.72,22.27-3.82,6.89-9.21,12.98-16.18,18.29-6.3,4.82-13.48,8.51-21.52,11.07-8.05,2.57-16.55,3.94-25.51,4.11-8.96,0-17.5-1.24-25.63-3.73-8.13-2.49-15.34-6.22-21.65-11.2-9.46-7.13-15.92-15.76-19.41-25.88l34.84-16.17c0,1.66.58,3.73,1.74,6.21,1.16,2.5,2.99,4.9,5.47,7.22,2.49,2.32,5.72,4.31,9.71,5.97,3.98,1.66,8.88,2.49,14.69,2.49,4.64,0,8.75-.58,12.32-1.74,3.57-1.16,6.55-2.61,8.96-4.35,2.41-1.74,4.23-3.73,5.48-5.97,1.25-2.23,1.87-4.52,1.87-6.84,0-2.65-.87-5.14-2.61-7.46-1.74-2.32-4.44-4.15-8.09-5.48-6.64-2.32-13.65-4.27-21.03-5.85-7.38-1.57-14.56-3.57-21.52-5.97-6.97-2.4-13.44-5.6-19.41-9.58-5.97-3.98-10.7-9.54-14.18-16.67-3.15-6.3-4.72-13.02-4.72-20.16,0-7.96,1.86-15.68,5.59-23.14,3.73-7.47,8.84-13.77,15.3-18.91,6.14-4.81,13.02-8.5,20.65-11.07,7.63-2.57,15.68-3.86,24.14-3.86s16.55,1.25,24.26,3.73c7.71,2.49,14.64,6.14,20.78,10.95,5.97,4.48,10.7,9.7,14.18,15.67l-28.37,19.41c-3.48-4.81-7.84-8.67-13.07-11.57-5.22-2.9-11.07-4.35-17.54-4.35-8.96,0-15.89,1.99-20.78,5.97-4.9,3.98-7.34,9.21-7.34,15.68,0,2.99,1.37,5.64,4.11,7.96,2.74,2.33,6.3,4.4,10.7,6.22,4.39,1.83,9.33,3.45,14.81,4.85,5.47,1.41,10.9,2.82,16.3,4.23,5.39,1.41,10.49,2.86,15.3,4.36,4.81,1.49,8.7,3.15,11.7,4.98"/>
+  <polygon points="1114.16 93.1 1114.16 124.95 1100.97 124.95 1100.97 237.92 1114.16 237.92 1114.16 269.53 1049.96 269.53 1049.96 237.92 1063.14 237.92 1063.14 124.95 1049.96 124.95 1049.96 93.1 1114.16 93.1"/>
+  <path d="M1199.27,93.1c12.79,0,24.09,2.32,33.89,6.97,9.81,4.65,17.99,10.95,24.55,18.91,6.56,7.97,11.55,17.34,14.96,28.12,3.4,10.78,5.11,22.23,5.11,34.34s-1.79,23.77-5.36,34.47c-3.57,10.7-8.52,20.03-14.83,28-6.32,7.96-13.8,14.22-22.44,18.79-8.64,4.56-18.03,6.84-28.16,6.84h-79.01V93.1h71.29ZM1199.39,235.19c7.13,0,13.23-1.45,18.29-4.34,5.06-2.9,9.24-6.83,12.56-11.79,3.32-4.97,5.76-10.68,7.34-17.13,1.58-6.46,2.36-13.24,2.36-20.36s-.75-13.94-2.24-20.48c-1.49-6.54-3.89-12.29-7.21-17.25-3.32-4.97-7.55-8.94-12.69-11.92-5.14-2.98-11.28-4.47-18.42-4.47h-33.59v107.75h33.59Z"/>
+  <polygon points="1291.06 93.1 1401.29 93.1 1401.29 127.44 1328.87 127.44 1328.87 159.29 1392.58 159.29 1392.58 193.63 1328.87 193.63 1328.87 235.19 1401.29 235.19 1401.29 269.53 1291.06 269.53 1291.06 93.1"/>
+  <path d="M1526.54,93.1l73.65,176.43h-40.81l-15.93-37.83h-74.9l-15.68,37.83h-41.06l73.66-176.43h41.06ZM1529.27,197.36l-23.14-55.49-23.14,55.49h46.28Z"/>
+  <path d="M1711.97,178.7c6.97,4.15,12.28,9.45,15.93,15.92,3.65,6.47,5.47,13.93,5.47,22.4,0,7.96-1.91,15.39-5.72,22.27-3.82,6.89-9.21,12.98-16.17,18.29-6.31,4.82-13.49,8.51-21.53,11.07-8.05,2.57-16.55,3.94-25.51,4.11-8.96,0-17.5-1.24-25.63-3.73-8.13-2.49-15.35-6.22-21.65-11.2-9.45-7.13-15.93-15.76-19.41-25.88l34.84-16.17c0,1.66.58,3.73,1.74,6.21,1.16,2.5,2.99,4.9,5.47,7.22,2.49,2.32,5.72,4.31,9.71,5.97,3.98,1.66,8.87,2.49,14.69,2.49,4.64,0,8.74-.58,12.31-1.74,3.57-1.16,6.55-2.61,8.96-4.35,2.41-1.74,4.24-3.73,5.47-5.97,1.25-2.23,1.87-4.52,1.87-6.84,0-2.65-.87-5.14-2.61-7.46-1.74-2.32-4.44-4.15-8.09-5.48-6.64-2.32-13.65-4.27-21.02-5.85-7.39-1.57-14.56-3.57-21.53-5.97-6.96-2.4-13.43-5.6-19.4-9.58-5.98-3.98-10.71-9.54-14.19-16.67-3.15-6.3-4.73-13.02-4.73-20.16,0-7.96,1.87-15.68,5.6-23.14,3.73-7.47,8.83-13.77,15.3-18.91,6.13-4.81,13.02-8.5,20.65-11.07,7.63-2.57,15.68-3.86,24.14-3.86s16.55,1.25,24.26,3.73c7.72,2.49,14.64,6.14,20.78,10.95,5.98,4.48,10.7,9.7,14.18,15.67l-28.36,19.41c-3.49-4.81-7.84-8.67-13.07-11.57-5.23-2.9-11.07-4.35-17.54-4.35-8.96,0-15.89,1.99-20.78,5.97-4.9,3.98-7.34,9.21-7.34,15.68,0,2.99,1.37,5.64,4.11,7.96,2.73,2.33,6.3,4.4,10.7,6.22,4.4,1.83,9.34,3.45,14.81,4.85,5.47,1.41,10.9,2.82,16.3,4.23,5.38,1.41,10.49,2.86,15.3,4.36,4.81,1.49,8.71,3.15,11.7,4.98"/></g></svg></div><div class="sep"></div><div class="sub">Ingeniería Electoral</div></div>
   <div style="display:flex;align-items:center"><button class="deftog" id="defTog" title="Etiquetas temporales que explican cómo se calcula cada dato">Definiciones: visibles</button><div class="pill">Meta de 2,000,000 votos · aterrizada por centro</div></div>
 </div>
 <div class="wrap">
@@ -701,9 +715,9 @@ else require(["esri/Map","esri/views/MapView","esri/layers/FeatureLayer","esri/l
   const SUB=["mt0","mt1","mt2","mt3"];
   const gSat=new WebTileLayer({urlTemplate:CFG.G_SAT,subDomains:SUB,maxScale:SC.HIBRIDO,opacity:.74,copyright:"Imágenes © Google"});
   const gHib=new WebTileLayer({urlTemplate:CFG.G_HIBRIDO,subDomains:SUB,minScale:SC.HIBRIDO,opacity:.9,copyright:"Imágenes © Google"});
-  const gCal=new WebTileLayer({urlTemplate:CFG.G_CALLES,subDomains:SUB,minScale:SC.CALLES,maxScale:SC.HIBRIDO,opacity:.9});
+  const gCal=new WebTileLayer({urlTemplate:CFG.G_CALLES,subDomains:SUB,minScale:SC.CALLES,maxScale:SC.HIBRIDO,opacity:.55});
   const eSat=new TileLayer({url:CFG.ESRI_SAT,maxScale:SC.HIBRIDO,opacity:.74});
-  const gCal2=new WebTileLayer({urlTemplate:CFG.G_CALLES,subDomains:SUB,minScale:SC.CALLES,opacity:.9});
+  const gCal2=new WebTileLayer({urlTemplate:CFG.G_CALLES,subDomains:SUB,minScale:SC.CALLES,opacity:.55});
   const BM={
     gris:new Basemap({baseLayers:[new TileLayer({url:CFG.GRIS})],title:"Lona gris"}),
     sat:new Basemap({baseLayers:[gSat,gHib],referenceLayers:[gCal],title:"Satelital Google"}),
@@ -827,7 +841,8 @@ else require(["esri/Map","esri/views/MapView","esri/layers/FeatureLayer","esri/l
   MAP.style=()=>{
     if(!zonasL)return;
     const tab=S.tab,cs=clases(tab),field={FOC:"FOC",SEG:"SEG",PD:"PD",PA:"PA",PM:"PM"}[tab];
-    const ol=dark()?{color:[255,255,255,.55],width:.5}:{color:[255,255,255,.9],width:.6};
+    const cerca=view.scale<=SC.CALLES;   // a nivel de calles: límite del sector más grueso
+    const ol=cerca?{color:dark()?[255,255,255,.95]:[13,35,80,.9],width:2.4}:dark()?{color:[255,255,255,.55],width:.5}:{color:[255,255,255,.9],width:.6};
     const al=dark()?.62:.92;
     const hex=h=>[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];
     zonasL.renderer={type:"unique-value",field,defaultSymbol:{type:"simple-fill",color:[210,215,224,dark()?.25:.7],outline:ol},defaultLabel:"Sin dato",
@@ -887,6 +902,7 @@ else require(["esri/Map","esri/views/MapView","esri/layers/FeatureLayer","esri/l
   };
 
   /* ---------- clic en el mapa: bajar de nivel o abrir la ficha ---------- */
+  RU.watch(()=>view.scale<=SC.CALLES,()=>MAP.style());
   view.on("click",ev=>{
     view.hitTest(ev,{include:[ptsL,zonasL].filter(Boolean)}).then(h=>{
       const g=h.results.find(x=>x.graphic&&x.graphic.attributes&&x.graphic.attributes.IDX>=0);if(!g)return;
@@ -910,7 +926,7 @@ else require(["esri/Map","esri/views/MapView","esri/layers/FeatureLayer","esri/l
     <label><input type="checkbox" id="chkDis" checked>Distritos</label>
     <label><input type="checkbox" id="chkMun" checked>Municipios</label>
     <label><input type="checkbox" id="chkDep" checked>Departamentos</label>
-    <label><input type="checkbox" id="chkCal" checked>Calles (satélite)</label>`;
+    <label><input type="checkbox" id="chkCal" checked>Calles Google</label>`;
   const bind=(id,fn)=>$(id).onchange=e=>fn(e.target.checked);
   bind("chkZon",v=>{if(zonasL)zonasL.visible=v;});bind("chkPts",v=>{if(ptsL)ptsL.visible=v;});bind("chkLbl",v=>{if(ptsL)ptsL.labelsVisible=v;});
   bind("chkCol",v=>{if(colL)colL.visible=v;});bind("chkDis",v=>glDis.visible=v);bind("chkMun",v=>muniL.visible=v);bind("chkDep",v=>glDep.visible=v);
