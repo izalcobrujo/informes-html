@@ -227,7 +227,18 @@ function render(){
   countEl.innerHTML=`<b>${rows.length}</b> centros · <b>${nAl}</b> con alerta`;
   listEl.innerHTML="";
   gPts.clearLayers();
-  rows.slice(0,1200).forEach(d=>{
+  // dibuja TODOS los puntos filtrados en el mapa (los 1595 si no hay filtro)
+  rows.forEach(d=>{
+    const p=d.aN||d.a24; if(!p) return;
+    const m=L.circleMarker([p[0],p[1]],{radius:d._al.length?5.5:3.6,
+      color:"#ffffff",weight:1.3,fillColor:d._al.length?"#ff6a12":"#1f8cff",fillOpacity:.95});
+    m.on("click",()=>{ lastMk=Date.now(); select(d.c); });
+    m.on("contextmenu",e=>{ L.DomEvent.stop(e); showCtx(e.originalEvent.clientX,e.originalEvent.clientY, d.nn||d.n0, p); });
+    gPts.addLayer(m);
+  });
+  // lista a la izquierda (capada para mantener el scroll ágil; el mapa muestra todos)
+  const LISTMAX=1500;
+  rows.slice(0,LISTMAX).forEach(d=>{
     const el=document.createElement("div"); el.className="cen"+(d.c===selCod?" sel":"");
     el.style.borderLeftColor=SEVCOL[d._sev]||"transparent";
     el.innerHTML=`<div class="t">${esc(d.nn||d.n0)}</div>
@@ -235,15 +246,12 @@ function render(){
       ${(d._al.length||d.ep)?`<div class="bdg">${badgeHtml(d._al)}${d.ep?'<span class="b prev">En DOE anterior</span>':''}</div>`:""}`;
     el.onclick=()=>{ (d.c===selCod)?deselect():select(d.c); };
     listEl.appendChild(el);
-    // marcador ligero del punto nuevo
-    const p=d.aN||d.a24; if(p){
-      const m=L.circleMarker([p[0],p[1]],{radius:d._al.length?5.5:3.6,
-        color:"#ffffff",weight:1.3,fillColor:d._al.length?"#ff6a12":"#1f8cff",fillOpacity:.95});
-      m.on("click",()=>{ lastMk=Date.now(); select(d.c); });
-      m.on("contextmenu",e=>{ L.DomEvent.stop(e); showCtx(e.originalEvent.clientX,e.originalEvent.clientY, d.nn||d.n0, p); });
-      gPts.addLayer(m);
-    }
   });
+  if(rows.length>LISTMAX){
+    const mas=document.createElement("div"); mas.className="cen"; mas.style.cursor="default";
+    mas.innerHTML=`<div class="s">… y ${rows.length-LISTMAX} más en el mapa. Filtrá por depto/municipio o alerta para verlos en la lista.</div>`;
+    listEl.appendChild(mas);
+  }
 }
 function esc(s){const e=document.createElement("div");e.textContent=s||"";return e.innerHTML;}
 
