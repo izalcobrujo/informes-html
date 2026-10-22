@@ -83,7 +83,10 @@ select:focus,input[type=text]:focus{outline:none;border-color:var(--azul)}#fse{f
 .lblc{font-size:11px;font-weight:700;padding:1px 6px;border-radius:5px;white-space:nowrap;border:1.5px solid #fff;background:#222;color:#fff}
 #escind{position:absolute;z-index:500;left:50%;top:10px;transform:translateX(-50%);background:rgba(0,0,0,.6);color:#fff;font-size:11px;padding:4px 10px;border-radius:999px;opacity:0;transition:opacity .4s;pointer-events:none}
 #escind.show{opacity:1}
-#secret{position:absolute;z-index:600;right:0;bottom:0;width:30px;height:30px;cursor:pointer;background:transparent;opacity:0}
+#esctog{position:absolute;z-index:600;left:50%;top:10px;transform:translateX(-50%);display:flex;background:rgba(255,255,255,.96);border:1px solid #d9dee5;border-radius:999px;box-shadow:0 1px 8px rgba(0,0,0,.2);overflow:hidden;font-size:11px}
+#esctog button{border:0;background:transparent;padding:5px 13px;cursor:pointer;color:#55606e;font:inherit;white-space:nowrap}
+#esctog button.on{background:#1033ff;color:#fff}
+#esctog .sep{width:1px;background:#e2e7ee}
 /* detalle derecha */
 #detcard{min-height:150px}
 #detempty{padding:40px 20px;text-align:center;color:var(--mut);font-size:12.5px}
@@ -128,7 +131,7 @@ select:focus,input[type=text]:focus{outline:none;border-color:var(--azul)}#fse{f
      <div id="map">
        <div class="toolbar"><div class="tg on" id="tgSat">Satélite</div><div class="tg" id="tgHib">Híbrido</div><div class="tg" id="tgCal">Calles</div></div>
        <div class="legmap"><div><span class="d" style="background:var(--con)"></span>Con conexión</div><div><span class="d" style="background:var(--sin)"></span>Sin conexión</div><div style="color:var(--mut);margin-top:2px">Tamaño = nº de personas</div></div>
-       <div id="escind"></div><div id="secret"></div>
+       <div id="esctog" title="Mismo personal asignado; solo cambia la coordenada del punto en el mapa"><button data-e="lp">Coordenadas buenas (21-oct)</button><span class="sep"></span><button data-e="le">Coordenadas erróneas (1er listado)</button></div>
      </div>
    </div>
    <div id="right">
@@ -312,11 +315,9 @@ function baseSel(l,b){[gsat,ghib,gcal].forEach(x=>{if(x!==l&&map.hasLayer(x))map
 document.getElementById("tgSat").onclick=()=>baseSel(gsat,"tgSat");
 document.getElementById("tgHib").onclick=()=>baseSel(ghib,"tgHib");
 document.getElementById("tgCal").onclick=()=>baseSel(gcal,"tgCal");
-function flip(){escenario=(escenario==="le")?"lp":"le";const ind=document.getElementById("escind");
-  ind.textContent=(escenario==="le")?"Coordenadas: primer listado (erróneas)":"Coordenadas: 21-oct (limpias)";
-  ind.classList.add("show");setTimeout(()=>ind.classList.remove("show"),1800);
-  if(selCod){const cc=selCod;selCod=null;select(cc);}else render(false);}
-document.getElementById("secret").onclick=flip;
+function setEsc(e){escenario=e;document.querySelectorAll("#esctog button").forEach(b=>b.classList.toggle("on",b.dataset.e===e));if(selCod){const cc=selCod;selCod=null;select(cc);}else render(false);}
+document.querySelectorAll("#esctog button").forEach(b=>b.onclick=()=>setEsc(b.dataset.e));
+setEsc("le");
 
 render(true);
 depchart();   // referencia fija (todos los departamentos, no cambia con filtros)
