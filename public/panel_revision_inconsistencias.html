@@ -95,10 +95,10 @@ label.sm{display:block;font-size:10.5px;color:var(--mut);text-transform:uppercas
    </div>
    <label class="sm" style="margin-top:7px">Buscar (nombre / código)</label>
    <input type="text" id="fq" placeholder="Escribe para filtrar…">
-   <label class="sm" style="margin-top:9px">Alertas a revisar</label>
+   <label class="sm" style="margin-top:9px">Cambios 2024 → 2027 a revisar</label>
    <div class="chips" id="chips"></div>
    <div class="bar">
-     <div class="btn" id="bAll">Solo con alerta</div>
+     <div class="btn" id="bAll">Solo con cambios</div>
      <div class="btn" id="bClr">Limpiar filtros</div>
    </div>
  </div>
@@ -128,23 +128,18 @@ const ZURL = "https://services8.arcgis.com/Xvx0eUMvexTA2zqk/arcgis/rest/services
 
 // ---- alert helpers ----
 function alertsOf(d){
+  // CAMBIOS entre 2024 y 2027 (ya no errores de coordenada: 21-oct es la versión buena)
   const a=[];
-  if(d.e==="LEJOS DE 2024") a.push("lejos");
-  if(d.e==="NUEVO ERROR") a.push("error");
-  if(d.e==="SIN COORD") a.push("sincoord");
-  if(d.e==="DESVÍO LEVE") a.push("leve");
-  if(d.xc) a.push("cruce");
-  if(d.cs) a.push("sector");
-  if(d.cz && !d.cs) a.push("catch");
-  if(d.fz) a.push("fuera");
-  if(d.mn) a.push("movnom");
-  if(d.cn) a.push("nombre");
-  if(d.dc) a.push("doe");
+  if(d.e==="LEJOS DE 2024") a.push("lejos");   // se movió lejos del 2024
+  if(d.e==="DESVÍO LEVE") a.push("leve");       // se movió un poco
+  if(d.cs) a.push("sector");                    // cambió de sector
+  if(d.cz && !d.cs) a.push("catch");            // cambió de catchment
+  if(d.fz) a.push("fuera");                     // quedó fuera de su zona
+  if(d.cn) a.push("nombre");                    // cambió de nombre
   return a;
 }
-const ALDEF=[["lejos","Lejos de 2024"],["error","Nuevo error"],["cruce","Cruzada"],
- ["movnom","Movió coord · mismo nombre"],["sector","Cambió sector"],["catch","Cambió catchment"],["fuera","Fuera de zona"],
- ["leve","Desvío leve"],["nombre","Cambió nombre"],["doe","DOE movió coord"],["sincoord","Sin coord"]];
+const ALDEF=[["lejos","Se movió lejos de 2024"],["leve","Desvío leve"],["nombre","Cambió nombre"],
+ ["sector","Cambió sector"],["catch","Cambió catchment"],["fuera","Fuera de zona"]];
 const BLAB={lejos:"Lejos",error:"Error",cruce:"Cruzada",movnom:"Coord·mismo nombre",sector:"Sector",catch:"Catchment",
  fuera:"Fuera zona",leve:"Desvío leve",nombre:"Nombre",doe:"DOE movió",sincoord:"Sin coord"};
 // severidad para ordenar/colorear el borde izquierdo
