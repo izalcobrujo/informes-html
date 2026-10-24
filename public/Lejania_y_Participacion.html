@@ -1,0 +1,385 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head><body>
+<title>Lejanía y Participación</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Source+Sans+3:wght@400;600;700&display=swap">
+<style>
+/* Layout: informe técnico en bandas; cada banda = una pregunta, KPI arriba, gráfica abajo. Una columna en móvil. */
+:root{
+  --bg:#F3F5F8; --panel:#FFFFFF; --ink:#13233A; --muted:#5B6878; --line:#DCE2EA;
+  --urb:#2E67B1; --rur:#4F8A3C; --vote:#E39B2D; --bad:#C0453A; --soft:#E9EEF5;
+  --f-disp:"Archivo","Arial Narrow",Arial,sans-serif;
+  --f-body:"Source Sans 3","Segoe UI",Arial,sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0E1622; --panel:#16212F; --ink:#E8EDF4; --muted:#9AA8B8; --line:#2A3748;
+  --urb:#6EA1E6; --rur:#7DBA67; --vote:#F0B24D; --bad:#E3766B; --soft:#1C2A3B; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1622; --panel:#16212F; --ink:#E8EDF4; --muted:#9AA8B8; --line:#2A3748;
+  --urb:#6EA1E6; --rur:#7DBA67; --vote:#F0B24D; --bad:#E3766B; --soft:#1C2A3B; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.45;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:24px 40px}
+.wrap{max-width:1080px;margin:0 auto;display:grid;gap:22px}
+h1,h2,h3{font-family:var(--f-disp);margin:0;text-wrap:balance;letter-spacing:-.01em}
+h1{font-size:clamp(28px,5vw,44px);font-weight:800;line-height:1.05}
+h2{font-size:clamp(20px,3vw,26px);font-weight:700}
+h3{font-size:15px;font-weight:600;color:var(--muted)}
+.eyebrow{font:600 12px/1 var(--f-disp);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.num{font-family:var(--f-disp);font-variant-numeric:tabular-nums}
+.hero{background:var(--ink);color:var(--bg);border-radius:14px;padding:28px clamp(18px,4vw,36px);display:grid;gap:18px}
+.hero .eyebrow{color:color-mix(in srgb,var(--bg) 70%,transparent)}
+.hero p{margin:0;max-width:62ch;color:color-mix(in srgb,var(--bg) 82%,transparent)}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{background:color-mix(in srgb,var(--bg) 8%,transparent);border:1px solid color-mix(in srgb,var(--bg) 18%,transparent);border-radius:10px;padding:12px 14px;display:grid;gap:4px;min-width:0}
+.kpi b{font:800 30px/1 var(--f-disp);font-variant-numeric:tabular-nums}
+.kpi span{font-size:13px;color:color-mix(in srgb,var(--bg) 75%,transparent)}
+.band{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px clamp(16px,3vw,28px);display:grid;gap:16px;min-width:0}
+.band header{display:grid;gap:6px}
+.band header p{margin:0;color:var(--muted);max-width:70ch}
+.row{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:18px}
+.row>*,.band>*,.band>div>*{min-width:0}
+.mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px}
+.m{border-left:4px solid var(--c,var(--ink));padding:4px 0 4px 12px;display:grid;gap:2px}
+.m b{font:800 26px/1.05 var(--f-disp);font-variant-numeric:tabular-nums;color:var(--c,var(--ink))}
+.m span{font-size:13px;color:var(--muted)}
+.chart{width:100%;display:block;overflow:visible}
+.chart text{fill:var(--muted);font:12px var(--f-body)}
+.chart .v{fill:var(--ink);font:700 12px var(--f-disp)}
+.chart .grid{stroke:var(--line);stroke-width:1}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--muted)}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-1px}
+.people{display:flex;flex-wrap:wrap;gap:4px;align-items:flex-end}
+.people svg{width:26px;height:44px}
+.callout{background:var(--soft);border-radius:10px;padding:14px 16px;display:flex;gap:14px;align-items:center}
+.callout .big{flex:none;font:800 34px/1 var(--f-disp);color:var(--bad);font-variant-numeric:tabular-nums;white-space:nowrap}
+.callout p{margin:0}
+.heat{overflow-x:auto}
+.heat table{border-collapse:collapse;width:100%;min-width:520px;font-variant-numeric:tabular-nums}
+.heat th,.heat td{padding:8px 6px;text-align:center;font-size:13px}
+.heat th{color:var(--muted);font-weight:600}
+.heat td{color:#13233A;font-weight:700;border:2px solid var(--panel)}
+.heat td.l{color:var(--ink);font-weight:600;text-align:left;background:transparent}
+.tbl{overflow-x:auto}
+.tbl table{border-collapse:collapse;width:100%;min-width:560px;font-size:13px;font-variant-numeric:tabular-nums}
+.tbl th{font:600 11px var(--f-disp);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbl td{padding:8px 6px;border-bottom:1px solid var(--line)}
+.tbl td.r,.tbl th.r{text-align:right}
+.bar-in{display:inline-block;height:8px;border-radius:4px;background:var(--bad);vertical-align:middle;margin-right:6px}
+.note{font-size:12.5px;color:var(--muted);display:grid;gap:6px}
+.note p{margin:0;max-width:95ch}
+.tag{display:inline-block;font:600 11px var(--f-disp);letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:99px;background:var(--soft);color:var(--muted)}
+.pyr{display:grid;gap:6px}
+.pyr .r{display:grid;grid-template-columns:1fr 54px 1fr;align-items:center;gap:8px;font-size:13px}
+.pyr .h{justify-self:end;height:16px;border-radius:4px 0 0 4px;background:var(--urb)}
+.pyr .f{height:16px;border-radius:0 4px 4px 0;background:var(--vote)}
+.pyr .c{text-align:center;font:600 12px var(--f-disp);color:var(--muted)}
+.pyr .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
+.case{border:1px solid var(--line);border-top:4px solid var(--c);border-radius:10px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
+.case .ct{color:var(--ink);font-size:16px}
+.case .cn{display:flex;align-items:baseline;gap:8px}
+.case .cn b{font:800 30px/1 var(--f-disp);color:var(--c)}
+.case .cn span{color:var(--muted);font-size:13px}
+.case ul{margin:0;padding-left:18px;display:grid;gap:3px;font-size:13.5px}
+@media (max-width:520px){.callout{flex-direction:column;align-items:flex-start}.kpi b{font-size:26px}}
+</style>
+
+<div class="wrap">
+
+<section class="hero" aria-labelledby="t1">
+  <div class="eyebrow">Informe técnico · Padrón 2027 · participación en la elección anterior</div>
+  <h1 id="t1">Lejanía y participación</h1>
+  <p>4.9 millones de electores estables cruzados con su ubicación territorial y su voto. La distancia al centro y la mala asignación tienen un costo medible en participación.</p>
+  <div class="kpis">
+    <div class="kpi"><b class="num">54.3%</b><span>participación global</span></div>
+    <div class="kpi"><b class="num">−20.6</b><span>puntos: de &lt;0.5 km (57.5%) a &gt;10 km (36.9%)</span></div>
+    <div class="kpi"><b class="num">260,493</b><span>votan fuera de su sector (&gt;0.5 km extra)</span></div>
+    <div class="kpi"><b class="num">−14</b><span>puntos al votar a más de 5 km extra</span></div>
+    <div class="kpi"><b class="num">43.4</b><span>años, edad mediana de quien vota</span></div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="s1">
+  <header>
+    <div class="eyebrow">1 · Distancia</div>
+    <h2 id="s1">A más distancia, menos votos</h2>
+    <p>Participación según la distancia de su casa al centro donde vota. Electores ubicados en parcela o zona (2.35 millones).</p>
+  </header>
+  <div class="mini">
+    <div class="m" style="--c:var(--urb)"><b class="num">57.3% → 35.4%</b><span>urbano, de &lt;0.5 km a &gt;10 km</span></div>
+    <div class="m" style="--c:var(--rur)"><b class="num">60.8% → 39.3%</b><span>rural, de &lt;0.5 km a &gt;10 km</span></div>
+    <div class="m" style="--c:var(--vote)"><b class="num">+3.5</b><span>puntos: el rural cerca vota más que el urbano</span></div>
+  </div>
+  <div class="legend"><span><i style="background:var(--urb)"></i>Urbano</span><span><i style="background:var(--rur)"></i>Rural</span></div>
+  <svg class="chart" id="c1" viewBox="0 0 680 290" role="img" aria-label="Participación por distancia, urbano y rural"></svg>
+</section>
+
+<section class="band" aria-labelledby="s2">
+  <header>
+    <div class="eyebrow">2 · Centros urbanos, en metros</div>
+    <h2 id="s2">En la ciudad, cada cuadra cuenta</h2>
+    <p>Electores urbanos de centros urbanos (1.99 millones). La participación alcanza su máximo a 100–200 m y baja de forma constante después.</p>
+  </header>
+  <div class="mini">
+    <div class="m" style="--c:var(--urb)"><b class="num">58.1%</b><span>a menos de 300 m</span></div>
+    <div class="m" style="--c:var(--bad)"><b class="num">54.1%</b><span>a más de 1 km</span></div>
+    <div class="m" style="--c:var(--bad)"><b class="num">50.1%</b><span>a más de 3 km</span></div>
+    <div class="m"><b class="num">−2.7</b><span>puntos dentro del mismo centro: vecinos a 180 m vs a 1,080 m</span></div>
+  </div>
+  <div class="row">
+    <div><h3>Participación por distancia (metros, hasta)</h3><svg class="chart" id="c2" viewBox="0 0 440 300" role="img" aria-label="Participación urbana por metros"></svg></div>
+    <div><h3>Dentro del mismo centro urbano (quintiles de distancia)</h3><svg class="chart" id="c3" viewBox="0 0 440 300" role="img" aria-label="Participación por quintil dentro del centro"></svg></div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="s3">
+  <header>
+    <div class="eyebrow">3 · Mala asignación</div>
+    <h2 id="s3">Votar fuera de su sector cuesta participación</h2>
+    <p>Km extra = distancia a su centro − distancia al centro de su sector (el territorialmente indicado).</p>
+  </header>
+  <div class="callout">
+    <div class="big num">260,493</div>
+    <p><b>electores votan a más de 0.5 km extra de su sector</b> (11.1% de los ubicados). Participan al <b>52.6%</b> frente a <b>57.0%</b> de los bien asignados. Estimación de votos recuperables si votaran en su sector: <b class="num">~8,500</b> (solo entre ubicados).</p>
+  </div>
+  <div class="row">
+    <div><h3>Nacional · km extra</h3><svg class="chart" id="c4" viewBox="0 0 440 300" role="img" aria-label="Participación por km extra"></svg></div>
+    <div><h3>Urbano · metros extra</h3><svg class="chart" id="c5" viewBox="0 0 440 300" role="img" aria-label="Participación urbana por metros extra"></svg></div>
+  </div>
+  <div>
+    <h3>Urbano · a la MISMA distancia de su sector, cuánto pierde quien vota en otro</h3>
+    <div class="heat" id="h1"></div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="s4">
+  <header>
+    <div class="eyebrow">4 · Efecto bolsón</div>
+    <h2 id="s4">El bolsón pierde votos aunque la gente viva cerca</h2>
+    <p>Centros bolsón: reciben a quienes el sistema no pudo ubicar. A la misma distancia, participan menos.</p>
+  </header>
+  <div class="mini">
+    <div class="m" style="--c:var(--bad)"><b class="num">52.9%</b><span>urbanos en bolsón</span></div>
+    <div class="m" style="--c:var(--urb)"><b class="num">56.4%</b><span>urbanos en centro normal</span></div>
+    <div class="m" style="--c:var(--bad)"><b class="num">−5.9</b><span>puntos viviendo a menos de 500 m</span></div>
+    <div class="m"><b class="num">1,075,000</b><span>electores estables en bolsón</span></div>
+  </div>
+  <div class="legend"><span><i style="background:var(--bad)"></i>Bolsón</span><span><i style="background:var(--urb)"></i>Normal</span></div>
+  <svg class="chart" id="c6" viewBox="0 0 680 290" role="img" aria-label="Participación bolsón contra normal por distancia"></svg>
+</section>
+
+<section class="band" aria-labelledby="s5">
+  <header>
+    <div class="eyebrow">5 · Quién vota</div>
+    <h2 id="s5">Perfil de los 2.67 millones que votaron</h2>
+    <p>Edad y sexo de quienes votaron. La tasa de participación por edad se completa con el padrón con fecha de nacimiento de todos los electores.</p>
+  </header>
+  <div class="row">
+    <div style="display:grid;gap:14px">
+      <h3>De cada 10 votantes</h3>
+      <div class="people" id="p1" aria-label="5.6 de cada 10 votantes son mujeres"></div>
+      <div class="legend"><span><i style="background:var(--vote)"></i>Mujeres 55.6%</span><span><i style="background:var(--urb)"></i>Hombres 44.4%</span></div>
+      <h3>Votantes por edad y sexo</h3>
+      <div class="pyr" id="pyr"></div>
+    </div>
+    <div style="display:grid;gap:12px">
+      <h3>La lejanía deja fuera a los adultos mayores</h3>
+      <div class="mini">
+        <div class="m" style="--c:var(--vote)"><b class="num">22.5% → 14.1%</b><span>votantes de 60+ años, de &lt;0.5 km a &gt;10 km</span></div>
+        <div class="m"><b class="num">44.9 → 38.1</b><span>edad mediana de quien vota</span></div>
+      </div>
+      <div class="legend"><span><i style="background:var(--vote)"></i>60 o más</span><span><i style="background:var(--urb)"></i>18 a 29</span></div>
+      <svg class="chart" id="c7" viewBox="0 0 440 300" role="img" aria-label="Composición por edad según distancia"></svg>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="s6">
+  <header>
+    <div class="eyebrow">6 · Centros de votación</div>
+    <h2 id="s6">Urbanos frente a rurales</h2>
+  </header>
+  <div class="row">
+    <div style="display:grid;gap:10px">
+      <div class="mini">
+        <div class="m" style="--c:var(--urb)"><b class="num">57.9%</b><span>participación mediana · 737 centros urbanos</span></div>
+        <div class="m" style="--c:var(--rur)"><b class="num">51.8%</b><span>participación mediana · 1,009 centros rurales</span></div>
+        <div class="m" style="--c:var(--urb)"><b class="num">0.45 km</b><span>distancia mediana urbana</span></div>
+        <div class="m" style="--c:var(--rur)"><b class="num">1.95 km</b><span>distancia mediana rural</span></div>
+        <div class="m" style="--c:var(--urb)"><b class="num">6%</b><span>fuera de su sector, urbano</span></div>
+        <div class="m" style="--c:var(--bad)"><b class="num">33%</b><span>fuera de su sector, rural</span></div>
+      </div>
+    </div>
+    <div><h3>Centros según su participación, % (≥300 electores)</h3><svg class="chart" id="c8" viewBox="0 0 440 300" role="img" aria-label="Distribución de centros por participación"></svg></div>
+  </div>
+  <div>
+    <h3>Centros con mayor caída interna: sus electores lejanos casi no votan · candidatos a nuevo centro 2027</h3>
+    <div class="tbl" id="t2"></div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="s7">
+  <header>
+    <div class="eyebrow">7 · Colonias · estudios de caso</div>
+    <h2 id="s7">La distancia no lo explica todo</h2>
+    <p>2,328 colonias con 300 o más electores estables. Participación de 18.3% a 72.5% (mediana 56.4%).</p>
+  </header>
+  <div class="cases">
+    <article class="case" style="--c:var(--rur)">
+      <span class="tag">Lejos, pero votan</span>
+      <h3 class="ct">Villa Tzu Chi · Sacacoyo</h3>
+      <div class="cn"><b class="num">66.9%</b><span>participación</span></div>
+      <ul><li><b>2.18 km</b> a su centro; el de su sector está a <b>250 m</b></li><li><b>32.3%</b> de sus votantes tienen 18–29 años</li><li>Solo <b>12.9%</b> tienen 60 o más</li></ul>
+    </article>
+    <article class="case" style="--c:var(--rur)">
+      <span class="tag">Lejos, pero votan</span>
+      <h3 class="ct">Santa Lucía · Ahuachapán</h3>
+      <div class="cn"><b class="num">66.8%</b><span>participación</span></div>
+      <ul><li><b>3.25 km</b> a su centro; el de su sector a <b>260 m</b></li><li>Edad mediana de quien vota: <b>36.5</b></li><li><b>30.6%</b> de 18–29 años</li></ul>
+    </article>
+    <article class="case" style="--c:var(--urb)">
+      <span class="tag">Lejos, pero votan</span>
+      <h3 class="ct">La Cruz · Santa Tecla</h3>
+      <div class="cn"><b class="num">62.0%</b><span>participación</span></div>
+      <ul><li><b>6.8 km</b> a su centro; el de su sector a <b>500 m</b></li><li>Comunidad que viaja para votar</li><li>Candidata a reasignación con ganancia segura</li></ul>
+    </article>
+    <article class="case" style="--c:var(--bad)">
+      <span class="tag">Cerca, pero no votan</span>
+      <h3 class="ct">El Centro · Intipucá</h3>
+      <div class="cn"><b class="num">25.6%</b><span>participación</span></div>
+      <ul><li>A <b>360 m</b> de su centro</li><li><b>34.4%</b> de sus votantes tienen 60 o más</li><li>Solo <b>49.4%</b> mujeres: menos que el resto del país</li></ul>
+    </article>
+    <article class="case" style="--c:var(--bad)">
+      <span class="tag">Cerca, pero no votan</span>
+      <h3 class="ct">El Calvario · Chirilagua</h3>
+      <div class="cn"><b class="num">21.7%</b><span>participación</span></div>
+      <ul><li><b>1,575</b> electores a <b>320 m</b> de su centro</li><li>Edad mediana de quien vota: <b>49.1</b></li><li>Patrón de municipios de alta emigración</li></ul>
+    </article>
+    <article class="case" style="--c:var(--vote)">
+      <span class="tag">Las que más votan</span>
+      <h3 class="ct">El Centro · Huizúcar</h3>
+      <div class="cn"><b class="num">72.5%</b><span>participación</span></div>
+      <ul><li>A <b>140 m</b> de su centro</li><li>Le siguen Santa Elena, Salcoatitán (<b>71.4%</b>, 35% jóvenes) y Miramar, San Pedro Puxtla (<b>71.3%</b>)</li></ul>
+    </article>
+  </div>
+  <div class="row">
+    <div>
+      <h3>Colonias por nivel de participación: edad de quienes votan</h3>
+      <div class="legend"><span><i style="background:var(--vote)"></i>% de 60 o más</span><span><i style="background:var(--urb)"></i>% de 18 a 29</span></div>
+      <svg class="chart" id="c9" viewBox="0 0 440 300" role="img" aria-label="Edad de votantes por quintil de participación de la colonia"></svg>
+    </div>
+    <div class="mini" style="align-content:start;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+      <div class="m" style="--c:var(--vote)"><b class="num">64.1%</b><span>participación mediana del quintil más alto</span></div>
+      <div class="m" style="--c:var(--bad)"><b class="num">43.9%</b><span>participación mediana del quintil más bajo</span></div>
+      <div class="m"><b class="num">0.4 vs 0.5 km</b><span>misma distancia: la diferencia es otra cosa</span></div>
+      <div class="m" style="--c:var(--urb)"><b class="num">18.6% vs 23.4%</b><span>votantes de 60+: las colonias que más votan son más jóvenes</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="note" aria-label="Nota metodológica">
+  <span class="tag">Nota metodológica</span>
+  <p>Población: electores estables (ya inscritos en la elección anterior) con centro 2026 y voto conocido; exterior excluido. Distancias en línea recta, solo para ubicados en parcela o zona. Urbano/rural según la dirección del padrón; centro urbano o rural según la mayoría de sus electores.</p>
+  <p>Es evidencia observacional: la lejanía viene junto con lo rural, la edad y el nivel socioeconómico. Por eso las comparaciones se hacen dentro de estratos (urbano/rural, mismo centro, misma distancia a su sector). La estimación de votos recuperables es un orden de magnitud.</p>
+  <p>Fuentes: cruce padrón–catastro y puente territorial del 23/10/2026; registro de votación de la elección anterior (edad y sexo solo de quienes votaron).</p>
+</section>
+</div>
+
+<script>
+const D={
+ dist:{cats:['<0.5','0.5–1','1–1.5','1.5–2','2–3','3–5','5–10','>10'],urb:[57.3,56.1,56.0,54.8,53.6,51.5,46.0,35.4],rur:[60.8,60.1,58.1,57.4,56.6,52.9,48.0,39.3]},
+ metros:{cats:['100','200','300','400','500','600','800','1k','1.5k','2k','3k','>3k'],v:[57.5,58.8,57.7,57.1,56.7,56.4,56.2,56.1,56.0,54.7,53.8,50.1]},
+ quint:{cats:['Q1 · 180 m','Q2 · 320 m','Q3 · 460 m','Q4 · 630 m','Q5 · 1,080 m'],v:[58.0,56.8,56.6,56.4,55.3]},
+ extra:{cats:['en su sector','0.25–0.5','0.5–1','1–2','2–5','>5 km'],v:[57.0,57.3,56.9,54.8,51.1,43.2]},
+ extraM:{cats:['en su sector','100–250','250–500','500–1k','1–2k','>2k m'],v:[57.0,57.0,57.3,56.8,54.7,50.5]},
+ heat:{rows:['< 250 m','250–500 m','500–1,000 m','> 1,000 m'],cols:['en su sector','+100–250','+250–500','+500–1k','+1–2k','+2k m'],
+   v:[[58.2,58.7,57.5,56.9,55.0,50.4],[57.0,57.4,58.2,57.7,55.3,51.4],[56.2,56.2,56.2,55.7,54.2,50.6],[55.5,52.6,55.7,56.0,53.8,48.8]]},
+ bolson:{cats:['<0.5','0.5–1','1–1.5','1.5–2','2–3','3–5','5–10','>10'],b:[53.3,54.2,55.4,56.3,55.7,52.1,45.8,43.1],n:[59.2,57.3,56.7,55.3,54.3,51.8,46.7,36.0]},
+ edad:[['18–24',133406,155895],['25–29',129044,157171],['30–39',243578,302169],['40–49',219274,286407],['50–59',197355,260444],['60–69',144552,186961],['70+',117704,134258]],
+ perfil:{cats:['<0.5','0.5–1','1–1.5','1.5–2','2–3','3–5','5–10','>10'],m60:[22.5,20.9,18.7,16.9,16.7,16.1,15.9,14.1],j:[22.1,22.9,24.1,25.4,25.5,26.1,27.1,28.8]},
+ hist:{cats:['<40','40–45','45–50','50–55','55–60','60–65','65–70','70+'],v:[126,179,266,301,345,285,87,5]},
+ top:[['Jiquilisco','CE Cantón La Canoa',2154,54.8,2.68,69.9,22.9],['Santa Tecla','CE Escolar Amigos del Volcán',1224,57.8,0.07,80.3,40.3],['Santa Ana','CE Fe y Alegría La Merced',3923,55.6,0.77,65.1,25.8],['Santa Ana','CE Finca San José, Potrero Grande Arriba',1079,32.1,10.34,43.5,7.9],['Meanguera del Golfo','CE Cantón El Salvador',495,43.2,0.14,73.9,38.6],['Santa Ana','CE Cantón Las Aradas',2077,43.3,6.44,56.1,21.2],['Izalco','CE Margarita Zaldívar de Wilson',3836,60.1,0.49,72.9,40.2],['Ahuachapán','CE Cantón Palo Pique',3184,57.8,1.83,66.4,35.1]]
+};
+const NS='http://www.w3.org/2000/svg';
+function el(t,a,p){const e=document.createElementNS(NS,t);for(const k in a)e.setAttribute(k,a[k]);if(p)p.appendChild(e);return e}
+function txt(p,x,y,s,a){const t=el('text',Object.assign({x,y},a||{}),p);t.textContent=s;return t}
+function frame(svg,lo,hi,step,L){
+  const vb=svg.getAttribute('viewBox').split(' '),W=+vb[2],H=+vb[3],T=18,B=44,R=12;
+  const y=v=>T+(hi-v)/(hi-lo)*(H-T-B);
+  for(let v=lo;v<=hi+1e-9;v+=step){el('line',{x1:L,x2:W-R,y1:y(v),y2:y(v),class:'grid'},svg);txt(svg,L-8,y(v)+4,v+'%',{'text-anchor':'end'})}
+  return {W,H,T,B,R,y,L};
+}
+function lines(id,cats,series,lo,hi,step){
+  const s=document.getElementById(id),f=frame(s,lo,hi,step,46),n=cats.length;
+  const x=i=>f.L+12+i*(f.W-f.R-f.L-24)/(n-1);
+  cats.forEach((c,i)=>txt(s,x(i),f.H-f.B+20,c,{'text-anchor':'middle'}));
+  series.forEach(({v,c,lab})=>{
+    el('polyline',{points:v.map((d,i)=>x(i)+','+f.y(d)).join(' '),fill:'none',stroke:c,'stroke-width':3,'stroke-linejoin':'round'},s);
+    v.forEach((d,i)=>{el('circle',{cx:x(i),cy:f.y(d),r:4,fill:c},s)});
+    if(lab){[0,n-1].forEach(i=>txt(s,x(i),f.y(v[i])+(lab==2?20:-10),v[i].toFixed(1),{class:'v','text-anchor':'middle'}))}
+  });
+}
+function bars(id,cats,v,lo,hi,step,colorFn){
+  const s=document.getElementById(id),f=frame(s,lo,hi,step,46),n=cats.length;
+  const bw=(f.W-f.R-f.L)/n,sm=bw<34?{style:'font-size:9.5px'}:{};
+  cats.forEach((c,i)=>{
+    const x0=f.L+i*bw+bw*.18,w=bw*.64,yy=f.y(v[i]);
+    el('rect',{x:x0,y:yy,width:w,height:f.y(lo)-yy,rx:4,fill:colorFn(v[i],i)},s);
+    txt(s,x0+w/2,yy-6,v[i].toFixed(1),Object.assign({class:'v','text-anchor':'middle'},sm));
+    txt(s,x0+w/2,f.H-f.B+20,c,Object.assign({'text-anchor':'middle'},sm));
+  });
+}
+const css=v=>getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+function draw(){
+  document.querySelectorAll('svg.chart').forEach(s=>{s.innerHTML='';
+    // el ancho del dibujo sigue al ancho real: el texto queda a su tamaño en móvil y en escritorio
+    const w=Math.round(Math.min(760,Math.max(320,s.getBoundingClientRect().width||680)));
+    const h=+s.getAttribute('viewBox').split(' ')[3];s.setAttribute('viewBox',`0 0 ${w} ${h}`)});
+  const U=css('--urb'),Ru=css('--rur'),B=css('--bad'),V=css('--vote');
+  lines('c1',D.dist.cats,[{v:D.dist.urb,c:U,lab:1},{v:D.dist.rur,c:Ru,lab:1}],30,65,5);
+  bars('c2',D.metros.cats,D.metros.v,48,60,2,(d,i)=>i<3?U:(d<55?B:U));
+  bars('c3',D.quint.cats,D.quint.v,52,60,2,(d,i)=>i==4?B:U);
+  bars('c4',D.extra.cats,D.extra.v,40,60,5,(d,i)=>i==0?U:(d<55?B:V));
+  bars('c5',D.extraM.cats,D.extraM.v,46,60,2,(d,i)=>i==0?U:(d<55?B:V));
+  lines('c6',D.bolson.cats,[{v:D.bolson.n,c:U,lab:1},{v:D.bolson.b,c:B,lab:1}],30,65,5);
+  lines('c7',D.perfil.cats,[{v:D.perfil.m60,c:V,lab:1},{v:D.perfil.j,c:U,lab:2}],10,32,4);
+  lines('c9',['Q1 baja','Q2','Q3','Q4','Q5 alta'],[{v:[23.4,22.4,22.1,21.2,18.6],c:V,lab:1},{v:[22.3,22.4,22.1,22.4,24.0],c:U,lab:2}],16,26,2);
+  const s8=document.getElementById('c8'),mx=360,f=frame(s8,0,mx,90,46),n=D.hist.cats.length,bw=(f.W-f.R-f.L)/n;
+  s8.querySelectorAll('text').forEach(t=>{if(t.textContent.endsWith('%'))t.textContent=t.textContent.replace('%','')});
+  D.hist.v.forEach((v,i)=>{const x0=f.L+i*bw+bw*.12,w=bw*.76,yy=f.y(v);
+    el('rect',{x:x0,y:yy,width:w,height:f.y(0)-yy,rx:3,fill:i<3?B:(i>4?Ru:U)},s8);
+    txt(s8,x0+w/2,yy-6,String(v),{class:'v','text-anchor':'middle'});txt(s8,x0+w/2,f.H-f.B+20,D.hist.cats[i],{'text-anchor':'middle'})});
+}
+// personas
+function persona(fill){return `<svg viewBox="0 0 26 44" aria-hidden="true"><circle cx="13" cy="7" r="6" fill="${fill}"/><path d="M4 18c0-3 2-5 5-5h8c3 0 5 2 5 5v11h-4v14h-10v-14h-4z" fill="${fill}"/></svg>`}
+function personas(){
+  const p=document.getElementById('p1');let h='';
+  for(let i=0;i<10;i++){h+=persona(i<5?'var(--vote)':(i==5?'url(#gm)':'var(--urb)'))}
+  p.innerHTML=`<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="gm" x1="0" x2="1"><stop offset="60%" stop-color="var(--vote)"/><stop offset="60%" stop-color="var(--urb)"/></linearGradient></defs></svg>`+h;
+}
+function piramide(){
+  const mx=Math.max(...D.edad.flatMap(r=>[r[1],r[2]])),tot=D.edad.reduce((a,r)=>a+r[1]+r[2],0);
+  let h='<div class="pyr r lbl" style="grid-template-columns:1fr 54px 1fr"><span style="justify-self:end">Hombres</span><span></span><span>Mujeres</span></div>';
+  D.edad.forEach(([e,hm,mj])=>{h+=`<div class="r"><div class="h" style="width:${(hm/mx*100).toFixed(1)}%" title="${hm.toLocaleString('es')}"></div><div class="c">${e}<br>${(100*(hm+mj)/tot).toFixed(1)}%</div><div class="f" style="width:${(mj/mx*100).toFixed(1)}%" title="${mj.toLocaleString('es')}"></div></div>`});
+  document.getElementById('pyr').innerHTML=h;
+}
+function heat(){
+  const lo=48,hi=59;let h='<table><thead><tr><th style="text-align:left">Distancia a su sector</th>'+D.heat.cols.map(c=>`<th>${c}</th>`).join('')+'</tr></thead><tbody>';
+  D.heat.rows.forEach((r,i)=>{h+=`<tr><td class="l">${r}</td>`+D.heat.v[i].map(v=>{const t=Math.max(0,Math.min(1,(v-lo)/(hi-lo)));
+    const c=`color-mix(in srgb, #2E67B1 ${Math.round(t*70+12)}%, #F2C9C3)`;return `<td style="background:${c}">${v.toFixed(1)}</td>`}).join('')+'</tr>'});
+  document.getElementById('h1').innerHTML=h+'</tbody></table>';
+}
+function tablaTop(){
+  const mx=Math.max(...D.top.map(r=>r[5]-r[6]));
+  let h='<table><thead><tr><th>Distrito</th><th>Centro</th><th class="r">Electores</th><th class="r">Particip.</th><th class="r">Cerca</th><th class="r">Lejos</th><th>Caída</th></tr></thead><tbody>';
+  D.top.forEach(([d,c,n,p,k,q1,q5])=>{const dd=q1-q5;h+=`<tr><td>${d}</td><td>${c}</td><td class="r">${n.toLocaleString('es')}</td><td class="r">${p.toFixed(1)}%</td><td class="r">${q1.toFixed(1)}%</td><td class="r">${q5.toFixed(1)}%</td><td><span class="bar-in" style="width:${(dd/mx*70).toFixed(0)}px"></span>${dd.toFixed(1)} pts</td></tr>`});
+  document.getElementById('t2').innerHTML=h+'</tbody></table>';
+}
+personas();piramide();heat();tablaTop();draw();
+matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
+let _rz;addEventListener('resize',()=>{clearTimeout(_rz);_rz=setTimeout(draw,150)});
+new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+</script>
+</body></html>
