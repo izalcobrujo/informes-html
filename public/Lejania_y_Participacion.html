@@ -76,6 +76,11 @@ h3{font-size:15px;font-weight:600;color:var(--muted)}
 .pyr .f{height:16px;border-radius:0 4px 4px 0;background:var(--vote)}
 .pyr .c{text-align:center;font:600 12px var(--f-disp);color:var(--muted)}
 .pyr .lbl{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}
+.mov{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.mov div{border:1px solid var(--line);border-radius:10px;padding:8px 6px;display:grid;justify-items:center;gap:2px;text-align:center}
+.mov svg{width:22px;height:36px}
+.mov b{font:800 22px/1 var(--f-disp);font-variant-numeric:tabular-nums}
+.mov span{font-size:11.5px;color:var(--muted)}
 .cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:12px}
 .case{border:1px solid var(--line);border-top:4px solid var(--c);border-radius:10px;padding:14px;display:grid;gap:8px;align-content:start;min-width:0}
 .case .ct{color:var(--ink);font-size:16px}
@@ -192,6 +197,30 @@ h3{font-size:15px;font-weight:600;color:var(--muted)}
       </div>
       <div class="legend"><span><i style="background:var(--vote)"></i>60 o más</span><span><i style="background:var(--urb)"></i>18 a 29</span></div>
       <svg class="chart" id="c7" viewBox="0 0 440 300" role="img" aria-label="Composición por edad según distancia"></svg>
+    </div>
+  </div>
+</section>
+
+<section class="band" aria-labelledby="s5b">
+  <header>
+    <div class="eyebrow">5b · Quién se mueve más</div>
+    <h2 id="s5b">Las jóvenes viajan; las mayores se quedan</h2>
+    <p>Entre los que votaron: peso de cada grupo cuando el centro queda lejos, comparado con su peso cuando queda a menos de 500 m (índice 100).</p>
+  </header>
+  <div class="mini">
+    <div class="m" style="--c:var(--vote)"><b class="num">130</b><span>mujeres de 18–29: el grupo que más se mueve (&gt;5 km)</span></div>
+    <div class="m" style="--c:var(--urb)"><b class="num">117</b><span>hombres de 18–29</span></div>
+    <div class="m" style="--c:var(--bad)"><b class="num">65</b><span>mujeres de 60+: la distancia las frena más que a nadie</span></div>
+    <div class="m"><b class="num">56.4% → 55.7%</b><span>mujeres entre los votantes, de cerca a &gt;5 km: el sexo solo casi no cambia</span></div>
+  </div>
+  <div class="row">
+    <div>
+      <div class="legend"><span><i style="background:var(--vote)"></i>Mujeres</span><span><i style="background:var(--urb)"></i>Hombres</span><span>— 18–29 · - - 60+</span></div>
+      <svg class="chart" id="c10" viewBox="0 0 440 300" role="img" aria-label="Índice de quién se mueve por sexo y edad"></svg>
+    </div>
+    <div style="display:grid;gap:10px;align-content:start">
+      <h3>Índice a más de 5 km (100 = igual que cerca)</h3>
+      <div class="mov" id="mov"></div>
     </div>
   </div>
 </section>
@@ -315,8 +344,8 @@ function lines(id,cats,series,lo,hi,step){
   const s=document.getElementById(id),f=frame(s,lo,hi,step,46),n=cats.length;
   const x=i=>f.L+12+i*(f.W-f.R-f.L-24)/(n-1);
   cats.forEach((c,i)=>txt(s,x(i),f.H-f.B+20,c,{'text-anchor':'middle'}));
-  series.forEach(({v,c,lab})=>{
-    el('polyline',{points:v.map((d,i)=>x(i)+','+f.y(d)).join(' '),fill:'none',stroke:c,'stroke-width':3,'stroke-linejoin':'round'},s);
+  series.forEach(({v,c,lab,dash})=>{
+    el('polyline',{points:v.map((d,i)=>x(i)+','+f.y(d)).join(' '),fill:'none',stroke:c,'stroke-width':3,'stroke-linejoin':'round','stroke-dasharray':dash?'7 5':'none'},s);
     v.forEach((d,i)=>{el('circle',{cx:x(i),cy:f.y(d),r:4,fill:c},s)});
     if(lab){[0,n-1].forEach(i=>txt(s,x(i),f.y(v[i])+(lab==2?20:-10),v[i].toFixed(1),{class:'v','text-anchor':'middle'}))}
   });
@@ -345,6 +374,8 @@ function draw(){
   bars('c5',D.extraM.cats,D.extraM.v,46,60,2,(d,i)=>i==0?U:(d<55?B:V));
   lines('c6',D.bolson.cats,[{v:D.bolson.n,c:U,lab:1},{v:D.bolson.b,c:B,lab:1}],30,65,5);
   lines('c7',D.perfil.cats,[{v:D.perfil.m60,c:V,lab:1},{v:D.perfil.j,c:U,lab:2}],10,32,4);
+  lines('c10',['<0.5 km','0.5–1','1–2','2–5','>5 km'],[{v:[100,104,114,118,130],c:V,lab:1},{v:[100,103,107,114,117],c:U,lab:2},{v:[100,92,79,69,65],c:V,lab:2,dash:1},{v:[100,95,84,81,78],c:U,lab:1,dash:1}],60,140,20);
+  s10fix();
   lines('c9',['Q1 baja','Q2','Q3','Q4','Q5 alta'],[{v:[23.4,22.4,22.1,21.2,18.6],c:V,lab:1},{v:[22.3,22.4,22.1,22.4,24.0],c:U,lab:2}],16,26,2);
   const s8=document.getElementById('c8'),mx=360,f=frame(s8,0,mx,90,46),n=D.hist.cats.length,bw=(f.W-f.R-f.L)/n;
   s8.querySelectorAll('text').forEach(t=>{if(t.textContent.endsWith('%'))t.textContent=t.textContent.replace('%','')});
@@ -354,6 +385,12 @@ function draw(){
 }
 // personas
 function persona(fill){return `<svg viewBox="0 0 26 44" aria-hidden="true"><circle cx="13" cy="7" r="6" fill="${fill}"/><path d="M4 18c0-3 2-5 5-5h8c3 0 5 2 5 5v11h-4v14h-10v-14h-4z" fill="${fill}"/></svg>`}
+function s10fix(){document.querySelectorAll('#c10 text').forEach(t=>{if(t.textContent.endsWith('%'))t.textContent=t.textContent.replace('%','')})}
+function movidos(){
+  const g=[['Mujeres','18–29',130,'var(--vote)'],['Mujeres','30–44',122,'var(--vote)'],['Mujeres','45–59',86,'var(--vote)'],['Mujeres','60+',65,'var(--vote)'],
+           ['Hombres','18–29',117,'var(--urb)'],['Hombres','30–44',112,'var(--urb)'],['Hombres','45–59',99,'var(--urb)'],['Hombres','60+',78,'var(--urb)']];
+  document.getElementById('mov').innerHTML=g.map(([s,e,v,c])=>`<div>${persona(c)}<b style="color:${v>=100?'var(--ink)':'var(--bad)'}">${v}</b><span>${s}<br>${e}</span></div>`).join('');
+}
 function personas(){
   const p=document.getElementById('p1');let h='';
   for(let i=0;i<10;i++){h+=persona(i<5?'var(--vote)':(i==5?'url(#gm)':'var(--urb)'))}
@@ -377,7 +414,7 @@ function tablaTop(){
   D.top.forEach(([d,c,n,p,k,q1,q5])=>{const dd=q1-q5;h+=`<tr><td>${d}</td><td>${c}</td><td class="r">${n.toLocaleString('es')}</td><td class="r">${p.toFixed(1)}%</td><td class="r">${q1.toFixed(1)}%</td><td class="r">${q5.toFixed(1)}%</td><td><span class="bar-in" style="width:${(dd/mx*70).toFixed(0)}px"></span>${dd.toFixed(1)} pts</td></tr>`});
   document.getElementById('t2').innerHTML=h+'</tbody></table>';
 }
-personas();piramide();heat();tablaTop();draw();
+personas();movidos();piramide();heat();tablaTop();draw();
 matchMedia('(prefers-color-scheme: dark)').addEventListener('change',draw);
 let _rz;addEventListener('resize',()=>{clearTimeout(_rz);_rz=setTimeout(draw,150)});
 new MutationObserver(draw).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
