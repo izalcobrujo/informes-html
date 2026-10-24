@@ -224,7 +224,7 @@
 
         <section class="stats-bar">
             <div class="stat-item">
-                <span class="stat-number" id="total-stat">24</span>
+                <span class="stat-number" id="total-stat">25</span>
                 <span class="stat-label">Informes<br>Publicados</span>
             </div>
             <div class="stat-item">
@@ -239,7 +239,7 @@
 
         <section class="search-container">
             <input type="text" id="buscador" class="search-box" placeholder="Buscar por título, archivo o palabras clave..." onkeyup="filtrarTarjetas()">
-            <div class="results-count" id="contador-resultados">24 de 24 informes</div>
+            <div class="results-count" id="contador-resultados">25 de 25 informes</div>
         </section>
 
         <main class="grid-cards" id="grid">
@@ -529,6 +529,34 @@
                         <span class="tag">Evaluador</span><span class="tag">Cambios</span><span class="tag">Rutas</span>
                     </div>
                     <a href="evaluador_cambios_rutas.html" target="_blank" class="btn-abrir">Abrir ↗</a>
+                </div>
+            </div>
+        </article>
+        <article class="card-item" data-busqueda="lejanía y participación lejania_y_participacion.html lejania participacion">
+            <div class="card-preview">
+                <div class="card-badge">Matriz / Datos</div>
+                
+        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
+            <rect width="260" height="130" fill="#f8fafc"/>
+            <rect x="35" y="25" width="190" height="18" rx="4" fill="#cbd5e1"/>
+            <rect x="35" y="50" width="190" height="12" rx="3" fill="#e2e8f0"/>
+            <rect x="35" y="68" width="190" height="12" rx="3" fill="#e2e8f0"/>
+            <rect x="35" y="86" width="190" height="12" rx="3" fill="#e2e8f0"/>
+            <circle cx="50" cy="56" r="3" fill="#94a3b8"/>
+            <circle cx="50" cy="74" r="3" fill="#94a3b8"/>
+            <circle cx="50" cy="92" r="3" fill="#94a3b8"/>
+        </svg>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">
+                    <a href="Lejania_y_Participacion.html" target="_blank">Lejanía y Participación</a>
+                </h3>
+                <p class="card-path">Lejania_y_Participacion.html</p>
+                <div class="card-footer">
+                    <div class="tags-container">
+                        <span class="tag">Lejania</span><span class="tag">Participacion</span>
+                    </div>
+                    <a href="Lejania_y_Participacion.html" target="_blank" class="btn-abrir">Abrir ↗</a>
                 </div>
             </div>
         </article>
@@ -938,7 +966,7 @@
     </div>
 
     <script>
-        const totalOriginal = 24;
+        const totalOriginal = 25;
         function filtrarTarjetas() {
             const query = document.getElementById('buscador').value.toLowerCase().trim();
             const tarjetas = document.querySelectorAll('.card-item');
