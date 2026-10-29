@@ -143,7 +143,7 @@ details.rc>summary::-webkit-details-marker{display:none}details.rc>summary .t{co
     <label>Municipio</label><select id="fMun"></select>
     <label>Distrito</label><select id="fDis"></select>
     <label>Zona electoral</label><select id="fZon"></select>
-    <label>Focalización</label><select id="fFoc"></select>
+    <label>Priorización</label><select id="fFoc"></select>
     <label>Segmento pro Nayib</label><select id="fSeg"></select>
     <label>Origen de la carga</label><select id="fOri"></select>
     <button class="clr" id="btnClr">LIMPIAR FILTROS</button>
@@ -169,7 +169,7 @@ details.rc>summary::-webkit-details-marker{display:none}details.rc>summary .t{co
       </div>
       <div class="g2">
         <div class="card pn"><h3>BALANCE POR ORIGEN DE LA CARGA</h3><div class="sb" id="oSub"></div><div class="tgs" style="justify-content:flex-start"><div class="tg" id="tOL"></div></div><div id="oRows"></div></div>
-        <div class="card pn"><h3>AVANCE POR FOCALIZACIÓN</h3><div class="sb">Carga por origen sobre la meta · clic en una fila para filtrar</div><div id="fRows"></div><div class="sech">SEGMENTO PRO NAYIB (1 A 7) · CLIC PARA FILTRAR</div><div id="sRows"></div>
+        <div class="card pn"><h3>AVANCE POR PRIORIZACIÓN</h3><div class="sb">Carga por origen sobre la meta · clic en una fila para filtrar</div><div id="fRows"></div><div class="sech">SEGMENTO PRO NAYIB (1 A 7) · CLIC PARA FILTRAR</div><div id="sRows"></div>
           <div class="mleg"><span><i style="background:#173f78"></i>Candidatos</span><span><i style="background:#0aa6e6"></i>Miembros de la Estructura</span><span><i style="background:#2aa876"></i>Voluntarios</span><span><i style="background:#edf0f4"></i>Falta para la meta</span></div></div>
       </div>
       <div class="card pn"><h3>DATOS DE CARGA</h3><div class="sb" id="dSub"></div>
@@ -211,7 +211,7 @@ const fP=(n,d=1)=>n==null||isNaN(n)||!isFinite(n)?"—":(n*100).toFixed(d)+"%";
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const uniq=a=>[...new Set(a)].sort((x,y)=>String(x).localeCompare(String(y),"es"));
 const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z0-9 ]/g," ").replace(/\s+/g," ").trim();
-const FOC={P:"Focal País",D:"Focal Departamental",M:"Focal Municipal",N:"Normal"},FOC_ORD=["P","D","M","N"];
+const FOC={P:"Prioritario Nacional",D:"Prioritario Departamental",M:"Prioritario Municipal",N:"Normal"},FOC_ORD=["P","D","M","N"];
 const R=BASE.rows.map((a,i)=>{const o={i};BASE.cols.forEach((c,j)=>o[c]=a[j]);o.zn="Zona "+o.cod.slice(-2);o.ze="ZE-"+o.cod.slice(0,2)+"-"+o.cod.slice(-3);return o;});
 function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 function rng(seed){let a=seed>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
@@ -397,7 +397,7 @@ function fill(){
   opt($("fDis"),S.mun?uniq(R.filter(r=>r.dep===S.dep&&r.mun===S.mun).map(r=>r.dis)):[],S.dis,S.mun?"Todos los distritos":"— Elija municipio —");$("fDis").disabled=!S.mun;
   const zs=S.dis?R.filter(r=>r.dep===S.dep&&r.mun===S.mun&&r.dis===S.dis):[];
   $("fZon").innerHTML=`<option value="">${S.dis?"Todas las zonas":"— Elija distrito —"}</option>`+zs.map(r=>`<option value="${r.i}"${S.zon===r.i?" selected":""}>${r.zn} · ${esc(r.cen)}</option>`).join("");$("fZon").disabled=!S.dis;
-  opt($("fFoc"),FOC_ORD,S.foc,"Todas las focalizaciones",k=>FOC[k]);
+  opt($("fFoc"),FOC_ORD,S.foc,"Todas las priorizaciones",k=>FOC[k]);
   opt($("fSeg"),[1,2,3,4,5,6,7],S.seg,"Todos los segmentos",v=>"Segmento "+v+(v==7?" (más pro Nayib)":v==1?" (menos pro Nayib)":""));
   opt($("fOri"),ORI.map(o=>o[0]),S.ori,"Todos los orígenes",k=>ON[k][1]);
 }
@@ -435,8 +435,8 @@ function renderCarga(rows,zoom){
   if(S.zon!=null){const r=R[S.zon],aportes=new Set(ZE[r.i].filter(k=>!S.ori||REF[E.ref[k]].ori===S.ori).map(k=>E.ref[k])).size;
     const per=o=>new Set(ZE[r.i].filter(k=>REF[E.ref[k]].ori===o).map(k=>E.ref[k])).size;
     $("cDet").style.display="";$("cDet").innerHTML=`<h3>DETALLE DEL CENTRO DE VOTACIÓN</h3><div class="sb">${r.zn} · Código ${r.cod} · Distrito ${esc(r.dis)} · ${esc(r.mun)} · ${esc(r.dep)}</div><h2 style="margin:6px 0 8px;font-size:19px">${esc(r.cen)}</h2>
-      <span class="chip${r.foc!=="N"?" f":""}">${r.foc==="N"?"No es focal · Normal":"Es focal · "+FOC[r.foc]}</span><span class="chip">Segmento pro Nayib ${r.seg}</span>
-      <div class="tile5"><div><small>ELECTORES</small><b>${fN(r.ele)}</b><em>Votos Nayib 2024: ${fN(r.pre)}</em></div><div><small>META</small><b>${fN(r.met)}</b><em>Piso electoral ${fN(r.pis)} · Voto prestado ${fN(r.vpr)}</em></div>
+      <span class="chip${r.foc!=="N"?" f":""}">${r.foc==="N"?"No es prioritario · Normal":"Es prioritario · "+FOC[r.foc]}</span><span class="chip">Segmento pro Nayib ${r.seg}</span>
+      <div class="tile5"><div><small>ELECTORES</small><b>${fN(r.ele)}</b><em>Votos Nayib 2024: ${fN(r.pre)}</em></div><div><small>META</small><b>${fN(r.met)}</b><em>Piso electoral ${fN(r.pis)} · Voto a sumar ${fN(r.vpr)}</em></div>
       <div class="hi"><small>CARGA TOTAL</small><b>${fN(cg(r))}</b><em>${cg(r)>=r.met?"Meta cumplida":"Falta "+fN(r.met-cg(r))}</em></div><div><small>% DE AVANCE</small><b>${fP(r.met?cg(r)/r.met:null)}</b><div class="sc"><div class="pb" style="margin:6px 0 0"><i style="width:${Math.min(1,cg(r)/(r.met||1))*100}%;background:${semCol(cg(r)/(r.met||1))}"></i></div></div></div><div><small>PERSONAS APORTANTES</small><b>${fN(aportes)}</b><em>que han cargado el total</em></div></div>
       <table><thead><tr><th class="l">Origen de la carga</th><th>Carga</th><th>% de la carga total</th><th>% de la meta</th><th>Personas aportantes</th><th>Carga por aportante</th></tr></thead><tbody>${ORI.map(([k,n,c])=>{const v=r["o"+k],p=per(k);return `<tr><td class="l"><span class="sq" style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${c};margin-right:6px"></span><b>${n}</b></td><td><b>${fN(v)}</b></td><td>${fP(r.cg?v/r.cg:0)}</td><td>${fP(r.met?v/r.met:0)}</td><td>${p}</td><td>${p?fN1(v/p):"—"}</td></tr>`;}).join("")}
       <tr><td class="l"><b>Total</b></td><td><b>${fN(r.cg)}</b></td><td><b>100.0%</b></td><td><b>${fP(r.met?r.cg/r.met:0)}</b></td><td><b>${new Set(ZE[r.i].map(k=>E.ref[k])).size}</b></td><td><b>${fN1(r.cg/Math.max(1,new Set(ZE[r.i].map(k=>E.ref[k])).size))}</b></td></tr></tbody></table>`;}
@@ -590,8 +590,8 @@ function renderFicha(){
   const el=$("ficha");if(S.zon==null){el.style.display="none";return;}el.style.display="";
   const r=R[S.zon],z=zr(r),by={};ZE[r.i].forEach(k=>{if(!entOK(k))return;const o=REF[E.ref[k]].ori;by[o]=by[o]||{n:0,a:0,p:0,x:0,refs:new Set()};const b=by[o];b.n+=E.n[k];b.a+=E.a[k];b.p+=E.p[k];b.x+=E.x[k];b.refs.add(E.ref[k]);});
   el.innerHTML=`<div style="display:flex;justify-content:space-between"><div><h3>FICHA DEL CENTRO DE VOTACIÓN</h3><div class="sb">${r.zn} · Código ${r.cod} · Distrito ${esc(r.dis)} · ${esc(r.mun)} · ${esc(r.dep)}</div></div><button class="ob" id="fClr">Quitar selección</button></div>
-    <h2 style="margin:2px 0 8px;font-size:19px">${esc(r.cen)}</h2><span class="chip${r.foc!=="N"?" f":""}">${r.foc==="N"?"No es focal · Normal":"Es focal · "+FOC[r.foc]}</span><span class="chip">Segmento pro Nayib ${r.seg}</span>
-    <div class="tile5"><div><small>ELECTORES</small><b>${fN(r.ele)}</b><em>Votos Nayib 2024: ${fN(r.pre)}</em></div><div><small>META</small><b>${fN(r.met)}</b><em>Piso electoral ${fN(r.pis)} · Voto prestado ${fN(r.vpr)}</em></div><div class="hi"><small>REGISTROS</small><b>${fN(z.n)}</b><em>${z.n>=r.met?"Meta cumplida":"Falta "+fN(r.met-z.n)}</em></div>
+    <h2 style="margin:2px 0 8px;font-size:19px">${esc(r.cen)}</h2><span class="chip${r.foc!=="N"?" f":""}">${r.foc==="N"?"No es prioritario · Normal":"Es prioritario · "+FOC[r.foc]}</span><span class="chip">Segmento pro Nayib ${r.seg}</span>
+    <div class="tile5"><div><small>ELECTORES</small><b>${fN(r.ele)}</b><em>Votos Nayib 2024: ${fN(r.pre)}</em></div><div><small>META</small><b>${fN(r.met)}</b><em>Piso electoral ${fN(r.pis)} · Voto a sumar ${fN(r.vpr)}</em></div><div class="hi"><small>REGISTROS</small><b>${fN(z.n)}</b><em>${z.n>=r.met?"Meta cumplida":"Falta "+fN(r.met-z.n)}</em></div>
     <div><small>% DE LA META</small><b>${fP(r.met?z.n/r.met:null)}</b></div><div><small>REFERENTES</small><b>${fN(z.refs.size)}</b><em>Promedio ${fN1(z.refs.size?z.n/z.refs.size:0)} registros</em></div></div>
     <table><thead><tr><th class="l">Origen</th><th>Registros</th><th>% del centro</th><th>Referentes</th><th>Por referente</th><th>CC aprobado</th><th>CC pendiente</th><th>CC rechazado</th></tr></thead><tbody>${ORI.map(([k,n,c])=>{const b=by[k]||{n:0,a:0,p:0,x:0,refs:new Set()};return `<tr><td class="l"><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${c};margin-right:6px"></span><b>${n}</b></td><td><b>${fN(b.n)}</b></td><td>${fP(z.n?b.n/z.n:0)}</td><td>${b.refs.size}</td><td>${b.refs.size?fN1(b.n/b.refs.size):"—"}</td><td>${fN(b.a)}</td><td>${fN(b.p)}</td><td>${fN(b.x)}</td></tr>`;}).join("")}
     <tr><td class="l"><b>Total</b></td><td><b>${fN(z.n)}</b></td><td><b>100.0%</b></td><td><b>${z.refs.size}</b></td><td><b>${fN1(z.refs.size?z.n/z.refs.size:0)}</b></td><td><b>${fN(z.a)}</b></td><td><b>${fN(z.p)}</b></td><td><b>${fN(z.x)}</b></td></tr></tbody></table>`;

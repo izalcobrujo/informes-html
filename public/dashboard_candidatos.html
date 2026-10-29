@@ -274,7 +274,7 @@ details.cx>summary .ci{width:30px;height:30px;border-radius:8px;background:#e6f2
     <div><label>Municipio<span class="lock" id="lkMun"></span></label><select id="fMun"></select></div>
     <div><label>Distrito</label><select id="fDis"></select></div>
     <div><label>Zona electoral</label><select id="fCen"></select></div>
-    <div><label>Focalización</label><select id="fFoc"></select></div>
+    <div><label>Priorización</label><select id="fFoc"></select></div>
     <div><label>Segmentación pro Nayib</label><select id="fSeg"></select></div>
     <div><button class="btnp" id="btnUp">Subir un nivel</button></div>
     <div class="terrname" id="terrName"></div>
@@ -295,7 +295,7 @@ details.cx>summary .ci{width:30px;height:30px;border-radius:8px;background:#e6f2
     <div style="margin-top:14px;overflow:auto"><table class="tcargo" id="tCargos"></table></div>
   </div>
   <div class="card panel">
-    <div class="ctitle"><div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f7fbf" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 19c.6-3 3-4.6 6-4.6s5.4 1.6 6 4.6M15.5 14.6c2.6 0 4.5 1.3 5.2 4"/></svg></div><h3>Avance de la meta · Team Nayib</h3><span class="badge" id="mBadge"></span></div>
+    <div class="ctitle"><div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f7fbf" stroke-width="2" stroke-linecap="round"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.4"/><path d="M3 19c.6-3 3-4.6 6-4.6s5.4 1.6 6 4.6M15.5 14.6c2.6 0 4.5 1.3 5.2 4"/></svg></div><h3>Avance de la meta · Estoy con Bukele</h3><span class="badge" id="mBadge"></span></div>
     <div class="csub">Registros cargados frente a la meta del territorio</div>
     <div class="meta3">
       <div><div class="k">META</div><div class="v" id="mMeta">—</div></div>
@@ -313,15 +313,15 @@ details.cx>summary .ci{width:30px;height:30px;border-radius:8px;background:#e6f2
       <div class="csub">Toca un tipo y baja por municipio, distrito y zona electoral, de mayor a menor meta</div><div class="acc" id="obTipos"></div></div>
     <div class="card panel" style="margin:0"><div class="ctitle"><div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f7fbf" stroke-width="2" stroke-linecap="round"><path d="M8 4L5 20M16 4l3 16M12 5v2M12 10.5v2.5M12 16v3"/></svg></div><h3>Calles</h3></div>
       <div class="csub">Agrupadas por municipio, distrito y zona electoral. Toca una zona para ver cada obra</div><div class="acc" id="obCalles"></div></div>
-    <div class="card panel" style="margin:0"><div class="ctitle"><div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f7fbf" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.3" fill="#1f7fbf"/></svg></div><h3>Carga por focalización</h3></div>
-      <div class="csub">Registros del Team Nayib frente a la meta de cada tipo</div><div id="cargaFoc" style="margin-top:8px"></div></div>
+    <div class="card panel" style="margin:0"><div class="ctitle"><div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f7fbf" stroke-width="2"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1.3" fill="#1f7fbf"/></svg></div><h3>Carga por priorización</h3></div>
+      <div class="csub">Registros del Estoy con Bukele frente a la meta de cada tipo</div><div id="cargaFoc" style="margin-top:8px"></div></div>
   </div>
 
   <!-- ¿Dónde se ha hecho? -->
   <div class="sec"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"><path d="M12 21s-6-5.6-6-10.5a6 6 0 0 1 12 0C18 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/></svg></div><h2>¿Dónde se ha hecho?</h2></div>
   <div class="card panel" id="mapCard">
     <div class="chead"><div><div class="ctitle"><div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f7fbf" stroke-width="2" stroke-linecap="round"><path d="M12 21s-6-5.6-6-10.5a6 6 0 0 1 12 0C18 15.4 12 21 12 21z"/><circle cx="12" cy="10.5" r="2.2"/></svg></div><h3 id="mTitle"></h3></div><div class="csub" id="mSub"></div><div style="margin-top:8px" id="mTagWrap"><span class="tag" id="mTag"></span></div></div><span class="tag" id="mTag2" style="display:none"></span></div>
-    <div class="mtop"><div class="tabs" id="mTabs"></div><label>Focalización</label><select id="mFoc"></select><label>Segmentación</label><select id="mSeg"></select></div>
+    <div class="mtop"><div class="tabs" id="mTabs"></div><label>Priorización</label><select id="mFoc"></select><label>Segmentación</label><select id="mSeg"></select></div>
     <div class="mgrid">
       <div>
         <div class="mapbox" id="mapbox"><div id="map"></div><div class="ov" id="bmsw"></div><div class="ov" id="capas"></div><div id="mapmsg">Cargando zonas electorales desde ArcGIS…</div></div>
@@ -337,7 +337,7 @@ details.cx>summary .ci{width:30px;height:30px;border-radius:8px;background:#e6f2
   <div class="sec"><div class="ic"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="#fff"/></svg></div><h2>¿Dónde priorizo?</h2></div>
   <div class="card panel">
     <div class="chead"><div><div class="ctitle"><div class="ci"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1f7fbf" stroke-width="2" stroke-linecap="round"><path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1" fill="#1f7fbf"/><circle cx="4.5" cy="12" r="1" fill="#1f7fbf"/><circle cx="4.5" cy="18" r="1" fill="#1f7fbf"/></svg></div><h3>Centros en orden de prioridad</h3></div><div class="csub" id="pSub"></div></div><span class="tag">Carga, calles y obras de ejemplo</span></div>
-    <div class="ord">Orden: Focal País, Departamental, Municipal y Normal. Dentro de cada tipo, de la segmentación más pro Nayib (7) a la menos (1) y, a igual segmentación, primero las zonas a las que les faltan más registros para su meta. Toca una fila para ver la zona en el mapa.</div>
+    <div class="ord">Orden: Prioritario Nacional, Departamental, Municipal y Normal. Dentro de cada tipo, de la segmentación más pro Nayib (7) a la menos (1) y, a igual segmentación, primero las zonas a las que les faltan más registros para su meta. Toca una fila para ver la zona en el mapa.</div>
     <div class="ptab"><table id="tPrior"></table></div>
   </div>
 
@@ -356,7 +356,7 @@ details.cx>summary .ci{width:30px;height:30px;border-radius:8px;background:#e6f2
     </div>
   </details>
 
-  <div class="origen"><b>Origen de los datos.</b> Del tablero de ingeniería electoral (1,595 zonas electorales 2027): centros, territorio, coordenadas, electores, meta (2,000,000), focalización, segmentación pro Nayib, piso electoral y voto prestado. Del histórico unificado 2014–2024: resultados por zona con coaliciones sumadas al partido que las encabeza (NI-CD y NI-GANA cuentan como Nuevas Ideas) y nulos e impugnados para la participación. Zonas: polígonos calculados entre centros vecinos (capa de ArcGIS), no son límites oficiales. <b>De ejemplo o pendientes:</b> registros del Team Nayib (carga), obras y calles por zona, designación del cuerpo electoral y capacitación (sin datos). Se reemplazan cuando estén las tablas reales.</div>
+  <div class="origen"><b>Origen de los datos.</b> Del tablero de ingeniería electoral (1,595 zonas electorales 2027): centros, territorio, coordenadas, electores, meta (2,000,000), priorización, segmentación pro Nayib, piso electoral y voto a sumar. Del histórico unificado 2014–2024: resultados por zona con coaliciones sumadas al partido que las encabeza (NI-CD y NI-GANA cuentan como Nuevas Ideas) y nulos e impugnados para la participación. Zonas: polígonos calculados entre centros vecinos (capa de ArcGIS), no son límites oficiales. <b>De ejemplo o pendientes:</b> registros del Estoy con Bukele (carga), obras y calles por zona, designación del cuerpo electoral y capacitación (sin datos). Se reemplazan cuando estén las tablas reales.</div>
 </div>
 
 <script>
@@ -381,7 +381,7 @@ const fP=(n,d=1)=>n==null||isNaN(n)?"—":(n*100).toFixed(d)+"%";
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const uniq=a=>[...new Set(a)].sort((x,y)=>String(x).localeCompare(String(y),"es"));
 const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z0-9 ]/g," ").replace(/\s+/g," ").trim();
-const FOC={P:"Focal País",D:"Focal Departamental",M:"Focal Municipal",N:"Normal"},FOC_ORD=["P","D","M","N"];
+const FOC={P:"Prioritario Nacional",D:"Prioritario Departamental",M:"Prioritario Municipal",N:"Normal"},FOC_ORD=["P","D","M","N"];
 const FOC_COL={P:"#0d1f4d",D:"#2f5fe0",M:"#16a5d6",N:"#8d97ad"};
 const ix=Object.fromEntries(D.cols.map((c,i)=>[c,i]));
 const R=D.rows.map((a,i)=>{const o={i};D.cols.forEach((c,j)=>o[c]=a[j]);return o;});
@@ -589,7 +589,7 @@ const OUT="#c9ced8";
 const clsP=p=>p==null?"nd":p>=1?"5":p>=.8?"4":p>=.6?"3":p>=.4?"2":p>=.2?"1":"0";
 const clsO=n=>n>=7?"5":n>=5?"4":n>=3?"3":String(Math.min(n,2));
 const MT={
-  TN:{tab:"Meta Team Nayib",t:"Cumplimiento de meta de Team Nayib por zona electoral",sub:"Cada polígono es un centro de votación. Semáforo: rojo, lejos de la meta de registros; azul cyan, meta cumplida. Los polígonos se calculan entre centros vecinos y no son límites oficiales.",tag:"Registros de ejemplo",leg:"Cumplimiento de meta de Team Nayib",right:"Cumplimiento de meta de Team Nayib por "},
+  TN:{tab:"Meta Estoy con Bukele",t:"Cumplimiento de meta de Estoy con Bukele por zona electoral",sub:"Cada polígono es un centro de votación. Semáforo: rojo, lejos de la meta de registros; azul cyan, meta cumplida. Los polígonos se calculan entre centros vecinos y no son límites oficiales.",tag:"Registros de ejemplo",leg:"Cumplimiento de meta de Estoy con Bukele",right:"Cumplimiento de meta de Estoy con Bukele por "},
   DS:{tab:"Designación",t:"Cumplimiento de designación por zona electoral",sub:"Semáforo: rojo, pocos designados sobre los requeridos; azul cyan, designación completa (Primera y Segunda Columna). Los polígonos se calculan entre centros vecinos y no son límites oficiales.",tag:"Designación de ejemplo",leg:"Cumplimiento de designación",right:"Cumplimiento de designación por "},
   CP:{tab:"Capacitación",t:"Cumplimiento de capacitación por zona electoral",sub:"Sin datos de capacitación. Los polígonos se calculan entre centros vecinos y no son límites oficiales.",tag:"",leg:"Cumplimiento de capacitación",right:"Cumplimiento de capacitación por "},
   OB:{tab:"Obras",t:"Obras realizadas por zona electoral",sub:"Más oscuro, más obras en la zona. Los polígonos se calculan entre centros vecinos y no son límites oficiales.",tag:"",tag2:"Obras de ejemplo",leg:"Obras realizadas",right:"Obras realizadas por "}};
@@ -649,7 +649,7 @@ function hovBox(r){
   const el=$("mHov");
   if(!r){el.className="hov";el.textContent="Pasa el cursor o toca una zona para ver su detalle; al tocar baja un nivel (municipio, distrito, zona).";return;}
   el.className="hov on";
-  el.innerHTML=`<b>${esc(r.cen)}</b> · ${esc(r.dis)}, ${esc(r.mun)}, ${esc(r.dep)}<br>${FOC[r.foc]} · Segmentación pro Nayib ${r.seg} · Electores ${fN(r.ele)}<br>Registros ${fN(r.car)} de ${fN(r.met)} (${fP(r.met?r.car/r.met:null)}) · Piso electoral ${fN(r.pis)} · Voto prestado ${fN(r.vpr)} · Obras ${r.obras.length}`;
+  el.innerHTML=`<b>${esc(r.cen)}</b> · ${esc(r.dis)}, ${esc(r.mun)}, ${esc(r.dep)}<br>${FOC[r.foc]} · Segmentación pro Nayib ${r.seg} · Electores ${fN(r.ele)}<br>Registros ${fN(r.car)} de ${fN(r.met)} (${fP(r.met?r.car/r.met:null)}) · Piso electoral ${fN(r.pis)} · Voto a sumar ${fN(r.vpr)} · Obras ${r.obras.length}`;
 }
 
 /* ---------- ¿Dónde priorizo? ---------- */

@@ -86,12 +86,12 @@ td.nm{font-weight:700;text-align:left}tr.cl{cursor:pointer}tr.cl:hover td{backgr
   <polygon points="1291.06 93.1 1401.29 93.1 1401.29 127.44 1328.87 127.44 1328.87 159.29 1392.58 159.29 1392.58 193.63 1328.87 193.63 1328.87 235.19 1401.29 235.19 1401.29 269.53 1291.06 269.53 1291.06 93.1"/>
   <path d="M1526.54,93.1l73.65,176.43h-40.81l-15.93-37.83h-74.9l-15.68,37.83h-41.06l73.66-176.43h41.06ZM1529.27,197.36l-23.14-55.49-23.14,55.49h46.28Z"/>
   <path d="M1711.97,178.7c6.97,4.15,12.28,9.45,15.93,15.92,3.65,6.47,5.47,13.93,5.47,22.4,0,7.96-1.91,15.39-5.72,22.27-3.82,6.89-9.21,12.98-16.17,18.29-6.31,4.82-13.49,8.51-21.53,11.07-8.05,2.57-16.55,3.94-25.51,4.11-8.96,0-17.5-1.24-25.63-3.73-8.13-2.49-15.35-6.22-21.65-11.2-9.45-7.13-15.93-15.76-19.41-25.88l34.84-16.17c0,1.66.58,3.73,1.74,6.21,1.16,2.5,2.99,4.9,5.47,7.22,2.49,2.32,5.72,4.31,9.71,5.97,3.98,1.66,8.87,2.49,14.69,2.49,4.64,0,8.74-.58,12.31-1.74,3.57-1.16,6.55-2.61,8.96-4.35,2.41-1.74,4.24-3.73,5.47-5.97,1.25-2.23,1.87-4.52,1.87-6.84,0-2.65-.87-5.14-2.61-7.46-1.74-2.32-4.44-4.15-8.09-5.48-6.64-2.32-13.65-4.27-21.02-5.85-7.39-1.57-14.56-3.57-21.53-5.97-6.96-2.4-13.43-5.6-19.4-9.58-5.98-3.98-10.71-9.54-14.19-16.67-3.15-6.3-4.73-13.02-4.73-20.16,0-7.96,1.87-15.68,5.6-23.14,3.73-7.47,8.83-13.77,15.3-18.91,6.13-4.81,13.02-8.5,20.65-11.07,7.63-2.57,15.68-3.86,24.14-3.86s16.55,1.25,24.26,3.73c7.72,2.49,14.64,6.14,20.78,10.95,5.98,4.48,10.7,9.7,14.18,15.67l-28.36,19.41c-3.49-4.81-7.84-8.67-13.07-11.57-5.23-2.9-11.07-4.35-17.54-4.35-8.96,0-15.89,1.99-20.78,5.97-4.9,3.98-7.34,9.21-7.34,15.68,0,2.99,1.37,5.64,4.11,7.96,2.73,2.33,6.3,4.4,10.7,6.22,4.4,1.83,9.34,3.45,14.81,4.85,5.47,1.41,10.9,2.82,16.3,4.23,5.38,1.41,10.49,2.86,15.3,4.36,4.81,1.49,8.71,3.15,11.7,4.98"/>
-</g></svg><div class="sep"></div><div class="sub">Mapa de Actividades</div></div><div class="pill">Obras de ejemplo · territorio, focal y segmentación del tablero</div></div>
+</g></svg><div class="sep"></div><div class="sub">Mapa de Actividades</div></div><div class="pill">Obras de ejemplo · territorio, prioridad y segmentación del tablero</div></div>
 <div class="wrap">
   <div class="title"><h1>Mapa de Actividades</h1><div class="crumbs" id="crumbs"></div></div>
   <div class="card filters">
     <div><label>Tipo de obra <span class="nuevo">NUEVO</span></label><select id="fTipo"></select></div>
-    <div><label>Tipo de focal <span class="nuevo">NUEVO</span></label><select id="fFoc"></select></div>
+    <div><label>Tipo de prioridad <span class="nuevo">NUEVO</span></label><select id="fFoc"></select></div>
     <div><label>Segmentación <span class="nuevo">NUEVO</span></label><select id="fSeg"></select></div>
     <div><label>Departamento</label><select id="fDep"></select></div>
     <div><label>Municipio</label><select id="fMun"></select></div>
@@ -114,11 +114,11 @@ td.nm{font-weight:700;text-align:left}tr.cl{cursor:pointer}tr.cl:hover td{backgr
     <div class="card panel"><h2>Seguimiento por territorio</h2><div class="sub" id="sSub"></div><div id="zdet"></div><div class="tw"><table id="tSeg"></table></div></div>
   </div>
   <div class="bal">
-    <div class="card panel"><h2>Balance por tipo de focal</h2><div class="sub" id="bfSub">Dónde se hizo obra y dónde no, según el focal asignado a la zona. Clic en una barra para filtrar.</div><div id="bFoc"></div></div>
+    <div class="card panel"><h2>Balance por tipo de prioridad</h2><div class="sub" id="bfSub">Dónde se hizo obra y dónde no, según la prioridad asignada a la zona. Clic en una barra para filtrar.</div><div id="bFoc"></div></div>
     <div class="card panel"><h2>Balance por segmentación</h2><div class="sub">De menos a más pro Nayib. Clic en una barra para filtrar.</div><div id="bSeg"></div></div>
   </div>
   <div class="card panel" style="margin-bottom:16px">
-    <div class="phead"><div><h2>Matriz de lo realizado</h2><div class="sub" id="mxSub"></div></div><div class="tabs" id="mxT"><button data-t="foc" class="on">Por focal</button><button data-t="tipo">Por tipo de obra</button></div></div>
+    <div class="phead"><div><h2>Matriz de lo realizado</h2><div class="sub" id="mxSub"></div></div><div class="tabs" id="mxT"><button data-t="foc" class="on">Por prioridad</button><button data-t="tipo">Por tipo de obra</button></div></div>
     <div class="tw" style="max-height:640px"><table class="mx" id="tMx"></table></div>
   </div>
   <div class="card panel cnt"><h2>Contador por tipo de obra</h2><div class="sub" id="cSub"></div><div id="cnt"></div></div>
@@ -134,7 +134,7 @@ const fP=(n,d=1)=>n==null||isNaN(n)||!isFinite(n)?"—":(n*100).toFixed(d)+"%";
 const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const uniq=a=>[...new Set(a)].sort((x,y)=>String(x).localeCompare(String(y),"es"));
 const norm=s=>String(s||"").normalize("NFD").replace(/[̀-ͯ]/g,"").toUpperCase().replace(/[^A-Z0-9 ]/g," ").replace(/\s+/g," ").trim();
-const FOC={P:"Focal País",D:"Focal Departamental",M:"Focal Municipal",N:"Normal"},FOC_ORD=["P","D","M","N"];
+const FOC={P:"Prioritario Nacional",D:"Prioritario Departamental",M:"Prioritario Municipal",N:"Normal"},FOC_ORD=["P","D","M","N"];
 const R=BASE.rows.map((a,i)=>{const o={i};BASE.cols.forEach((c,j)=>o[c]=a[j]);o.zn="Zona "+o.cod.slice(-2);o.ze="ZE-"+o.cod.slice(0,2)+"-"+o.cod.slice(-3);return o;});
 function hash(s){let h=2166136261;for(let i=0;i<s.length;i++){h^=s.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
 function rng(seed){let a=seed>>>0;return()=>{a=(a+0x6D2B79F5)>>>0;let t=a;t=Math.imul(t^(t>>>15),t|1);t^=t+Math.imul(t^(t>>>7),t|61);return((t^(t>>>14))>>>0)/4294967296;};}
@@ -358,7 +358,7 @@ function renderSeg(rows){
     $("sSub").textContent=`Zonas de ${t}. Primero las que no tienen ninguna obra. Clic en una zona para ver qué obras se hicieron y en qué fecha.`;
     const zs=[...rows].sort((x,y)=>({N:0,O:1,T:2}[est(x)]-{N:0,O:1,T:2}[est(y)])||x.cod.localeCompare(y.cod));
     const chip=r=>{const e=est(r);return e==="N"?'<span class="chip r">Sin ninguna obra</span>':e==="O"?'<span class="chip g">Otras obras</span>':'<span class="chip b">Con obra</span>';};
-    let h=`<thead><tr><th class="l">Zona</th><th>Estado</th><th>Focal</th><th>Segmentación</th><th>Obras</th><th>Última obra</th></tr></thead><tbody>`+
+    let h=`<thead><tr><th class="l">Zona</th><th>Estado</th><th>Prioridad</th><th>Segmentación</th><th>Obras</th><th>Última obra</th></tr></thead><tbody>`+
       zs.map(r=>`<tr class="cl${S.zon===r.i?" sel":""}" data-i="${r.i}"><td class="l"><b>${r.ze}</b><div style="font-size:11px;color:#55627a">${esc(r.cen)}</div></td><td>${chip(r)}</td><td>${FOC[r.foc]}</td><td>Nivel ${r.seg}</td><td>${nOb(r)}</td><td>${r.ob.length?fD(r.ob[0].f):""}</td></tr>`).join("");
     const T=agg(rows);h+=`<tr class="tot"><td class="l">Total · ${T.n} zonas</td><td>${T.T} con · ${T.N} sin obra</td><td></td><td></td><td>${T.ob}</td><td></td></tr></tbody>`;
     $("tSeg").innerHTML=h;$("tSeg").querySelectorAll("tr[data-i]").forEach(tr=>tr.onclick=()=>{S.zon=+tr.dataset.i;render(false);MAP.q(()=>MAP.zoom([S.zon]));});
@@ -383,7 +383,7 @@ function renderMx(rows){
   const items=N==="zon"?rows.map(r=>({k:r.ze+" · "+r.cen,rs:[r]})):Object.entries(grp(rows,N)).map(([k,rs])=>({k,rs})).sort((a,b)=>a.k.localeCompare(b.k,"es"));
   const lab=N==="zon"?"Zona":NIVN[N];
   if(S.mx==="foc"){
-    $("mxSub").textContent=`${({dep:"Departamentos",mun:"Municipios",dis:"Distritos",zon:"Zonas"})[N]} de ${t} por tipo de focal. Cada celda: zonas con obra · zonas sin ninguna obra, y la barra de lo realizado frente a lo que falta.`;
+    $("mxSub").textContent=`${({dep:"Departamentos",mun:"Municipios",dis:"Distritos",zon:"Zonas"})[N]} de ${t} por tipo de prioridad. Cada celda: zonas con obra · zonas sin ninguna obra, y la barra de lo realizado frente a lo que falta.`;
     const cell=rs=>{if(!rs.length)return'<span style="color:#c3cad6">–</span>';const a=agg(rs);return `<div class="cell"><b style="color:#1565e6">${a.T}</b> · <b style="color:#e03a48">${a.N}</b>${tri(a)}</div>`;};
     $("tMx").innerHTML=`<thead><tr><th class="l">${lab}</th>${FOC_ORD.map(f=>`<th>${FOC[f]}</th>`).join("")}<th>Total</th></tr></thead><tbody>`+
       items.map(o=>{const g=grp(o.rs,"foc"),a=agg(o.rs);return `<tr class="cl" data-k="${esc(o.k)}"><td class="nm">${esc(o.k)}</td>${FOC_ORD.map(f=>`<td>${cell(g[f]||[])}</td>`).join("")}<td><div class="cell"><b style="color:#1565e6">${a.T}</b> · <b style="color:#e03a48">${a.N}</b><div style="font-size:10px;color:#8a96ab">${fP(a.p,0)}</div>${tri(a)}</div></td></tr>`;}).join("")+"</tbody>";

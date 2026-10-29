@@ -56,7 +56,7 @@ body.show .pend{display:block}
 </g></svg><div class="sep"></div><div class="ttl">Paneles de gestión 2027</div>
   <button class="tog" id="tog"><span id="togT">Ver bases por conectar</span><span class="n" id="togN"></span></button></div>
 <div class="wrap">
-  <div class="hero"><div><h1>Paneles de gestión</h1><p>Elige un módulo para entrar. Todos comparten las 1,595 zonas electorales 2027, la meta de 2,000,000 y los filtros de territorio, focalización y segmentación pro Nayib.</p></div>
+  <div class="hero"><div><h1>Paneles de gestión</h1><p>Elige un módulo para entrar. Todos comparten las 1,595 zonas electorales 2027, la meta de 2,000,000 y los filtros de territorio, priorización y segmentación pro Nayib.</p></div>
     <div class="legend"><span><i style="background:#2aa876"></i>Base conectada</span><span><i style="background:#f0b83c"></i>Por conectar (hoy con datos de ejemplo)</span></div></div>
   <div class="grid" id="grid"></div>
   <div class="foot">Nuevas Ideas · Coordinación Nacional de Tecnología · los enlaces de cada módulo se configuran al inicio del código (lista MODULOS)</div>
@@ -65,29 +65,29 @@ body.show .pend{display:block}
 /* ====== Enlaces: reemplazar "href" por el link de cada módulo publicado ====== */
 const MODULOS=[
  {id:"ing",nombre:"Ingeniería Electoral",href:"tablero_ingenieria_electoral.html",color:"#1565e6",bg:"#e7effd",
-  desc:"Meta por centro, piso electoral, voto prestado, focalización y segmentación pro Nayib, con mapa de zonas y matriz por territorio.",
-  tags:["Meta 2,000,000","Piso y voto prestado","Focalización","Segmentación"],
+  desc:"Meta por centro, piso electoral, voto a sumar, priorización y segmentación pro Nayib, con mapa de zonas y matriz por territorio.",
+  tags:["Meta 2,000,000","Piso y voto a sumar","Priorización","Segmentación"],
   icon:'<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.4" fill="currentColor"/>',
-  ok:["Tabla de metas, focalización y segmentación del consultor (versión corregida)","Votos 2024 por centro (consolidado de presidente, diputados y alcalde, solo territorial)","Histórico unificado 2014–2024 por zona 2027","Capas de ArcGIS: zonas, centros, municipios y colonias"],
-  falta:[["Versión final de metas y focalización 2027","Las metas por centro aún son la propuesta del consultor; algunos centros tienen dudas marcadas (revisión interna)."],
+  ok:["Tabla de metas, priorización y segmentación del consultor (versión corregida)","Votos 2024 por centro (consolidado de presidente, diputados y alcalde, solo territorial)","Histórico unificado 2014–2024 por zona 2027","Capas de ArcGIS: zonas, centros, municipios y colonias"],
+  falta:[["Versión final de metas y priorización 2027","Las metas por centro aún son la propuesta del consultor; algunos centros tienen dudas marcadas (revisión interna)."],
          ["Padrón 2027 por centro de votación","Hoy se usan los electores de la tabla del consultor."],
          ["Datos de los centros con estimación","Las Lajas y Los Zapes (Chorro Arriba, Izalco): votos 2024 estimados por el consultor."],
          ["Validación de la preservación de alcalde","Indicador marcado “por validar” (coaliciones en concejos 2024)."]]},
  {id:"cand",nombre:"Dashboard de candidatos",href:"dashboard_candidatos.html",color:"#0a62ad",bg:"#e5f0fa",
-  desc:"Vista por candidato: diputado ve su departamento y alcalde su municipio. Avance del Team Nayib, obras, calles, cuerpo electoral e histórico.",
-  tags:["Login por candidato","Team Nayib","Cuerpo electoral","Histórico"],
+  desc:"Vista por candidato: diputado ve su departamento y alcalde su municipio. Avance del Estoy con Bukele, obras, calles, cuerpo electoral e histórico.",
+  tags:["Login por candidato","Estoy con Bukele","Cuerpo electoral","Histórico"],
   icon:'<circle cx="9" cy="8" r="3.4"/><path d="M3 19.5c.7-3.4 3.2-5 6-5s5.3 1.6 6 5"/><path d="M15.5 6.5h5M15.5 10h5M17.5 13.5h3"/>',
-  ok:["Territorio, meta, focalización y segmentación del tablero de ingeniería","Histórico electoral unificado 2014–2024 por zona"],
+  ok:["Territorio, meta, priorización y segmentación del tablero de ingeniería","Histórico electoral unificado 2014–2024 por zona"],
   falta:[["Usuarios y territorio de cada candidato","Login real con el filtro hecho en el servidor (hoy es un selector de muestra)."],
-         ["Registros del Team Nayib por zona","Personas registradas hacia la meta de cada centro."],
+         ["Registros del Estoy con Bukele por zona","Personas registradas hacia la meta de cada centro."],
          ["Obras y calles por zona","Tipo, descripción, fecha y ubicación."],
          ["Designación del cuerpo electoral","JED, JEM, Primera y Segunda Columna por distrito (requeridos y designados)."],
          ["Capacitación del cuerpo electoral","Hoy sin datos: porcentaje capacitado de los designados."]]},
  {id:"act",nombre:"Mapa de Actividades",href:"mapa_actividades.html",color:"#e03a48",bg:"#fde8ea",
-  desc:"Dónde se ha hecho obra y dónde no, por tipo de obra, con balance por focal y segmentación, matriz de lo realizado y contador por tipo.",
+  desc:"Dónde se ha hecho obra y dónde no, por tipo de obra, con balance por prioridad y segmentación, matriz de lo realizado y contador por tipo.",
   tags:["Con obra / sin obra","9 tipos de obra","Matriz","Seguimiento por zona"],
   icon:'<path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0c0 5-6.5 11-6.5 11z"/><path d="M9.3 10.2l2 2 3.6-3.8"/>',
-  ok:["Territorio, focalización y segmentación del tablero de ingeniería","Zonas electorales 2027 en ArcGIS"],
+  ok:["Territorio, priorización y segmentación del tablero de ingeniería","Zonas electorales 2027 en ArcGIS"],
   falta:[["Registro de obras realizadas","Una fila por obra: tipo, fecha y código de zona electoral o coordenada."],
          ["Catálogo de tipos de obra","Láminas, cemento, asfalto en frío, pintura, luminarias, silla de ruedas, cancha, fumigación, limpieza y sus categorías."]]},
  {id:"est",nombre:"Panel de Estructura",href:"panel_estructura.html",color:"#173f78",bg:"#e6ecf5",
@@ -113,7 +113,7 @@ const MODULOS=[
   desc:"Panel de carga y balance de registros: avance de la meta por territorio y origen, centros con más registros, referentes y validación del call center.",
   tags:["Carga","Balance registros","Referentes","Call center"],
   icon:'<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/><path d="M14.5 7.5l3-3 3 3"/>',
-  ok:["Meta por centro, focalización y segmentación del tablero de ingeniería","Electores y votos de Nayib 2024 por centro","Ubicación exacta de los 1,595 centros"],
+  ok:["Meta por centro, priorización y segmentación del tablero de ingeniería","Electores y votos de Nayib 2024 por centro","Ubicación exacta de los 1,595 centros"],
   falta:[["Registros de la plataforma","Una fila por persona: centro de votación asignado, referente que la cargó, origen (candidatos, estructura o voluntarios) y fecha."],
          ["Referentes","Nombre, cargo, origen y dónde vota (cruce por DUI con el padrón)."],
          ["Validación del call center","Estado de cada persona: aprobado, pendiente o rechazado."],
