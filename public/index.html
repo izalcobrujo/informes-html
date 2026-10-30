@@ -1,1104 +1,650 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Repositorio de Análisis y Reportes</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-body: #fcfcfc;
-            --bg-card: #ffffff;
-            --color-title: #0f2d2e;
-            --color-text: #475569;
-            --color-border: #e2e8f0;
-            --accent-gold: #c59b27;
-            --accent-teal: #0d4a4d;
-        }
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background-color: var(--bg-body);
-            color: var(--color-text);
-            font-family: 'Inter', sans-serif;
-            padding: 3rem 1.5rem;
-            min-height: 100vh;
-        }
-        .container { max-width: 1200px; margin: 0 auto; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Análisis y Datos · Catálogo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#f7f7f5; --panel:#ffffff; --ink:#0f2d2e; --text:#3f4b5b; --muted:#7a8696; --line:#e5e7eb; --line2:#f1f2f4;
+  --gold:#c59b27; --teal:#0d4a4d; --teal-soft:#e6f0f0; --warn:#b45309; --warn-soft:#fef3c7; --bad:#b91c1c; --bad-soft:#fee2e2;
+  --ok:#15803d; --ok-soft:#dcfce7; --shadow:0 1px 2px rgba(15,45,46,.04),0 2px 8px rgba(15,45,46,.04);
+  --shadow-h:0 10px 28px rgba(15,45,46,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1416; --panel:#151d20; --ink:#e8efee; --text:#c3cdd1; --muted:#8a979c; --line:#253136; --line2:#1c262a;
+    --teal:#5fb3b3; --teal-soft:#16302f; --warn-soft:#3a2a0d; --bad-soft:#3a1616; --ok-soft:#12301d;
+    --shadow:none; --shadow-h:0 10px 28px rgba(0,0,0,.4);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1416; --panel:#151d20; --ink:#e8efee; --text:#c3cdd1; --muted:#8a979c; --line:#253136; --line2:#1c262a;
+  --teal:#5fb3b3; --teal-soft:#16302f; --warn-soft:#3a2a0d; --bad-soft:#3a1616; --ok-soft:#12301d;
+  --shadow:none; --shadow-h:0 10px 28px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:Inter,system-ui,sans-serif;font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+.wrap{max-width:1440px;margin:0 auto;padding:2.2rem 1.5rem 4rem}
 
-        .sub-header {
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            font-size: 0.75rem;
-            font-weight: 700;
-            color: var(--accent-gold);
-            margin-bottom: 0.75rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-        .sub-header::before {
-            content: "";
-            display: inline-block;
-            width: 3px;
-            height: 14px;
-            background-color: var(--accent-gold);
-        }
-        h1.main-title {
-            font-family: 'Playfair Display', Georgia, serif;
-            font-size: 2.8rem;
-            line-height: 1.1;
-            font-weight: 800;
-            color: var(--color-title);
-            letter-spacing: -0.02em;
-            margin-bottom: 1.25rem;
-        }
-        .description {
-            font-size: 1.05rem;
-            line-height: 1.6;
-            color: #64748b;
-            max-width: 650px;
-            margin-bottom: 2.5rem;
-        }
+/* ── Encabezado ── */
+.top{display:flex;justify-content:space-between;align-items:flex-end;gap:1.5rem;flex-wrap:wrap;margin-bottom:1.6rem}
+.eyebrow{text-transform:uppercase;letter-spacing:.16em;font-size:.72rem;font-weight:700;color:var(--gold);display:flex;align-items:center;gap:.5rem;margin-bottom:.55rem}
+.eyebrow::before{content:"";width:3px;height:14px;background:var(--gold)}
+h1{font-family:'Playfair Display',Georgia,serif;font-size:clamp(2rem,4vw,2.8rem);line-height:1.05;color:var(--ink);letter-spacing:-.02em}
+.lead{color:var(--muted);margin-top:.5rem;font-size:.95rem}
+.top-actions{display:flex;gap:.5rem;align-items:center}
+.icon-btn{width:36px;height:36px;border:1px solid var(--line);border-radius:8px;display:grid;place-items:center;background:var(--panel);color:var(--text)}
+.icon-btn:hover{border-color:var(--teal);color:var(--teal)}
 
-        .stats-bar {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1rem;
-            margin-bottom: 2.5rem;
-        }
-        .stat-item {
-            background: #ffffff;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            padding: 0.85rem 1.25rem;
-            display: flex;
-            align-items: center;
-            gap: 0.85rem;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        }
-        .stat-number {
-            font-size: 1.35rem;
-            font-weight: 700;
-            color: var(--color-title);
-        }
-        .stat-label {
-            font-size: 0.8rem;
-            color: #64748b;
-            line-height: 1.2;
-        }
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:.75rem;margin-bottom:1.6rem}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:.85rem 1rem;text-align:left;display:flex;flex-direction:column;justify-content:flex-start;align-items:flex-start;box-shadow:var(--shadow);transition:border-color .15s}
+button.stat:hover{border-color:var(--teal)}
+.stat b{display:block;font-size:1.5rem;color:var(--ink);font-weight:700;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:.76rem;color:var(--muted)}
+.stat.alert b{color:var(--warn)}
 
-        .search-container {
-            margin-bottom: 1.5rem;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        .search-box {
-            width: 100%;
-            background: #ffffff;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            padding: 0.85rem 1rem 0.85rem 2.75rem;
-            font-size: 0.95rem;
-            color: #1e293b;
-            position: relative;
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="%2394a3b8" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>');
-            background-repeat: no-repeat;
-            background-position: 12px center;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
-        }
-        .search-box:focus { outline: 2px solid var(--accent-teal); }
-        .results-count {
-            font-size: 0.85rem;
-            color: #64748b;
-            font-weight: 500;
-        }
+/* ── Barra de búsqueda ── */
+.toolbar{position:sticky;top:0;z-index:20;background:var(--bg);padding:.7rem 0;display:flex;gap:.6rem;flex-wrap:wrap;align-items:center;border-bottom:1px solid transparent}
+.toolbar.stuck{border-bottom-color:var(--line)}
+.search{flex:1 1 320px;position:relative}
+.search input{width:100%;height:42px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:0 2.6rem 0 2.5rem;font:inherit;font-size:.95rem;color:var(--ink)}
+.search input:focus{outline:2px solid var(--teal);outline-offset:-1px}
+.search svg{position:absolute;left:.85rem;top:50%;transform:translateY(-50%);color:var(--muted)}
+.search kbd{position:absolute;right:.7rem;top:50%;transform:translateY(-50%);font:600 .7rem Inter;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:1px 6px;background:var(--bg)}
+.ctrl{height:42px;border:1px solid var(--line);border-radius:10px;background:var(--panel);padding:0 .75rem;font:inherit;color:var(--text)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--panel);height:42px}
+.seg button{padding:0 .8rem;display:flex;align-items:center;gap:.35rem;color:var(--muted)}
+.seg button.on{background:var(--teal-soft);color:var(--teal);font-weight:600}
+.filtros-btn{display:none}
 
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-            gap: 1.5rem;
-        }
-        .card-item {
-            background: var(--bg-card);
-            border: 1px solid var(--color-border);
-            border-radius: 10px;
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .card-item:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.06);
-            border-color: #cbd5e1;
-        }
-        .card-preview {
-            height: 130px;
-            position: relative;
-            border-bottom: 1px solid var(--color-border);
-            overflow: hidden;
-            background: #f8fafc;
-        }
-        .card-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: rgba(255, 255, 255, 0.95);
-            font-size: 0.7rem;
-            font-weight: 600;
-            padding: 3px 8px;
-            border-radius: 4px;
-            border: 1px solid var(--color-border);
-            color: #334155;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
-            z-index: 2;
-        }
-        .card-content {
-            padding: 1.25rem;
-            display: flex;
-            flex-direction: column;
-            flex-grow: 1;
-        }
-        .card-title {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 0.4rem;
-            line-height: 1.3;
-        }
-        .card-title a {
-            color: #0f172a;
-            text-decoration: none;
-        }
-        .card-title a:hover {
-            color: var(--accent-teal);
-        }
-        .card-path {
-            font-size: 0.78rem;
-            color: #94a3b8;
-            margin-bottom: 1.25rem;
-            word-break: break-all;
-        }
-        .card-footer {
-            margin-top: auto;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.5rem;
-            padding-top: 0.75rem;
-            border-top: 1px solid #f1f5f9;
-        }
-        .tags-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.35rem;
-        }
-        .tag {
-            background: #f1f5f9;
-            color: #475569;
-            font-size: 0.7rem;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 500;
-        }
-        .btn-abrir {
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: var(--accent-teal);
-            text-decoration: none;
-            white-space: nowrap;
-        }
-        .btn-abrir:hover { text-decoration: underline; }
-    </style>
+/* ── Layout ── */
+.layout{display:grid;grid-template-columns:250px 1fr;gap:1.75rem;margin-top:.6rem}
+aside{position:sticky;top:74px;align-self:start;max-height:calc(100vh - 90px);overflow:auto;padding-right:.25rem}
+.facet{margin-bottom:1.25rem}
+.facet h4{font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.45rem;font-weight:700}
+.opt{display:flex;align-items:center;gap:.5rem;width:100%;padding:.32rem .5rem;border-radius:6px;text-align:left;font-size:.86rem}
+.opt:hover{background:var(--line2)}
+.opt.on{background:var(--teal-soft);color:var(--teal);font-weight:600}
+.opt.zero{opacity:.38}
+.opt .dot{width:9px;height:9px;border-radius:50%;flex:none}
+.opt .n{margin-left:auto;font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.switch{display:flex;align-items:center;gap:.55rem;font-size:.85rem;padding:.3rem .5rem;cursor:pointer}
+.switch input{accent-color:var(--teal);width:15px;height:15px}
+
+.status{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin-bottom:1rem;min-height:28px}
+.count{font-size:.85rem;color:var(--muted);margin-right:.3rem}
+.count b{color:var(--ink)}
+.chip{display:inline-flex;align-items:center;gap:.35rem;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:.15rem .4rem .15rem .65rem;font-size:.78rem}
+.chip button{width:18px;height:18px;border-radius:50%;display:grid;place-items:center;color:var(--muted)}
+.chip button:hover{background:var(--line2);color:var(--bad)}
+.clear{font-size:.78rem;color:var(--teal);font-weight:600}
+
+/* ── Tarjetas ── */
+.group-h{display:flex;align-items:center;gap:.6rem;margin:1.6rem 0 .8rem;font-weight:700;color:var(--ink);font-size:.95rem}
+.group-h:first-child{margin-top:0}
+.group-h .dot{width:10px;height:10px;border-radius:50%}
+.group-h small{color:var(--muted);font-weight:500}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:1.1rem}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:var(--shadow);transition:transform .15s,box-shadow .15s,border-color .15s;position:relative}
+.card:hover{transform:translateY(-2px);box-shadow:var(--shadow-h);border-color:color-mix(in srgb,var(--c) 40%,var(--line))}
+.card::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--c);z-index:3}
+.card.dim{opacity:.72}
+.thumb{aspect-ratio:16/9.2;position:relative;overflow:hidden;background:var(--line2);border-bottom:1px solid var(--line);display:block}
+.thumb img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .4s}
+.card:hover .thumb img{transform:scale(1.03)}
+.thumb svg.cover{width:100%;height:100%;display:block}
+.badges{position:absolute;top:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:.4rem;z-index:2;pointer-events:none}
+.pill{font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:3px 8px;border-radius:5px;background:rgba(255,255,255,.95);color:#1f2937;box-shadow:0 1px 3px rgba(0,0,0,.12);white-space:nowrap}
+.pill.new{background:var(--gold);color:#fff}
+.pill.old{background:#fff7e6;color:#92400e}
+.pill.obs{background:#fee2e2;color:#991b1b}
+.peek{position:absolute;inset:auto 10px 10px auto;z-index:2;opacity:0;transform:translateY(4px);transition:.15s;background:rgba(15,45,46,.88);color:#fff;font-size:.75rem;font-weight:600;border-radius:6px;padding:.35rem .65rem}
+.card:hover .peek,.peek:focus{opacity:1;transform:none}
+.body{padding:.95rem 1rem 1rem;display:flex;flex-direction:column;gap:.45rem;flex:1}
+.cat{font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--c);display:flex;align-items:center;gap:.4rem}
+.cat button{color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit}
+.cat button:hover{text-decoration:underline}
+.title{font-size:1.02rem;font-weight:700;line-height:1.3;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.title a{text-decoration:none}
+.title a:hover{color:var(--teal)}
+.file{font-size:.74rem;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace;word-break:break-all}
+.desc{font-size:.84rem;color:var(--text);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.meta{display:flex;flex-wrap:wrap;gap:.25rem .85rem;font-size:.76rem;color:var(--muted);margin-top:.15rem}
+.meta span{display:inline-flex;align-items:center;gap:.3rem}
+.meta svg{flex:none;opacity:.8}
+.tags{display:flex;flex-wrap:wrap;gap:.3rem}
+.tag{font-size:.7rem;padding:2px 7px;border-radius:5px;background:var(--line2);color:var(--text);font-weight:500}
+button.tag:hover{background:var(--teal-soft);color:var(--teal)}
+.tag.terr{background:transparent;border:1px solid var(--line)}
+.dup{font-size:.76rem;background:var(--warn-soft);color:var(--warn);border-radius:7px;padding:.4rem .6rem;display:flex;gap:.4rem;align-items:flex-start;text-align:left}
+.dup:hover{filter:brightness(.97)}
+.foot{margin-top:auto;padding-top:.7rem;border-top:1px solid var(--line2);display:flex;align-items:center;gap:.35rem}
+.tech{font-size:.7rem;color:var(--muted);margin-right:auto;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.act{height:30px;padding:0 .6rem;border-radius:7px;font-size:.78rem;font-weight:600;display:inline-flex;align-items:center;gap:.3rem;color:var(--text);border:1px solid var(--line)}
+.act:hover{border-color:var(--teal);color:var(--teal)}
+.act.primary{background:var(--teal);border-color:var(--teal);color:#fff;text-decoration:none}
+.act.primary:hover{filter:brightness(1.1);color:#fff}
+[data-theme="dark"] .act.primary{color:#0e1416}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .act.primary{color:#0e1416}}
+
+/* ── Lista ── */
+.list{background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.row{display:grid;grid-template-columns:88px minmax(0,2.4fr) minmax(0,1.1fr) 110px 120px 80px 112px;gap:1rem;align-items:center;padding:.6rem 1rem;border-bottom:1px solid var(--line2)}
+.row:last-child{border-bottom:0}
+.row:hover{background:var(--line2)}
+.row.head{font-size:.68rem;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-weight:700;background:var(--bg)}
+.row .mini{width:88px;height:50px;border-radius:6px;overflow:hidden;background:var(--line2);border:1px solid var(--line)}
+.row .mini img,.row .mini svg{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.row .t{font-weight:600;color:var(--ink);text-decoration:none;display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .t:hover{color:var(--teal)}
+.row .sub{font-size:.74rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.row .c{font-size:.8rem;display:flex;align-items:center;gap:.4rem;white-space:nowrap;overflow:hidden}
+.row .num{font-size:.8rem;font-variant-numeric:tabular-nums}
+.row .acts{display:flex;gap:.3rem;justify-content:flex-end}
+
+.empty{text-align:center;padding:4rem 1rem;color:var(--muted)}
+.empty b{display:block;color:var(--ink);font-size:1.05rem;margin-bottom:.3rem}
+
+/* ── Paneles (detalle y duplicados) ── */
+.scrim{position:fixed;inset:0;background:rgba(8,20,22,.5);z-index:50;opacity:0;pointer-events:none;transition:.2s}
+.scrim.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;z-index:60;background:var(--panel);box-shadow:0 20px 60px rgba(0,0,0,.25);transition:.25s;display:flex;flex-direction:column}
+.modal{inset:3vh 3vw;border-radius:14px;opacity:0;transform:scale(.98);pointer-events:none}
+.modal.on{opacity:1;transform:none;pointer-events:auto}
+.drawer{top:0;right:0;bottom:0;width:min(560px,100vw);transform:translateX(100%)}
+.drawer.on{transform:none}
+.sheet-h{display:flex;align-items:center;gap:.75rem;padding:.9rem 1.1rem;border-bottom:1px solid var(--line)}
+.sheet-h h3{font-size:1rem;color:var(--ink);flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.modal-body{display:grid;grid-template-columns:330px 1fr;flex:1;min-height:0}
+.info{padding:1.1rem;overflow:auto;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:1rem}
+.info h5{font-size:.68rem;text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin-bottom:.35rem}
+.info dl{display:grid;grid-template-columns:auto 1fr;gap:.3rem .8rem;font-size:.82rem}
+.info dt{color:var(--muted)}
+.info dd{color:var(--ink);font-weight:500}
+.info ol{padding-left:1.1rem;font-size:.83rem;display:flex;flex-direction:column;gap:.2rem}
+.frame{position:relative;background:var(--line2)}
+.frame iframe{width:100%;height:100%;border:0;background:#fff}
+.frame .loading{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:.85rem}
+.drawer-body{overflow:auto;padding:1rem 1.1rem;display:flex;flex-direction:column;gap:1rem}
+.dgroup{border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.dgroup .it{display:flex;gap:.75rem;padding:.7rem .8rem;align-items:center;border-bottom:1px solid var(--line2)}
+.dgroup .it:last-child{border-bottom:0}
+.dgroup .it.main{background:var(--ok-soft)}
+.dgroup .mini{width:78px;height:44px;border-radius:5px;overflow:hidden;flex:none;border:1px solid var(--line);background:var(--line2)}
+.dgroup .mini img,.dgroup .mini svg{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.dgroup .tx{flex:1;min-width:0;font-size:.8rem}
+.dgroup .tx b{display:block;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dgroup .why{font-size:.72rem;color:var(--warn)}
+.hint{font-size:.8rem;color:var(--muted);background:var(--line2);border-radius:8px;padding:.7rem .8rem}
+.hint code{font-size:.75rem}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:var(--ink);color:var(--bg);padding:.55rem 1rem;border-radius:8px;font-size:.85rem;opacity:0;transition:.2s;z-index:80;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.foot-note{margin-top:2.5rem;font-size:.76rem;color:var(--muted);text-align:center}
+
+@media (max-width:1100px){.row{grid-template-columns:72px minmax(0,1fr) 120px 96px}.row .hide-md{display:none}.row .mini{width:72px;height:42px}}
+@media (max-width:860px){
+  .layout{grid-template-columns:1fr}
+  aside{position:fixed;top:0;left:0;bottom:0;width:min(320px,88vw);max-height:none;background:var(--panel);z-index:60;padding:1.1rem;transform:translateX(-100%);transition:.25s;box-shadow:0 0 40px rgba(0,0,0,.2)}
+  aside.on{transform:none}
+  .filtros-btn{display:flex}
+  .modal{inset:0;border-radius:0}
+  .modal-body{grid-template-columns:1fr;grid-template-rows:auto 1fr}
+  .info{max-height:38vh;border-right:0;border-bottom:1px solid var(--line)}
+}
+@media (max-width:560px){
+  .wrap{padding:1.4rem 1rem 3rem}
+  .top{position:relative;padding-right:48px}.top-actions{position:absolute;top:0;right:0}
+  .stats{grid-template-columns:1fr 1fr}.stat b{font-size:1.25rem}
+  .search{order:-1;flex-basis:100%}.search kbd{display:none}
+  .toolbar .ctrl{flex:1;min-width:0}.filtros-btn{flex:none!important}
+  .row{grid-template-columns:64px minmax(0,1fr) 40px}.row .hide-sm{display:none}.row .mini{width:64px;height:38px}
+  .seg .lbl{display:none}
+  .grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="sub-header">Repositorio de Análisis y Reportes</div>
-            <h1 class="main-title">ANÁLISIS Y DATOS</h1>
-            <p class="description">Repositorio centralizado de tableros interactivos, reportes metodológicos y análisis documentados.</p>
-        </header>
-
-        <section class="stats-bar">
-            <div class="stat-item">
-                <span class="stat-number" id="total-stat">29</span>
-                <span class="stat-label">Informes<br>Publicados</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">Hosting</span>
-                <span class="stat-label">Plataforma<br>Firebase</span>
-            </div>
-            <div class="stat-item">
-                <span class="stat-number">Activo</span>
-                <span class="stat-label">Estado de<br>Sincronización</span>
-            </div>
-        </section>
-
-        <section class="search-container">
-            <input type="text" id="buscador" class="search-box" placeholder="Buscar por título, archivo o palabras clave..." onkeyup="filtrarTarjetas()">
-            <div class="results-count" id="contador-resultados">29 de 29 informes</div>
-        </section>
-
-        <main class="grid-cards" id="grid">
-            
-        <article class="card-item" data-busqueda="análisis de coaliciones electorales 2027 analisis_coaliciones_2027.html analisis coaliciones 2027">
-            <div class="card-preview">
-                <div class="card-badge">Matriz / Datos</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f8fafc"/>
-            <rect x="35" y="25" width="190" height="18" rx="4" fill="#cbd5e1"/>
-            <rect x="35" y="50" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="68" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="86" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <circle cx="50" cy="56" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="74" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="92" r="3" fill="#94a3b8"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="Analisis_Coaliciones_2027.html" target="_blank">Análisis de Coaliciones Electorales 2027</a>
-                </h3>
-                <p class="card-path">Analisis_Coaliciones_2027.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Analisis</span><span class="tag">Coaliciones</span><span class="tag">2027</span>
-                    </div>
-                    <a href="Analisis_Coaliciones_2027.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="análisis de riesgo · nuevas ideas 2027-2030 riesgo_ni_2027.html riesgo 2027">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="RIESGO_NI_2027.html" target="_blank">Análisis de riesgo · NUEVAS IDEAS 2027-2030</a>
-                </h3>
-                <p class="card-path">RIESGO_NI_2027.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Riesgo</span><span class="tag">2027</span>
-                    </div>
-                    <a href="RIESGO_NI_2027.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="atlas electoral 2024 · polarización y cruce de escrutinios atlas_electoral_ni.html atlas electoral">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="atlas_electoral_ni.html" target="_blank">Atlas Electoral 2024 · Polarización y Cruce de Escrutinios</a>
-                </h3>
-                <p class="card-path">atlas_electoral_ni.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Atlas</span><span class="tag">Electoral</span>
-                    </div>
-                    <a href="atlas_electoral_ni.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="atlas estratégico ni 2027 · por sector y escrutinio atlas_estrategico_ni_2027__final.html atlas estrategico 2027 final">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="atlas_estrategico_ni_2027__final.html" target="_blank">Atlas Estratégico NI 2027 · por sector y escrutinio</a>
-                </h3>
-                <p class="card-path">atlas_estrategico_ni_2027__final.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Atlas</span><span class="tag">Estrategico</span><span class="tag">2027</span>
-                    </div>
-                    <a href="atlas_estrategico_ni_2027__final.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="calendario electoral 2027 · eje espejo calendario_electoral_2027.html calendario electoral 2027">
-            <div class="card-preview">
-                <div class="card-badge">Métricas / Barras</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdfa"/>
-            <line x1="30" y1="105" x2="230" y2="105" stroke="#ccfbf1" stroke-width="1.5"/>
-            <rect x="45" y="65" width="22" height="40" rx="3" fill="#5eead4"/>
-            <rect x="78" y="40" width="22" height="65" rx="3" fill="#14b8a6"/>
-            <rect x="111" y="50" width="22" height="55" rx="3" fill="#0d9488"/>
-            <rect x="144" y="30" width="22" height="75" rx="3" fill="#0f766e"/>
-            <rect x="177" y="55" width="22" height="50" rx="3" fill="#14b8a6"/>
-            <rect x="210" y="35" width="22" height="70" rx="3" fill="#5eead4"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="calendario_electoral_2027.html" target="_blank">Calendario Electoral 2027 · Eje Espejo</a>
-                </h3>
-                <p class="card-path">calendario_electoral_2027.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Calendario</span><span class="tag">Electoral</span><span class="tag">2027</span>
-                    </div>
-                    <a href="calendario_electoral_2027.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="cuerpo electoral · nuevas ideas cuerpo_electoral.html cuerpo electoral">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="cuerpo_electoral.html" target="_blank">Cuerpo Electoral · Nuevas Ideas</a>
-                </h3>
-                <p class="card-path">cuerpo_electoral.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Cuerpo</span><span class="tag">Electoral</span>
-                    </div>
-                    <a href="cuerpo_electoral.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="dashboard de candidatos · nuevas ideas dashboard_candidatos.html dashboard candidatos">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="dashboard_candidatos.html" target="_blank">Dashboard de candidatos · Nuevas Ideas</a>
-                </h3>
-                <p class="card-path">dashboard_candidatos.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Dashboard</span><span class="tag">Candidatos</span>
-                    </div>
-                    <a href="dashboard_candidatos.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="densidad de centros de votación · el salvador 2024 densidad_centros.html densidad centros">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="densidad_centros.html" target="_blank">Densidad de centros de votación · El Salvador 2024</a>
-                </h3>
-                <p class="card-path">densidad_centros.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Densidad</span><span class="tag">Centros</span>
-                    </div>
-                    <a href="densidad_centros.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="despacho · acajutla dashboard_despacho.html dashboard despacho">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="dashboard_despacho.html" target="_blank">Despacho · Acajutla</a>
-                </h3>
-                <p class="card-path">dashboard_despacho.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Dashboard</span><span class="tag">Despacho</span>
-                    </div>
-                    <a href="dashboard_despacho.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="estoy con bukele · panel de carga · nuevas ideas estoy_con_bukele.html estoy con bukele">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="estoy_con_bukele.html" target="_blank">Estoy con Bukele · Panel de carga · Nuevas Ideas</a>
-                </h3>
-                <p class="card-path">estoy_con_bukele.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Estoy</span><span class="tag">Con</span><span class="tag">Bukele</span>
-                    </div>
-                    <a href="estoy_con_bukele.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="evaluar cambio de ruta · sedes de transmisión evaluador_cambios_rutas.html evaluador cambios rutas">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="evaluador_cambios_rutas.html" target="_blank">Evaluar cambio de ruta · Sedes de transmisión</a>
-                </h3>
-                <p class="card-path">evaluador_cambios_rutas.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Evaluador</span><span class="tag">Cambios</span><span class="tag">Rutas</span>
-                    </div>
-                    <a href="evaluador_cambios_rutas.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="lejanía y participación lejania_y_participacion.html lejania participacion">
-            <div class="card-preview">
-                <div class="card-badge">Matriz / Datos</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f8fafc"/>
-            <rect x="35" y="25" width="190" height="18" rx="4" fill="#cbd5e1"/>
-            <rect x="35" y="50" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="68" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="86" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <circle cx="50" cy="56" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="74" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="92" r="3" fill="#94a3b8"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="Lejania_y_Participacion.html" target="_blank">Lejanía y Participación</a>
-                </h3>
-                <p class="card-path">Lejania_y_Participacion.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Lejania</span><span class="tag">Participacion</span>
-                    </div>
-                    <a href="Lejania_y_Participacion.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="manual maestro ia & catastro: de "attention is all you need" al laboratorio 73 guia_maestra_transformer_lab73.html guia maestra transformer lab73">
-            <div class="card-preview">
-                <div class="card-badge">Matriz / Datos</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f8fafc"/>
-            <rect x="35" y="25" width="190" height="18" rx="4" fill="#cbd5e1"/>
-            <rect x="35" y="50" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="68" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="86" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <circle cx="50" cy="56" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="74" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="92" r="3" fill="#94a3b8"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="Guia_Maestra_Transformer_Lab73.html" target="_blank">Manual Maestro IA & Catastro: De "Attention Is All You Need" al Laboratorio 73</a>
-                </h3>
-                <p class="card-path">Guia_Maestra_Transformer_Lab73.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Guia</span><span class="tag">Maestra</span><span class="tag">Transformer</span>
-                    </div>
-                    <a href="Guia_Maestra_Transformer_Lab73.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="mapa de actividades · nuevas ideas mapa_actividades.html mapa actividades">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="mapa_actividades.html" target="_blank">Mapa de Actividades · Nuevas Ideas</a>
-                </h3>
-                <p class="card-path">mapa_actividades.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Mapa</span><span class="tag">Actividades</span>
-                    </div>
-                    <a href="mapa_actividades.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="metodología · población salvadoreña en el exterior metodologia.html metodologia">
-            <div class="card-preview">
-                <div class="card-badge">Matriz / Datos</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f8fafc"/>
-            <rect x="35" y="25" width="190" height="18" rx="4" fill="#cbd5e1"/>
-            <rect x="35" y="50" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="68" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="86" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <circle cx="50" cy="56" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="74" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="92" r="3" fill="#94a3b8"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="metodologia.html" target="_blank">Metodología · Población salvadoreña en el exterior</a>
-                </h3>
-                <p class="card-path">metodologia.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Metodologia</span>
-                    </div>
-                    <a href="metodologia.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="ni | conducta del voto — legislativa 2024 conducta_nacional_ni.html conducta nacional">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="conducta_nacional_ni.html" target="_blank">NI | Conducta del Voto — Legislativa 2024</a>
-                </h3>
-                <p class="card-path">conducta_nacional_ni.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Conducta</span><span class="tag">Nacional</span>
-                    </div>
-                    <a href="conducta_nacional_ni.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="pisa 2025 — el salvador frente a américa latina y el mundo pisa2025_el_salvador.html pisa2025 salvador">
-            <div class="card-preview">
-                <div class="card-badge">Matriz / Datos</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f8fafc"/>
-            <rect x="35" y="25" width="190" height="18" rx="4" fill="#cbd5e1"/>
-            <rect x="35" y="50" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="68" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="86" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <circle cx="50" cy="56" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="74" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="92" r="3" fill="#94a3b8"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="pisa2025_el_salvador.html" target="_blank">PISA 2025 — El Salvador frente a América Latina y el mundo</a>
-                </h3>
-                <p class="card-path">pisa2025_el_salvador.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Pisa2025</span><span class="tag">Salvador</span>
-                    </div>
-                    <a href="pisa2025_el_salvador.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="panel simulacro 1 — centros por sede panel_simulacro_1.html panel simulacro">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="panel_simulacro_1.html" target="_blank">Panel Simulacro 1 — Centros por Sede</a>
-                </h3>
-                <p class="card-path">panel_simulacro_1.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Panel</span><span class="tag">Simulacro</span>
-                    </div>
-                    <a href="panel_simulacro_1.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="panel de estructura · nuevas ideas panel_estructura.html panel estructura">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="panel_estructura.html" target="_blank">Panel de Estructura · Nuevas Ideas</a>
-                </h3>
-                <p class="card-path">panel_estructura.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Panel</span><span class="tag">Estructura</span>
-                    </div>
-                    <a href="panel_estructura.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="paneles de gestión · nuevas ideas menu_paneles.html menu paneles">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="menu_paneles.html" target="_blank">Paneles de Gestión · Nuevas Ideas</a>
-                </h3>
-                <p class="card-path">menu_paneles.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Menu</span><span class="tag">Paneles</span>
-                    </div>
-                    <a href="menu_paneles.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="propuesta de jrv para el cierre del padrón 2026 informe_padron_2027_proyeccion_jrv.html informe padron 2027 proyeccion jrv">
-            <div class="card-preview">
-                <div class="card-badge">Matriz / Datos</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f8fafc"/>
-            <rect x="35" y="25" width="190" height="18" rx="4" fill="#cbd5e1"/>
-            <rect x="35" y="50" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="68" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <rect x="35" y="86" width="190" height="12" rx="3" fill="#e2e8f0"/>
-            <circle cx="50" cy="56" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="74" r="3" fill="#94a3b8"/>
-            <circle cx="50" cy="92" r="3" fill="#94a3b8"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="INFORME_PADRON_2027_PROYECCION_JRV.html" target="_blank">Propuesta de JRV para el cierre del padrón 2026</a>
-                </h3>
-                <p class="card-path">INFORME_PADRON_2027_PROYECCION_JRV.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Informe</span><span class="tag">Padron</span><span class="tag">2027</span>
-                    </div>
-                    <a href="INFORME_PADRON_2027_PROYECCION_JRV.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="reasignación de centros de votación informe_cambios_asignacion.html informe cambios asignacion">
-            <div class="card-preview">
-                <div class="card-badge">Métricas / Barras</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdfa"/>
-            <line x1="30" y1="105" x2="230" y2="105" stroke="#ccfbf1" stroke-width="1.5"/>
-            <rect x="45" y="65" width="22" height="40" rx="3" fill="#5eead4"/>
-            <rect x="78" y="40" width="22" height="65" rx="3" fill="#14b8a6"/>
-            <rect x="111" y="50" width="22" height="55" rx="3" fill="#0d9488"/>
-            <rect x="144" y="30" width="22" height="75" rx="3" fill="#0f766e"/>
-            <rect x="177" y="55" width="22" height="50" rx="3" fill="#14b8a6"/>
-            <rect x="210" y="35" width="22" height="70" rx="3" fill="#5eead4"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="INFORME_CAMBIOS_ASIGNACION.html" target="_blank">Reasignación de centros de votación</a>
-                </h3>
-                <p class="card-path">INFORME_CAMBIOS_ASIGNACION.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Informe</span><span class="tag">Cambios</span><span class="tag">Asignacion</span>
-                    </div>
-                    <a href="INFORME_CAMBIOS_ASIGNACION.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="revisión de inconsistencias — centros 2027 vs 2024 panel_revision_inconsistencias.html panel revision inconsistencias">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="panel_revision_inconsistencias.html" target="_blank">Revisión de inconsistencias — Centros 2027 vs 2024</a>
-                </h3>
-                <p class="card-path">panel_revision_inconsistencias.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Panel</span><span class="tag">Revision</span><span class="tag">Inconsistencias</span>
-                    </div>
-                    <a href="panel_revision_inconsistencias.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="simulacro 1 — asignación de personal mapa_simulacro2.html mapa simulacro2">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="mapa_simulacro2.html" target="_blank">Simulacro 1 — Asignación de personal</a>
-                </h3>
-                <p class="card-path">mapa_simulacro2.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Mapa</span><span class="tag">Simulacro2</span>
-                    </div>
-                    <a href="mapa_simulacro2.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="simulacro 1 — asignación de personal panel_personal_v3.html panel personal">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="panel_personal_v3.html" target="_blank">Simulacro 1 — Asignación de personal</a>
-                </h3>
-                <p class="card-path">panel_personal_v3.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Panel</span><span class="tag">Personal</span>
-                    </div>
-                    <a href="panel_personal_v3.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="simulacro v3 · reparto panel_reparto_v3.html panel reparto">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="panel_reparto_v3.html" target="_blank">Simulacro v3 · Reparto</a>
-                </h3>
-                <p class="card-path">panel_reparto_v3.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Panel</span><span class="tag">Reparto</span>
-                    </div>
-                    <a href="panel_reparto_v3.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="simulador de reparto 2027 simulacro_nacional_1_tablero.html simulacro nacional tablero">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="simulacro_nacional_1_tablero.html" target="_blank">Simulador de Reparto 2027</a>
-                </h3>
-                <p class="card-path">simulacro_nacional_1_tablero.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Simulacro</span><span class="tag">Nacional</span><span class="tag">Tablero</span>
-                    </div>
-                    <a href="simulacro_nacional_1_tablero.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="sondeo chalatenango · informe operativo encuesta_challatenango.html encuesta challatenango">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="encuesta_challatenango.html" target="_blank">Sondeo Chalatenango · Informe operativo</a>
-                </h3>
-                <p class="card-path">encuesta_challatenango.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Encuesta</span><span class="tag">Challatenango</span>
-                    </div>
-                    <a href="encuesta_challatenango.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        <article class="card-item" data-busqueda="tablero de ingeniería electoral · nuevas ideas tablero_ingenieria_electoral.html tablero ingenieria electoral">
-            <div class="card-preview">
-                <div class="card-badge">Mapa / GIS</div>
-                
-        <svg width="100%" height="100%" viewBox="0 0 260 130" xmlns="http://www.w3.org/2000/svg">
-            <rect width="260" height="130" fill="#f0fdf4"/>
-            <path d="M20 70 Q 60 40 100 65 T 180 50 T 240 80" fill="none" stroke="#bbf7d0" stroke-width="8" stroke-linecap="round"/>
-            <polygon points="50,40 85,30 110,60 70,75" fill="#86efac" opacity="0.6"/>
-            <polygon points="120,45 170,35 185,75 130,80" fill="#4ade80" opacity="0.5"/>
-            <polygon points="175,70 220,60 235,95 190,105" fill="#22c55e" opacity="0.4"/>
-            <!-- Pines de ubicación -->
-            <circle cx="85" cy="45" r="4" fill="#0f766e"/>
-            <circle cx="150" cy="55" r="5" fill="#0f766e"/>
-            <circle cx="205" cy="80" r="4" fill="#0f766e"/>
-        </svg>
-            </div>
-            <div class="card-content">
-                <h3 class="card-title">
-                    <a href="tablero_ingenieria_electoral.html" target="_blank">Tablero de Ingeniería Electoral · Nuevas Ideas</a>
-                </h3>
-                <p class="card-path">tablero_ingenieria_electoral.html</p>
-                <div class="card-footer">
-                    <div class="tags-container">
-                        <span class="tag">Tablero</span><span class="tag">Ingenieria</span><span class="tag">Electoral</span>
-                    </div>
-                    <a href="tablero_ingenieria_electoral.html" target="_blank" class="btn-abrir">Abrir ↗</a>
-                </div>
-            </div>
-        </article>
-        </main>
+<div class="wrap">
+  <header class="top">
+    <div>
+      <div class="eyebrow">Repositorio de tableros, mapas e informes</div>
+      <h1>Análisis y Datos</h1>
+      <p class="lead" id="lead"></p>
     </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="tema" title="Cambiar tema claro/oscuro" aria-label="Cambiar tema">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+    </div>
+  </header>
 
-    <script>
-        const totalOriginal = 29;
-        function filtrarTarjetas() {
-            const query = document.getElementById('buscador').value.toLowerCase().trim();
-            const tarjetas = document.querySelectorAll('.card-item');
-            let visibles = 0;
+  <section class="stats" id="stats"></section>
 
-            tarjetas.forEach(t => {
-                const datos = t.getAttribute('data-busqueda');
-                if (datos.includes(query)) {
-                    t.style.display = 'flex';
-                    visibles++;
-                } else {
-                    t.style.display = 'none';
-                }
-            });
+  <div class="toolbar" id="toolbar">
+    <button class="ctrl filtros-btn" id="abrirFiltros" style="align-items:center;gap:.4rem">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M6 12h12M10 19h4"/></svg>Filtros
+    </button>
+    <label class="search">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="q" type="search" placeholder="Buscar por título, archivo, etiqueta, sección, territorio…" autocomplete="off" aria-label="Buscar">
+      <kbd>/</kbd>
+    </label>
+    <select class="ctrl" id="orden" aria-label="Ordenar">
+      <option value="act">Más recientes</option>
+      <option value="cre">Creados recientemente</option>
+      <option value="tit">Título A–Z</option>
+      <option value="peso">Más pesados</option>
+      <option value="rel">Relevancia</option>
+    </select>
+    <select class="ctrl" id="agrupar" aria-label="Agrupar">
+      <option value="">Sin agrupar</option>
+      <option value="categoria">Por categoría</option>
+      <option value="tipo">Por tipo</option>
+      <option value="mes">Por mes</option>
+    </select>
+    <div class="seg" role="group" aria-label="Vista">
+      <button data-vista="grid" class="on" title="Tarjetas"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg><span class="lbl">Tarjetas</span></button>
+      <button data-vista="list" title="Lista"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><span class="lbl">Lista</span></button>
+    </div>
+  </div>
 
-            document.getElementById('contador-resultados').innerText = `${visibles} de ${totalOriginal} informes`;
-        }
-    </script>
+  <div class="layout">
+    <aside id="aside" aria-label="Filtros"></aside>
+    <main>
+      <div class="status" id="status"></div>
+      <div id="results"></div>
+    </main>
+  </div>
+  <p class="foot-note" id="footnote"></p>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<section class="sheet modal" id="modal" aria-modal="true" role="dialog">
+  <div class="sheet-h">
+    <h3 id="mTitle"></h3>
+    <a class="act primary" id="mOpen" target="_blank" rel="noopener">Abrir ↗</a>
+    <button class="icon-btn" data-close aria-label="Cerrar">✕</button>
+  </div>
+  <div class="modal-body">
+    <div class="info" id="mInfo"></div>
+    <div class="frame"><div class="loading">Cargando vista previa…</div><iframe id="mFrame" title="Vista previa" loading="lazy"></iframe></div>
+  </div>
+</section>
+<section class="sheet drawer" id="drawer" aria-modal="true" role="dialog">
+  <div class="sheet-h"><h3>Posibles duplicados y versiones</h3><button class="icon-btn" data-close aria-label="Cerrar">✕</button></div>
+  <div class="drawer-body" id="dBody"></div>
+</section>
+<div class="toast" id="toast"></div>
+
+<script id="datos" type="application/json">{"generado": "2026-10-30T11:32:17-06:00", "dominio": "https://dashboard-datos.web.app", "colores": {"Logística y simulacros": "#0e7490", "Padrón y centros": "#7c3aed", "Análisis electoral": "#b45309", "Estructura territorial": "#be123c", "Encuestas y opinión": "#15803d", "Calendario y planificación": "#4338ca", "Voto en el exterior": "#0369a1", "Educación": "#a16207", "IA y catastro": "#475569", "Otros": "#64748b"}, "grupos": [{"id": "gpanel_personal_v3", "principal": "panel_personal_v3.html", "miembros": ["panel_personal_v3.html", "mapa_simulacro2.html"]}], "informes": [{"ruta": "Guia_Maestra_Transformer_Lab73.html", "slug": "guia_maestra_transformer_lab73", "archivo": "Guia_Maestra_Transformer_Lab73.html", "carpeta": "", "titulo": "Manual Maestro IA & Catastro: De \"Attention Is All You Need\" al Laboratorio 73", "descripcion": "Publicado en junio de 2017 por ocho investigadores de Google Brain y Google Research, este documento demolió la arquitectura dominante de la época (las Redes Neuronales Recurrentes — RNN y LSTM) y presentó el Transformer .", "secciones": ["📄 \"Attention Is All You Need\" (Vaswani et al., 2017)", "⚙️ Las 6 Piezas de Ingeniería del Paper", "🔬 Simulador Interactivo: Tus Anclas vs. Q, K, V, O", "🔄 Paralelismo Exacto: Tu Código en 73a vs. El Cerebro de Qwen en 73b", "📐 Calculadora Interactiva LoRA y VRAM (Tu 73b_ENTRENAR.py)", "🧮 Las 5 Fórmulas Matemáticas Ocultas en tus Scripts", "🚀 Cómo Conecta tu Proyecto con las Arquitecturas de IA de Hoy (2026)", "📚 Diccionario Maestro de Bolsillo (Con Buscador y Relaciones)"], "categoria": "IA y catastro", "categorias_sec": [], "tipo": "Guía", "territorio": [], "anios": ["2017"], "tecnologia": [], "tags": ["Laboratorio", "Transformer", "Attention", "Catastro"], "creado": "2026-10-30T10:58:34-06:00", "actualizado": "2026-10-30T10:58:34-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 59907, "palabras": 2657, "interactivo": 4, "estado": "vigente", "nota": "", "hash": "37fd358a379fdc323ef2fbc80b71275992c9499c", "miniatura": "_miniaturas/guia_maestra_transformer_lab73.jpg?v=37fd358a", "duplicados": []}, {"ruta": "panel_personal_v3.html", "slug": "panel_personal_v3", "archivo": "panel_personal_v3.html", "carpeta": "", "titulo": "Simulacro 1 — Asignación de personal", "descripcion": "Simulacro v3 · Asignación de Personal", "secciones": ["Simulacro v3 · Asignación de Personal"], "categoria": "Logística y simulacros", "categorias_sec": [], "tipo": "Tablero", "territorio": [], "anios": [], "tecnologia": ["Leaflet"], "tags": ["Asignación de personal", "Simulacro"], "creado": "2026-10-30T10:58:34-06:00", "actualizado": "2026-10-30T10:58:34-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 173250, "palabras": 77, "interactivo": 2, "estado": "vigente", "nota": "", "hash": "ae5f3038b383c04e2b8ff73c7c82fca92e2e44d5", "miniatura": "_miniaturas/panel_personal_v3.jpg?v=ae5f3038", "duplicados": [{"ruta": "mapa_simulacro2.html", "motivos": ["mismo título", "66% de contenido similar"], "similitud": 0.66}], "grupo": "gpanel_personal_v3", "grupo_principal": "panel_personal_v3.html"}, {"ruta": "panel_reparto_v3.html", "slug": "panel_reparto_v3", "archivo": "panel_reparto_v3.html", "carpeta": "", "titulo": "Simulacro v3 · Reparto", "descripcion": "Reparto de vehículos · 100 centros", "secciones": ["Reparto de vehículos · 100 centros"], "categoria": "Logística y simulacros", "categorias_sec": [], "tipo": "Tablero", "territorio": [], "anios": [], "tecnologia": ["Leaflet"], "tags": ["Simulacro", "Vehículo", "Reparto"], "creado": "2026-10-30T10:58:34-06:00", "actualizado": "2026-10-30T10:58:34-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 26419, "palabras": 71, "interactivo": 2, "estado": "vigente", "nota": "", "hash": "f98e838d32fb628d557d98d6808631f545b43875", "miniatura": "_miniaturas/panel_reparto_v3.jpg?v=f98e838d", "duplicados": []}, {"ruta": "cuerpo_electoral.html", "slug": "cuerpo_electoral", "archivo": "cuerpo_electoral.html", "carpeta": "", "titulo": "Cuerpo Electoral · Nuevas Ideas", "descripcion": "MAPA DE COBERTURA · BALANCE TERRITORIAL · BALANCE POR CARGO", "secciones": [], "categoria": "Estructura territorial", "categorias_sec": ["Análisis electoral"], "tipo": "Mapa", "territorio": [], "anios": [], "tecnologia": ["ArcGIS JS"], "tags": ["Cuerpo electoral", "Cobertura"], "creado": "2026-10-27T21:20:54-06:00", "actualizado": "2026-10-28T18:37:02-06:00", "fecha_datos": "2026-10-27", "origen_fecha": "git", "commits": 2, "bytes": 592590, "palabras": 187, "interactivo": 7, "estado": "vigente", "nota": "", "hash": "60cc36c0951e4605f84b893a7b8e7adcc4afb6e6", "miniatura": "_miniaturas/cuerpo_electoral.jpg?v=60cc36c0", "duplicados": []}, {"ruta": "dashboard_candidatos.html", "slug": "dashboard_candidatos", "archivo": "dashboard_candidatos.html", "carpeta": "", "titulo": "Dashboard de candidatos · Nuevas Ideas", "descripcion": "Ingreso de muestra. Elige el candidato para ver solo su territorio: un candidato a diputado ve su departamento y uno a alcalde, su municipio.", "secciones": ["Dashboard de candidatos", "¿Cómo voy?", "¿Qué se ha hecho?", "¿Dónde se ha hecho?", "¿Dónde priorizo?"], "categoria": "Análisis electoral", "categorias_sec": [], "tipo": "Tablero", "territorio": [], "anios": [], "tecnologia": ["ArcGIS JS"], "tags": ["Candidato"], "creado": "2026-10-20T15:03:41-06:00", "actualizado": "2026-10-28T18:37:02-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 2, "bytes": 1295633, "palabras": 407, "interactivo": 13, "estado": "vigente", "nota": "", "hash": "fe94953184c5976792027e4fa8d1bea3ae207add", "miniatura": "_miniaturas/dashboard_candidatos.jpg?v=fe949531", "duplicados": []}, {"ruta": "estoy_con_bukele.html", "slug": "estoy_con_bukele", "archivo": "estoy_con_bukele.html", "carpeta": "", "titulo": "Estoy con Bukele · Panel de carga · Nuevas Ideas", "descripcion": "MAPA DE AVANCE DE LA META · BALANCE TERRITORIAL · BALANCE POR ORIGEN DE LA CARGA", "secciones": [], "categoria": "Estructura territorial", "categorias_sec": [], "tipo": "Tablero", "territorio": [], "anios": [], "tecnologia": ["ArcGIS JS", "Leaflet"], "tags": ["Panel de carga"], "creado": "2026-10-22T10:49:23-06:00", "actualizado": "2026-10-28T18:37:02-06:00", "fecha_datos": "2026-10-22", "origen_fecha": "git", "commits": 2, "bytes": 418117, "palabras": 263, "interactivo": 15, "estado": "vigente", "nota": "", "hash": "82ec7b9f6bcb78ff34f58e776d91f8cd12fc044f", "miniatura": "_miniaturas/estoy_con_bukele.jpg?v=82ec7b9f", "duplicados": []}, {"ruta": "mapa_actividades.html", "slug": "mapa_actividades", "archivo": "mapa_actividades.html", "carpeta": "", "titulo": "Mapa de Actividades · Nuevas Ideas", "descripcion": "Avance de cobertura · Zonas electorales · Seguimiento por territorio", "secciones": ["Mapa de Actividades", "Zonas electorales", "Seguimiento por territorio", "Balance por tipo de prioridad", "Balance por segmentación", "Matriz de lo realizado", "Contador por tipo de obra"], "categoria": "Estructura territorial", "categorias_sec": ["Análisis electoral"], "tipo": "Mapa", "territorio": [], "anios": [], "tecnologia": ["ArcGIS JS"], "tags": ["Actividades", "Cobertura", "Electoral"], "creado": "2026-10-22T10:49:23-06:00", "actualizado": "2026-10-28T18:37:02-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 2, "bytes": 380149, "palabras": 119, "interactivo": 6, "estado": "vigente", "nota": "", "hash": "655f77ac7c47178c84b4e645a3192c61e47599de", "miniatura": "_miniaturas/mapa_actividades.jpg?v=655f77ac", "duplicados": []}, {"ruta": "menu_paneles.html", "slug": "menu_paneles", "archivo": "menu_paneles.html", "carpeta": "", "titulo": "Paneles de Gestión · Nuevas Ideas", "descripcion": "Elige un módulo para entrar. Todos comparten las 1,595 zonas electorales 2027, la meta de 2,000,000 y los filtros de territorio, priorización y segmentación pro Nayib.", "secciones": ["Paneles de gestión"], "categoria": "Estructura territorial", "categorias_sec": [], "tipo": "Menú", "territorio": [], "anios": ["2027"], "tecnologia": [], "tags": ["Paneles de gestión", "Electoral"], "creado": "2026-10-22T10:51:56-06:00", "actualizado": "2026-10-28T18:37:02-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 3, "bytes": 18879, "palabras": 67, "interactivo": 0, "estado": "vigente", "nota": "", "hash": "5eda7127fcaa73a1968cdf989d5320d2bba22da6", "miniatura": "_miniaturas/menu_paneles.jpg?v=5eda7127", "duplicados": []}, {"ruta": "panel_estructura.html", "slug": "panel_estructura", "archivo": "panel_estructura.html", "carpeta": "", "titulo": "Panel de Estructura · Nuevas Ideas", "descripcion": "MAPA DE DESIGNACIÓN · BALANCE TERRITORIAL · BALANCE POR CARGO", "secciones": [], "categoria": "Estructura territorial", "categorias_sec": [], "tipo": "Tablero", "territorio": [], "anios": [], "tecnologia": ["ArcGIS JS"], "tags": ["Estructura"], "creado": "2026-10-22T10:49:23-06:00", "actualizado": "2026-10-28T18:37:02-06:00", "fecha_datos": "2026-10-22", "origen_fecha": "git", "commits": 4, "bytes": 586029, "palabras": 170, "interactivo": 6, "estado": "vigente", "nota": "", "hash": "58966103249cec5aa076a7cbfee40805125ed559", "miniatura": "_miniaturas/panel_estructura.jpg?v=58966103", "duplicados": []}, {"ruta": "tablero_ingenieria_electoral.html", "slug": "tablero_ingenieria_electoral", "archivo": "tablero_ingenieria_electoral.html", "carpeta": "", "titulo": "Tablero de Ingeniería Electoral · Nuevas Ideas", "descripcion": "Piso Electoral frente a la meta · ▶ Centro de votación (zona electoral) donde priorizar · Zonas electorales", "secciones": ["Tablero de Ingeniería Electoral", "▶ Centro de votación (zona electoral) donde priorizar", "Zonas electorales", "Balance de meta por territorio", "Balance por segmentación pro Nayib", "Resultados electorales 2024", "Matriz de indicadores por territorio"], "categoria": "Análisis electoral", "categorias_sec": ["Padrón y centros", "Estructura territorial"], "tipo": "Tablero", "territorio": [], "anios": [], "tecnologia": ["ArcGIS JS"], "tags": ["Ingeniería electoral", "Centro de votación", "Zona electoral"], "creado": "2026-10-20T11:23:14-06:00", "actualizado": "2026-10-28T18:37:02-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 5, "bytes": 857787, "palabras": 307, "interactivo": 8, "estado": "vigente", "nota": "", "hash": "f5a405bde805cf28826fcb4fe5dc4a87e1d1e717", "miniatura": "_miniaturas/tablero_ingenieria_electoral.jpg?v=f5a405bd", "duplicados": []}, {"ruta": "Lejania_y_Participacion.html", "slug": "lejania_y_participacion", "archivo": "Lejania_y_Participacion.html", "carpeta": "", "titulo": "Lejanía y Participación", "descripcion": "4.9 millones de electores estables cruzados con su ubicación territorial y su voto. La distancia al centro y la mala asignación tienen un costo medible en participación.", "secciones": ["A más distancia, menos votos", "En la ciudad, cada cuadra cuenta", "Votar fuera de su sector cuesta participación", "El bolsón pierde votos aunque la gente viva cerca", "Perfil de los 2.67 millones que votaron", "Lejos hay más jóvenes entre los votantes", "Quiénes votan, edad por edad", "La distancia frena más a los jóvenes"], "categoria": "Análisis electoral", "categorias_sec": ["Padrón y centros"], "tipo": "Informe", "territorio": [], "anios": [], "tecnologia": [], "tags": ["Participación", "Electores", "Voto"], "creado": "2026-10-23T18:27:31-06:00", "actualizado": "2026-10-26T15:58:27-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 5, "bytes": 419998, "palabras": 1782, "interactivo": 3, "estado": "vigente", "nota": "", "hash": "bee963f967fb3d1cc9011d5695b1c10849ce921f", "miniatura": "_miniaturas/lejania_y_participacion.jpg?v=bee963f9", "duplicados": []}, {"ruta": "mapa_simulacro2.html", "slug": "mapa_simulacro2", "archivo": "mapa_simulacro2.html", "carpeta": "", "titulo": "Simulacro 1 — Asignación de personal", "descripcion": "Asignación de Personal de Transmisión", "secciones": ["Asignación de Personal de Transmisión"], "categoria": "Logística y simulacros", "categorias_sec": [], "tipo": "Mapa", "territorio": [], "anios": [], "tecnologia": ["Leaflet"], "tags": ["Asignación de personal", "Transmisión", "Simulacro"], "creado": "2026-10-22T15:33:05-06:00", "actualizado": "2026-10-23T09:01:36-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 6, "bytes": 1116997, "palabras": 80, "interactivo": 2, "estado": "anterior", "nota": "", "hash": "4c8466c651864b4077cd07851df3eadf000dd3b4", "miniatura": "_miniaturas/mapa_simulacro2.jpg?v=4c8466c6", "duplicados": [{"ruta": "panel_personal_v3.html", "motivos": ["mismo título", "66% de contenido similar"], "similitud": 0.66}], "grupo": "gpanel_personal_v3", "grupo_principal": "panel_personal_v3.html"}, {"ruta": "panel_revision_inconsistencias.html", "slug": "panel_revision_inconsistencias", "archivo": "panel_revision_inconsistencias.html", "carpeta": "", "titulo": "Revisión de inconsistencias — Centros 2027 vs 2024", "descripcion": "Centros 2027 (21-oct) vs tabla 2024 · DOE anterior · zonas", "secciones": ["Revisión de inconsistencias"], "categoria": "Padrón y centros", "categorias_sec": [], "tipo": "Tablero", "territorio": [], "anios": ["2024", "2027"], "tecnologia": ["Leaflet"], "tags": ["Inconsistencia"], "creado": "2026-10-21T14:51:51-06:00", "actualizado": "2026-10-23T09:01:36-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 3, "bytes": 1063649, "palabras": 59, "interactivo": 5, "estado": "vigente", "nota": "", "hash": "69be03ed00bb65071abe57af918697bbe6c6b2ba", "miniatura": "_miniaturas/panel_revision_inconsistencias.jpg?v=69be03ed", "duplicados": []}, {"ruta": "panel_simulacro_1.html", "slug": "panel_simulacro_1", "archivo": "panel_simulacro_1.html", "carpeta": "", "titulo": "Panel Simulacro 1 — Centros por Sede", "descripcion": "Centros del Simulacro 1 por sede: conectividad, nombre 2024 vs nuevo (MINED) y alertas de coordenada.", "secciones": ["Simulacro 1 · Centros por Sede"], "categoria": "Logística y simulacros", "categorias_sec": [], "tipo": "Tablero", "territorio": [], "anios": ["2024"], "tecnologia": ["Leaflet"], "tags": ["Simulacro", "MINED", "Sede"], "creado": "2026-10-16T10:20:56-06:00", "actualizado": "2026-10-21T10:56:17-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 5, "bytes": 992335, "palabras": 83, "interactivo": 2, "estado": "vigente", "nota": "", "hash": "bc701c985a61cebdc7d912bba275475b62e2b200", "miniatura": "_miniaturas/panel_simulacro_1.jpg?v=bc701c98", "duplicados": []}, {"ruta": "INFORME_PADRON_2027_PROYECCION_JRV.html", "slug": "informe_padron_2027_proyeccion_jrv", "archivo": "INFORME_PADRON_2027_PROYECCION_JRV.html", "carpeta": "", "titulo": "Propuesta de JRV para el cierre del padrón 2026", "descripcion": "El padrón al 9 de octubre de 2026, comparado centro por centro contra el utilizado en las elecciones de 2024, con la regla de una JRV por cada 700 electores. Las cifras históricas se reconstruyen del padrón mismo, registro por registro.…", "secciones": ["Propuesta de Juntas Receptoras de Votos para el cierre del padrón 2026", "Origen de la variación en el número de JRV", "Sensibilidad al umbral de 700 electores", "Por nivel geográfico", "Centros de votación con mayor variación", "Electores de nueva inscripción", "Movilidad interna de electores", "Propuesta de tope"], "categoria": "Padrón y centros", "categorias_sec": [], "tipo": "Informe", "territorio": [], "anios": ["2024", "2026"], "tecnologia": ["Chart.js"], "tags": ["Electores", "Padrón", "JRV"], "creado": "2026-09-24T15:28:53-06:00", "actualizado": "2026-10-14T14:11:32-06:00", "fecha_datos": "2026-10-14", "origen_fecha": "git", "commits": 10, "bytes": 453113, "palabras": 1372, "interactivo": 8, "estado": "vigente", "nota": "", "hash": "766dd2938f5f85996a3e79370e34e001e0b511b5", "miniatura": "_miniaturas/informe_padron_2027_proyeccion_jrv.jpg?v=766dd293", "duplicados": []}, {"ruta": "simulacro_nacional_1_tablero.html", "slug": "simulacro_nacional_1_tablero", "archivo": "simulacro_nacional_1_tablero.html", "carpeta": "", "titulo": "Simulador de Reparto 2027", "descripcion": "Simulador de distribución de material electoral 2027: rutas 2024 en viajes de 3 centros, 60 carros, jornada fija 05:00-17:00, cobertura por días.", "secciones": ["Simulador de Reparto · Elecciones 2027", "Escenario", "Cobertura por día (acumulada)", "Por sede · carros, viajes, días y avance al horizonte", "Clasificación de centros (prioridad)", "Mapa · día de entrega de cada centro"], "categoria": "Logística y simulacros", "categorias_sec": ["Estructura territorial"], "tipo": "Herramienta", "territorio": ["Nacional"], "anios": ["2024", "2027"], "tecnologia": ["Leaflet"], "tags": ["Material electoral", "Cobertura", "Simulacro", "Reparto", "Ruta"], "creado": "2026-10-11T11:10:52-06:00", "actualizado": "2026-10-11T11:10:52-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 936937, "palabras": 269, "interactivo": 5, "estado": "vigente", "nota": "", "hash": "7b1a695b473efa62a1c91f5517962057c85dcd25", "miniatura": "_miniaturas/simulacro_nacional_1_tablero.jpg?v=7b1a695b", "duplicados": []}, {"ruta": "encuesta_challatenango.html", "slug": "encuesta_challatenango", "archivo": "encuesta_challatenango.html", "carpeta": "", "titulo": "Sondeo Chalatenango · Informe operativo", "descripcion": "Informe operativo del levantamiento del sondeo de opinión ciudadana en Chalatenango: avance, cobertura, duración y control de calidad por encuestador.", "secciones": ["Sondeo de opinión ciudadana — Chalatenango", "Acceso a los datos", "Avance del levantamiento", "Dónde se está levantando", "Cobertura por distrito", "Duración de las entrevistas", "Desempeño por encuestador", "Alertas de calidad"], "categoria": "Encuestas y opinión", "categorias_sec": ["Estructura territorial"], "tipo": "Informe", "territorio": ["Chalatenango"], "anios": [], "tecnologia": ["Leaflet"], "tags": ["Levantamiento", "Cobertura", "Encuesta", "Opinión", "Sondeo"], "creado": "2026-10-10T14:14:05-06:00", "actualizado": "2026-10-10T14:14:05-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 50378, "palabras": 382, "interactivo": 6, "estado": "vigente", "nota": "", "hash": "a6e4a509f9ccde6082f2f1332c393c00df38a0c4", "miniatura": "_miniaturas/encuesta_challatenango.jpg?v=a6e4a509", "duplicados": []}, {"ruta": "dashboard_despacho.html", "slug": "dashboard_despacho", "archivo": "dashboard_despacho.html", "carpeta": "", "titulo": "Despacho · Acajutla", "descripcion": "Sede Acajutla · Rutas en operación", "secciones": ["Sede Acajutla", "Rutas en operación"], "categoria": "Logística y simulacros", "categorias_sec": [], "tipo": "Tablero", "territorio": [], "anios": [], "tecnologia": ["Leaflet"], "tags": ["Despacho", "Sede", "Ruta"], "creado": "2026-09-30T07:21:44-06:00", "actualizado": "2026-09-30T07:28:12-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 2, "bytes": 80565, "palabras": 50, "interactivo": 0, "estado": "vigente", "nota": "", "hash": "16b5611a88afa9cb3736c1bf7da1d2b3af4c5d00", "miniatura": "_miniaturas/dashboard_despacho.jpg?v=16b5611a", "duplicados": []}, {"ruta": "densidad_centros.html", "slug": "densidad_centros", "archivo": "densidad_centros.html", "carpeta": "", "titulo": "Densidad de centros de votación · El Salvador 2024", "descripcion": "Centros de votación nacionales · Distribución territorial · Centros por votantes", "secciones": ["Centros de votación nacionales", "Distribución territorial"], "categoria": "Padrón y centros", "categorias_sec": [], "tipo": "Mapa", "territorio": ["Nacional"], "anios": ["2024"], "tecnologia": ["ArcGIS JS"], "tags": ["Densidad"], "creado": "2026-09-22T15:19:07-06:00", "actualizado": "2026-09-22T15:19:07-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 24717, "palabras": 58, "interactivo": 3, "estado": "vigente", "nota": "", "hash": "1a7ec35aad8a2aa9e54517fe4cfac7b77e1407d1", "miniatura": "_miniaturas/densidad_centros.jpg?v=1a7ec35a", "duplicados": []}, {"ruta": "evaluador_cambios_rutas.html", "slug": "evaluador_cambios_rutas", "archivo": "evaluador_cambios_rutas.html", "carpeta": "", "titulo": "Evaluar cambio de ruta · Sedes de transmisión", "descripcion": "Ver en el mapa · 1 Centro de votación · 2 Destino propuesto", "secciones": ["Evaluar cambio de ruta", "Ver en el mapa", "1 Centro de votación", "2 Destino propuesto", "3 Impacto", "4 Guardar y enviar", "Cambios registrados", "Cargando paradas, rutas y sedes"], "categoria": "Logística y simulacros", "categorias_sec": ["Padrón y centros"], "tipo": "Herramienta", "territorio": [], "anios": [], "tecnologia": ["ArcGIS JS"], "tags": ["Centro de votación", "Transmisión", "Sede", "Ruta"], "creado": "2026-09-11T10:30:20-06:00", "actualizado": "2026-09-11T11:13:40-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 5, "bytes": 74235, "palabras": 204, "interactivo": 14, "estado": "vigente", "nota": "", "hash": "928ca95dcfaf5191e44ebc604a9f05db1f13c93c", "miniatura": "_miniaturas/evaluador_cambios_rutas.jpg?v=928ca95d", "duplicados": []}, {"ruta": "pisa2025_el_salvador.html", "slug": "pisa2025_el_salvador", "archivo": "pisa2025_el_salvador.html", "carpeta": "", "titulo": "PISA 2025 — El Salvador frente a América Latina y el mundo", "descripcion": "Segunda participación del país en PISA. Entre 2022 y 2025 El Salvador ganó 12 puntos en ciencias y no perdió terreno en lectura ni en matemáticas. Solo 14 de los 75 sistemas con datos comparables lograron eso, y apenas dos son…", "secciones": ["El Salvador sube en ciencias mientras casi todo el mundo retrocede", "Dónde queda El Salvador en la escala de ciencias", "Qué cambió respecto a 2022", "No subir mucho, pero no bajar", "La posición frente a América Latina", "Dentro de ciencias: qué sabe y qué no", "La mejora vino de abajo", "Equidad: brecha socioeconómica estrecha, nivel general bajo"], "categoria": "Educación", "categorias_sec": [], "tipo": "Informe", "territorio": ["Nacional"], "anios": ["2022", "2025"], "tecnologia": [], "tags": ["Participación", "PISA"], "creado": "2026-09-08T09:46:32-06:00", "actualizado": "2026-09-08T10:40:20-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 4, "bytes": 81343, "palabras": 3166, "interactivo": 0, "estado": "vigente", "nota": "", "hash": "77b2e63a3b106adb2e16bce7fdd23702c48fcb7f", "miniatura": "_miniaturas/pisa2025_el_salvador.jpg?v=77b2e63a", "duplicados": []}, {"ruta": "Analisis_Coaliciones_2027.html", "slug": "analisis_coaliciones_2027", "archivo": "Analisis_Coaliciones_2027.html", "carpeta": "", "titulo": "Análisis de Coaliciones Electorales 2027", "descripcion": "Este documento evalúa el mapa de coaliciones anunciado para 2027 contra la votación real de 2024, y responde a una pregunta específica: si esas coaliciones se refuerzan a nivel municipal, ¿cómo puede eso afectar a Nuevas Ideas en la…", "secciones": ["1. Tabla resumen por jurisdicción", "2. Base de datos y validación del modelo", "3. Efecto directo de las coaliciones legislativas: nulo", "4. El canal de contagio: cómo lo municipal llega a lo legislativo", "5. Los concejos que sí están en juego", "6. Esa otra cosa: supervivencia registral", "7. Conclusiones operativas"], "categoria": "Análisis electoral", "categorias_sec": [], "tipo": "Informe", "territorio": [], "anios": ["2024", "2027"], "tecnologia": [], "tags": ["Electoral", "Coalición"], "creado": "2026-09-02T11:00:11-06:00", "actualizado": "2026-09-02T11:37:18-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 4, "bytes": 71813, "palabras": 4037, "interactivo": 0, "estado": "vigente", "nota": "", "hash": "ce200ddf0107430ea509bf151262c2368d29acec", "miniatura": "_miniaturas/analisis_coaliciones_2027.jpg?v=ce200ddf", "duplicados": []}, {"ruta": "INFORME_CAMBIOS_ASIGNACION.html", "slug": "informe_cambios_asignacion", "archivo": "INFORME_CAMBIOS_ASIGNACION.html", "carpeta": "", "titulo": "Reasignación de centros de votación", "descripcion": "Nuevos electores y quienes cambiaron de dirección: qué decidió el motor y con qué respaldo", "secciones": ["Qué pasa con cada uno", "Por qué está cada uno en la lista", "De dónde a dónde: entre municipios", "De dónde a dónde: entre centros del mismo municipio", "Dónde quedaron los electores nuevos", "Con qué respaldo se tomó cada decisión", "Notas"], "categoria": "Padrón y centros", "categorias_sec": [], "tipo": "Informe", "territorio": [], "anios": [], "tecnologia": [], "tags": ["Reasignación", "Electores"], "creado": "2026-09-02T11:00:11-06:00", "actualizado": "2026-09-02T11:00:11-06:00", "fecha_datos": "2026-08-29", "origen_fecha": "git", "commits": 1, "bytes": 29905, "palabras": 1393, "interactivo": 0, "estado": "vigente", "nota": "", "hash": "2a5f80abba3b87b76b160516617744937fbfec42", "miniatura": "_miniaturas/informe_cambios_asignacion.jpg?v=2a5f80ab", "duplicados": []}, {"ruta": "RIESGO_NI_2027.html", "slug": "riesgo_ni_2027", "archivo": "RIESGO_NI_2027.html", "carpeta": "", "titulo": "Análisis de riesgo · NUEVAS IDEAS 2027-2030", "descripcion": "Simulación D'Hondt sobre la distribución 2027 (60 escaños, incluye 6 del Exterior). Mueve el deslizador para ver cómo se reconforma la Asamblea.", "secciones": ["Análisis de riesgo — NUEVAS IDEAS pierde votos · Asamblea 2027-2030"], "categoria": "Análisis electoral", "categorias_sec": ["Voto en el exterior"], "tipo": "Informe", "territorio": [], "anios": ["2027"], "tecnologia": ["Leaflet", "Chart.js"], "tags": ["Exterior", "Asamblea", "D'Hondt", "Riesgo"], "creado": "2026-09-02T11:00:11-06:00", "actualizado": "2026-09-02T11:00:11-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 24836, "palabras": 175, "interactivo": 2, "estado": "vigente", "nota": "", "hash": "8673a877c4209f38c5f8eadeb1875d8addf204e3", "miniatura": "_miniaturas/riesgo_ni_2027.jpg?v=8673a877", "duplicados": []}, {"ruta": "atlas_electoral_ni.html", "slug": "atlas_electoral_ni", "archivo": "atlas_electoral_ni.html", "carpeta": "", "titulo": "Atlas Electoral 2024 · Polarización y Cruce de Escrutinios", "descripcion": "El índice elegido define el color del mapa, los tops y la explicación de arriba. Delimite el territorio con los filtros superiores.", "secciones": ["ATLAS ELECTORAL 2024", "Seleccione un índice", "—"], "categoria": "Análisis electoral", "categorias_sec": [], "tipo": "Mapa", "territorio": [], "anios": ["2024"], "tecnologia": ["ArcGIS JS", "Chart.js"], "tags": ["Atlas electoral", "Polarización", "Escrutinio"], "creado": "2026-09-02T11:00:11-06:00", "actualizado": "2026-09-02T11:00:11-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 105266, "palabras": 352, "interactivo": 16, "estado": "vigente", "nota": "", "hash": "98079f6b8c1d6c8275521dbd8bfbb31b4552043d", "miniatura": "_miniaturas/atlas_electoral_ni.jpg?v=98079f6b", "duplicados": []}, {"ruta": "atlas_estrategico_ni_2027__final.html", "slug": "atlas_estrategico_ni_2027_final", "archivo": "atlas_estrategico_ni_2027__final.html", "carpeta": "", "titulo": "Atlas Estratégico NI 2027 · por sector y escrutinio", "descripcion": "Atlas Estratégico · Nuevas Ideas 2027 · Resultados · Ámbito territorial", "secciones": ["Atlas Estratégico · Nuevas Ideas 2027", "Resultados", "Ámbito territorial", "Variable en el mapa", "Modo impacto", "Decisión por sector", "Descargar estrategia"], "categoria": "Análisis electoral", "categorias_sec": [], "tipo": "Mapa", "territorio": [], "anios": ["2027"], "tecnologia": ["ArcGIS JS"], "tags": ["Escrutinio"], "creado": "2026-09-02T11:00:11-06:00", "actualizado": "2026-09-02T11:00:11-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 896703, "palabras": 282, "interactivo": 8, "estado": "vigente", "nota": "", "hash": "cfc01e5d102913c9e3188351f9edfb8dadbf0e1d", "miniatura": "_miniaturas/atlas_estrategico_ni_2027_final.jpg?v=cfc01e5d", "duplicados": []}, {"ruta": "calendario_electoral_2027.html", "slug": "calendario_electoral_2027", "archivo": "calendario_electoral_2027.html", "carpeta": "", "titulo": "Calendario Electoral 2027 · Eje Espejo", "descripcion": "Carga por responsable · Familias institucionales", "secciones": ["Calendario Electoral 2027"], "categoria": "Calendario y planificación", "categorias_sec": ["Análisis electoral"], "tipo": "Tablero", "territorio": [], "anios": ["2027"], "tecnologia": [], "tags": ["Calendario", "Electoral"], "creado": "2026-09-02T11:00:11-06:00", "actualizado": "2026-09-02T11:00:11-06:00", "fecha_datos": "2026-08-12", "origen_fecha": "git", "commits": 1, "bytes": 183563, "palabras": 129, "interactivo": 4, "estado": "vigente", "nota": "", "hash": "777fff9437dd1d181fe87a8ca3b82a6409386c56", "miniatura": "_miniaturas/calendario_electoral_2027.jpg?v=777fff94", "duplicados": []}, {"ruta": "conducta_nacional_ni.html", "slug": "conducta_nacional_ni", "archivo": "conducta_nacional_ni.html", "carpeta": "", "titulo": "NI | Conducta del Voto — Legislativa 2024", "descripcion": "Cada papeleta válida de Asamblea cae en una sola de estas cuatro conductas. Las dos primeras son apoyo directo : el elector respaldó a un partido sin repartir su voto.", "secciones": ["Cómo llenó su papeleta El Salvador"], "categoria": "Análisis electoral", "categorias_sec": [], "tipo": "Mapa", "territorio": ["Nacional"], "anios": ["2024"], "tecnologia": ["ArcGIS JS"], "tags": ["Legislativa", "Conducta", "Asamblea", "Voto"], "creado": "2026-09-02T11:00:11-06:00", "actualizado": "2026-09-02T11:00:11-06:00", "fecha_datos": "2026-07-30", "origen_fecha": "git", "commits": 1, "bytes": 230080, "palabras": 662, "interactivo": 7, "estado": "vigente", "nota": "", "hash": "e8cf14b7ac1aca2fbd1e66d419ac28d95b2f9c84", "miniatura": "_miniaturas/conducta_nacional_ni.jpg?v=e8cf14b7", "duplicados": []}, {"ruta": "metodologia.html", "slug": "metodologia", "archivo": "metodologia.html", "carpeta": "", "titulo": "Metodología · Población salvadoreña en el exterior", "descripcion": "Nota metodológica · Propuesta de centros de votación en el exterior 2027", "secciones": ["Del padrón de DUIs al mapa de votantes potenciales", "Qué hace este método y por qué", "De dónde sale cada número", "Por qué el código postal manda", "Cuántas personas representa cada DUI", "Cuadrar sin contar dos veces", "Por qué la cifra real es mayor", "De población total a adultos 18+"], "categoria": "Voto en el exterior", "categorias_sec": [], "tipo": "Guía", "territorio": [], "anios": ["2027"], "tecnologia": [], "tags": ["Exterior"], "creado": "2026-09-02T11:00:11-06:00", "actualizado": "2026-09-02T11:00:11-06:00", "fecha_datos": null, "origen_fecha": "git", "commits": 1, "bytes": 42379, "palabras": 2951, "interactivo": 0, "estado": "vigente", "nota": "", "hash": "5cdddfd2758e27a70f7e59b7a580cf1dfa9691f5", "miniatura": "_miniaturas/metodologia.jpg?v=5cdddfd2", "duplicados": []}]}</script>
+<script>
+(() => {
+const D = JSON.parse(document.getElementById('datos').textContent);
+const ITEMS = D.informes;
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const norm = s => String(s ?? '').normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
+const color = c => D.colores[c] || '#64748b';
+const HOY = Date.now();
+const DIA = 864e5;
+const rtf = new Intl.RelativeTimeFormat('es', {numeric:'auto'});
+const fmtF = new Intl.DateTimeFormat('es-SV', {day:'numeric', month:'short', year:'numeric'});
+const fmtMes = new Intl.DateTimeFormat('es-SV', {month:'long', year:'numeric'});
+const dias = iso => (HOY - new Date(iso)) / DIA;
+function relativo(iso){
+  const d = Math.round(-dias(iso));
+  if (d > -1) return 'hoy';
+  if (d > -30) return rtf.format(d, 'day');
+  if (d > -365) return rtf.format(Math.round(d/30), 'month');
+  return rtf.format(Math.round(d/365), 'year');
+}
+const fecha = iso => iso ? fmtF.format(new Date(iso.length === 10 ? iso + 'T12:00' : iso)) : '—';
+const peso = b => b > 1048576 ? (b/1048576).toFixed(1) + ' MB' : Math.max(1, Math.round(b/1024)) + ' KB';
+const porRuta = Object.fromEntries(ITEMS.map(i => [i.ruta, i]));
+ITEMS.forEach(i => {
+  i._busq = norm([i.titulo, i.archivo, i.descripcion, i.categoria, i.tipo, ...(i.tags||[]), ...(i.territorio||[]),
+    ...(i.secciones||[]), ...(i.tecnologia||[]), ...(i.anios||[]), i.nota].join(' '));
+  i._nuevo = dias(i.creado) <= 7;
+  i._reciente = dias(i.actualizado) <= 7;
+  i._estado = i.estado === 'anterior' ? 'Versión anterior' : i.estado === 'obsoleto' ? 'Obsoleto' : i.estado === 'borrador' ? 'Borrador' : 'Vigente';
+});
+
+/* ── Portadas generadas (cuando no hay screenshot) ── */
+const PICT = {
+  'Mapa': '<path d="M60 52 L100 40 L140 52 L180 40 L180 100 L140 112 L100 100 L60 112Z" fill="none" stroke="#fff" stroke-width="3" opacity=".9"/><path d="M100 40v60M140 52v60" stroke="#fff" stroke-width="2" opacity=".5"/><circle cx="122" cy="70" r="7" fill="#fff"/>',
+  'Tablero': '<rect x="58" y="40" width="54" height="30" rx="4" fill="#fff" opacity=".9"/><rect x="118" y="40" width="64" height="30" rx="4" fill="#fff" opacity=".55"/><rect x="58" y="76" width="124" height="38" rx="4" fill="#fff" opacity=".35"/><path d="M66 106l18-14 16 8 22-20 20 12 30-18" stroke="#fff" stroke-width="3" fill="none"/>',
+  'Informe': '<rect x="82" y="32" width="76" height="90" rx="5" fill="#fff" opacity=".92"/><path d="M94 50h52M94 62h52M94 74h36M94 90h52M94 102h44" stroke="COLOR" stroke-width="3" stroke-linecap="round" opacity=".55"/>',
+  'Herramienta': '<circle cx="120" cy="76" r="30" fill="none" stroke="#fff" stroke-width="3" opacity=".9"/><path d="M120 76l18-14" stroke="#fff" stroke-width="4" stroke-linecap="round"/><circle cx="120" cy="76" r="5" fill="#fff"/><path d="M96 112h48" stroke="#fff" stroke-width="3" opacity=".6"/>',
+  'Guía': '<path d="M120 46c-14-8-32-10-50-6v66c18-4 36-2 50 6 14-8 32-10 50-6V40c-18-4-36-2-50 6z" fill="#fff" opacity=".9"/><path d="M120 46v66" stroke="COLOR" stroke-width="2" opacity=".5"/>',
+  'Menú': '<rect x="66" y="40" width="48" height="32" rx="4" fill="#fff" opacity=".9"/><rect x="126" y="40" width="48" height="32" rx="4" fill="#fff" opacity=".6"/><rect x="66" y="80" width="48" height="32" rx="4" fill="#fff" opacity=".6"/><rect x="126" y="80" width="48" height="32" rx="4" fill="#fff" opacity=".9"/>'
+};
+function hashNum(s){ let h = 0; for (const ch of s) h = (h*31 + ch.charCodeAt(0)) >>> 0; return h; }
+function portada(i){
+  const c = color(i.categoria), h = hashNum(i.hash || i.ruta);
+  let fondo = '';
+  for (let k = 0; k < 7; k++){
+    const x = (h >>> (k*3)) % 240, y = (h >>> (k*2+1)) % 138, r = 18 + (h >>> k) % 40;
+    fondo += `<circle cx="${x}" cy="${y}" r="${r}" fill="#fff" opacity="${(0.04 + (k%3)*0.03).toFixed(2)}"/>`;
+  }
+  const ini = (i.titulo.match(/[A-Za-zÁÉÍÓÚÑáéíóúñ0-9]+/g) || ['?']).filter(w => w.length > 2).slice(0,2).map(w => w[0].toUpperCase()).join('');
+  return `<svg class="cover" viewBox="0 0 240 138" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs><linearGradient id="g${h}" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${c}"/><stop offset="1" stop-color="${c}" stop-opacity=".72"/></linearGradient></defs>
+    <rect width="240" height="138" fill="url(#g${h})"/>${fondo}
+    <g transform="translate(-20,-6)">${(PICT[i.tipo] || PICT['Tablero']).replaceAll('COLOR', c)}</g>
+    <text x="226" y="128" text-anchor="end" font-family="Playfair Display,Georgia,serif" font-weight="800" font-size="30" fill="#fff" opacity=".3">${esc(ini)}</text></svg>`;
+}
+const imagen = (i, cls='') => i.miniatura ? `<img src="${esc(i.miniatura)}" alt="" loading="lazy" decoding="async" class="${cls}" onerror="this.replaceWith(document.createRange().createContextualFragment(window.__portada('${esc(i.ruta)}')))">` : portada(i);
+window.__portada = r => portada(porRuta[r]);
+
+/* ── Estado ── */
+const FACETAS = [
+  {k:'categoria', t:'Categoría', get: i => [i.categoria], dot: true},
+  {k:'tipo', t:'Tipo', get: i => [i.tipo]},
+  {k:'territorio', t:'Territorio', get: i => i.territorio?.length ? i.territorio : ['Sin especificar']},
+  {k:'anio', t:'Año', get: i => i.anios?.length ? i.anios : ['Sin año']},
+  {k:'estado', t:'Estado', get: i => [i._estado]},
+  {k:'tecnologia', t:'Tecnología', get: i => i.tecnologia?.length ? i.tecnologia : ['HTML/JS puro']},
+  {k:'tag', t:'Etiquetas', get: i => i.tags || [], top: 14},
+];
+const S = {q:'', f:{}, orden:'act', agrupar:'', vista:'grid', ocultarAnt:false, recientes:false};
+function leerHash(){
+  const p = new URLSearchParams(location.hash.slice(1));
+  S.q = p.get('q') || '';
+  S.orden = p.get('orden') || 'act';
+  S.agrupar = p.get('agrupar') || '';
+  S.ocultarAnt = p.get('vigentes') === '1';
+  S.recientes = p.get('recientes') === '1';
+  S.f = {};
+  FACETAS.forEach(F => { const v = p.get(F.k); if (v) S.f[F.k] = new Set(v.split('|')); });
+  try { S.vista = p.get('vista') || localStorage.getItem('catalogo.vista') || 'grid'; } catch(e) { S.vista = p.get('vista') || 'grid'; }
+}
+function escribirHash(){
+  const p = new URLSearchParams();
+  if (S.q) p.set('q', S.q);
+  if (S.orden !== 'act') p.set('orden', S.orden);
+  if (S.agrupar) p.set('agrupar', S.agrupar);
+  if (S.ocultarAnt) p.set('vigentes', '1');
+  if (S.recientes) p.set('recientes', '1');
+  for (const [k, v] of Object.entries(S.f)) if (v.size) p.set(k, [...v].join('|'));
+  const h = p.toString();
+  history.replaceState(null, '', h ? '#' + h : location.pathname + location.search);
+}
+
+function puntaje(i, terms){
+  let s = 0; const t = norm(i.titulo), a = norm(i.archivo), tg = norm((i.tags||[]).join(' '));
+  for (const w of terms){ if (t.includes(w)) s += 5; if (a.includes(w)) s += 3; if (tg.includes(w)) s += 2; if (i._busq.includes(w)) s += 1; }
+  return s;
+}
+function pasa(i, terms, salvo){
+  if (S.ocultarAnt && (i.estado === 'anterior' || i.estado === 'obsoleto')) return false;
+  if (S.recientes && dias(i.actualizado) > 30) return false;
+  if (terms.length && !terms.every(w => i._busq.includes(w))) return false;
+  for (const F of FACETAS){
+    if (F.k === salvo) continue;
+    const sel = S.f[F.k];
+    if (sel && sel.size && !F.get(i).some(v => sel.has(v))) return false;
+  }
+  return true;
+}
+
+/* ── Render ── */
+function render(){
+  const terms = norm(S.q).split(/\s+/).filter(Boolean);
+  let lista = ITEMS.filter(i => pasa(i, terms));
+  const ord = {
+    act: (a,b) => b.actualizado.localeCompare(a.actualizado),
+    cre: (a,b) => b.creado.localeCompare(a.creado),
+    tit: (a,b) => a.titulo.localeCompare(b.titulo, 'es'),
+    peso: (a,b) => b.bytes - a.bytes,
+    rel: (a,b) => puntaje(b, terms) - puntaje(a, terms) || b.actualizado.localeCompare(a.actualizado),
+  }[S.orden];
+  lista.sort(ord);
+  renderFacetas(terms);
+  renderStatus(lista.length);
+  const R = $('#results');
+  if (!lista.length){
+    R.innerHTML = `<div class="empty"><b>Nada coincide con esos filtros</b>Probá con otras palabras o <button class="clear" data-limpiar>limpiá los filtros</button>.</div>`;
+    return;
+  }
+  let grupos = [[null, lista]];
+  if (S.agrupar){
+    const m = new Map();
+    for (const i of lista){
+      const k = S.agrupar === 'mes' ? i.actualizado.slice(0,7) : i[S.agrupar];
+      if (!m.has(k)) m.set(k, []);
+      m.get(k).push(i);
+    }
+    grupos = [...m.entries()];
+    if (S.agrupar === 'mes') grupos.sort((a,b) => b[0].localeCompare(a[0]));
+    else grupos.sort((a,b) => b[1].length - a[1].length);
+  }
+  R.innerHTML = grupos.map(([k, its]) => {
+    let h = '';
+    if (k !== null){
+      const nom = S.agrupar === 'mes' ? fmtMes.format(new Date(k + '-15')) : k;
+      const dot = S.agrupar === 'categoria' ? `<span class="dot" style="background:${color(k)}"></span>` : '';
+      h = `<div class="group-h">${dot}<span style="${S.agrupar === 'mes' ? 'text-transform:capitalize' : ''}">${esc(nom)}</span><small>${its.length}</small></div>`;
+    }
+    return h + (S.vista === 'grid' ? `<div class="grid">${its.map(tarjeta).join('')}</div>`
+      : `<div class="list"><div class="row head"><span></span><span>Informe</span><span class="hide-sm">Categoría</span><span class="hide-md">Tipo</span><span class="hide-sm">Actualizado</span><span class="hide-md">Peso</span><span></span></div>${its.map(fila).join('')}</div>`);
+  }).join('');
+  escribirHash();
+}
+
+const IC = {
+  cal: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  db: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>',
+  w: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>',
+  pin: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-7-6.3-7-12a7 7 0 0 1 14 0c0 5.7-7 12-7 12z"/><circle cx="12" cy="9" r="2.5"/></svg>',
+  link: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 14a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1M14 10a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>',
+  eye: '<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
+  warn: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="flex:none;margin-top:1px"><path d="M12 3 2 21h20L12 3z"/><path d="M12 10v5M12 18h.01"/></svg>',
+};
+function pills(i){
+  let izq = `<span class="pill">${esc(i.tipo)}</span>`, der = '';
+  if (i.estado === 'anterior') der = `<span class="pill old">Versión anterior</span>`;
+  else if (i.estado === 'obsoleto') der = `<span class="pill obs">Obsoleto</span>`;
+  else if (i.estado === 'borrador') der = `<span class="pill old">Borrador</span>`;
+  else if (i._nuevo) der = `<span class="pill new">Nuevo</span>`;
+  else if (i._reciente) der = `<span class="pill new">Actualizado</span>`;
+  return `<div class="badges">${izq}${der}</div>`;
+}
+function tarjeta(i){
+  const c = color(i.categoria);
+  const dup = i.duplicados?.length ? (() => {
+    const otros = i.grupo ? ITEMS.filter(x => x.grupo === i.grupo && x !== i) : [];
+    const txt = i.estado === 'anterior'
+      ? `Hay una versión más reciente: <b>${esc(porRuta[i.grupo_principal]?.archivo || '')}</b>`
+      : `${otros.length} archivo${otros.length>1?'s':''} parecido${otros.length>1?'s':''}: ${esc([...new Set(i.duplicados.flatMap(d => d.motivos))].slice(0,2).join(', '))}`;
+    return `<button class="dup" data-grupo="${esc(i.grupo)}">${IC.warn}<span>${txt}</span></button>`;
+  })() : '';
+  const fd = i.fecha_datos ? `<span title="Fecha de corte o generación mencionada en el archivo">${IC.db}Datos ${fecha(i.fecha_datos)}</span>` : '';
+  const terr = (i.territorio||[]).slice(0,2).map(t => `<button class="tag terr" data-f="territorio" data-v="${esc(t)}">${IC.pin} ${esc(t)}</button>`).join('');
+  const tags = (i.tags||[]).slice(0,4).map(t => `<button class="tag" data-f="tag" data-v="${esc(t)}">${esc(t)}</button>`).join('');
+  return `<article class="card ${i.estado !== 'vigente' ? 'dim' : ''}" style="--c:${c}">
+    <div style="position:relative"><a class="thumb" href="${esc(i.ruta)}" target="_blank" rel="noopener" tabindex="-1">${pills(i)}${imagen(i)}</a>
+    <button class="peek" data-ver="${esc(i.ruta)}">Vista rápida</button></div>
+    <div class="body">
+      <div class="cat"><button data-f="categoria" data-v="${esc(i.categoria)}">${esc(i.categoria)}</button></div>
+      <h3 class="title"><a href="${esc(i.ruta)}" target="_blank" rel="noopener" title="${esc(i.titulo)}">${esc(i.titulo)}</a></h3>
+      <div class="file">${esc(i.ruta)}</div>
+      ${i.descripcion ? `<p class="desc">${esc(i.descripcion)}</p>` : ''}
+      <div class="meta">
+        <span title="Actualizado: ${fecha(i.actualizado)} · Creado: ${fecha(i.creado)}${i.commits ? ' · ' + i.commits + ' cambio(s) en git' : ''}">${IC.cal}${relativo(i.actualizado)}</span>
+        ${fd}<span>${IC.w}${peso(i.bytes)}</span>
+      </div>
+      ${tags || terr ? `<div class="tags">${terr}${tags}</div>` : ''}
+      ${dup}
+      <div class="foot">
+        <span class="tech" title="${esc((i.tecnologia||[]).join(', '))}">${esc((i.tecnologia||[]).join(' · '))}</span>
+        <button class="act" data-ver="${esc(i.ruta)}" title="Detalle y vista rápida">${IC.eye}</button>
+        <button class="act" data-copiar="${esc(i.ruta)}" title="Copiar enlace">${IC.link}</button>
+        <a class="act primary" href="${esc(i.ruta)}" target="_blank" rel="noopener">Abrir ↗</a>
+      </div>
+    </div>
+  </article>`;
+}
+function fila(i){
+  return `<div class="row">
+    <a class="mini" href="${esc(i.ruta)}" target="_blank" rel="noopener" tabindex="-1">${imagen(i)}</a>
+    <div style="min-width:0"><a class="t" href="${esc(i.ruta)}" target="_blank" rel="noopener" title="${esc(i.titulo)}">${esc(i.titulo)}</a>
+      <div class="sub">${esc(i.ruta)}${i.estado !== 'vigente' ? ' · <b style="color:var(--warn)">' + esc(i._estado) + '</b>' : ''}${i.duplicados?.length && i.estado === 'vigente' ? ' · <span style="color:var(--warn)">tiene duplicados</span>' : ''}</div></div>
+    <div class="c hide-sm"><span class="dot" style="width:8px;height:8px;border-radius:50%;background:${color(i.categoria)};flex:none"></span>${esc(i.categoria)}</div>
+    <div class="c hide-md">${esc(i.tipo)}</div>
+    <div class="num hide-sm" title="${fecha(i.actualizado)}">${relativo(i.actualizado)}</div>
+    <div class="num hide-md">${peso(i.bytes)}</div>
+    <div class="acts"><button class="act hide-sm" data-ver="${esc(i.ruta)}" title="Detalle">${IC.eye}</button><button class="act hide-sm" data-copiar="${esc(i.ruta)}" title="Copiar enlace">${IC.link}</button><a class="act primary" href="${esc(i.ruta)}" target="_blank" rel="noopener">↗</a></div>
+  </div>`;
+}
+function renderFacetas(terms){
+  let h = `<div class="facet"><h4>Mostrar</h4>
+    <label class="switch"><input type="checkbox" id="swVig" ${S.ocultarAnt?'checked':''}> Solo versiones vigentes</label>
+    <label class="switch"><input type="checkbox" id="swRec" ${S.recientes?'checked':''}> Actualizados en 30 días</label></div>`;
+  for (const F of FACETAS){
+    const base = ITEMS.filter(i => pasa(i, terms, F.k));
+    const cnt = new Map();
+    ITEMS.forEach(i => F.get(i).forEach(v => { if (!cnt.has(v)) cnt.set(v, 0); }));
+    base.forEach(i => F.get(i).forEach(v => cnt.set(v, cnt.get(v) + 1)));
+    let vals = [...cnt.entries()].sort((a,b) => b[1] - a[1] || String(a[0]).localeCompare(b[0], 'es'));
+    if (F.k === 'anio') vals.sort((a,b) => String(b[0]).localeCompare(a[0]));
+    const sel = S.f[F.k] || new Set();
+    if (F.top) vals = vals.filter(([v,n]) => n > 0 || sel.has(v)).slice(0, F.top);
+    if (vals.length < 2 && !sel.size) continue;
+    h += `<div class="facet"><h4>${F.t}</h4>` + vals.map(([v,n]) =>
+      `<button class="opt ${sel.has(v)?'on':''} ${n===0&&!sel.has(v)?'zero':''}" data-f="${F.k}" data-v="${esc(v)}">${F.dot ? `<span class="dot" style="background:${color(v)}"></span>` : ''}<span>${esc(v)}</span><span class="n">${n}</span></button>`
+    ).join('') + `</div>`;
+  }
+  $('#aside').innerHTML = h;
+}
+function renderStatus(n){
+  const chips = [];
+  if (S.q) chips.push(`<span class="chip">“${esc(S.q)}”<button data-quitar="q" aria-label="Quitar">✕</button></span>`);
+  if (S.ocultarAnt) chips.push(`<span class="chip">Solo vigentes<button data-quitar="vig">✕</button></span>`);
+  if (S.recientes) chips.push(`<span class="chip">Últimos 30 días<button data-quitar="rec">✕</button></span>`);
+  for (const [k, set] of Object.entries(S.f)) for (const v of set)
+    chips.push(`<span class="chip">${esc(v)}<button data-f="${k}" data-v="${esc(v)}" aria-label="Quitar">✕</button></span>`);
+  $('#status').innerHTML = `<span class="count"><b>${n}</b> de ${ITEMS.length}</span>${chips.join('')}${chips.length ? '<button class="clear" data-limpiar>Limpiar todo</button>' : ''}`;
+}
+function renderStats(){
+  const rec = ITEMS.filter(i => dias(i.actualizado) <= 30).length;
+  const dupArch = ITEMS.filter(i => i.estado === 'anterior').length;
+  const cats = new Set(ITEMS.map(i => i.categoria)).size;
+  const total = ITEMS.reduce((s,i) => s + i.bytes, 0);
+  const ult = ITEMS.reduce((m,i) => i.actualizado > m ? i.actualizado : m, '');
+  $('#stats').innerHTML = `
+    <div class="stat"><b>${ITEMS.length}</b><span>Archivos publicados</span></div>
+    <button class="stat" data-stat="rec"><b>${rec}</b><span>Actualizados en 30 días</span></button>
+    <button class="stat ${D.grupos.length ? 'alert' : ''}" data-stat="dup"><b>${D.grupos.length}</b><span>${D.grupos.length === 1 ? 'Grupo' : 'Grupos'} de duplicados${dupArch ? ' · ' + dupArch + (dupArch === 1 ? ' versión vieja' : ' versiones viejas') : ''}</span></button>
+    <div class="stat"><b>${cats}</b><span>Categorías</span></div>
+    <div class="stat"><b>${peso(total)}</b><span>Peso total publicado</span></div>`;
+  $('#lead').textContent = `Última publicación ${relativo(ult)} · catálogo generado el ${fecha(D.generado)}`;
+  $('#footnote').innerHTML = `Generado automáticamente por <code>generar_indice.py</code> · ${esc(D.dominio)} · <a href="catalogo.json">catalogo.json</a>`;
+}
+
+/* ── Detalle / vista rápida ── */
+function abrirDetalle(ruta){
+  const i = porRuta[ruta]; if (!i) return;
+  $('#mTitle').textContent = i.titulo;
+  $('#mOpen').href = i.ruta;
+  const otros = i.grupo ? ITEMS.filter(x => x.grupo === i.grupo && x !== i) : [];
+  $('#mInfo').innerHTML = `
+    <div><div class="cat" style="--c:${color(i.categoria)};color:${color(i.categoria)}">${esc(i.categoria)} · ${esc(i.tipo)}</div>
+      ${i.descripcion ? `<p style="margin-top:.4rem;font-size:.86rem">${esc(i.descripcion)}</p>` : ''}
+      ${i.nota ? `<p class="hint" style="margin-top:.5rem">${esc(i.nota)}</p>` : ''}</div>
+    <div><h5>Ficha</h5><dl>
+      <dt>Archivo</dt><dd style="word-break:break-all">${esc(i.ruta)}</dd>
+      <dt>Actualizado</dt><dd>${fecha(i.actualizado)} (${relativo(i.actualizado)})</dd>
+      <dt>Creado</dt><dd>${fecha(i.creado)}</dd>
+      ${i.fecha_datos ? `<dt>Datos al</dt><dd>${fecha(i.fecha_datos)}</dd>` : ''}
+      ${i.commits ? `<dt>Cambios</dt><dd>${i.commits} commit(s)</dd>` : ''}
+      <dt>Estado</dt><dd>${esc(i._estado)}</dd>
+      <dt>Peso</dt><dd>${peso(i.bytes)}${i.palabras ? ' · ' + i.palabras.toLocaleString('es') + ' palabras' : ''}</dd>
+      ${i.territorio?.length ? `<dt>Territorio</dt><dd>${esc(i.territorio.join(', '))}</dd>` : ''}
+      ${i.tecnologia?.length ? `<dt>Tecnología</dt><dd>${esc(i.tecnologia.join(', '))}</dd>` : ''}
+    </dl></div>
+    ${i.secciones?.length ? `<div><h5>Contenido</h5><ol>${i.secciones.map(s => `<li>${esc(s)}</li>`).join('')}</ol></div>` : ''}
+    ${otros.length ? `<div><h5>Parecidos</h5>${otros.map(o => `<button class="dup" style="width:100%;margin-bottom:.35rem" data-ver="${esc(o.ruta)}">${IC.warn}<span><b>${esc(o.archivo)}</b> · ${relativo(o.actualizado)}${o.ruta === i.grupo_principal ? ' · vigente' : ''}</span></button>`).join('')}</div>` : ''}
+    <div style="display:flex;gap:.4rem;flex-wrap:wrap"><button class="act" data-copiar="${esc(i.ruta)}">${IC.link} Copiar enlace</button></div>`;
+  const fr = $('#mFrame');
+  fr.parentElement.querySelector('.loading').style.display = 'grid';
+  fr.onload = () => fr.parentElement.querySelector('.loading').style.display = 'none';
+  fr.src = 'about:blank';
+  setTimeout(() => fr.src = i.ruta, 30);
+  abrir('#modal');
+}
+function abrirDuplicados(gid){
+  const gs = gid ? D.grupos.filter(g => g.id === gid) : D.grupos;
+  $('#dBody').innerHTML = (gs.length ? `<p class="hint">El primero de cada grupo (en verde) es el más reciente y se toma como vigente. Si alguno es distinto a propósito, agregá el par en <code>"no_duplicados"</code> de <code>catalogo.config.json</code>; para retirar uno, borralo de <code>public/</code> o marcá <code>&lt;meta name="catalogo:estado" content="obsoleto"&gt;</code>.</p>` : '<p class="hint">No se detectaron duplicados. 🎉</p>') +
+    gs.map(g => `<div class="dgroup">${g.miembros.map((r, k) => {
+      const i = porRuta[r]; if (!i) return '';
+      const mot = [...new Set(i.duplicados.flatMap(d => d.motivos))].join(' · ');
+      return `<div class="it ${k===0?'main':''}"><div class="mini">${imagen(i)}</div>
+        <div class="tx"><b>${esc(i.titulo)}</b>${esc(i.ruta)} · ${relativo(i.actualizado)} · ${peso(i.bytes)}${k ? `<div class="why">${esc(mot)}</div>` : '<div style="color:var(--ok);font-size:.72rem;font-weight:600">Vigente</div>'}</div>
+        <button class="act" data-ver="${esc(r)}">${IC.eye}</button><a class="act" href="${esc(r)}" target="_blank" rel="noopener">↗</a></div>`;
+    }).join('')}</div>`).join('') +
+    (gid ? `<button class="clear" data-stat="dup">Ver todos los grupos</button>` : '');
+  abrir('#drawer');
+}
+function abrir(sel){ document.querySelectorAll('.sheet.on').forEach(x => { if ('#' + x.id !== sel) x.classList.remove('on'); }); $(sel).classList.add('on'); $('#scrim').classList.add('on'); document.body.style.overflow = 'hidden'; }
+function cerrar(){ document.querySelectorAll('.sheet.on,#aside.on').forEach(x => x.classList.remove('on')); $('#scrim').classList.remove('on'); document.body.style.overflow = ''; $('#mFrame').src = 'about:blank'; }
+function toast(t){ const el = $('#toast'); el.textContent = t; el.classList.add('on'); clearTimeout(el._t); el._t = setTimeout(() => el.classList.remove('on'), 1800); }
+
+/* ── Eventos ── */
+document.addEventListener('click', e => {
+  const b = e.target.closest('button,[data-close]'); if (!b) { if (e.target.id === 'scrim') cerrar(); return; }
+  if (b.dataset.close !== undefined) return cerrar();
+  if (b.dataset.f && b.dataset.v !== undefined){
+    const set = S.f[b.dataset.f] || (S.f[b.dataset.f] = new Set());
+    set.has(b.dataset.v) ? set.delete(b.dataset.v) : set.add(b.dataset.v);
+    if (!set.size) delete S.f[b.dataset.f];
+    if (b.closest('.card')) window.scrollTo({top: $('#toolbar').offsetTop, behavior: 'smooth'});
+    return render();
+  }
+  if (b.dataset.quitar){ if (b.dataset.quitar === 'q'){ S.q = ''; $('#q').value = ''; } if (b.dataset.quitar === 'vig') S.ocultarAnt = false; if (b.dataset.quitar === 'rec') S.recientes = false; return render(); }
+  if (b.dataset.limpiar !== undefined){ S.q = ''; $('#q').value = ''; S.f = {}; S.ocultarAnt = false; S.recientes = false; return render(); }
+  if (b.dataset.ver) { e.preventDefault(); return abrirDetalle(b.dataset.ver); }
+  if (b.dataset.grupo) return abrirDuplicados(b.dataset.grupo);
+  if (b.dataset.stat === 'dup') return abrirDuplicados();
+  if (b.dataset.stat === 'rec'){ S.recientes = !S.recientes; S.orden = 'act'; $('#orden').value = 'act'; return render(); }
+  if (b.dataset.copiar){
+    const url = D.dominio.replace(/\/$/, '') + '/' + encodeURI(b.dataset.copiar);
+    (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject()).then(() => toast('Enlace copiado'), () => { prompt('Copiá el enlace:', url); });
+    return;
+  }
+  if (b.dataset.vista){ S.vista = b.dataset.vista; try { localStorage.setItem('catalogo.vista', S.vista); } catch(e){} sincronizarCtrls(); return render(); }
+  if (b.id === 'abrirFiltros'){ $('#aside').classList.add('on'); $('#scrim').classList.add('on'); return; }
+  if (b.id === 'tema'){
+    const r = document.documentElement, oscuro = getComputedStyle(r).getPropertyValue('--bg').trim() === '#0e1416';
+    r.dataset.theme = oscuro ? 'light' : 'dark'; try { localStorage.setItem('catalogo.tema', r.dataset.theme); } catch(e){}
+    return;
+  }
+});
+$('#scrim').addEventListener('click', cerrar);
+document.addEventListener('change', e => {
+  if (e.target.id === 'swVig'){ S.ocultarAnt = e.target.checked; render(); }
+  if (e.target.id === 'swRec'){ S.recientes = e.target.checked; render(); }
+});
+let tq; $('#q').addEventListener('input', e => { clearTimeout(tq); tq = setTimeout(() => { S.q = e.target.value.trim(); if (S.q && S.orden === 'act') { S.orden = 'rel'; $('#orden').value = 'rel'; } if (!S.q && S.orden === 'rel') { S.orden = 'act'; $('#orden').value = 'act'; } render(); }, 120); });
+$('#orden').addEventListener('change', e => { S.orden = e.target.value; render(); });
+$('#agrupar').addEventListener('change', e => { S.agrupar = e.target.value; render(); });
+document.addEventListener('keydown', e => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT'){ e.preventDefault(); $('#q').focus(); }
+  if (e.key === 'Escape'){ if (document.querySelector('.sheet.on,#aside.on')) cerrar(); else if (document.activeElement === $('#q')){ $('#q').value = ''; S.q = ''; render(); } }
+});
+new IntersectionObserver(([en]) => $('#toolbar').classList.toggle('stuck', !en.isIntersecting), {rootMargin: '-1px 0px 0px 0px'}).observe($('#stats'));
+function sincronizarCtrls(){
+  $('#q').value = S.q; $('#orden').value = S.orden; $('#agrupar').value = S.agrupar;
+  document.querySelectorAll('[data-vista]').forEach(b => b.classList.toggle('on', b.dataset.vista === S.vista));
+}
+try { const t = localStorage.getItem('catalogo.tema'); if (t) document.documentElement.dataset.theme = t; } catch(e){}
+leerHash(); sincronizarCtrls(); renderStats(); render();
+})();
+</script>
 </body>
 </html>
