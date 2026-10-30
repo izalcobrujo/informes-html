@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<title>Manual Maestro IA & Catastro: De "Attention Is All You Need" al Laboratorio 73</title>
+<style>
+  :root {
+    --bg: #0b0f19;
+    --bg-card: #131b2e;
+    --bg-card-alt: #19233c;
+    --text: #e2e8f0;
+    --text-muted: #94a3b8;
+    --accent: #38bdf8;
+    --accent-glow: rgba(56, 189, 248, 0.18);
+    --emerald: #34d399;
+    --emerald-glow: rgba(52, 211, 153, 0.15);
+    --amber: #fbbf24;
+    --amber-glow: rgba(251, 191, 36, 0.15);
+    --purple: #c084fc;
+    --purple-glow: rgba(192, 132, 252, 0.15);
+    --rose: #fb7185;
+    --border: #26334d;
+    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+  }
+
+  [data-theme="light"] {
+    --bg: #f8fafc;
+    --bg-card: #ffffff;
+    --bg-card-alt: #f1f5f9;
+    --text: #0f172a;
+    --text-muted: #475569;
+    --accent: #0284c7;
+    --accent-glow: rgba(2, 132, 199, 0.12);
+    --emerald: #059669;
+    --emerald-glow: rgba(5, 150, 105, 0.12);
+    --amber: #d97706;
+    --amber-glow: rgba(217, 119, 6, 0.12);
+    --purple: #7c3aed;
+    --purple-glow: rgba(124, 58, 237, 0.12);
+    --rose: #e11d48;
+    --border: #cbd5e1;
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    background-color: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    line-height: 1.65;
+    padding-bottom: 90px;
+    transition: background-color 0.25s, color 0.25s;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Header & Topbar */
+  header {
+    background: linear-gradient(135deg, var(--bg-card) 0%, var(--bg-card-alt) 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 1.25rem 1rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+  }
+
+  .header-inner {
+    max-width: 980px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+  }
+
+  .brand {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-badge {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  .brand-title {
+    font-size: 1.15rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .theme-btn {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Navigation Tabs (Desktop + Mobile Bottom Bar) */
+  .nav-tabs {
+    display: flex;
+    gap: 0.35rem;
+    overflow-x: auto;
+    max-width: 980px;
+    margin: 0.75rem auto 0;
+    padding-bottom: 0.25rem;
+    scrollbar-width: none;
+  }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+
+  .tab-btn {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 0.45rem 0.85rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+  }
+
+  .tab-btn.active {
+    background: var(--accent);
+    color: #0b0f19;
+    border-color: var(--accent);
+  }
+
+  /* Main Container */
+  main {
+    max-width: 980px;
+    margin: 1.25rem auto;
+    padding: 0 1rem;
+  }
+
+  .section-panel {
+    display: none;
+    animation: fadeIn 0.25s ease;
+  }
+  .section-panel.active {
+    display: block;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Cards & Typography */
+  .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 1.25rem;
+    margin-bottom: 1.15rem;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.18);
+  }
+
+  h2 {
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 0.65rem;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  h3 {
+    font-size: 1.08rem;
+    font-weight: 700;
+    margin: 1rem 0 0.45rem;
+    color: var(--text);
+  }
+
+  p {
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+  }
+
+  ul, ol {
+    margin: 0.5rem 0 1rem 1.25rem;
+    font-size: 0.94rem;
+  }
+
+  li {
+    margin-bottom: 0.45rem;
+  }
+
+  .tag {
+    display: inline-block;
+    padding: 0.15rem 0.55rem;
+    border-radius: 6px;
+    font-size: 0.74rem;
+    font-weight: 700;
+    font-family: var(--font-mono);
+    margin-right: 0.35rem;
+  }
+  .tag-blue { background: var(--accent-glow); color: var(--accent); border: 1px solid var(--accent); }
+  .tag-green { background: var(--emerald-glow); color: var(--emerald); border: 1px solid var(--emerald); }
+  .tag-amber { background: var(--amber-glow); color: var(--amber); border: 1px solid var(--amber); }
+  .tag-purple { background: var(--purple-glow); color: var(--purple); border: 1px solid var(--purple); }
+
+  /* Code & Math Blocks */
+  pre, .code-block {
+    background: #070a12;
+    color: #e2e8f0;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.9rem;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    overflow-x: auto;
+    margin: 0.75rem 0;
+    line-height: 1.5;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    background: var(--bg-card-alt);
+    padding: 0.12rem 0.35rem;
+    border-radius: 5px;
+    font-size: 0.85em;
+    color: var(--accent);
+  }
+
+  .math-box {
+    background: var(--bg-card-alt);
+    border-left: 4px solid var(--purple);
+    padding: 0.9rem 1rem;
+    border-radius: 0 10px 10px 0;
+    margin: 0.85rem 0;
+    font-size: 0.92rem;
+  }
+
+  .formula {
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.95rem;
+    color: var(--emerald);
+    margin: 0.4rem 0;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .analogy-box {
+    background: var(--emerald-glow);
+    border: 1px solid var(--emerald);
+    border-radius: 10px;
+    padding: 0.95rem;
+    margin: 0.85rem 0;
+  }
+
+  .analogy-title {
+    font-weight: 800;
+    color: var(--emerald);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.35rem;
+  }
+
+  /* Interactive Attention Simulator */
+  .token-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin: 1rem 0;
+  }
+
+  .tok-chip {
+    background: var(--bg-card-alt);
+    border: 2px solid var(--border);
+    color: var(--text);
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    font-family: var(--font-mono);
+    font-weight: 700;
+    font-size: 0.88rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+  }
+
+  .tok-chip.selected {
+    border-color: var(--accent);
+    background: var(--accent-glow);
+    transform: translateY(-2px);
+  }
+
+  .att-weight-bar {
+    height: 6px;
+    border-radius: 3px;
+    margin-top: 4px;
+    background: var(--border);
+    overflow: hidden;
+  }
+
+  .att-weight-fill {
+    height: 100%;
+    background: var(--emerald);
+    transition: width 0.3s ease;
+  }
+
+  .qkv-Inspector {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+  }
+
+  .qkv-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.65rem;
+    margin-top: 0.65rem;
+  }
+  @media (min-width: 680px) {
+    .qkv-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .qkv-item {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.75rem;
+  }
+
+  /* Interactive Calculators */
+  .calc-row {
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+    margin-bottom: 0.85rem;
+  }
+  .calc-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.85rem;
+    font-weight: 600;
+  }
+  input[type="range"] {
+    width: 100%;
+    accent-color: var(--accent);
+  }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 0.65rem;
+    margin-top: 0.75rem;
+  }
+  .stat-box {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.75rem;
+    text-align: center;
+  }
+  .stat-val {
+    font-size: 1.25rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+    color: var(--accent);
+  }
+  .stat-lbl {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    margin-top: 0.2rem;
+  }
+
+  /* Accordion / Details */
+  details {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 0.65rem;
+    overflow: hidden;
+  }
+  summary {
+    padding: 0.85rem 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.95rem;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: "＋";
+    color: var(--accent);
+    font-weight: 800;
+  }
+  details[open] summary::after {
+    content: "－";
+  }
+  .details-body {
+    padding: 0 1rem 1rem;
+    border-top: 1px solid var(--border);
+    padding-top: 0.85rem;
+  }
+
+  /* Dictionary Search & Filter */
+  .search-input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--bg-card-alt);
+    color: var(--text);
+    font-size: 0.95rem;
+    margin-bottom: 0.75rem;
+  }
+  .filter-bar {
+    display: flex;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 1rem;
+  }
+  .dict-card {
+    background: var(--bg-card-alt);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.95rem;
+    margin-bottom: 0.7rem;
+  }
+  .dict-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 0.5rem;
+    margin-bottom: 0.4rem;
+  }
+  .dict-term {
+    font-weight: 800;
+    font-size: 1.02rem;
+    color: var(--accent);
+  }
+  .dict-rel {
+    font-size: 0.78rem;
+    color: var(--emerald);
+    font-family: var(--font-mono);
+    margin-top: 0.45rem;
+  }
+
+  /* Tables */
+  .table-wrap {
+    overflow-x: auto;
+    margin: 0.75rem 0;
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+  th, td {
+    border: 1px solid var(--border);
+    padding: 0.6rem 0.75rem;
+    text-align: left;
+  }
+  th {
+    background: var(--bg-card-alt);
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Responsive Bottom Navigation for Mobile Thumb Use */
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--bg-card);
+    border-top: 1px solid var(--border);
+    display: flex;
+    justify-content: space-around;
+    padding: 0.45rem 0.25rem;
+    z-index: 100;
+  }
+  .mob-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 0.68rem;
+    font-weight: 700;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    cursor: pointer;
+    padding: 0.25rem 0.4rem;
+    border-radius: 8px;
+  }
+  .mob-btn.active {
+    color: var(--accent);
+    background: var(--accent-glow);
+  }
+  .mob-icon {
+    font-size: 1.1rem;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-badge">Guía de Bolsillo · Ingeniería SIG & IA</span>
+      <span class="brand-title">Del Paper de Google (2017) al Lab 73</span>
+    </div>
+    <button class="theme-btn" onclick="toggleTheme()" id="themeBtn">☀️ Modo Claro</button>
+  </div>
+  <nav class="nav-tabs" id="topTabs">
+    <button class="tab-btn active" onclick="showTab('paper')">1. Paper Google (2017)</button>
+    <button class="tab-btn" onclick="showTab('simulador')">2. Simulador Q·K·V·O</button>
+    <button class="tab-btn" onclick="showTab('mate')">3. Matemáticas de tus Scripts</button>
+    <button class="tab-btn" onclick="showTab('ecosistema')">4. IA Moderna & Inferencia</button>
+    <button class="tab-btn" onclick="showTab('diccionario')">5. Diccionario y Red</button>
+  </nav>
+</header>
+
+<main>
+
+  <!-- =====================================================================
+       SECCIÓN 1: EL PAPER DE GOOGLE (2017) A FONDO
+       ===================================================================== -->
+  <section id="sec-paper" class="section-panel active">
+    <div class="card">
+      <h2>📄 "Attention Is All You Need" (Vaswani et al., 2017)</h2>
+      <p>Publicado en junio de 2017 por ocho investigadores de Google Brain y Google Research, este documento demolió la arquitectura dominante de la época (las Redes Neuronales Recurrentes — RNN y LSTM) y presentó el <strong>Transformer</strong>.</p>
+      
+      <div class="analogy-box">
+        <div class="analogy-title">🧭 Conexión directa con tu mente catastral</div>
+        <p style="margin-bottom:0">Cuando tú diseñaste <code>73a_ARMAR_PARES.py</code> sin conocer el paper, inventaste tres mecanismos: <strong>Anclas</strong> (palabras clave como <code>PJE</code>, <code>POL</code>, <code>CASA</code>), <strong>Muros de corte</strong> (<code>ALTO_P</code> para frenar la lectura cuando empieza otro componente o un ruido como <code>FTE A PNC</code>) y <strong>Rescates de posición</strong> (<code>voltear('12 AV NTE')</code>). El paper de Google de 2017 es exactamente esa misma lógica, pero expresada con matrices continuas para que una tarjeta gráfica pueda aprender miles de anclas y rescates simultáneamente.</p>
+      </div>
+
+      <h3>1. ¿Qué problema tenía el mundo antes de 2017?</h3>
+      <p>Antes del Transformer, las máquinas leían una dirección como una fila india ciega (de izquierda a derecha, token por token):</p>
+      <ul>
+        <li><strong>Cuello de botella secuencial:</strong> Para entender la palabra #8 (<code>CASA 30</code>), la red debía esperar a terminar de calcular la #1, #2, #3... No se podían usar los miles de núcleos de una GPU NVIDIA en paralelo.</li>
+        <li><strong>Amnesia de largo plazo (Vanishing Gradient):</strong> Si una dirección decía <code>RES BUENA VISTA 2, CONTIGUO A CANCHA MUNICIPAL DE FUTBOL, PJE 12 OTE, POL V # 30</code>, para cuando la red llegaba a <code># 30</code>, el recuerdo de la etapa <code>2</code> al inicio ya se había diluido entre tanto texto intermedio.</li>
+      </ul>
+    </div>
+
+    <div class="card">
+      <h2>⚙️ Las 6 Piezas de Ingeniería del Paper</h2>
+      <p>Toca cada pieza para abrir su explicación técnica, su fórmula matemática y cómo vive dentro de tu modelo <code>Qwen2.5-1.5B-Instruct</code>:</p>
+
+      <details open>
+        <summary>1. Embeddings + Espacio Vectorial (Las coordenadas semánticas)</summary>
+        <div class="details-body">
+          <p>En SIG, un punto en Izalco o Santa Tecla se ubica con 2 coordenadas <code>(Latitud, Longitud)</code>. En un Transformer como Qwen2.5-1.5B, cada token (palabra o sílaba de entre las 151,643 de su vocabulario) se convierte en un punto con <strong>1,536 coordenadas</strong> (vector de dimensión $d_{\text{model}} = 1536$).</p>
+          <p>En ese mapa de 1,536 dimensiones, las abreviaturas <code>PJE</code>, <code>PSJE</code> y <code>PASAJE</code> caen en la misma "colonia matemática" (muy cerca unas de otras), mientras que <code>CANTON</code> o <code>POLIGONO</code> quedan en barrios distintos.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>2. Codificación Posicional (Del Seno/Coseno de 2017 al RoPE de Qwen)</summary>
+        <div class="details-body">
+          <p>Como el Transformer lee todas las palabras de la dirección de un solo golpe en paralelo, necesita una "brújula de orden" para no confundir:</p>
+          <pre>COLONIA SAN BENITO CALLE 2 CASA 15   ≠   COLONIA SAN BENITO CALLE 15 CASA 2</pre>
+          <p>En 2017, Google sumó ondas trigonométricas ($\sin$ y $\cos$) a cada palabra. Hoy, <strong>Qwen2.5 utiliza una evolución llamada RoPE (Rotary Position Embedding)</strong>: en lugar de sumar números, <strong>gira el ángulo del vector</strong> de cada palabra como las agujas de un reloj según su posición. Así, la atención calcula automáticamente a cuántos tokens de distancia está el número <code>15</code> de la palabra <code>CASA</code>.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>3. Scaled Dot-Product Attention (El corazón matemático)</summary>
+        <div class="details-body">
+          <p>Es la ecuación más famosa de la inteligencia artificial moderna:</p>
+          <div class="math-box">
+            <span class="formula">Attention(Q, K, V) = softmax( (Q · Kᵀ) / √dₖ ) · V</span>
+            <ul>
+              <li><strong>$Q \cdot K^T$ (Producto Punto):</strong> Multiplica la pregunta ($Q$) de cada palabra contra la etiqueta ($K$) de todas las demás. Si dos vectores apuntan en la misma dirección, el producto es alto (hay anclaje).</li>
+              <li><strong>$/ \sqrt{d_k}$ (Factor de escala):</strong> Si los vectores son grandes, la multiplicación da números enormes que saturan la función siguiente. Dividir entre la raíz cuadrada del tamaño del cabezal mantiene los números estables.</li>
+              <li><strong>$\text{softmax}(\dots)$:</strong> Convierte esos puntajes en porcentajes que suman exactamente <code>1.0</code> (100% de atención repartida). Es el equivalente a tu muro <code>ALTO_P</code>: le da ~95% de atención a las palabras del tramo actual y ~0% al ruido lejano.</li>
+              <li><strong>$\cdot V$ (Multiplicación por el Valor):</strong> Extrae el significado real de las palabras que ganaron el porcentaje más alto.</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details>
+        <summary>4. Multi-Head Attention y GQA (Por qué hay varios cabezales)</summary>
+        <div class="details-body">
+          <p>Si solo hicieras una pregunta a la vez, una palabra solo podría fijarse en una cosa. El paper propuso dividir el vector en varios <strong>Cabezales de Atención (Heads)</strong> en paralelo:</p>
+          <ul>
+            <li><strong>Cabezal A (Ancla de Vía):</strong> Empareja <code>PJE</code> con <code>12</code> y con <code>OTE</code>.</li>
+            <li><strong>Cabezal B (Desambiguador de Etapa vs Casa):</strong> Vigila si el número <code>2</code> está pegado al nombre de la residencial (<code>RES LA COLINA 2</code>) o después de un símbolo de numeral (<code># 2</code>).</li>
+            <li><strong>Cabezal C (Detector de Frontera/Corte):</strong> Detecta palabras como <code>FTE A</code>, <code>CONTIGUO</code> o <code>KM</code> para cortar el nombre del asentamiento.</li>
+          </ul>
+          <p><strong>Innovación en tu Qwen2.5-1.5B (Grouped-Query Attention - GQA):</strong> Tu modelo tiene <strong>12 cabezales para preguntar ($Q$)</strong>, pero agrupa las etiquetas y valores en solo <strong>2 cabezales ($K$ y $V$)</strong>. Esto ahorra muchísima memoria VRAM en tu tarjeta de 8 GB y permite evaluar lotes de 64 direcciones rapidísimo en <code>73c_EVALUAR.py</code>.</p>
+        </div>
+      </details>
+
+      <details>
+        <summary>5. Redes Feed-Forward / MLP (gate_proj, up_proj, down_proj)</summary>
+        <div class="details-body">
+          <p>En el paper de 2017, después de que los cabezales de atención cruzan información entre palabras, cada palabra pasa por una red neuronal densa llamada <em>Position-wise Feed-Forward Network</em>.</p>
+          <p>En Qwen2.5, esta pieza usa la arquitectura <strong>SwiGLU</strong> y se divide en tres matrices que tú entrenas explícitamente en <code>73b_ENTRENAR.py</code>:</p>
+          <ul>
+            <li><code>gate_proj</code>: Funciona como una compuerta lógica que decide qué información deja pasar.</li>
+            <li><code>up_proj</code>: Expande el vector de 1,536 dimensiones a 8,960 dimensiones para hacer traducciones complejas (ej. saber que <code>BO</code> = <code>BARRIO</code>, <code>OTE</code> = <code>ORIENTE</code>, o recordar de qué etapa catastral es cierto polígono).</li>
+            <li><code>down_proj</code>: Vuelve a comprimir el resultado a 1,536 dimensiones y lo deja listo para la siguiente capa.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>6. Conexiones Residuales y Normalización (RMSNorm)</summary>
+        <div class="details-body">
+          <p>Qwen2.5-1.5B tiene <strong>28 pisos (capas Transformer)</strong> apilados uno sobre otro. Para que la dirección original no se deforme al subir 28 pisos, el paper de 2017 incluyó una "autopista lateral" (<em>Residual Connection</em>: $x + \text{SubLayer}(x)$) que suma la entrada limpia al resultado de cada piso, estabilizada con <strong>RMSNorm</strong>.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SECCIÓN 2: SIMULADOR INTERACTIVO DE ATENCIÓN Y ANCLAS (Q, K, V, O)
+       ===================================================================== -->
+  <section id="sec-simulador" class="section-panel">
+    <div class="card">
+      <h2>🔬 Simulador Interactivo: Tus Anclas vs. Q, K, V, O</h2>
+      <p>Toca cualquier ficha (token) de esta dirección tramposa del padrón para ver cómo actúan las 4 matrices de atención (<code>q_proj</code>, <code>k_proj</code>, <code>v_proj</code>, <code>o_proj</code>) y las 3 capas MLP (<code>gate/up/down_proj</code>) que ajustaste con LoRA en tu <code>73b_ENTRENAR.py</code>:</p>
+
+      <div class="token-bar" id="tokenBar"></div>
+
+      <div class="qkv-Inspector" id="qkvInspector">
+        <!-- Renderizado dinámico por JS -->
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🔄 Paralelismo Exacto: Tu Código en 73a vs. El Cerebro de Qwen en 73b</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Concepto Catastral (Tu lógica en 73a)</th>
+              <th>Qué hace en Python determinista</th>
+              <th>Qué pieza del Transformer lo hace en 73b</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Diccionario de Abreviaturas</strong> (<code>TIPOS</code>, <code>VIAS</code>, <code>ORIENT</code>)</td>
+              <td>Reemplaza <code>RES -> RESIDENCIAL</code>, <code>PJE -> PASAJE</code>, <code>OTE -> ORIENTE</code>.</td>
+              <td><strong>Embeddings + Capas MLP</strong> (<code>up_proj</code>, <code>down_proj</code>).</td>
+            </tr>
+            <tr>
+              <td><strong>Anclas de inicio</strong> (<code>POL</code>, <code>CASA</code>, <code>#</code>, <code>LOTE</code>)</td>
+              <td>Identifica qué categoría empieza a partir de esa palabra.</td>
+              <td><strong>Interacción Query-Key</strong> (<code>q_proj</code> × <code>k_proj</code>).</td>
+            </tr>
+            <tr>
+              <td><strong>Muro de Contención</strong> (<code>ALTO_P</code> y <code>corte</code>)</td>
+              <td>Expresión regular <code>(?!...|FTE|CONTIGUO|POL|NUM)</code> que detiene la captura de texto.</td>
+              <td><strong>Softmax con pesos cercanos a 0.0</strong> sobre tokens de otros tramos + <code>gate_proj</code>.</td>
+            </tr>
+            <tr>
+              <td><strong>Rescate de Inversión</strong> (<code>voltear('12 AV NTE')</code>)</td>
+              <td>Si ve número antes de vía y no viene de <code>POL</code>, invierte el orden a <code>AV 12 NTE</code>.</td>
+              <td><strong>Codificación Posicional RoPE + Multi-Head Attention</strong> (no importa si el número está antes o después).</td>
+            </tr>
+            <tr>
+              <td><strong>Desambiguación de trampas</strong> (<code>N° 2</code> no es Polígono N; <code>OTE</code> no es Block O)</td>
+              <td>Condicionales explícitos revisando símbolos vecinos.</td>
+              <td><strong>Atención Contextual</strong>: el cabezal ve el símbolo <code>°</code> o la vía previa y anula la lectura como Polígono.</td>
+            </tr>
+            <tr>
+              <td><strong>Memoria Territorial de Etapa</strong> (<code>ETAPA_CATASTRO</code> y <code>--etapas-extra</code>)</td>
+              <td>Cruza con la parcela física para saber si el Pasaje 12 cae en Etapa I o II.</td>
+              <td><strong>Pesos del Adaptador LoRA</strong>: las matrices $A$ y $B$ memorizan qué polígonos/pasajes de cada colonia corresponden a qué etapa.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SECCIÓN 3: MATEMÁTICAS APLICADAS A TUS SCRIPTS (73a, 73b, 73c)
+       ===================================================================== -->
+  <section id="sec-mate" class="section-panel">
+    <div class="card">
+      <h2>📐 Calculadora Interactiva LoRA y VRAM (Tu 73b_ENTRENAR.py)</h2>
+      <p>Mueve los controles para ver cómo cambian matemáticamente los parámetros entrenables y el consumo de memoria en tu tarjeta gráfica de 8 GB:</p>
+
+      <div class="calc-row">
+        <div class="calc-label">
+          <span>Rango LoRA (<code>--r</code> en 73b):</span>
+          <span id="valR" style="color:var(--accent)">16</span>
+        </div>
+        <input type="range" id="sliderR" min="4" max="64" step="4" value="16" oninput="updateCalc()">
+      </div>
+
+      <div class="calc-row">
+        <div class="calc-label">
+          <span>Tamaño de Lote Físico (<code>--lote</code> en 73b):</span>
+          <span id="valBatch" style="color:var(--accent)">16</span>
+        </div>
+        <input type="range" id="sliderBatch" min="4" max="32" step="4" value="16" oninput="updateCalc()">
+      </div>
+
+      <div class="calc-row">
+        <div class="calc-label">
+          <span>Gradient Checkpointing:</span>
+          <span id="valCkpt" style="color:var(--emerald)">Activado (Ahorra VRAM)</span>
+        </div>
+        <input type="range" id="sliderCkpt" min="0" max="1" step="1" value="1" oninput="updateCalc()">
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat-box">
+          <div class="stat-val" id="outParams">18.4 M</div>
+          <div class="stat-lbl">Parámetros LoRA Entrenables</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="outPct">1.18%</div>
+          <div class="stat-lbl">% del Modelo Total (1,543 M)</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="outSize">~70 MB</div>
+          <div class="stat-lbl">Peso en Disco del Adaptador</div>
+        </div>
+        <div class="stat-box">
+          <div class="stat-val" id="outVram">5.4 GB</div>
+          <div class="stat-lbl">VRAM Estimada (Tope 85% = 6.8 GB)</div>
+        </div>
+      </div>
+      <p id="vramWarning" style="margin-top:0.75rem; font-size:0.85rem; color:var(--emerald); font-weight:600;">
+        ✅ Cabe holgadamente dentro del tope de 0.85 (6.8 GB) sin paginar a la RAM de Windows.
+      </p>
+    </div>
+
+    <div class="card">
+      <h2>🧮 Las 5 Fórmulas Matemáticas Ocultas en tus Scripts</h2>
+
+      <h3>1. La Ecuación de LoRA en <code>73b_ENTRENAR.py</code></h3>
+      <p>En tu script configuras <code>LoraConfig(r=16, lora_alpha=32, target_modules=['q_proj', 'k_proj', 'v_proj', 'o_proj', 'gate_proj', 'up_proj', 'down_proj'])</code>. Por cada una de esas 7 matrices en los 28 pisos del modelo ($7 \times 28 = 196\text{ matrices}$), LoRA congela la matriz original $W_0$ y le suma dos matrices delgadas $B$ y $A$:</p>
+      <div class="math-box">
+        <span class="formula">h = W₀·x + (α / r) · (B · A · x)</span>
+        <p style="margin-bottom:0">Como en tu código definiste <code>lora_alpha = 2 * a.r</code> (es decir, $\alpha = 32$ cuando $r = 16$), el factor de escala $\frac{\alpha}{r} = \frac{32}{16} = 2.0$. Eso duplica la fuerza de tus correcciones para que el modelo aprenda rápido en una sola época (<code>--epocas 1.0</code>). Y cuando en <code>73c_EVALUAR.py</code> ejecutas <code>merge_and_unload()</code>, PyTorch suma permanentemente $W_{\text{final}} = W_0 + 2 \cdot (B \times A)$, eliminando cualquier retraso al evaluar.</p>
+      </div>
+
+      <h3>2. Enmascaramiento de Pérdida (<code>-100</code>) y Cross-Entropy en <code>73b</code></h3>
+      <p>En la función <code>codificar()</code> de tu <code>73b</code> tienes estas dos líneas clave:</p>
+      <pre>ids = (p + r)[:max_largo]
+lab = ([-100] * len(p) + r)[:max_largo]</pre>
+      <div class="math-box">
+        <span class="formula">Loss = - (1 / N_respuesta) · Σ log P(token_correcto_i | contexto)</span>
+        <p style="margin-bottom:0">Donde <code>p</code> son las fichas de la instrucción y la dirección del padrón, y <code>r</code> es la respuesta separada por plecas. Al rellenar con <code>-100</code> toda la parte de <code>p</code>, PyTorch anula matemáticamente esos términos en la suma. Así la derivada (el aprendizaje) se concentra 100% en acertar <code>TIPO=...|ASENT=...|NUM=...</code>.</p>
+      </div>
+
+      <h3>3. La Curva Coseno de Aprendizaje (<code>lr_de</code> en <code>73b</code>)</h3>
+      <p>En <code>73b</code> escribiste esta función lambda para guiar la velocidad a la que aprende el optimizador <code>AdamW</code>:</p>
+      <pre>calent = max(1, int(0.03 * pasos_tot))
+lr_de = lambda s: a.lr * (s / calent if s &lt; calent else max(0.05, 0.5 * (1 + math.cos(math.pi * (s - calent) / max(1, pasos_tot - calent)))))</pre>
+      <ul>
+        <li><strong>Primer 3% de pasos (Warmup / Calentamiento):</strong> Sube en línea recta desde <code>0</code> hasta <code>0.0002</code> (<code>2e-4</code>). Como al inicio la matriz $B$ de LoRA vale cero y $A$ tiene números aleatorios, empezar despacio evita dar un "volantazo" brusco a los gradientes.</li>
+        <li><strong>Del 3% al 100% de pasos (Cosine Annealing):</strong> La función $\frac{1}{2}(1 + \cos(\pi \cdot t))$ dibuja un tobogán suave en forma de curva S que aterriza en el 5% de la tasa inicial (<code>1e-5</code>), permitiendo que en los últimos pasos el modelo afine los detalles más sutiles de las etapas y polígonos.</li>
+      </ul>
+
+      <h3>4. Probabilidad Conjunta y Calibración en <code>73c_EVALUAR.py</code></h3>
+      <p>En tu clase <code>_Anotar</code> y la función <code>confianzas(texto, pos)</code> de <code>73c</code> hiciste una joya matemática para medir qué tan seguro está el modelo de cada campo:</p>
+      <pre>lpx = torch.log_softmax(scores.float(), dim=-1)
+# Y luego en confianzas():
+s_ = sum(x[2] for x in pos if x[1] &gt; a and x[0] &lt; b + 1)
+c[k] = math.exp(s_)</pre>
+      <div class="math-box">
+        <span class="formula">Confianza(Campo) = P(t₁) × P(t₂) × ... × P(tₙ) = exp( log P(t₁) + log P(t₂) + ... + log P(tₙ) )</span>
+        <p style="margin-bottom:0">En probabilidad, la certeza de que toda una palabra (ej. <code>ASENT=BUENA VISTA</code> más el cierre <code>|</code>) esté bien completa es la <strong>multiplicación de las probabilidades de cada sílaba</strong>. Como multiplicar muchos decimales pequeños en computadora causa errores de redondeo, sumar sus logaritmos (<code>log_softmax</code>) y aplicar la exponencial al final (<code>math.exp</code>) es la forma matemáticamente exacta de obtener la probabilidad conjunta real entre <code>0.0</code> y <code>1.0</code>.</p>
+      </div>
+
+      <h3>5. Partición Determinista por Hash MD5 en <code>73a_ARMAR_PARES.py</code></h3>
+      <pre>h = int(hashlib.md5(r.clavecat.encode()).hexdigest()[:8], 16) % 1000
+dest = 'valid' if h &lt; a.valid_pct * 10 else 'train'</pre>
+      <p>Transforma el código alfanumérico de la parcela (<code>clavecat</code>) en un número pseudoaleatorio uniforme entre <code>0</code> y <code>999</code>. Si <code>valid_pct = 5.0</code>, cualquier parcela cuyo hash sea menor a <code>50</code> cae siempre en <code>valid.jsonl</code>. Garantiza que <strong>todos los habitantes de la misma parcela</strong> vayan juntos al mismo saco, impidiendo que el modelo haga trampa memorizando la dirección del vecino o esposo(a) de la misma casa.</p>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SECCIÓN 4: ECOSISTEMA IA MODERNA, INFERENCIA Y TU PROYECTO
+       ===================================================================== -->
+  <section id="sec-ecosistema" class="section-panel">
+    <div class="card">
+      <h2>🚀 Cómo Conecta tu Proyecto con las Arquitecturas de IA de Hoy (2026)</h2>
+      <p>Hoy se habla de muchos tipos de modelos y técnicas. Aquí tienes el mapa claro de qué es cada cosa y por qué elegiste la herramienta correcta para el padrón y el catastro:</p>
+
+      <details open>
+        <summary>1. Modelos Instruct Directos (Qwen2.5) vs. Modelos de Razonamiento (DeepSeek-R1 / Qwen3 Thinking)</summary>
+        <div class="details-body">
+          <p>Hoy existen dos grandes modos de operación en los LLMs:</p>
+          <ul>
+            <li><strong>Modelos de Razonamiento (Chain-of-Thought / Thinking):</strong> Antes de dar la respuesta, escriben entre etiquetas <code>&lt;think&gt;...&lt;/think&gt;</code> un monólogo interno de 300 tokens ("A ver, dice OTE, ¿será polígono O o será Oriente?..."). Son excelentes para acertijos complejos, pero <strong>10 a 20 veces más lentos</strong> porque generan cientos de tokens extra.</li>
+            <li><strong>Modelos Instruct con SFT/LoRA (Tu enfoque en 73b):</strong> Al entrenarlo directamente con miles de pares <code>Entrada -> Salida</code>, el razonamiento queda "grabado en reflejo muscular" dentro de las matrices LoRA. No necesita gastar tokens pensando en voz alta: escupe <code>TIPO=...|NUM=...</code> en ~25 tokens a más de 30-50 direcciones por segundo.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>2. Cuantización (fp32 vs. bfloat16 vs. QLoRA 4-bit vs. GGUF)</summary>
+        <div class="details-body">
+          <ul>
+            <li><strong><code>bfloat16</code> (Lo que usas en 73b y 73c):</strong> Es el formato nativo de oro en GPUs modernas NVIDIA (Ampere, Ada, Blackwell). Mantiene el mismo rango dinámico que los 32 bits pero ocupa la mitad (2 bytes por parámetro). Tu modelo de 1.5B ocupa solo ~3 GB, por lo que no necesitas comprimirlo a 4 bits (QLoRA), lo cual mantiene la máxima calidad y velocidad de cálculo.</li>
+            <li><strong>GGUF (Ollama / llama.cpp):</strong> Ideal cuando quieres correr un modelo de 7B o 14B comprimido en 4 bits, pero para entrenar y evaluar lotes masivos de 64 en 64 con matriz de calibración como haces en <code>73c</code>, usar PyTorch directo en <code>bfloat16</code> es mucho más flexible y transparente.</li>
+          </ul>
+        </div>
+      </details>
+
+      <details>
+        <summary>3. Motores de Inferencia: Greedy Decoding, KV Cache y vLLM</summary>
+        <div class="details-body">
+          <p>En tu script <code>73c_EVALUAR.py</code> usas dos trucos profesionales de inferencia:</p>
+          <ol>
+            <li><strong><code>do_sample=False</code> (Decodificación Voraz / Greedy):</strong> Apagas la "temperatura" o creatividad del modelo. El modelo elige siempre el token con la probabilidad matemática más alta. Así garantizas que si corres el padrón hoy y lo vuelves a correr mañana, dé exactamente el mismo resultado (100% reproducible).</li>
+            <li><strong><code>padding_side='left'</code> (Relleno por la izquierda):</strong> Cuando metes 64 direcciones de distinto largo en un lote, las más cortas deben rellenarse con espacios vacíos (<code>pad_token</code>). En modelos generativos, el relleno SIEMPRE debe ir a la izquierda para que la generación del primer token de respuesta arranque alineada en la misma columna para las 64 direcciones.</li>
+          </ol>
+        </div>
+      </details>
+
+      <details>
+        <summary>4. Tu Sistema Neuro-Simbólico (Por qué las Reglas + IA ganan a la IA sola)</summary>
+        <div class="details-body">
+          <p>En la industria moderna, los sistemas más confiables no reemplazan las reglas por IA, sino que forman un <strong>sándwich Neuro-Simbólico</strong>:</p>
+          <pre>
+[Capa Simbólica 1: Tus Reglas Catastrales]
+  Resuelven rápido lo obvio y generan los pares comprobados (73a)
+                         ↓
+[Capa Neuronal: Qwen2.5-1.5B + LoRA (73b)]
+  Desata los nudos donde el texto viene desordenado, pegado o ambiguo
+                         ↓
+[Capa Simbólica 2: Calibración y Verificación (73c + Motor)]
+  Filtra por CONF_NUM / CONF_POL, verifica que no invente números
+  y comprueba que la parcela exista físicamente en el mapa GIS.</pre>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- =====================================================================
+       SECCIÓN 5: DICCIONARIO INTERACTIVO Y MAPA DE RELACIONES
+       ===================================================================== -->
+  <section id="sec-diccionario" class="section-panel">
+    <div class="card">
+      <h2>📚 Diccionario Maestro de Bolsillo (Con Buscador y Relaciones)</h2>
+      <p>Escribe cualquier término de tus scripts, de la consola de entrenamiento o del paper de Google para filtrarlo al instante:</p>
+
+      <input type="text" id="dictSearch" class="search-input" placeholder="🔍 Buscar concepto (ej. LoRA, loss, bfloat16, softmax, atención, época, gradiente...)" oninput="filterDict()">
+
+      <div class="filter-bar">
+        <button class="tab-btn active" onclick="setCat('TODOS', this)">Todos</button>
+        <button class="tab-btn" onclick="setCat('PAPER', this)">Paper Google / Transformer</button>
+        <button class="tab-btn" onclick="setCat('ENTRENAMIENTO', this)">Entrenamiento (73b)</button>
+        <button class="tab-btn" onclick="setCat('HARDWARE', this)">GPU / CUDA / Memoria</button>
+        <button class="tab-btn" onclick="setCat('EVALUACION', this)">Evaluación y Datos (73a/73c)</button>
+      </div>
+
+      <div id="dictContainer"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Barra inferior fija para manejo con una mano en el móvil -->
+<nav class="mobile-bottom-nav">
+  <button class="mob-btn active" onclick="showTab('paper')" id="mob-paper">
+    <span class="mob-icon">📄</span>
+    <span>Paper 2017</span>
+  </button>
+  <button class="mob-btn" onclick="showTab('simulador')" id="mob-simulador">
+    <span class="mob-icon">🔬</span>
+    <span>Q·K·V·O</span>
+  </button>
+  <button class="mob-btn" onclick="showTab('mate')" id="mob-mate">
+    <span class="mob-icon">📐</span>
+    <span>Fórmulas</span>
+  </button>
+  <button class="mob-btn" onclick="showTab('ecosistema')" id="mob-ecosistema">
+    <span class="mob-icon">🚀</span>
+    <span>IA Hoy</span>
+  </button>
+  <button class="mob-btn" onclick="showTab('diccionario')" id="mob-diccionario">
+    <span class="mob-icon">📚</span>
+    <span>Glosario</span>
+  </button>
+</nav>
+
+<script>
+  // 1. Navegación entre pestañas
+  const tabs = ['paper', 'simulador', 'mate', 'ecosistema', 'diccionario'];
+  function showTab(tabId) {
+    tabs.forEach((t, idx) => {
+      document.getElementById('sec-' + t).classList.toggle('active', t === tabId);
+      document.querySelectorAll('#topTabs .tab-btn')[idx].classList.toggle('active', t === tabId);
+      document.getElementById('mob-' + t).classList.toggle('active', t === tabId);
+    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // 2. Cambio de Tema Oscuro / Claro
+  function toggleTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('themeBtn');
+    if (html.getAttribute('data-theme') === 'light') {
+      html.removeAttribute('data-theme');
+      btn.textContent = '☀️ Modo Claro';
+    } else {
+      html.setAttribute('data-theme', 'light');
+      btn.textContent = '🌙 Modo Oscuro';
+    }
+  }
+
+  // 3. Datos del Simulador Interactivo Q, K, V, O
+  const simTokens = [
+    {
+      tok: "RES",
+      role: "Ancla de Tipo de Asentamiento",
+      weights: [0.65, 0.20, 0.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      q: "Soy una abreviatura de tipo urbano. ¿Qué palabras a mi derecha forman el nombre del lugar?",
+      k: "Me anuncio como prefijo de asentamiento (equivalente a tu diccionario TIPOS['RES'] en 73a).",
+      v: "Aporto la etiqueta estandarizada TIPO=RESIDENCIAL.",
+      o: "Uno 'RES' con 'BUENA VISTA' y preparo el primer bloque antes de la pleca '|'."
+    },
+    {
+      tok: "BUENA",
+      role: "Parte 1 del Nombre del Asentamiento",
+      weights: [0.25, 0.40, 0.30, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      q: "Soy un adjetivo dentro de un nombre propio. ¿Con qué sustantivo formo el nombre de la colonia?",
+      k: "Etiqueta de palabra de nombre propio precedida por 'RES'.",
+      v: "Contenido léxico 'BUENA'.",
+      o: "Se enlaza fuertemente con 'VISTA' para no partir el nombre a la mitad."
+    },
+    {
+      tok: "VISTA",
+      role: "Parte 2 del Nombre del Asentamiento",
+      weights: [0.20, 0.45, 0.30, 0.05, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      q: "¿Termina aquí el nombre de la residencial o hay una etapa pegada después de mí?",
+      k: "Núcleo del nombre del asentamiento.",
+      v: "Contenido léxico 'VISTA' -> ASENT=BUENA VISTA.",
+      o: "Cierra el nombre base y deja libre al siguiente token ('2') para evaluarse como etapa."
+    },
+    {
+      tok: "2",
+      role: "Trampa Clásica: ¿Etapa 2, Pasaje 2 o Casa 2?",
+      weights: [0.15, 0.30, 0.40, 0.15, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+      q: "¡Pregunta crítica! Soy el número '2'. ¿Tengo a mi izquierda la palabra CASA/# o estoy pegado al nombre 'BUENA VISTA'?",
+      k: "Número arábigo al final del tramo de asentamiento (tu regex m_e en 73a).",
+      v: "Transfiere el valor ETAPA=2 (y no NUM=2).",
+      o: "Gracias a la atención sobre 'BUENA VISTA' y a que 'PJE' está después, clasifica sin dudar ETAPA=2."
+    },
+    {
+      tok: "PJE",
+      role: "Ancla de Vía (Corte del tramo anterior)",
+      weights: [0.0, 0.0, 0.0, 0.0, 0.50, 0.35, 0.15, 0.0, 0.0, 0.0, 0.0],
+      q: "Abro un tramo de vía. ¿Cuál es mi número o nombre y qué orientación tengo?",
+      k: "Actúa como tu muro ALTO_P en 73a: corta el nombre de la colonia e inicia VIAS['PJE'].",
+      v: "Traduce 'PJE' -> clave 'PASAJE='.",
+      o: "Agrupa 'PJE' + '12' + 'OTE' en un solo bloque."
+    },
+    {
+      tok: "12",
+      role: "Identificador de Vía",
+      weights: [0.0, 0.0, 0.0, 0.0, 0.60, 0.25, 0.15, 0.0, 0.0, 0.0, 0.0],
+      q: "Soy el número '12'. ¿Quién es mi jefe inmediato a la izquierda?",
+      k: "Número inmediatamente posterior al ancla 'PJE'.",
+      v: "Valor numérico '12' perteneciente al pasaje.",
+      o: "Evita que el '12' se mezcle con el número de casa '30'."
+    },
+    {
+      tok: "OTE",
+      role: "Trampa del Padrón: Oriente vs. Block/Polígono O",
+      weights: [0.0, 0.0, 0.0, 0.0, 0.40, 0.35, 0.25, 0.0, 0.0, 0.0, 0.0],
+      q: "Soy 'OTE'. En el lab 72 un modelo sin entrenar me leía como Block O. ¿A quién acompaño realmente?",
+      k: "Punto cardinal (ORIENT['OTE']) pegado a una vía.",
+      v: "Aporta 'ORIENTE' al pasaje -> PASAJE=12 ORIENTE.",
+      o: "Tus capas MLP (up_proj/down_proj) expanden 'OTE' a 'ORIENTE' y lo unen al pasaje 12."
+    },
+    {
+      tok: "FTE",
+      role: "Ruido de Referencia (Muro de Contención)",
+      weights: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.60, 0.40, 0.0, 0.0],
+      q: "Soy una referencia ('Frente a'). ¿Debo entrar en la respuesta catastral?",
+      k: "Bandera de exclusión (igual que 'FTE|FRENTE|CONTIGUO' en tu ALTO_P de 73a).",
+      v: "Peso nulo para la generación de salida.",
+      o: "Los cabezales silencian tanto a 'FTE' como a 'PNC' para no ensuciar el nombre de vía ni colonia."
+    },
+    {
+      tok: "PNC",
+      role: "Ruido Ignorado por el Muro",
+      weights: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.25, 0.0, 0.0],
+      q: "¿De quién dependo? De 'FTE' (Frente a Policía Nacional Civil).",
+      k: "Sustantivo atrapado dentro de un tramo de referencia no catastral.",
+      v: "Ignorado (0% de transferencia al texto de salida).",
+      o: "Queda descartado limpiamente, igual que hace tu regla cuando el catastro no lo nombra."
+    },
+    {
+      tok: "POLB",
+      role: "Rescate de Token Pegado (Sin espacio)",
+      weights: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.85, 0.15],
+      q: "El digitador escribió 'POLB' todo pegado sin espacio. ¿Cómo me separa el modelo?",
+      k: "El tokenizador divide 'POL' y 'B' en dos fichas, y sus llaves se reconocen de inmediato.",
+      v: "Extrae el ancla POL y el valor B -> POL=B.",
+      o: "Rescata el polígono aunque una expresión regular estricta con '\\b' hubiera podido fallar."
+    },
+    {
+      tok: "#30-V",
+      role: "Ancla de Casa + Polígono Invertido",
+      weights: [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.20, 0.80],
+      q: "Tengo numeral '#', el número '30' y un guion '-V'. ¿Quién es la casa y quién el polígono?",
+      k: "Patrón clásico del padrón donde el numeral precede a la casa.",
+      v: "Asigna NUM=30 y verifica si la letra adjunta corresponde a complemento o polígono.",
+      o: "Cierra la línea con alta confianza (CONF_NUM > 0.99) y emite el token de fin (eos_token)."
+    }
+  ];
+
+  function renderSimulator(activeIdx) {
+    const bar = document.getElementById('tokenBar');
+    const weights = simTokens[activeIdx].weights;
+    bar.innerHTML = simTokens.map((item, idx) => {
+      const wPct = Math.round(weights[idx] * 100);
+      return `
+        <div class="tok-chip ${idx === activeIdx ? 'selected' : ''}" onclick="renderSimulator(${idx})">
+          <div>${item.tok}</div>
+          <div class="att-weight-bar">
+            <div class="att-weight-fill" style="width:${wPct}%"></div>
+          </div>
+          <div style="font-size:0.65rem; color:var(--text-muted); margin-top:2px;">Atención: ${wPct}%</div>
+        </div>
+      `;
+    }).join('');
+
+    const cur = simTokens[activeIdx];
+    document.getElementById('qkvInspector').innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:0.5rem;">
+        <div>
+          <span class="tag tag-blue">FICHA SELECCIONADA: ${cur.tok}</span>
+          <strong style="font-size:0.95rem;">${cur.role}</strong>
+        </div>
+        <span style="font-size:0.78rem; color:var(--emerald);">Las barras verdes arriba muestran a qué palabras mira "${cur.tok}"</span>
+      </div>
+      <div class="qkv-grid">
+        <div class="qkv-item">
+          <span class="tag tag-blue">q_proj (Query / La Pregunta)</span>
+          <p style="margin-top:0.4rem; margin-bottom:0; font-size:0.86rem;">${cur.q}</p>
+        </div>
+        <div class="qkv-item">
+          <span class="tag tag-amber">k_proj (Key / El Gafete o Ancla)</span>
+          <p style="margin-top:0.4rem; margin-bottom:0; font-size:0.86rem;">${cur.k}</p>
+        </div>
+        <div class="qkv-item">
+          <span class="tag tag-green">v_proj (Value / El Dato Extraído)</span>
+          <p style="margin-top:0.4rem; margin-bottom:0; font-size:0.86rem;">${cur.v}</p>
+        </div>
+        <div class="qkv-item">
+          <span class="tag tag-purple">o_proj + MLP (Consolidación y Formato)</span>
+          <p style="margin-top:0.4rem; margin-bottom:0; font-size:0.86rem;">${cur.o}</p>
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. Calculadora Interactiva de LoRA y VRAM (Qwen2.5-1.5B)
+  function updateCalc() {
+    const r = parseInt(document.getElementById('sliderR').value);
+    const batch = parseInt(document.getElementById('sliderBatch').value);
+    const ckpt = parseInt(document.getElementById('sliderCkpt').value) === 1;
+
+    document.getElementById('valR').textContent = r + ' (lora_alpha = ' + (r * 2) + ')';
+    document.getElementById('valBatch').textContent = batch + ' direcciones en paralelo';
+    document.getElementById('valCkpt').textContent = ckpt ? 'Activado (Ahorra VRAM)' : 'Desactivado (--sin-checkpointing)';
+    document.getElementById('valCkpt').style.color = ckpt ? 'var(--emerald)' : 'var(--amber)';
+
+    // Cálculo real de parámetros LoRA en Qwen2.5-1.5B (28 capas, d_model=1536, d_kv=256, d_ff=8960)
+    // Por capa: q(1536->1536), k(1536->256), v(1536->256), o(1536->1536), gate/up(1536->8960), down(8960->1536)
+    // Suma de (in + out) por capa = (3072) + (1792) + (1792) + (3072) + 3*(10496) = 41,216
+    // Total params = 28 * r * 41,216
+    const loraParams = 28 * r * 41216;
+    const baseParams = 1543714304;
+    const totalParams = baseParams + loraParams;
+    const pct = (100 * loraParams / totalParams).toFixed(2);
+    const sizeMb = Math.round((loraParams * 4) / (1024 * 1024)); // fp32 guardados o bf16
+
+    // Estimación realista de VRAM en GB para largo máx 160 tokens en Qwen2.5-1.5B
+    const baseVram = 3.1; // Modelo base en bf16 + contexto CUDA
+    const loraOptVram = (loraParams * 16) / (1024 ** 3); // Pesos fp32 + Gradientes + AdamW m & v
+    const actVram = ckpt ? (batch * 0.11) : (batch * 0.26);
+    const totalVram = (baseVram + loraOptVram + actVram).toFixed(1);
+
+    document.getElementById('outParams').textContent = (loraParams / 1e6).toFixed(1) + ' M';
+    document.getElementById('outPct').textContent = pct + '%';
+    document.getElementById('outSize').textContent = '~' + sizeMb + ' MB';
+    document.getElementById('outVram').textContent = totalVram + ' GB';
+
+    const warn = document.getElementById('vramWarning');
+    if (parseFloat(totalVram) <= 6.8) {
+      warn.style.color = 'var(--emerald)';
+      warn.textContent = '✅ Cabe perfectamente dentro del tope de 0.85 (6.8 GB de tus 8 GB) sin desbordar a la RAM de la PC.';
+    } else if (parseFloat(totalVram) <= 7.9) {
+      warn.style.color = 'var(--amber)';
+      warn.textContent = '⚠️ Alerta: Supera el tope de 6.8 GB (--tope-memoria 0.85). PyTorch limpiará caché constantemente o podrías necesitar bajar --lote.';
+    } else {
+      warn.style.color = 'var(--rose)';
+      warn.textContent = '🛑 Peligro de OutOfMemory o desborde a RAM compartida de Windows (caída de 23 ej/s a 6.5 ej/s). Activa Checkpointing o baja --lote a 8.';
+    }
+  }
+
+  // 5. Base de datos del Diccionario Maestro Interactivo
+  const dictionaryData = [
+    {
+      term: "Attention (Mecanismo de Atención)",
+      cat: "PAPER",
+      def: "Operación matemática central del paper de Google (2017) que permite a cada palabra de una dirección mirar a todas las demás al mismo tiempo y decidir cuáles le dan contexto (por ejemplo, unir un número con la palabra 'CASA' o 'PASAJE').",
+      script: "Se entrena mediante los módulos q_proj, k_proj, v_proj y o_proj en 73b_ENTRENAR.py.",
+      rel: "Se relaciona con: Query, Key, Value, Softmax, Multi-Head Attention."
+    },
+    {
+      term: "Token / Ficha (input_ids)",
+      cat: "PAPER",
+      def: "Unidad mínima de lectura del modelo. No siempre es una palabra entera; puede ser una sílaba, un número o un símbolo ('|', '=', '#'). Qwen2.5 tiene un vocabulario de 151,643 fichas distintas.",
+      script: "En 73b_ENTRENAR.py aparece como 'largo medio X fichas por ejemplo' dentro de la función codificar().",
+      rel: "Se relaciona con: AutoTokenizer, eos_token, pad_token, Embedding."
+    },
+    {
+      term: "LoRA (Low-Rank Adaptation)",
+      cat: "ENTRENAMIENTO",
+      def: "Técnica de ajuste fino que congela el 100% del modelo original y le inyecta pares de matrices pequeñas (A y B) de rango 'r'. Permite enseñar tareas complejas entrenando solo ~1% de los parámetros.",
+      script: "Configurado en 73b con LoraConfig(r=16, lora_alpha=32) y fusionado en 73c con merge_and_unload().",
+      rel: "Se relaciona con: r (Rango), lora_alpha, PEFT, Pesos Congelados."
+    },
+    {
+      term: "bfloat16 (Brain Floating Point 16)",
+      cat: "HARDWARE",
+      def: "Formato numérico de 16 bits creado por Google Brain y soportado nativamente por las tarjetas NVIDIA modernas (como Blackwell). Mantiene el mismo rango de números gigantes o diminutos que el formato de 32 bits (fp32), pero ocupando la mitad de memoria VRAM.",
+      script: "Usado en 73b y 73c con torch.bfloat16 y torch.autocast('cuda', dtype=torch.bfloat16).",
+      rel: "Se relaciona con: fp32, VRAM, CUDA, Precisión Mixta."
+    },
+    {
+      term: "Loss / Pérdida (Cross-Entropy Loss)",
+      cat: "ENTRENAMIENTO",
+      def: "Medida matemática de qué tanto se equivoca el modelo al predecir la siguiente ficha de la respuesta. Si el modelo está seguro de la respuesta correcta, la pérdida tiende a 0.0.",
+      script: "En 73b se vigila cada 25 pasos (pérdida de train) y cada 500 pasos con perdida_valid().",
+      rel: "Se relaciona con: Etiqueta -100, Backward, AdamW, Overfitting."
+    },
+    {
+      term: "Enmascaramiento -100 (Labels Masking)",
+      cat: "ENTRENAMIENTO",
+      def: "Convención de PyTorch donde cualquier token marcado con la etiqueta -100 es ignorado al calcular el error (Loss). Sirve para que el modelo no pierda capacidad aprendiendo a repetir la pregunta y solo se entrene en generar la respuesta.",
+      script: "En 73b_ENTRENAR.py: lab = ([-100] * len(p) + r)[:max_largo].",
+      rel: "Se relaciona con: Loss, Prompt, apply_chat_template."
+    },
+    {
+      term: "Acumulación de Gradientes (--acumular)",
+      cat: "ENTRENAMIENTO",
+      def: "Truco para simular un lote grande cuando la memoria de la tarjeta gráfica es limitada. En vez de meter 32 direcciones de golpe, mete 16, calcula los errores, mete otras 16, suma los errores y recién ahí actualiza las neuronas.",
+      script: "En 73b: --lote 16 --acumular 2 produce un lote efectivo de 32 gastando la VRAM de 16.",
+      rel: "Se relaciona con: Lote (Batch), loss.backward(), opt.step(), VRAM."
+    },
+    {
+      term: "Gradient Checkpointing",
+      cat: "HARDWARE",
+      def: "Técnica que ahorra entre 40% y 60% de memoria VRAM durante el entrenamiento descartando resultados intermedios del paso hacia adelante (forward) y recalculándolos en el paso hacia atrás (backward) a cambio de ~15% más de tiempo.",
+      script: "En 73b se activa por defecto con modelo.gradient_checkpointing_enable() y se prueba en --medir.",
+      rel: "Se relaciona con: Forward Pass, Backward Pass, VRAM."
+    },
+    {
+      term: "Memoria Compartida WDDM (Tope de Memoria)",
+      cat: "HARDWARE",
+      def: "Comportamiento de Windows donde, si PyTorch rebasa los 8 GB físicos de la GPU, el driver toma prestada memoria RAM normal de la placa madre a través del puerto PCIe. No da error, pero vuelve el entrenamiento 4 veces más lento.",
+      script: "Resuelto en 73b con torch.cuda.set_per_process_memory_fraction(0.85).",
+      rel: "Se relaciona con: VRAM, CUDA, OutOfMemoryError."
+    },
+    {
+      term: "AdamW y Learning Rate (--lr)",
+      cat: "ENTRENAMIENTO",
+      def: "AdamW es el algoritmo optimizador que ajusta los números dentro de las matrices de LoRA en cada paso. El Learning Rate (2e-4) es el tamaño del paso de corrección.",
+      script: "En 73b se combina con calentamiento (3% de pasos) y curva coseno (lr_de).",
+      rel: "Se relaciona con: clip_grad_norm_, Loss, Época."
+    },
+    {
+      term: "Softmax y Log-Softmax",
+      cat: "PAPER",
+      def: "Función matemática que convierte una lista de puntajes brutos (logits) en probabilidades que suman 1.0 (100%). Se usa tanto dentro de la Atención como en la capa final para elegir la palabra ganadora.",
+      script: "En 73c_EVALUAR.py: torch.log_softmax(scores.float(), dim=-1) dentro de la clase _Anotar.",
+      rel: "Se relaciona con: Calibración de Confianza, Logits, Atención."
+    },
+    {
+      term: "Calibración de Confianza (CONF_NUM, CONF_LINEA)",
+      cat: "EVALUACION",
+      def: "Cruce estadístico entre la probabilidad matemática que reporta el modelo (ej. 0.98) y el porcentaje de veces que realmente acierta contra el catastro en ese tramo. Permite fijar umbrales seguros para automatizar decisiones.",
+      script: "Calculado en la pestaña CALIBRACION del Excel que genera 73c_EVALUAR.py.",
+      rel: "Se relaciona con: Log-Softmax, Probabilidad Conjunta, Alucinación."
+    },
+    {
+      term: "Hard Example Mining (--minar y --refuerzo)",
+      cat: "EVALUACION",
+      def: "Estrategia de Aprendizaje Activo donde pasas el modelo ya entrenado sobre el propio conjunto de estudio (train) para detectar en qué direcciones falla o duda (CONF_LINEA < 0.90) y repasarlas varias veces en una segunda vuelta.",
+      script: "Se ejecuta con 73c_EVALUAR.py --minar y se entrena con 73b_ENTRENAR.py --refuerzo casos_dificiles.jsonl.",
+      rel: "Se relaciona con: Aprendizaje Activo, Confianza, Ajuste Fino."
+    },
+    {
+      term: "Data Leakage (Fuga de Datos) y Examen Ciego",
+      cat: "EVALUACION",
+      def: "Error metodológico que ocurre cuando datos del examen se cuelan en el estudio, inflando artificialmente las notas. Evitarlo requiere separar municipios enteros y agrupar por clave catastral.",
+      script: "En 73a_ARMAR_PARES.py se previene dejando fuera Santa Tecla (4_1) e Izalco (6_2) y usando MD5 sobre clavecat.",
+      rel: "Se relaciona con: train.jsonl, valid.jsonl, examen.jsonl."
+    },
+    {
+      term: "merge_and_unload() (Fusión de Adaptador)",
+      cat: "EVALUACION",
+      def: "Operación matemática que absorbe los pesos entrenados de LoRA (matrices B y A) dentro de las matrices originales del modelo base en memoria, logrando que la evaluación corra a la máxima velocidad nativa sin sobrecosto.",
+      script: "Usado al inicializar la clase Lector en 73c_EVALUAR.py.",
+      rel: "Se relaciona con: LoRA, Inferencia, PeftModel."
+    },
+    {
+      term: "Capas MLP SwiGLU (gate_proj, up_proj, down_proj)",
+      cat: "PAPER",
+      def: "Capas densas que están después de la atención en cada piso del Transformer. Mientras la atención conecta palabras entre sí, estas capas almacenan el conocimiento de traducción, formato y reglas del dominio.",
+      script: "Incluidas en target_modules de 73b_ENTRENAR.py.",
+      rel: "Se relaciona con: Q, K, V, O, Transformer, LoRA."
+    }
+  ];
+
+  let currentCat = 'TODOS';
+  function setCat(cat, btnEl) {
+    currentCat = cat;
+    document.querySelectorAll('.filter-bar .tab-btn').forEach(b => b.classList.remove('active'));
+    btnEl.classList.add('active');
+    filterDict();
+  }
+
+  function filterDict() {
+    const q = document.getElementById('dictSearch').value.toLowerCase().trim();
+    const container = document.getElementById('dictContainer');
+    const filtered = dictionaryData.filter(item => {
+      const matchCat = currentCat === 'TODOS' || item.cat === currentCat;
+      const matchText = !q || item.term.toLowerCase().includes(q) || item.def.toLowerCase().includes(q) || item.script.toLowerCase().includes(q) || item.rel.toLowerCase().includes(q);
+      return matchCat && matchText;
+    });
+
+    if (!filtered.length) {
+      container.innerHTML = `<p style="color:var(--text-muted); text-align:center; padding:1rem;">No se encontraron conceptos con ese filtro.</p>`;
+      return;
+    }
+
+    container.innerHTML = filtered.map(item => `
+      <div class="dict-card">
+        <div class="dict-header">
+          <span class="dict-term">${item.term}</span>
+          <span class="tag tag-blue">${item.cat}</span>
+        </div>
+        <p style="margin-bottom:0.45rem; font-size:0.9rem;">${item.def}</p>
+        <p style="margin-bottom:0.25rem; font-size:0.84rem; color:var(--amber);"><strong>En tus scripts:</strong> ${item.script}</p>
+        <div class="dict-rel">🔗 ${item.rel}</div>
+      </div>
+    `).join('');
+  }
+
+  // Inicializar vistas interactivas al cargar
+  renderSimulator(3); // Empieza mostrando la trampa del "2" (Etapa vs Casa)
+  updateCalc();
+  filterDict();
+</script>
+</body>
+</html>
