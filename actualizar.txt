@@ -9,6 +9,8 @@ Get-ChildItem -Path public -Filter *.html -Recurse | ForEach-Object { "https://d
 
 
 actualizar índice 
+Python generar_indice.py
+
 git add public/index.html generar_indice.py
 git commit -m "actualizar catalogo visual con diseno editorial y previews graficos"
 git push origin main
