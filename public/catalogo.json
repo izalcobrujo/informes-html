@@ -1,5 +1,5 @@
 {
- "generado": "2026-10-30T11:32:17-06:00",
+ "generado": "2026-11-05T11:10:01-06:00",
  "dominio": "https://dashboard-datos.web.app",
  "colores": {
   "Logística y simulacros": "#0e7490",
@@ -15,15 +15,147 @@
  },
  "grupos": [
   {
-   "id": "gpanel_personal_v3",
-   "principal": "panel_personal_v3.html",
+   "id": "gmapa_simulacro2",
+   "principal": "mapa_simulacro2.html",
    "miembros": [
-    "panel_personal_v3.html",
-    "mapa_simulacro2.html"
+    "mapa_simulacro2.html",
+    "panel_personal_v3.html"
    ]
   }
  ],
  "informes": [
+  {
+   "ruta": "simulacro_v4_sedes_rutas.html",
+   "slug": "simulacro_v4_sedes_rutas",
+   "archivo": "simulacro_v4_sedes_rutas.html",
+   "carpeta": "",
+   "titulo": "Simulacro V4 · Sedes y Rutas · Simulacro 01/2027",
+   "descripcion": "",
+   "secciones": [
+    "Simulacro V4 · Sedes y Rutas"
+   ],
+   "categoria": "Logística y simulacros",
+   "categorias_sec": [],
+   "tipo": "Mapa",
+   "territorio": [],
+   "anios": [
+    "2027"
+   ],
+   "tecnologia": [
+    "Leaflet"
+   ],
+   "tags": [
+    "Simulacro",
+    "Sede",
+    "Ruta"
+   ],
+   "creado": "2026-11-05T08:58:13-06:00",
+   "actualizado": "2026-11-05T08:58:13-06:00",
+   "fecha_datos": null,
+   "origen_fecha": "git",
+   "commits": 1,
+   "bytes": 33206,
+   "palabras": 83,
+   "interactivo": 2,
+   "estado": "vigente",
+   "nota": "",
+   "hash": "d9fc2a85a09767be333cf3e877290a821a2a26ff",
+   "miniatura": "_miniaturas/simulacro_v4_sedes_rutas.jpg?v=d9fc2a85",
+   "duplicados": []
+  },
+  {
+   "ruta": "mapa_simulacro2.html",
+   "slug": "mapa_simulacro2",
+   "archivo": "mapa_simulacro2.html",
+   "carpeta": "",
+   "titulo": "Simulacro 1 — Asignación de personal",
+   "descripcion": "Asignación de Personal de Transmisión",
+   "secciones": [
+    "Asignación de Personal de Transmisión"
+   ],
+   "categoria": "Logística y simulacros",
+   "categorias_sec": [],
+   "tipo": "Mapa",
+   "territorio": [],
+   "anios": [],
+   "tecnologia": [
+    "Leaflet"
+   ],
+   "tags": [
+    "Asignación de personal",
+    "Transmisión",
+    "Simulacro"
+   ],
+   "creado": "2026-10-22T15:33:05-06:00",
+   "actualizado": "2026-11-04T14:53:40-06:00",
+   "fecha_datos": null,
+   "origen_fecha": "git",
+   "commits": 8,
+   "bytes": 1031288,
+   "palabras": 102,
+   "interactivo": 5,
+   "estado": "vigente",
+   "nota": "",
+   "hash": "a0e5e23856e8f6ad5728c62b39be4cf99695e25c",
+   "miniatura": "_miniaturas/mapa_simulacro2.jpg?v=a0e5e238",
+   "duplicados": [
+    {
+     "ruta": "panel_personal_v3.html",
+     "motivos": [
+      "mismo título"
+     ],
+     "similitud": 0.5
+    }
+   ],
+   "grupo": "gmapa_simulacro2",
+   "grupo_principal": "mapa_simulacro2.html"
+  },
+  {
+   "ruta": "panel_personal_v3.html",
+   "slug": "panel_personal_v3",
+   "archivo": "panel_personal_v3.html",
+   "carpeta": "",
+   "titulo": "Simulacro 1 — Asignación de personal",
+   "descripcion": "Simulacro v3 · Asignación de Personal",
+   "secciones": [
+    "Simulacro v3 · Asignación de Personal"
+   ],
+   "categoria": "Logística y simulacros",
+   "categorias_sec": [],
+   "tipo": "Tablero",
+   "territorio": [],
+   "anios": [],
+   "tecnologia": [
+    "Leaflet"
+   ],
+   "tags": [
+    "Asignación de personal",
+    "Simulacro"
+   ],
+   "creado": "2026-10-30T10:58:34-06:00",
+   "actualizado": "2026-11-04T14:48:46-06:00",
+   "fecha_datos": null,
+   "origen_fecha": "git",
+   "commits": 2,
+   "bytes": 104752,
+   "palabras": 77,
+   "interactivo": 2,
+   "estado": "anterior",
+   "nota": "",
+   "hash": "ee183e03fd482d5f128511c99bf57d7d819561c6",
+   "miniatura": "_miniaturas/panel_personal_v3.jpg?v=ee183e03",
+   "duplicados": [
+    {
+     "ruta": "mapa_simulacro2.html",
+     "motivos": [
+      "mismo título"
+     ],
+     "similitud": 0.5
+    }
+   ],
+   "grupo": "gmapa_simulacro2",
+   "grupo_principal": "mapa_simulacro2.html"
+  },
   {
    "ruta": "Guia_Maestra_Transformer_Lab73.html",
    "slug": "guia_maestra_transformer_lab73",
@@ -50,8 +182,8 @@
    ],
    "tecnologia": [],
    "tags": [
-    "Laboratorio",
     "Transformer",
+    "Laboratorio",
     "Attention",
     "Catastro"
    ],
@@ -68,53 +200,6 @@
    "hash": "37fd358a379fdc323ef2fbc80b71275992c9499c",
    "miniatura": "_miniaturas/guia_maestra_transformer_lab73.jpg?v=37fd358a",
    "duplicados": []
-  },
-  {
-   "ruta": "panel_personal_v3.html",
-   "slug": "panel_personal_v3",
-   "archivo": "panel_personal_v3.html",
-   "carpeta": "",
-   "titulo": "Simulacro 1 — Asignación de personal",
-   "descripcion": "Simulacro v3 · Asignación de Personal",
-   "secciones": [
-    "Simulacro v3 · Asignación de Personal"
-   ],
-   "categoria": "Logística y simulacros",
-   "categorias_sec": [],
-   "tipo": "Tablero",
-   "territorio": [],
-   "anios": [],
-   "tecnologia": [
-    "Leaflet"
-   ],
-   "tags": [
-    "Asignación de personal",
-    "Simulacro"
-   ],
-   "creado": "2026-10-30T10:58:34-06:00",
-   "actualizado": "2026-10-30T10:58:34-06:00",
-   "fecha_datos": null,
-   "origen_fecha": "git",
-   "commits": 1,
-   "bytes": 173250,
-   "palabras": 77,
-   "interactivo": 2,
-   "estado": "vigente",
-   "nota": "",
-   "hash": "ae5f3038b383c04e2b8ff73c7c82fca92e2e44d5",
-   "miniatura": "_miniaturas/panel_personal_v3.jpg?v=ae5f3038",
-   "duplicados": [
-    {
-     "ruta": "mapa_simulacro2.html",
-     "motivos": [
-      "mismo título",
-      "66% de contenido similar"
-     ],
-     "similitud": 0.66
-    }
-   ],
-   "grupo": "gpanel_personal_v3",
-   "grupo_principal": "panel_personal_v3.html"
   },
   {
    "ruta": "panel_reparto_v3.html",
@@ -467,54 +552,6 @@
    "duplicados": []
   },
   {
-   "ruta": "mapa_simulacro2.html",
-   "slug": "mapa_simulacro2",
-   "archivo": "mapa_simulacro2.html",
-   "carpeta": "",
-   "titulo": "Simulacro 1 — Asignación de personal",
-   "descripcion": "Asignación de Personal de Transmisión",
-   "secciones": [
-    "Asignación de Personal de Transmisión"
-   ],
-   "categoria": "Logística y simulacros",
-   "categorias_sec": [],
-   "tipo": "Mapa",
-   "territorio": [],
-   "anios": [],
-   "tecnologia": [
-    "Leaflet"
-   ],
-   "tags": [
-    "Asignación de personal",
-    "Transmisión",
-    "Simulacro"
-   ],
-   "creado": "2026-10-22T15:33:05-06:00",
-   "actualizado": "2026-10-23T09:01:36-06:00",
-   "fecha_datos": null,
-   "origen_fecha": "git",
-   "commits": 6,
-   "bytes": 1116997,
-   "palabras": 80,
-   "interactivo": 2,
-   "estado": "anterior",
-   "nota": "",
-   "hash": "4c8466c651864b4077cd07851df3eadf000dd3b4",
-   "miniatura": "_miniaturas/mapa_simulacro2.jpg?v=4c8466c6",
-   "duplicados": [
-    {
-     "ruta": "panel_personal_v3.html",
-     "motivos": [
-      "mismo título",
-      "66% de contenido similar"
-     ],
-     "similitud": 0.66
-    }
-   ],
-   "grupo": "gpanel_personal_v3",
-   "grupo_principal": "panel_personal_v3.html"
-  },
-  {
    "ruta": "panel_revision_inconsistencias.html",
    "slug": "panel_revision_inconsistencias",
    "archivo": "panel_revision_inconsistencias.html",
@@ -760,8 +797,8 @@
    ],
    "tags": [
     "Despacho",
-    "Sede",
-    "Ruta"
+    "Ruta",
+    "Sede"
    ],
    "creado": "2026-09-30T07:21:44-06:00",
    "actualizado": "2026-09-30T07:28:12-06:00",
@@ -847,8 +884,8 @@
    "tags": [
     "Centro de votación",
     "Transmisión",
-    "Sede",
-    "Ruta"
+    "Ruta",
+    "Sede"
    ],
    "creado": "2026-09-11T10:30:20-06:00",
    "actualizado": "2026-09-11T11:13:40-06:00",
@@ -1017,8 +1054,8 @@
     "Chart.js"
    ],
    "tags": [
-    "Exterior",
     "Asamblea",
+    "Exterior",
     "D'Hondt",
     "Riesgo"
    ],
@@ -1183,8 +1220,8 @@
    ],
    "tags": [
     "Legislativa",
-    "Conducta",
     "Asamblea",
+    "Conducta",
     "Voto"
    ],
    "creado": "2026-09-02T11:00:11-06:00",

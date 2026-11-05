@@ -1,11 +1,11 @@
 <!doctype html><html lang="es"><head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Simulacro V4 · Sedes y Rutas · Simulacro 01/2027</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230d2a66' d='M12 2C7.6 2 4 5.6 4 10c0 5.5 8 12 8 12s8-6.5 8-12c0-4.4-3.6-8-8-8z'/%3E%3Ccircle cx='12' cy='10' r='3' fill='white'/%3E%3C/svg%3E">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%230d2a66' d='M3 13l2-5h11l3 4h2v4h-2a2 2 0 11-4 0H9a2 2 0 11-4 0H3z'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-:root{--bg:#eef1f6;--card:#fff;--line:#e8ebf1;--tx:#1f2937;--mut:#6b7280;--azul:#2563eb;--tse:#0d2a66;--cot:#4f46e5;--doe:#f59e0b;--r:16px}
+:root{--bg:#eef1f6;--card:#fff;--line:#e8ebf1;--tx:#1f2937;--mut:#6b7280;--azul:#2563eb;--tse:#0d2a66;--doe:#f59e0b;--r:16px}
 *{box-sizing:border-box}html,body{margin:0;height:100%;font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:var(--bg);color:var(--tx)}
 #app{display:flex;flex-direction:column;height:100vh;overflow:hidden}
 #top{display:flex;align-items:center;gap:14px;padding:16px 24px;background:var(--tse);color:#fff;flex-wrap:wrap}
@@ -17,7 +17,7 @@
 .ctrl input{border:none;border-radius:9px;padding:8px 11px;font:inherit;font-size:15px;font-weight:800;color:var(--tse);width:110px}
 .ctrl .rt{font-size:12px;color:#cdddf7;text-align:right}
 #body{flex:1;display:flex;gap:14px;padding:14px;overflow:hidden}
-#left{width:430px;min-width:430px;display:flex;flex-direction:column;gap:12px;overflow:auto}
+#left{width:446px;min-width:446px;display:flex;flex-direction:column;gap:12px;overflow:auto}
 #center{flex:1;min-width:0;display:flex;position:relative}
 #right{width:362px;min-width:362px;display:flex;flex-direction:column;gap:10px;overflow:auto}
 .sct{font-size:11px;font-weight:700;color:var(--mut);text-transform:uppercase;letter-spacing:.05em;margin:2px 2px -2px}
@@ -27,18 +27,16 @@
 #kpis{display:grid;grid-template-columns:1fr 1fr 1fr;gap:9px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:13px;padding:11px 12px}
 .kpi .v{font-size:19px;font-weight:800;line-height:1;color:var(--tx)}.kpi .l{font-size:10px;color:var(--mut);margin-top:4px}
-#filtros{padding:13px 15px}
-.chk{display:flex;align-items:center;gap:7px;font-size:12.5px;color:var(--tx);margin:4px 0;cursor:pointer}
-.chk input{width:auto;margin:0}.chk .d{width:11px;height:11px;border-radius:50%}
-input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:12.5px;margin-top:6px}
-#lista{max-height:40vh;overflow:auto}
-.cen{display:grid;grid-template-columns:12px 1fr auto;gap:10px;padding:9px 14px;border-top:1px solid #f1f3f7;cursor:pointer;align-items:center}
-.cen:first-child{border-top:none}.cen:hover{background:#f7f9fc}.cen.sel{background:#eef4ff}
-.cen .sw{width:12px;height:12px;border-radius:50%}
-.cen .t{font-size:12.5px;font-weight:600;line-height:1.25}
-.cen .s{font-size:10.5px;color:var(--mut);margin-top:1px}
-.cen .km{font-size:11px;font-weight:700;text-align:right;white-space:nowrap}
-.cen .km small{display:block;color:var(--mut);font-weight:500}
+#filtros{padding:11px 14px}
+input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padding:9px 11px;font-size:12.5px}
+#rutas{max-height:52vh;overflow:auto}
+.rt{border-top:1px solid #f1f3f7;cursor:pointer}.rt:first-child{border-top:none}.rt:hover{background:#f7f9fc}.rt.sel{background:#eef4ff}
+.rt .hd{display:grid;grid-template-columns:30px 1fr auto;gap:9px;align-items:center;padding:9px 14px}
+.rt .vb{width:26px;height:26px;border-radius:8px;color:#fff;font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center}
+.rt .nm{font-size:12px;font-weight:600;line-height:1.3}
+.rt .sub{font-size:10.5px;color:var(--mut);margin-top:1px}
+.rt .mt{text-align:right;font-size:11px;font-weight:700;white-space:nowrap}.rt .mt small{display:block;color:var(--mut);font-weight:500}
+.pk{display:inline-block;font-size:9px;font-weight:700;background:#eef1f5;color:#475569;border-radius:999px;padding:1px 6px;margin-left:4px}
 #map{flex:1;border-radius:var(--r);background:#dfe6ef}
 .leaflet-container{background:#dfe6ef;border-radius:var(--r)}
 .toolbar{position:absolute;z-index:500;left:10px;top:10px;display:flex;gap:6px}
@@ -48,171 +46,134 @@ input[type=text]{width:100%;border:1px solid var(--line);border-radius:10px;padd
 .legmap div{display:flex;align-items:center;gap:6px;margin:2px 0}.legmap .d{width:11px;height:11px;border-radius:50%}
 #prog{position:absolute;z-index:600;left:50%;top:10px;transform:translateX(-50%);background:rgba(13,42,102,.92);color:#fff;font-size:11.5px;padding:6px 14px;border-radius:999px}
 #detempty{padding:40px 20px;text-align:center;color:var(--mut);font-size:12.5px}
-#ficha .in{padding:15px}#ficha h2{font-size:15px;margin:2px 0 8px}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:9px}
-.tag{font-size:11px;font-weight:600;padding:3px 10px;border-radius:999px;color:#fff}
-.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
-.box{background:#f6f8fb;border-radius:10px;padding:9px 11px}
-.box .b{font-size:18px;font-weight:800;color:var(--tse)}.box .k{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.03em}
-.meta{font-size:11.5px;color:var(--mut);margin:5px 0}
-.dir{font-size:11.5px;background:#f6f8fb;border-radius:9px;padding:8px 10px;margin:6px 0}
-.lk{display:inline-block;font-size:11.5px;font-weight:600;color:#fff;background:var(--azul);border-radius:9px;padding:7px 11px;text-decoration:none;margin:3px 5px 3px 0}
-.lk.wz{background:#33ccff}.lk.rt{background:#6b7280}
-.deprow{display:grid;grid-template-columns:1fr 46px 58px;align-items:center;gap:8px;padding:4px 14px;font-size:11.5px}
-.deprow .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.deprow .tk{height:8px;background:#eef1f5;border-radius:999px;overflow:hidden}.deprow .tk i{display:block;height:100%;border-radius:999px}
-.deprow .vv{text-align:right;font-weight:700;font-size:10.5px}
-.grp{padding:7px 14px;border-top:1px solid #f1f3f7}.grp .h{font-weight:700;font-size:12px}
-.grp .ch2{font-size:11.5px;margin:3px 0 0 16px}
+#ficha .in{padding:15px}#ficha h2{font-size:15px;margin:2px 0 4px}
+.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin:9px 0}
+.box{background:#f6f8fb;border-radius:10px;padding:9px 10px;text-align:center}
+.box .b{font-size:16px;font-weight:800;color:var(--tse)}.box .k{font-size:9px;color:var(--mut);text-transform:uppercase}
+.stop{display:grid;grid-template-columns:22px 1fr auto;gap:9px;align-items:start;padding:8px 0;border-top:1px dashed #e5e9f0}
+.stop .n{width:22px;height:22px;border-radius:50%;color:#fff;font-weight:800;font-size:11px;display:flex;align-items:center;justify-content:center}
+.stop .t{font-size:12.5px;font-weight:600}.stop .s{font-size:10.5px;color:var(--mut)}
+.stop .ll{text-align:right;font-size:11px;font-weight:700;white-space:nowrap}.stop .ll small{display:block;color:var(--mut);font-weight:500}
+.lk{display:inline-block;font-size:11px;font-weight:600;color:#fff;background:var(--azul);border-radius:8px;padding:5px 9px;text-decoration:none;margin:3px 4px 0 0}
+.lk.rt2{background:#6b7280}
 @media(max-width:1280px){#left,#right{width:330px;min-width:330px}}
 </style></head><body><div id="app">
 <div id="top">
-  <div class="ttl"><div class="kick">TSE · COT · Logística</div><h1>Simulacro V4 · Sedes y Rutas</h1><div class="sub">Simulacro 01/2027 · rutas desde CNPRE · 1 vehículo por ruta · 8 personas por sede</div></div>
-  <div class="ctrl"><label>Hora de inicio<input type="time" id="inHora" value="05:00"></label><span class="rt" id="rt"></span></div>
+  <div class="ttl"><div class="kick">TSE · COT · Logística</div><h1>Simulacro V4 · Sedes y Rutas</h1><div class="sub">Simulacro 01/2027 · rutas agrupadas desde CNPRE · ≤3 paquetes por vehículo · ida y vuelta · descarga 20 min/sede · +30% tráfico · 8 personas por sede</div></div>
+  <div class="ctrl"><label>Hora de inicio<input type="time" id="inHora" value="05:00"></label><span class="rt" id="rtlbl"></span></div>
 </div>
 <div id="body">
   <div id="left">
-    <div class="sct">Filtros</div>
-    <div class="card" id="filtros">
-      <label class="chk"><input type="checkbox" id="fcot" checked><span class="d" style="background:var(--cot)"></span> Sedes COT (<span id="ncot"></span>)</label>
-      <label class="chk"><input type="checkbox" id="fdoe" checked><span class="d" style="background:var(--doe)"></span> Sedes DOE · secundarias (<span id="ndoe"></span>)</label>
-      <input type="text" id="fq" placeholder="Buscar sede…">
-    </div>
     <div class="sct">Resumen</div>
     <div id="kpis"></div>
-    <div class="sct">Sedes <span id="cnt" style="color:var(--mut);font-weight:600"></span></div>
-    <div class="card"><div id="lista"></div></div>
+    <div class="card" id="filtros"><input type="text" id="fq" placeholder="Buscar sede o vehículo…"></div>
+    <div class="sct">Vehículos / rutas <span id="cnt" style="color:var(--mut);font-weight:600"></span></div>
+    <div class="card"><div id="rutas"></div></div>
   </div>
   <div id="center"><div id="map">
     <div class="toolbar"><div class="tg on" id="tgCal">Calles</div><div class="tg" id="tgHib">Híbrido</div></div>
-    <div class="legmap"><div><span class="d" style="background:#0d2a66"></span>CNPRE (origen)</div><div><span class="d" style="background:var(--cot)"></span>Sede COT</div><div><span class="d" style="background:var(--doe)"></span>Sede DOE</div></div>
+    <div class="legmap"><div><span class="d" style="background:#0d2a66"></span>CNPRE (origen)</div><div><span class="d" style="background:#4f46e5;border:2px solid #fff"></span>Sede COT</div><div><span class="d" style="background:#4f46e5;border:2px solid #f59e0b"></span>Sede DOE</div><div style="color:var(--mut);margin-top:2px">cada color = un vehículo</div></div>
     <div id="prog">Calculando rutas…</div>
   </div></div>
   <div id="right">
-    <div class="sct">Detalle</div>
-    <div class="card" id="detcard"><div id="detempty">Seleccioná una sede en la lista o el mapa para ver su ruta, tiempo y distancia.</div><div id="ficha" style="display:none"></div></div>
-    <div class="sct">Agrupación COT → DOE</div>
-    <div id="grp"></div>
-    <div class="sct">Sedes por tiempo de viaje</div>
-    <div id="rank"></div>
+    <div class="sct">Detalle de ruta</div>
+    <div class="card" id="detcard"><div id="detempty">Seleccioná un vehículo en la lista o una sede en el mapa para ver su ruta, paradas y tiempos.</div><div id="ficha" style="display:none"></div></div>
   </div>
 </div></div>
 <script>
-const CNPRE={"nombre": "CNPRE", "lat": 13.6624181902928, "lng": -89.2514217559907, "dir": "Calle Cortes Blanco Poniente Urbanizacion Madre Selva III Y Pasaje N, Antiguo Cuscatlán, La Libertad Este, La Libertad", "personal": 8}, SEDES=[{"nombre": "Acajutla", "tipo": "COT", "zona": "REGIÓN OCCIDENTAL", "depto": "SONSONATE", "dir": "Calle Rasa y Pasaje Bolaños, Distrito de Acajutla, costado norte del Liceo de Acajutla, Mun. Sonsonate Oeste, Dpto. Sonsonate", "lat": 13.587723401905, "lng": -89.8327458416276, "gmaps": "https://www.google.com/maps?q=13.58772340190501, -89.83274584162768", "waze": "https://www.waze.com/ul?ll=13.58772340190501, -89.83274584162768&navigate=yes", "encargado": "", "contacto": "", "km_recta": 63.37, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Ahuachapán", "tipo": "COT", "zona": "REGIÓN OCCIDENTAL", "depto": "AHUACHAPAN", "dir": "Carretera a Las Chinamas, Com. Llano de La Laguna, calle vecinal atras de gasolinera UNO Los Reyes.", "lat": 13.940932, "lng": -89.854683, "gmaps": "https://www.google.com/maps?q=13.940932, -89.854683", "waze": "https://www.waze.com/ul?ll=13.940932, -89.854683&navigate=yes", "encargado": "", "contacto": "", "km_recta": 72.13, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Metapán", "tipo": "COT", "zona": "REGIÓN OCCIDENTAL", "depto": "SANTA ANA", "dir": "Av. Benjamín Estrada Valiente Norte, casa #14, Barrio el Calvario, a media cuadra del ISSS y parque central, distrito de Metapán", "lat": 14.333436, "lng": -89.447889, "gmaps": "https://www.google.com/maps?q=14.3334355,-89.4478887", "waze": "https://www.waze.com/ul?ll=14.3334355,-89.4478887&navigate=yes", "encargado": "", "contacto": "", "km_recta": 77.57, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Santa Ana", "tipo": "COT", "zona": "REGIÓN OCCIDENTAL", "depto": "SANTA ANA", "dir": "2ª Av. Norte, entre 8ª y 6ª calle poniente, casa #17, Santa Ana Centro", "lat": 13.997026, "lng": -89.55736, "gmaps": "https://www.google.com/maps?q=13.997026099,-89.557360343", "waze": "https://www.waze.com/ul?ll=13.997026099,-89.557360343&navigate=yes", "encargado": "", "contacto": "", "km_recta": 49.75, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Sonsonate", "tipo": "COT", "zona": "REGIÓN OCCIDENTAL", "depto": "SONSONATE", "dir": "8ª Calle Poniente, #1-15, Lotificación Landovar, distrito de Sonsonate, Mun. Sonsonate Centro", "lat": 13.717793, "lng": -89.73023, "gmaps": "https://www.google.com/maps?q=13.7177925856196,-89.7302298593104", "waze": "https://www.waze.com/ul?ll=13.7177925856196,-89.7302298593104&navigate=yes", "encargado": "", "contacto": "", "km_recta": 52.09, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Chalatenango", "tipo": "COT", "zona": "REGIÓN NORTE – CENTRAL", "depto": "CHALATENANGO", "dir": "Barrio la Sierpe, Calle Principal, 300 m al sur de la Cruz Roja, Distrito y Mun. Chalatenango Sur", "lat": 14.034156, "lng": -88.935856, "gmaps": "https://www.google.com/maps?q=14.0341559,-88.9358555", "waze": "https://www.waze.com/ul?ll=14.0341559,-88.9358555&navigate=yes", "encargado": "", "contacto": "", "km_recta": 53.57, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Cojutepeque", "tipo": "COT", "zona": "REGIÓN NORTE – CENTRAL", "depto": "COJUTEPEQUE", "dir": "Calle Antiguo a San Salvador, Lotificación San Antonio, casa #75, Distrito de Cojutepeque, Mun. Cuscatlán Sur", "lat": 13.726329, "lng": -88.959769, "gmaps": "https://www.google.com/maps?q=13.7263288863649,-88.9597689617976", "waze": "https://www.waze.com/ul?ll=13.7263288863649,-88.9597689617976&navigate=yes", "encargado": "", "contacto": "", "km_recta": 32.3, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Sensuntepeque", "tipo": "COT", "zona": "REGIÓN NORTE – CENTRAL", "depto": "CABAÑAS", "dir": "Final 2ª Av. Sur, Barrio Santa Bárbara, Distrito Sensuntepeque, Mun. Cabañas Este", "lat": 13.865058, "lng": -88.627589, "gmaps": "https://www.google.com/maps?q=13.8650577746571,-88.6275891671439", "waze": "https://www.waze.com/ul?ll=13.8650577746571,-88.6275891671439&navigate=yes", "encargado": "", "contacto": "", "km_recta": 71.04, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Tejutla", "tipo": "COT", "zona": "REGIÓN NORTE – CENTRAL", "depto": "CHALATENANGO", "dir": "Barrio el Calvario #1-5, sobre calle Fernando García, Distrito Tejutla, Mun. Chalatenango Centro", "lat": 14.170878, "lng": -89.102793, "gmaps": "https://www.google.com/maps?q=14.17087776,-89.1027933", "waze": "https://www.waze.com/ul?ll=14.17087776,-89.1027933&navigate=yes", "encargado": "", "contacto": "", "km_recta": 58.77, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Colón", "tipo": "COT", "zona": "REGIÓN METROPOLITANA", "depto": "LA LIBERTAD", "dir": "Av. Maximiliano Hernández Martínez, No. 1-6, Cantón Lourdes, Distrito de Colón, Mun. La Libertad Oeste", "lat": 13.725852, "lng": -89.369308, "gmaps": "https://www.google.com/maps?q=13.72585236,-89.36930791", "waze": "https://www.waze.com/ul?ll=13.72585236,-89.36930791&navigate=yes", "encargado": "", "contacto": "", "km_recta": 14.56, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Olocuilta", "tipo": "COT", "zona": "REGIÓN METROPOLITANA", "depto": "LA PAZ", "dir": "Barrio el Carmen, Calle Vía Tejera, Olocuilta, La Paz", "lat": 13.565239, "lng": -89.115673, "gmaps": "https://www.google.com/maps?q=13.56523904,-89.11567317", "waze": "https://www.waze.com/ul?ll=13.56523904,-89.11567317&navigate=yes", "encargado": "", "contacto": "", "km_recta": 18.22, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "San Salvador", "tipo": "COT", "zona": "REGIÓN METROPOLITANA", "depto": "SAN SALVADOR", "dir": "87 Avenida norte y 3a calle poniente, CONDOMINIO ESCALON 87, numero 32, Distrito y Mun. San Salvador Centro", "lat": 13.7049646897018, "lng": -89.2410233923764, "gmaps": "https://www.google.com/maps?q=13.704964689701885, -89.2410233923764", "waze": "https://www.waze.com/ul?ll=13.704964689701885, -89.2410233923764&navigate=yes", "encargado": "", "contacto": "", "km_recta": 4.86, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Santa Tecla", "tipo": "COT", "zona": "REGIÓN METROPOLITANA", "depto": "LA LIBERTAD", "dir": "Residencial Casa Verde #1, Blvd. del Hipódromo, casa 12-C, Distrito Santa Tecla, Mun. La Libertad Sur", "lat": 13.690958, "lng": -89.292192, "gmaps": "https://www.google.com/maps?q=13.69095803,-89.29219172", "waze": "https://www.waze.com/ul?ll=13.69095803,-89.29219172&navigate=yes", "encargado": "", "contacto": "", "km_recta": 5.43, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Soyapango", "tipo": "COT", "zona": "REGIÓN METROPOLITANA", "depto": "SAN SALVADOR", "dir": "Carretera Panamericana, #6, Reparto Morazán, a 600 m del plantel de Fábrica DIANA, Distrito de Soyapango, Mun. San Salvador Este", "lat": 13.699971, "lng": -89.137194, "gmaps": "https://www.google.com/maps?q=13.69997062,-89.13719395", "waze": "https://www.waze.com/ul?ll=13.69997062,-89.13719395&navigate=yes", "encargado": "", "contacto": "", "km_recta": 13.03, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "El Tránsito", "tipo": "COT", "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "SAN MIGUEL", "dir": "8ª Calle Oriente y 2ª Av. Sur, #19, Barrio San Carlos, Distrito de El Tránsito, Mun. San Miguel Oeste", "lat": 13.35746, "lng": -88.346127, "gmaps": "https://www.google.com/maps?q=13.35745952,-88.34612653", "waze": "https://www.waze.com/ul?ll=13.35745952,-88.34612653&navigate=yes", "encargado": "", "contacto": "", "km_recta": 103.59, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Mercedes Umaña", "tipo": "COT", "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "USULUTAN", "dir": "2ª Calle Oriente, Barrio Concepción, frente al C.E. \"Barrio Concepción\", Distrito de Mercedes Umaña, Mun. Usulután Norte", "lat": 13.56096, "lng": -88.487601, "gmaps": "https://www.google.com/maps?q=13.5609599501363,-88.4876007083657", "waze": "https://www.waze.com/ul?ll=13.5609599501363,-88.4876007083657&navigate=yes", "encargado": "", "contacto": "", "km_recta": 83.31, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "San Vicente", "tipo": "COT", "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "SAN VICENTE", "dir": "Av. Crescencio Miranda, casa #33, San Vicente", "lat": 13.641139, "lng": -88.785621, "gmaps": "https://www.google.com/maps?q=13.6411390903089,-88.7856208223411", "waze": "https://www.waze.com/ul?ll=13.6411390903089,-88.7856208223411&navigate=yes", "encargado": "", "contacto": "", "km_recta": 50.39, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Usulután", "tipo": "COT", "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "USULUTAN", "dir": "8ª Calle Oriente, #3, Distrito de Usulután, Mun. Usulután Este", "lat": 13.347597, "lng": -88.439411, "gmaps": "https://www.google.com/maps?q=13.3475971038004,-88.4394112535886", "waze": "https://www.waze.com/ul?ll=13.3475971038004,-88.4394112535886&navigate=yes", "encargado": "", "contacto": "", "km_recta": 94.52, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Zacatecoluca", "tipo": "COT", "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "LA PAZ", "dir": "6ª Calle Poniente, #6 A, Barrio el Calvario, El Centro, Distrito de Zacatecoluca, Mun. La Paz Este", "lat": 13.509926, "lng": -88.871388, "gmaps": "https://www.google.com/maps?q=13.5099257880296,-88.8713877431147", "waze": "https://www.waze.com/ul?ll=13.5099257880296,-88.8713877431147&navigate=yes", "encargado": "", "contacto": "", "km_recta": 44.44, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Ciudad Barrios", "tipo": "COT", "zona": "REGIÓN ORIENTAL", "depto": "SAN MIGUEL", "dir": "5TA CALLE PONIENTE #17, Distrito de Ciudad Barrios, Mun. San Miguel ", "lat": 13.7644372642892, "lng": -88.271857, "gmaps": "https://www.google.com/maps?q=13.764437264289235, -88.2719399376361", "waze": "https://www.waze.com/ul?ll=13.764437264289235, -88.2719399376361&navigate=yes", "encargado": "", "contacto": "", "km_recta": 106.42, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "La Unión", "tipo": "COT", "zona": "REGIÓN ORIENTAL", "depto": "LA UNION", "dir": "3ª Calle Poniente, Barrio Honduras, frente a Colonia Esperanza, Distrito de La Unión, Mun. La Unión Centro", "lat": 13.34052, "lng": -87.855941, "gmaps": "https://www.google.com/maps?q=13.34052026,-87.8559414", "waze": "https://www.waze.com/ul?ll=13.34052026,-87.8559414&navigate=yes", "encargado": "", "contacto": "", "km_recta": 155.07, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Osicala", "tipo": "COT", "zona": "REGIÓN ORIENTAL", "depto": "MORAZAN", "dir": "Lotificación La Ceiba, lote #17, Km 220 Longitudinal, Distrito de Osicala, Mun. Morazán Sur", "lat": 13.809712, "lng": -88.153462, "gmaps": "https://www.google.com/maps?q=13.809711532458,-88.1534616465426", "waze": "https://www.waze.com/ul?ll=13.809711532458,-88.1534616465426&navigate=yes", "encargado": "", "contacto": "", "km_recta": 119.72, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "San Francisco Gotera", "tipo": "COT", "zona": "REGIÓN ORIENTAL", "depto": "MORAZAN", "dir": "Colonia Altos de San Francisco, Calle Conacaste, Distrito de San Francisco Gotera, Mun. Morazán Norte", "lat": 13.690654, "lng": -88.107947, "gmaps": "https://www.google.com/maps?q=13.6906544320987,-88.1079465401969", "waze": "https://www.waze.com/ul?ll=13.6906544320987,-88.1079465401969&navigate=yes", "encargado": "", "contacto": "", "km_recta": 123.58, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "San Miguel", "tipo": "COT", "zona": "REGIÓN ORIENTAL", "depto": "SAN MIGUEL", "dir": "Colonia Hilerman, Polígono 10, Distrito de San Miguel, Mun. San Miguel Centro", "lat": 13.486782, "lng": -88.191376, "gmaps": "https://www.google.com/maps?q=13.48678171,-88.19137585", "waze": "https://www.waze.com/ul?ll=13.48678171,-88.19137585&navigate=yes", "encargado": "", "contacto": "", "km_recta": 116.23, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Santa Rosa de Lima", "tipo": "COT", "zona": "REGIÓN ORIENTAL", "depto": "LA UNION", "dir": "Calle Ruta Militar, contiguo a Taller Heraldo, Distrito de Santa Rosa de Lima, Mun. La Unión", "lat": 13.630843, "lng": -87.888022, "gmaps": "https://www.google.com/maps?q=13.63084311,-87.88802179", "waze": "https://www.waze.com/ul?ll=13.63084311,-87.88802179&navigate=yes", "encargado": "", "contacto": "", "km_recta": 147.36, "personal": 8, "coord_cot": "", "km_cot": null}, {"nombre": "Colón", "tipo": "DOE", "zona": "Centro", "depto": "La Libertad", "dir": "COLONIA EL PROGRESO, CALLE 5 DE NOVIEMBRE PASAJE SAN FRANCISCO, CANTÓN LOURDES, COLÓN, LA LIBERTAD OESTE", "lat": 13.721364, "lng": -89.368914, "gmaps": "https://maps.app.goo.gl/KeNG8pkME4VTp3oZ9", "waze": "", "encargado": "NURIA ARACELY MARTINEZ DE NUILA", "contacto": "6928-8614", "distrito": "Colón", "municipio": "La Libertad Oeste", "km_recta": 14.29, "personal": 8, "coord_cot": "Colón", "km_cot": 0.5}, {"nombre": "Tejutla", "tipo": "DOE", "zona": "Centro", "depto": "Chalatenango", "dir": "LOTIFICACIÓN SARITA LOTE 1 Y 2 POLIGONO \"C\" CASERIO AMAYO, TEJUTLA", "lat": 14.106337, "lng": -89.157456, "gmaps": "https://maps.app.goo.gl/fGvXuDu55dbQ2nJF6", "waze": "", "encargado": "IRMA YOLANDA GUARDADO ALVARENGA", "contacto": "7633-5310", "distrito": "Tejutla", "municipio": "Chalatenango Centro", "km_recta": 50.39, "personal": 8, "coord_cot": "Tejutla", "km_cot": 9.29}, {"nombre": "Ciudad Barrios", "tipo": "DOE", "zona": "Oriente", "depto": "San Miguel", "dir": "Barrio Roma, Calle 21 de Abril y 6ta Av. Norte, Distrito de Ciudad Barrio, Municipio de San Miguel Norte, Departamento de San Miguel", "lat": 13.765493, "lng": -88.269623, "gmaps": "https://maps.app.goo.gl/HxErWUtQhJKrtnAWA", "waze": "", "encargado": "GUSTAVO ALEXANDER VASQUEZ HERRERA", "contacto": "7568-5995", "distrito": "Ciudad Barrios", "municipio": "San Miguel Norte", "km_recta": 106.68, "personal": 8, "coord_cot": "Ciudad Barrios", "km_cot": 0.27}, {"nombre": "Mercedes Umaña", "tipo": "DOE", "zona": "Oriente", "depto": "Usulután", "dir": "BARRIO CONCEPCION, CALLE SEGUNDA PONIENTE, NUMERO S/N, MERCEDES UMAÑA, USULUTÁN NORTE, USULUTÁN", "lat": 13.561042, "lng": -88.487437, "gmaps": "https://maps.app.goo.gl/upJEzp6XP6P9iGcq7", "waze": "", "encargado": "ESTEFANY GABRIELA ORTIZ VARGAS", "contacto": "7114-4531", "distrito": "Mercedes Umaña", "municipio": "Usulután Norte", "km_recta": 83.33, "personal": 8, "coord_cot": "Mercedes Umaña", "km_cot": 0.02}, {"nombre": "Santa Rosa de Lima", "tipo": "DOE", "zona": "Oriente", "depto": "La Unión", "dir": "Barrio El Recreo, final 2ª Calle Oriente, Distrito de Santa Rosa de Lima, Municipio de La Unión Norte, Departamento de La Unión", "lat": 13.623773, "lng": -87.889006, "gmaps": "https://maps.app.goo.gl/1NEByBMq6zchK1Gi7", "waze": "", "encargado": "DORIS ELIZABETH RAMIREZ ALVAREZ", "contacto": "7907-3943", "distrito": "Santa Rosa de Lima", "municipio": "La Unión Norte", "km_recta": 147.28, "personal": 8, "coord_cot": "Santa Rosa de Lima", "km_cot": 0.79}, {"nombre": "Osicala", "tipo": "DOE", "zona": "Oriente", "depto": "Morazán", "dir": "BARRIO SAN RAFAEL, S/N, OSICALA, MORAZÁN SUR, MORAZÁN", "lat": 13.805939, "lng": -88.154849, "gmaps": "https://maps.app.goo.gl/TQxUEAHvSCMc7BGt7", "waze": "", "encargado": "VICTOR ELIAS AMAYA MENDEZ ", "contacto": "7921-7470", "distrito": "Osicala", "municipio": "Morazán Sur", "km_recta": 119.52, "personal": 8, "coord_cot": "Osicala", "km_cot": 0.45}, {"nombre": "Olocuilta", "tipo": "DOE", "zona": "Paracentral", "depto": "La Paz", "dir": " Barrio El Calvario, calle doctor Demetrio Hernández #26, distrito de Olocuilta, Municipio de La Paz Oeste, departamento de La Paz", "lat": 13.56673, "lng": -89.11757, "gmaps": "https://maps.app.goo.gl/bcFujqkrPDjXNag97", "waze": "", "encargado": "MICHELL ESTEFANY CORNEJO MONGE", "contacto": "76610349", "distrito": "Olocuilta", "municipio": "La Paz Oeste", "km_recta": 17.96, "personal": 8, "coord_cot": "Olocuilta", "km_cot": 0.26}, {"nombre": "DOE Central", "tipo": "DOE", "zona": "Centro", "depto": "San Salvador", "dir": "KILOMETRO 12 1/2 CARRETERA COMALAPA HACIA EL AEROPUERTO, SAN MARCOS , SAN SALVADOR SUR ", "lat": 13.651054, "lng": -89.171321, "gmaps": "https://maps.app.goo.gl/k4wPUiLH89fCs99V7", "waze": "", "encargado": "RODOLFO ANDRES SALAZAR CERON", "contacto": "7902 5320", "distrito": "San Marcos", "municipio": "San Salvador Sur", "km_recta": 8.75, "personal": 8, "coord_cot": "Soyapango", "km_cot": 6.57}];
-const VEL=34, FACTOR=1.4, CUPO=8;
-let selIdx=null;
+const CNPRE={"nombre": "CNPRE", "lat": 13.6624181902928, "lng": -89.2514217559907, "dir": "Calle Cortes Blanco Poniente Urbanizacion Madre Selva III Y Pasaje N, Antiguo Cuscatlán, La Libertad Este, La Libertad", "personal": 8}, RUTAS=[{"v": 1, "pkg": 1, "stops": [{"id": 20, "nombre": "La Unión", "tipo": "COT", "lat": 13.34052, "lng": -87.855941, "zona": "REGIÓN ORIENTAL", "depto": "LA UNION", "dir": "3ª Calle Poniente, Barrio Honduras, frente a Colonia Esperanza, Distrito de La Unión, Mun. La Unión Centro", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.34052026,-87.8559414", "waze": "https://www.waze.com/ul?ll=13.34052026,-87.8559414&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#e6194B"}, {"v": 2, "pkg": 2, "stops": [{"id": 29, "nombre": "Santa Rosa de Lima", "tipo": "DOE", "lat": 13.623773, "lng": -87.889006, "zona": "Oriente", "depto": "La Unión", "dir": "Barrio El Recreo, final 2ª Calle Oriente, Distrito de Santa Rosa de Lima, Municipio de La Unión Norte, Departamento de La Unión", "encargado": "DORIS ELIZABETH RAMIREZ ALVAREZ", "contacto": "7907-3943", "gmaps": "https://maps.app.goo.gl/1NEByBMq6zchK1Gi7", "waze": "", "coord_cot": "Santa Rosa de Lima", "km_cot": 0.79}, {"id": 24, "nombre": "Santa Rosa de Lima", "tipo": "COT", "lat": 13.630843, "lng": -87.888022, "zona": "REGIÓN ORIENTAL", "depto": "LA UNION", "dir": "Calle Ruta Militar, contiguo a Taller Heraldo, Distrito de Santa Rosa de Lima, Mun. La Unión", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.63084311,-87.88802179", "waze": "https://www.waze.com/ul?ll=13.63084311,-87.88802179&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#3cb44b"}, {"v": 3, "pkg": 3, "stops": [{"id": 30, "nombre": "Osicala", "tipo": "DOE", "lat": 13.805939, "lng": -88.154849, "zona": "Oriente", "depto": "Morazán", "dir": "BARRIO SAN RAFAEL, S/N, OSICALA, MORAZÁN SUR, MORAZÁN", "encargado": "VICTOR ELIAS AMAYA MENDEZ ", "contacto": "7921-7470", "gmaps": "https://maps.app.goo.gl/TQxUEAHvSCMc7BGt7", "waze": "", "coord_cot": "Osicala", "km_cot": 0.45}, {"id": 21, "nombre": "Osicala", "tipo": "COT", "lat": 13.809712, "lng": -88.153462, "zona": "REGIÓN ORIENTAL", "depto": "MORAZAN", "dir": "Lotificación La Ceiba, lote #17, Km 220 Longitudinal, Distrito de Osicala, Mun. Morazán Sur", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.809711532458,-88.1534616465426", "waze": "https://www.waze.com/ul?ll=13.809711532458,-88.1534616465426&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 22, "nombre": "San Francisco Gotera", "tipo": "COT", "lat": 13.690654, "lng": -88.107947, "zona": "REGIÓN ORIENTAL", "depto": "MORAZAN", "dir": "Colonia Altos de San Francisco, Calle Conacaste, Distrito de San Francisco Gotera, Mun. Morazán Norte", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.6906544320987,-88.1079465401969", "waze": "https://www.waze.com/ul?ll=13.6906544320987,-88.1079465401969&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#4363d8"}, {"v": 4, "pkg": 1, "stops": [{"id": 23, "nombre": "San Miguel", "tipo": "COT", "lat": 13.486782, "lng": -88.191376, "zona": "REGIÓN ORIENTAL", "depto": "SAN MIGUEL", "dir": "Colonia Hilerman, Polígono 10, Distrito de San Miguel, Mun. San Miguel Centro", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.48678171,-88.19137585", "waze": "https://www.waze.com/ul?ll=13.48678171,-88.19137585&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#f58231"}, {"v": 5, "pkg": 2, "stops": [{"id": 19, "nombre": "Ciudad Barrios", "tipo": "COT", "lat": 13.7644372642892, "lng": -88.271857, "zona": "REGIÓN ORIENTAL", "depto": "SAN MIGUEL", "dir": "5TA CALLE PONIENTE #17, Distrito de Ciudad Barrios, Mun. San Miguel ", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.764437264289235, -88.2719399376361", "waze": "https://www.waze.com/ul?ll=13.764437264289235, -88.2719399376361&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 27, "nombre": "Ciudad Barrios", "tipo": "DOE", "lat": 13.765493, "lng": -88.269623, "zona": "Oriente", "depto": "San Miguel", "dir": "Barrio Roma, Calle 21 de Abril y 6ta Av. Norte, Distrito de Ciudad Barrio, Municipio de San Miguel Norte, Departamento de San Miguel", "encargado": "GUSTAVO ALEXANDER VASQUEZ HERRERA", "contacto": "7568-5995", "gmaps": "https://maps.app.goo.gl/HxErWUtQhJKrtnAWA", "waze": "", "coord_cot": "Ciudad Barrios", "km_cot": 0.27}], "color": "#911eb4"}, {"v": 6, "pkg": 2, "stops": [{"id": 17, "nombre": "Usulután", "tipo": "COT", "lat": 13.347597, "lng": -88.439411, "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "USULUTAN", "dir": "8ª Calle Oriente, #3, Distrito de Usulután, Mun. Usulután Este", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.3475971038004,-88.4394112535886", "waze": "https://www.waze.com/ul?ll=13.3475971038004,-88.4394112535886&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 14, "nombre": "El Tránsito", "tipo": "COT", "lat": 13.35746, "lng": -88.346127, "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "SAN MIGUEL", "dir": "8ª Calle Oriente y 2ª Av. Sur, #19, Barrio San Carlos, Distrito de El Tránsito, Mun. San Miguel Oeste", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.35745952,-88.34612653", "waze": "https://www.waze.com/ul?ll=13.35745952,-88.34612653&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#42d4f4"}, {"v": 7, "pkg": 3, "stops": [{"id": 16, "nombre": "San Vicente", "tipo": "COT", "lat": 13.641139, "lng": -88.785621, "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "SAN VICENTE", "dir": "Av. Crescencio Miranda, casa #33, San Vicente", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.6411390903089,-88.7856208223411", "waze": "https://www.waze.com/ul?ll=13.6411390903089,-88.7856208223411&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 15, "nombre": "Mercedes Umaña", "tipo": "COT", "lat": 13.56096, "lng": -88.487601, "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "USULUTAN", "dir": "2ª Calle Oriente, Barrio Concepción, frente al C.E. \"Barrio Concepción\", Distrito de Mercedes Umaña, Mun. Usulután Norte", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.5609599501363,-88.4876007083657", "waze": "https://www.waze.com/ul?ll=13.5609599501363,-88.4876007083657&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 28, "nombre": "Mercedes Umaña", "tipo": "DOE", "lat": 13.561042, "lng": -88.487437, "zona": "Oriente", "depto": "Usulután", "dir": "BARRIO CONCEPCION, CALLE SEGUNDA PONIENTE, NUMERO S/N, MERCEDES UMAÑA, USULUTÁN NORTE, USULUTÁN", "encargado": "ESTEFANY GABRIELA ORTIZ VARGAS", "contacto": "7114-4531", "gmaps": "https://maps.app.goo.gl/upJEzp6XP6P9iGcq7", "waze": "", "coord_cot": "Mercedes Umaña", "km_cot": 0.02}], "color": "#f032e6"}, {"v": 8, "pkg": 2, "stops": [{"id": 3, "nombre": "Santa Ana", "tipo": "COT", "lat": 13.997026, "lng": -89.55736, "zona": "REGIÓN OCCIDENTAL", "depto": "SANTA ANA", "dir": "2ª Av. Norte, entre 8ª y 6ª calle poniente, casa #17, Santa Ana Centro", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.997026099,-89.557360343", "waze": "https://www.waze.com/ul?ll=13.997026099,-89.557360343&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 2, "nombre": "Metapán", "tipo": "COT", "lat": 14.333436, "lng": -89.447889, "zona": "REGIÓN OCCIDENTAL", "depto": "SANTA ANA", "dir": "Av. Benjamín Estrada Valiente Norte, casa #14, Barrio el Calvario, a media cuadra del ISSS y parque central, distrito de Metapán", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=14.3334355,-89.4478887", "waze": "https://www.waze.com/ul?ll=14.3334355,-89.4478887&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#469990"}, {"v": 9, "pkg": 1, "stops": [{"id": 1, "nombre": "Ahuachapán", "tipo": "COT", "lat": 13.940932, "lng": -89.854683, "zona": "REGIÓN OCCIDENTAL", "depto": "AHUACHAPAN", "dir": "Carretera a Las Chinamas, Com. Llano de La Laguna, calle vecinal atras de gasolinera UNO Los Reyes.", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.940932, -89.854683", "waze": "https://www.waze.com/ul?ll=13.940932, -89.854683&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#9A6324"}, {"v": 10, "pkg": 3, "stops": [{"id": 6, "nombre": "Cojutepeque", "tipo": "COT", "lat": 13.726329, "lng": -88.959769, "zona": "REGIÓN NORTE – CENTRAL", "depto": "COJUTEPEQUE", "dir": "Calle Antiguo a San Salvador, Lotificación San Antonio, casa #75, Distrito de Cojutepeque, Mun. Cuscatlán Sur", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.7263288863649,-88.9597689617976", "waze": "https://www.waze.com/ul?ll=13.7263288863649,-88.9597689617976&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 5, "nombre": "Chalatenango", "tipo": "COT", "lat": 14.034156, "lng": -88.935856, "zona": "REGIÓN NORTE – CENTRAL", "depto": "CHALATENANGO", "dir": "Barrio la Sierpe, Calle Principal, 300 m al sur de la Cruz Roja, Distrito y Mun. Chalatenango Sur", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=14.0341559,-88.9358555", "waze": "https://www.waze.com/ul?ll=14.0341559,-88.9358555&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 7, "nombre": "Sensuntepeque", "tipo": "COT", "lat": 13.865058, "lng": -88.627589, "zona": "REGIÓN NORTE – CENTRAL", "depto": "CABAÑAS", "dir": "Final 2ª Av. Sur, Barrio Santa Bárbara, Distrito Sensuntepeque, Mun. Cabañas Este", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.8650577746571,-88.6275891671439", "waze": "https://www.waze.com/ul?ll=13.8650577746571,-88.6275891671439&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#800000"}, {"v": 11, "pkg": 2, "stops": [{"id": 4, "nombre": "Sonsonate", "tipo": "COT", "lat": 13.717793, "lng": -89.73023, "zona": "REGIÓN OCCIDENTAL", "depto": "SONSONATE", "dir": "8ª Calle Poniente, #1-15, Lotificación Landovar, distrito de Sonsonate, Mun. Sonsonate Centro", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.7177925856196,-89.7302298593104", "waze": "https://www.waze.com/ul?ll=13.7177925856196,-89.7302298593104&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 0, "nombre": "Acajutla", "tipo": "COT", "lat": 13.587723401905, "lng": -89.8327458416276, "zona": "REGIÓN OCCIDENTAL", "depto": "SONSONATE", "dir": "Calle Rasa y Pasaje Bolaños, Distrito de Acajutla, costado norte del Liceo de Acajutla, Mun. Sonsonate Oeste, Dpto. Sonsonate", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.58772340190501, -89.83274584162768", "waze": "https://www.waze.com/ul?ll=13.58772340190501, -89.83274584162768&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#808000"}, {"v": 12, "pkg": 2, "stops": [{"id": 26, "nombre": "Tejutla", "tipo": "DOE", "lat": 14.106337, "lng": -89.157456, "zona": "Centro", "depto": "Chalatenango", "dir": "LOTIFICACIÓN SARITA LOTE 1 Y 2 POLIGONO \"C\" CASERIO AMAYO, TEJUTLA", "encargado": "IRMA YOLANDA GUARDADO ALVARENGA", "contacto": "7633-5310", "gmaps": "https://maps.app.goo.gl/fGvXuDu55dbQ2nJF6", "waze": "", "coord_cot": "Tejutla", "km_cot": 9.29}, {"id": 8, "nombre": "Tejutla", "tipo": "COT", "lat": 14.170878, "lng": -89.102793, "zona": "REGIÓN NORTE – CENTRAL", "depto": "CHALATENANGO", "dir": "Barrio el Calvario #1-5, sobre calle Fernando García, Distrito Tejutla, Mun. Chalatenango Centro", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=14.17087776,-89.1027933", "waze": "https://www.waze.com/ul?ll=14.17087776,-89.1027933&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#000075"}, {"v": 13, "pkg": 3, "stops": [{"id": 31, "nombre": "Olocuilta", "tipo": "DOE", "lat": 13.56673, "lng": -89.11757, "zona": "Paracentral", "depto": "La Paz", "dir": " Barrio El Calvario, calle doctor Demetrio Hernández #26, distrito de Olocuilta, Municipio de La Paz Oeste, departamento de La Paz", "encargado": "MICHELL ESTEFANY CORNEJO MONGE", "contacto": "76610349", "gmaps": "https://maps.app.goo.gl/bcFujqkrPDjXNag97", "waze": "", "coord_cot": "Olocuilta", "km_cot": 0.26}, {"id": 10, "nombre": "Olocuilta", "tipo": "COT", "lat": 13.565239, "lng": -89.115673, "zona": "REGIÓN METROPOLITANA", "depto": "LA PAZ", "dir": "Barrio el Carmen, Calle Vía Tejera, Olocuilta, La Paz", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.56523904,-89.11567317", "waze": "https://www.waze.com/ul?ll=13.56523904,-89.11567317&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 18, "nombre": "Zacatecoluca", "tipo": "COT", "lat": 13.509926, "lng": -88.871388, "zona": "REGIÓN PARACENTRAL – ORIENTAL", "depto": "LA PAZ", "dir": "6ª Calle Poniente, #6 A, Barrio el Calvario, El Centro, Distrito de Zacatecoluca, Mun. La Paz Este", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.5099257880296,-88.8713877431147", "waze": "https://www.waze.com/ul?ll=13.5099257880296,-88.8713877431147&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#2ca02c"}, {"v": 14, "pkg": 3, "stops": [{"id": 12, "nombre": "Santa Tecla", "tipo": "COT", "lat": 13.690958, "lng": -89.292192, "zona": "REGIÓN METROPOLITANA", "depto": "LA LIBERTAD", "dir": "Residencial Casa Verde #1, Blvd. del Hipódromo, casa 12-C, Distrito Santa Tecla, Mun. La Libertad Sur", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.69095803,-89.29219172", "waze": "https://www.waze.com/ul?ll=13.69095803,-89.29219172&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 25, "nombre": "Colón", "tipo": "DOE", "lat": 13.721364, "lng": -89.368914, "zona": "Centro", "depto": "La Libertad", "dir": "COLONIA EL PROGRESO, CALLE 5 DE NOVIEMBRE PASAJE SAN FRANCISCO, CANTÓN LOURDES, COLÓN, LA LIBERTAD OESTE", "encargado": "NURIA ARACELY MARTINEZ DE NUILA", "contacto": "6928-8614", "gmaps": "https://maps.app.goo.gl/KeNG8pkME4VTp3oZ9", "waze": "", "coord_cot": "Colón", "km_cot": 0.5}, {"id": 9, "nombre": "Colón", "tipo": "COT", "lat": 13.725852, "lng": -89.369308, "zona": "REGIÓN METROPOLITANA", "depto": "LA LIBERTAD", "dir": "Av. Maximiliano Hernández Martínez, No. 1-6, Cantón Lourdes, Distrito de Colón, Mun. La Libertad Oeste", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.72585236,-89.36930791", "waze": "https://www.waze.com/ul?ll=13.72585236,-89.36930791&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#ff7f0e"}, {"v": 15, "pkg": 2, "stops": [{"id": 11, "nombre": "San Salvador", "tipo": "COT", "lat": 13.7049646897018, "lng": -89.2410233923764, "zona": "REGIÓN METROPOLITANA", "depto": "SAN SALVADOR", "dir": "87 Avenida norte y 3a calle poniente, CONDOMINIO ESCALON 87, numero 32, Distrito y Mun. San Salvador Centro", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.704964689701885, -89.2410233923764", "waze": "https://www.waze.com/ul?ll=13.704964689701885, -89.2410233923764&navigate=yes", "coord_cot": "", "km_cot": null}, {"id": 13, "nombre": "Soyapango", "tipo": "COT", "lat": 13.699971, "lng": -89.137194, "zona": "REGIÓN METROPOLITANA", "depto": "SAN SALVADOR", "dir": "Carretera Panamericana, #6, Reparto Morazán, a 600 m del plantel de Fábrica DIANA, Distrito de Soyapango, Mun. San Salvador Este", "encargado": "", "contacto": "", "gmaps": "https://www.google.com/maps?q=13.69997062,-89.13719395", "waze": "https://www.waze.com/ul?ll=13.69997062,-89.13719395&navigate=yes", "coord_cot": "", "km_cot": null}], "color": "#bcbd22"}, {"v": 16, "pkg": 1, "stops": [{"id": 32, "nombre": "DOE Central", "tipo": "DOE", "lat": 13.651054, "lng": -89.171321, "zona": "Centro", "depto": "San Salvador", "dir": "KILOMETRO 12 1/2 CARRETERA COMALAPA HACIA EL AEROPUERTO, SAN MARCOS , SAN SALVADOR SUR ", "encargado": "RODOLFO ANDRES SALAZAR CERON", "contacto": "7902 5320", "gmaps": "https://maps.app.goo.gl/k4wPUiLH89fCs99V7", "waze": "", "coord_cot": "Soyapango", "km_cot": 6.57}], "color": "#17becf"}], META={"vehiculos": 16, "paquetes": 33, "sedes": 33, "cot": 25, "doe": 8, "cap": 3, "vel_kmh": 34, "factor": 1.4, "servicio_min": 20};
+const VEL=META.vel_kmh, FACTOR=META.factor, SERV=META.servicio_min, CUPO=8, TRAF=1.3;
+let sel=null;
 const map=L.map("map",{zoomControl:false,preferCanvas:true}).setView([13.8,-88.9],8);
 L.control.zoom({position:"topright"}).addTo(map);
 const gcal=L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}",{subdomains:["mt0","mt1","mt2","mt3"],maxZoom:20,attribution:"Google"}).addTo(map);
 const ghib=L.tileLayer("https://{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}",{subdomains:["mt0","mt1","mt2","mt3"],maxZoom:20,attribution:"Google"});
-function baseSel(l,b){[gcal,ghib].forEach(x=>{if(x!==l&&map.hasLayer(x))map.removeLayer(x);});if(!map.hasLayer(l))l.addTo(map);
-  ["tgCal","tgHib"].forEach(id=>document.getElementById(id).classList.remove("on"));document.getElementById(b).classList.add("on");}
-document.getElementById("tgCal").onclick=()=>baseSel(gcal,"tgCal");
-document.getElementById("tgHib").onclick=()=>baseSel(ghib,"tgHib");
+function baseSel(l,b){[gcal,ghib].forEach(x=>{if(x!==l&&map.hasLayer(x))map.removeLayer(x);});if(!map.hasLayer(l))l.addTo(map);["tgCal","tgHib"].forEach(id=>document.getElementById(id).classList.remove("on"));document.getElementById(b).classList.add("on");}
+document.getElementById("tgCal").onclick=()=>baseSel(gcal,"tgCal");document.getElementById("tgHib").onclick=()=>baseSel(ghib,"tgHib");
 const gRut=L.layerGroup().addTo(map), gPts=L.layerGroup().addTo(map), gSel=L.layerGroup().addTo(map);
 L.marker([CNPRE.lat,CNPRE.lng],{icon:L.divIcon({className:"",html:`<div style="display:flex;flex-direction:column;align-items:center"><svg width="30" height="30" viewBox="0 0 24 24"><path fill="#0d2a66" stroke="#fff" stroke-width="1.5" d="M12 2l2.6 6.3L21 9l-5 4.6L17.6 21 12 17.3 6.4 21 8 13.6 3 9l6.4-.7z"/></svg><span style="font-size:10px;font-weight:800;color:#fff;background:#0d2a66;padding:0 5px;border-radius:4px">CNPRE</span></div>`,iconSize:[30,42],iconAnchor:[15,15]})}).addTo(map);
+function hav(a,b){const R=6371,r=Math.PI/180,dla=(b[0]-a[0])*r,dlo=(b[1]-a[1])*r;const x=Math.sin(dla/2)**2+Math.cos(a[0]*r)*Math.cos(b[0]*r)*Math.sin(dlo/2)**2;return 2*R*Math.asin(Math.sqrt(Math.min(1,x)));}
 function hm(min){const h=Math.floor(min/60),m=Math.round(min%60);return String(h%24).padStart(2,"0")+":"+String(m).padStart(2,"0");}
 function durtxt(min){const h=Math.floor(min/60),m=Math.round(min%60);return (h?h+"h ":"")+m+"m";}
-function col(s){return s.tipo==="DOE"?"#f59e0b":"#4f46e5";}
-async function routeOne(s){
+async function routeOne(R){
+  const coords=[[CNPRE.lng,CNPRE.lat],...R.stops.map(s=>[s.lng,s.lat]),[CNPRE.lng,CNPRE.lat]];
   try{
-    const u=`https://router.project-osrm.org/route/v1/driving/${CNPRE.lng},${CNPRE.lat};${s.lng},${s.lat}?overview=full&geometries=geojson`;
-    const r=await fetch(u); const j=await r.json();
+    const u=`https://router.project-osrm.org/route/v1/driving/${coords.map(c=>c.join(",")).join(";")}?overview=full&geometries=geojson`;
+    const j=await (await fetch(u)).json();
     if(j.code==="Ok"&&j.routes&&j.routes[0]){const rt=j.routes[0];
-      s.km=+(rt.distance/1000).toFixed(1); s.min=+(rt.duration/60).toFixed(1);
-      s.geo=rt.geometry.coordinates.map(c=>[c[1],c[0]]); s.real=true; return;}
+      R.km=+(rt.distance/1000).toFixed(1); R.travel=+(rt.duration/60*TRAF).toFixed(1);
+      R.geo=rt.geometry.coordinates.map(c=>[c[1],c[0]]);
+      let acc=0; R.arr=[]; for(let i=0;i<R.stops.length;i++){acc+=rt.legs[i].duration/60*TRAF; R.arr.push(+(acc+SERV*i).toFixed(1));}
+      R.real=true; R.tot=+(R.travel+SERV*R.stops.length).toFixed(1); return;}
   }catch(e){}
-  s.km=+(s.km_recta*1.35).toFixed(1); s.min=+(s.km_recta/VEL*FACTOR*60).toFixed(1);
-  s.geo=[[CNPRE.lat,CNPRE.lng],[s.lat,s.lng]]; s.real=false;
+  let km=0,acc=0,cur=[CNPRE.lat,CNPRE.lng]; R.geo=[cur.slice()]; R.arr=[];
+  R.stops.forEach((s,i)=>{const dk=hav(cur,[s.lat,s.lng])*1.35;km+=dk;acc+=dk/VEL*FACTOR*60*TRAF;R.arr.push(+(acc+SERV*i).toFixed(1));cur=[s.lat,s.lng];R.geo.push(cur.slice());});
+  const dret=hav(cur,[CNPRE.lat,CNPRE.lng])*1.35; km+=dret; acc+=dret/VEL*FACTOR*60*TRAF; R.geo.push([CNPRE.lat,CNPRE.lng]);
+  R.km=+km.toFixed(1); R.travel=+acc.toFixed(1); R.tot=+(acc+SERV*R.stops.length).toFixed(1); R.real=false;
 }
 async function routeAll(){
-  let i=0,done=0;const N=SEDES.length;
-  async function w(){while(i<N){const k=i++;await routeOne(SEDES[k]);done++;document.getElementById("prog").textContent=`Calculando rutas… ${done}/${N}`;render(false);}}
+  let i=0,done=0;const N=RUTAS.length;
+  async function w(){while(i<N){const k=i++;await routeOne(RUTAS[k]);done++;document.getElementById("prog").textContent=`Calculando rutas… ${done}/${N}`;drawAll();}}
   await Promise.all([w(),w(),w(),w(),w()]);
-  document.getElementById("prog").style.display="none"; render(true);
+  document.getElementById("prog").style.display="none"; drawAll(true); kpis(); listRutas();
 }
-function pasa(s){
-  if(s.tipo==="COT"&&!document.getElementById("fcot").checked)return false;
-  if(s.tipo==="DOE"&&!document.getElementById("fdoe").checked)return false;
-  const q=document.getElementById("fq").value.trim().toUpperCase();
-  if(q&&!(s.nombre.toUpperCase().includes(q)||(s.depto||"").toUpperCase().includes(q)))return false;
-  return true;
-}
-function visV(){return SEDES.map((s,i)=>({s,i})).filter(o=>pasa(o.s));}
-function render(fit){
-  const start=(()=>{const [h,m]=document.getElementById("inHora").value.split(":").map(Number);return (h||0)*60+(m||0);})();
-  const V=visV(); gRut.clearLayers(); gPts.clearLayers();
-  const pts=[[CNPRE.lat,CNPRE.lng]];
-  V.forEach(({s,i})=>{ const geo=s.geo||[[CNPRE.lat,CNPRE.lng],[s.lat,s.lng]]; const ok=!!s.geo;
-    L.polyline(geo,{color:ok?col(s):"#9aa0a6",weight:ok?(s.tipo==="DOE"?3:3.8):2,opacity:ok?.8:.55,dashArray:ok?(s.real?null:"7 5"):"4 7"}).addTo(gRut);
+function mColor(s,R){return R.color;}
+function drawAll(fit){
+  gRut.clearLayers(); gPts.clearLayers(); const pts=[[CNPRE.lat,CNPRE.lng]];
+  RUTAS.forEach(R=>{ const geo=R.geo||[[CNPRE.lat,CNPRE.lng],...R.stops.map(s=>[s.lat,s.lng])]; const ok=!!R.geo;
+    L.polyline(geo,{color:ok?R.color:"#9aa0a6",weight:ok?4:2,opacity:ok?.78:.5,dashArray:ok?(R.real?null:"7 5"):"4 7"}).addTo(gRut);
     geo.forEach(p=>pts.push(p));
-    const m=L.circleMarker([s.lat,s.lng],{radius:i===selIdx?13:(s.tipo==="DOE"?8:10),color:"#fff",weight:2,fillColor:col(s),fillOpacity:.96});
-    m.on("click",()=>select(i)); m.bindTooltip(s.nombre); gPts.addLayer(m); });
-  kpis(V,start); lista(V,start); grpcard(); rank(V);
-  document.getElementById("rt").textContent=`${V.length} sedes · salida ${hm(start)}`;
+    R.stops.forEach((s,idx)=>{ const m=L.circleMarker([s.lat,s.lng],{radius:s.tipo==="DOE"?7:9,color:s.tipo==="DOE"?"#f59e0b":"#fff",weight:s.tipo==="DOE"?3:2,fillColor:R.color,fillOpacity:.96});
+      m.on("click",()=>selectRuta(R.v)); m.bindTooltip(`V${R.v} · ${s.nombre}`); gPts.addLayer(m); }); });
   if(fit&&pts.length)map.fitBounds(pts,{padding:[40,40]});
 }
-function kpis(V,start){
-  const cot=V.filter(o=>o.s.tipo==="COT").length, doe=V.filter(o=>o.s.tipo==="DOE").length;
-  const kms=V.map(o=>o.s.km).filter(x=>x!=null), mins=V.map(o=>o.s.min).filter(x=>x!=null);
-  const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0;
-  const pers=CUPO*(V.length+1);
+function start(){const [h,m]=document.getElementById("inHora").value.split(":").map(Number);return (h||0)*60+(m||0);}
+function kpis(){
+  const kms=RUTAS.map(R=>R.km).filter(x=>x!=null), tot=RUTAS.map(R=>R.tot).filter(x=>x!=null);
+  const avg=a=>a.length?a.reduce((s,x)=>s+x,0)/a.length:0, mx=a=>a.length?Math.max(...a):0;
   document.getElementById("kpis").innerHTML=
-   [["Sedes",V.length],["COT",cot],["DOE",doe],
-    ["Dist. prom",kms.length?avg(kms).toFixed(1)+" km":"…"],
-    ["Tiempo prom",mins.length?durtxt(avg(mins)):"…"],
-    ["Personal",pers]]
+   [["Vehículos",META.vehiculos],["Paquetes",META.paquetes],["Sedes",META.sedes],
+    ["Dist. prom",kms.length?avg(kms).toFixed(0)+" km":"…"],
+    ["Tiempo prom",tot.length?durtxt(avg(tot)):"…"],
+    ["Tiempo máx",tot.length?durtxt(mx(tot)):"…"]]
    .map(([l,v])=>`<div class="kpi"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
 }
-function lista(V,start){
+function listRutas(){
+  const q=document.getElementById("fq").value.trim().toUpperCase();
+  const V=RUTAS.filter(R=>!q||("V"+R.v).includes(q)||R.stops.some(s=>s.nombre.toUpperCase().includes(q)));
   document.getElementById("cnt").textContent=`(${V.length})`;
-  const L2=V.slice().sort((a,b)=>(a.s.min||1e9)-(b.s.min||1e9));
-  document.getElementById("lista").innerHTML=L2.map(({s,i})=>`<div class="cen ${i===selIdx?'sel':''}" data-i="${i}">
-    <span class="sw" style="background:${col(s)}"></span>
-    <div><div class="t">${s.nombre}</div><div class="s">${s.tipo}${s.zona?' · '+s.zona:''} · ${s.depto||''} · 8 pers.</div></div>
-    <div class="km">${s.km!=null?s.km+' km':'…'}<small>${s.min!=null?durtxt(s.min)+' · '+hm(start+s.min):''}</small></div></div>`).join("");
-  document.querySelectorAll("#lista .cen").forEach(el=>el.onclick=()=>select(+el.dataset.i));
+  const st=start();
+  document.getElementById("rutas").innerHTML=V.map(R=>`<div class="rt ${R.v===sel?'sel':''}" data-v="${R.v}">
+    <div class="hd"><div class="vb" style="background:${R.color}">V${R.v}</div>
+      <div><div class="nm">${R.stops.map(s=>s.nombre+(s.tipo==="DOE"?" ·DOE":"")).join(" → ")}</div>
+        <div class="sub">${R.pkg} paquete(s)<span class="pk">${R.stops.length} parada(s)</span></div></div>
+      <div class="mt">${R.km!=null?R.km+" km":"…"}<small>${R.tot!=null?durtxt(R.tot):""}</small></div></div></div>`).join("");
+  document.querySelectorAll("#rutas .rt").forEach(el=>el.onclick=()=>selectRuta(+el.dataset.v));
 }
-function grpcard(){
-  const g={}; SEDES.forEach(s=>{if(s.tipo==="DOE"){(g[s.coord_cot]=g[s.coord_cot]||[]).push(s);}});
-  const keys=Object.keys(g).sort();
-  const h=keys.map(k=>`<div class="grp"><div class="h"><span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--cot);margin-right:6px"></span>${k} <span style="color:var(--mut);font-weight:500">coordina ${g[k].length}</span></div>`+
-    g[k].map(s=>`<div class="ch2">↳ <span style="color:var(--doe);font-weight:600">${s.nombre}</span> · ${s.km_cot} km · 8 pers.</div>`).join("")+`</div>`).join("");
-  document.getElementById("grp").innerHTML=`<div class="card"><div class="ch">Envío de personal <span class="mut">${keys.length} COT → 8 DOE</span></div>${h}<div style="padding:8px 14px 11px;font-size:10px;color:var(--mut)">Cada sede DOE la cubre la sede COT más cercana.</div></div>`;
-}
-function rank(V){
-  const R=V.slice().filter(o=>o.s.min!=null).sort((a,b)=>b.s.min-a.s.min);
-  const mx=Math.max(1,...R.map(o=>o.s.min));
-  document.getElementById("rank").innerHTML=`<div class="card"><div class="ch">Tiempo desde CNPRE <span class="mut">${R.length} rutas</span></div><div style="padding:6px 0 10px">`+
-   R.map(o=>`<div class="deprow"><div class="nm" title="${o.s.nombre}">${o.s.nombre}</div><div class="tk"><i style="width:${Math.round(o.s.min/mx*100)}%;background:${col(o.s)}"></i></div><div class="vv">${durtxt(o.s.min)}</div></div>`).join("")+
-   `</div><div style="padding:0 15px 12px;font-size:10px;color:var(--mut)">Punteado = ruta estimada (OSRM no respondió). 8 personas por sede, incluido CNPRE.</div></div>`;
-}
-function select(i){
-  selIdx=i; const s=SEDES[i];
-  const start=(()=>{const [h,m]=document.getElementById("inHora").value.split(":").map(Number);return (h||0)*60+(m||0);})();
+function selectRuta(v){
+  sel=v; const R=RUTAS.find(x=>x.v===v); const st=start();
   gSel.clearLayers();
-  if(s.geo)L.polyline(s.geo,{color:col(s),weight:6,opacity:.95}).addTo(gSel);
-  L.circleMarker([s.lat,s.lng],{radius:12,color:"#1033ff",weight:3,fillColor:col(s),fillOpacity:1}).addTo(gSel);
-  map.fitBounds(s.geo||[[s.lat,s.lng]],{padding:[60,60]});
+  if(R.geo)L.polyline(R.geo,{color:R.color,weight:6,opacity:.95}).addTo(gSel);
+  R.stops.forEach((s,i)=>L.marker([s.lat,s.lng],{icon:L.divIcon({className:"",html:`<div style="background:${R.color};color:#fff;width:20px;height:20px;border-radius:50%;border:2px solid #fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 1px #888">${i+1}</div>`,iconSize:[20,20],iconAnchor:[10,10]})}).addTo(gSel));
+  map.fitBounds(R.geo||R.stops.map(s=>[s.lat,s.lng]),{padding:[60,60]});
   const fi=document.getElementById("ficha");
-  fi.innerHTML=`<div class="in"><h2>${s.nombre}</h2>
-    <div class="tags"><span class="tag" style="background:${col(s)}">${s.tipo==="DOE"?"Sede DOE (secundaria)":"Sede COT"}</span>${s.real===false?'<span class="tag" style="background:#9aa0a6">ruta estimada</span>':''}</div>
-    <div class="row2"><div class="box"><div class="b">${s.km!=null?s.km+' km':'…'}</div><div class="k">Distancia</div></div>
-      <div class="box"><div class="b">${s.min!=null?durtxt(s.min):'…'}</div><div class="k">Tiempo</div></div></div>
-    <div class="row2"><div class="box"><div class="b">${hm(start)}</div><div class="k">Salida CNPRE</div></div>
-      <div class="box"><div class="b">${s.min!=null?hm(start+s.min):'…'}</div><div class="k">Llegada estimada</div></div></div>
-    <div class="meta">${s.depto||''}${s.zona?' · '+s.zona:''} · 1 vehículo · <b>8 personas</b></div>
-    ${s.tipo==="DOE"?`<div class="dir" style="background:#fff4ce">Coordina: <b>${s.coord_cot}</b> (COT más cercana · ${s.km_cot} km)</div>`:''}
-    ${s.dir?`<div class="dir">📍 ${s.dir}</div>`:''}
-    ${s.encargado?`<div class="meta"><b>Encargado:</b> ${s.encargado}${s.contacto?' · ☎ '+s.contacto:''}</div>`:''}
-    <div>${s.gmaps?`<a class="lk" target="_blank" href="${s.gmaps}">Google Maps</a>`:''}${s.waze?`<a class="lk wz" target="_blank" href="${s.waze}">Waze</a>`:''}
-      <a class="lk rt" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=${CNPRE.lat},${CNPRE.lng}&destination=${s.lat},${s.lng}&travelmode=driving">Ruta en Maps</a></div></div>`;
+  fi.innerHTML=`<div class="in"><h2><span style="display:inline-block;width:18px;height:18px;border-radius:5px;background:${R.color};vertical-align:middle;margin-right:6px"></span>Vehículo ${R.v}</h2>
+    <div class="row3"><div class="box"><div class="b">${R.pkg}</div><div class="k">Paquetes</div></div>
+      <div class="box"><div class="b">${R.km!=null?R.km+"":"…"}</div><div class="k">Km${R.real===false?" (est)":""}</div></div>
+      <div class="box"><div class="b">${R.tot!=null?durtxt(R.tot):"…"}</div><div class="k">Duración</div></div></div>
+    <div style="font-size:11px;color:var(--mut);margin-bottom:4px">Salida CNPRE ${hm(st)} · fin ${R.tot!=null?hm(st+R.tot):"…"} · 1 vehículo · ${CUPO} pers/sede</div>
+    <div class="stop"><span class="n" style="background:#0d2a66">0</span><div><div class="t">CNPRE (salida)</div><div class="s">origen</div></div><div class="ll">${hm(st)}</div></div>
+    ${R.stops.map((s,i)=>`<div class="stop"><span class="n" style="background:${R.color}">${i+1}</span>
+      <div><div class="t">${s.nombre}${s.tipo==="DOE"?' <span style="color:#f59e0b;font-weight:700">· DOE</span>':''}</div>
+        <div class="s">${s.depto||''}${s.zona?' · '+s.zona:''}${s.tipo==="DOE"&&s.coord_cot?' · coord: '+s.coord_cot:''}${s.encargado?' · '+s.encargado+(s.contacto?' ('+s.contacto+')':''):''}</div></div>
+      <div class="ll">${R.arr?hm(st+R.arr[i]):'…'}<small>llegada</small></div></div>`).join("")}
+    <div class="stop"><span class="n" style="background:#0d2a66">↩</span><div><div class="t">CNPRE (regreso)</div><div class="s">retorno · descarga 20 min/sede</div></div><div class="ll">${R.tot!=null?hm(st+R.tot):'…'}<small>fin</small></div></div>
+    <div style="margin-top:8px"><a class="lk rt2" target="_blank" href="https://www.google.com/maps/dir/?api=1&origin=${CNPRE.lat},${CNPRE.lng}&destination=${CNPRE.lat},${CNPRE.lng}&waypoints=${R.stops.map(s=>s.lat+","+s.lng).join("|")}&travelmode=driving">Abrir ruta en Google Maps</a></div></div>`;
   document.getElementById("detempty").style.display="none"; fi.style.display="block";
-  render(false); document.getElementById("right").scrollTop=0;
+  listRutas(); document.getElementById("right").scrollTop=0;
 }
-document.getElementById("ncot").textContent=SEDES.filter(s=>s.tipo==="COT").length;
-document.getElementById("ndoe").textContent=SEDES.filter(s=>s.tipo==="DOE").length;
-["fcot","fdoe","fq"].forEach(id=>document.getElementById(id).addEventListener("input",()=>render(false)));
-document.getElementById("inHora").addEventListener("input",()=>{if(selIdx!=null){select(selIdx);}else render(false);});
-render(true); routeAll();
+document.getElementById("fq").addEventListener("input",listRutas);
+document.getElementById("inHora").addEventListener("input",()=>{listRutas();if(sel!=null)selectRuta(sel);document.getElementById("rtlbl").textContent=`${META.vehiculos} vehículos · ${META.paquetes} paquetes · salida ${hm(start())}`;});
+document.getElementById("rtlbl").textContent=`${META.vehiculos} vehículos · ${META.paquetes} paquetes · salida ${hm(start())}`;
+drawAll(true); kpis(); listRutas(); routeAll();
 </script></body></html>
