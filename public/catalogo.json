@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-05T11:10:01-06:00",
+ "generado": "2026-11-08T17:17:27-06:00",
  "dominio": "https://dashboard-datos.web.app",
  "colores": {
   "Logística y simulacros": "#0e7490",
@@ -24,6 +24,49 @@
   }
  ],
  "informes": [
+  {
+   "ruta": "atlas_historico_participacion.html",
+   "slug": "atlas_historico_participacion",
+   "archivo": "atlas_historico_participacion.html",
+   "carpeta": "",
+   "titulo": "Atlas Histórico de Participación y Apoyo Partidario 2014–2024 · NI",
+   "descripcion": "Hallazgos calculados automáticamente para el territorio seleccionado",
+   "secciones": [
+    "Lo que hay que saber i",
+    "Línea de tiempo electoral i",
+    "El río de votos i",
+    "Ganadores y perdedores i",
+    "ADN electoral i"
+   ],
+   "categoria": "Análisis electoral",
+   "categorias_sec": [],
+   "tipo": "Mapa",
+   "territorio": [],
+   "anios": [
+    "2014",
+    "2024"
+   ],
+   "tecnologia": [
+    "Leaflet",
+    "Chart.js"
+   ],
+   "tags": [
+    "Participación"
+   ],
+   "creado": "2026-11-08T17:16:22-06:00",
+   "actualizado": "2026-11-08T17:16:22-06:00",
+   "fecha_datos": null,
+   "origen_fecha": "git",
+   "commits": 1,
+   "bytes": 1745200,
+   "palabras": 755,
+   "interactivo": 18,
+   "estado": "vigente",
+   "nota": "",
+   "hash": "415e8545adf971954b7bf5d2f4610e92c6c4690b",
+   "miniatura": "_miniaturas/atlas_historico_participacion.jpg?v=415e8545",
+   "duplicados": []
+  },
   {
    "ruta": "simulacro_v4_sedes_rutas.html",
    "slug": "simulacro_v4_sedes_rutas",
@@ -50,10 +93,10 @@
     "Ruta"
    ],
    "creado": "2026-11-05T08:58:13-06:00",
-   "actualizado": "2026-11-05T08:58:13-06:00",
+   "actualizado": "2026-11-05T11:10:08-06:00",
    "fecha_datos": null,
    "origen_fecha": "git",
-   "commits": 1,
+   "commits": 2,
    "bytes": 33206,
    "palabras": 83,
    "interactivo": 2,
@@ -182,8 +225,8 @@
    ],
    "tecnologia": [],
    "tags": [
-    "Transformer",
     "Laboratorio",
+    "Transformer",
     "Attention",
     "Catastro"
    ],
@@ -375,8 +418,8 @@
    ],
    "tags": [
     "Actividades",
-    "Cobertura",
-    "Electoral"
+    "Electoral",
+    "Cobertura"
    ],
    "creado": "2026-10-22T10:49:23-06:00",
    "actualizado": "2026-10-28T18:37:02-06:00",
@@ -707,8 +750,8 @@
    ],
    "tags": [
     "Material electoral",
-    "Cobertura",
     "Simulacro",
+    "Cobertura",
     "Reparto",
     "Ruta"
    ],
@@ -797,8 +840,8 @@
    ],
    "tags": [
     "Despacho",
-    "Ruta",
-    "Sede"
+    "Sede",
+    "Ruta"
    ],
    "creado": "2026-09-30T07:21:44-06:00",
    "actualizado": "2026-09-30T07:28:12-06:00",
@@ -884,8 +927,8 @@
    "tags": [
     "Centro de votación",
     "Transmisión",
-    "Ruta",
-    "Sede"
+    "Sede",
+    "Ruta"
    ],
    "creado": "2026-09-11T10:30:20-06:00",
    "actualizado": "2026-09-11T11:13:40-06:00",
@@ -1054,8 +1097,8 @@
     "Chart.js"
    ],
    "tags": [
-    "Asamblea",
     "Exterior",
+    "Asamblea",
     "D'Hondt",
     "Riesgo"
    ],
@@ -1220,8 +1263,8 @@
    ],
    "tags": [
     "Legislativa",
-    "Asamblea",
     "Conducta",
+    "Asamblea",
     "Voto"
    ],
    "creado": "2026-09-02T11:00:11-06:00",
