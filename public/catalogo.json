@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-08T17:17:27-06:00",
+ "generado": "2026-11-08T17:43:32-06:00",
  "dominio": "https://dashboard-datos.web.app",
  "colores": {
   "Logística y simulacros": "#0e7490",
@@ -54,17 +54,62 @@
     "Participación"
    ],
    "creado": "2026-11-08T17:16:22-06:00",
-   "actualizado": "2026-11-08T17:16:22-06:00",
+   "actualizado": "2026-11-08T17:28:26-06:00",
    "fecha_datos": null,
    "origen_fecha": "git",
-   "commits": 1,
-   "bytes": 1745200,
-   "palabras": 755,
+   "commits": 2,
+   "bytes": 1746373,
+   "palabras": 767,
    "interactivo": 18,
    "estado": "vigente",
    "nota": "",
-   "hash": "415e8545adf971954b7bf5d2f4610e92c6c4690b",
-   "miniatura": "_miniaturas/atlas_historico_participacion.jpg?v=415e8545",
+   "hash": "47f943c70eb3ede5fbbd30eb39de1bac187e4911",
+   "miniatura": "_miniaturas/atlas_historico_participacion.jpg?v=47f943c7",
+   "duplicados": []
+  },
+  {
+   "ruta": "atlas_participacion_sencillo_v1_2.html",
+   "slug": "atlas_participacion_sencillo_v1_2",
+   "archivo": "atlas_participacion_sencillo_v1_2.html",
+   "carpeta": "",
+   "titulo": "Participación electoral 2014–2024 · Versión sencilla 1.2 · NI",
+   "descripcion": "2 Lo más importante · 3 ¿Cuánta gente fue a votar en cada elección? · 4 ¿Quién ganó cada elección?",
+   "secciones": [
+    "2 Lo más importante",
+    "3 ¿Cuánta gente fue a votar en cada elección?",
+    "4 ¿Quién ganó cada elección?",
+    "5 El mapa por zonas",
+    "6 Zonas donde más gente dejó de votar en 2024",
+    "7 ¿Cómo leer estos datos?"
+   ],
+   "categoria": "Análisis electoral",
+   "categorias_sec": [],
+   "tipo": "Mapa",
+   "territorio": [],
+   "anios": [
+    "2014",
+    "2024"
+   ],
+   "tecnologia": [
+    "Leaflet",
+    "Chart.js"
+   ],
+   "tags": [
+    "Participación",
+    "Electoral"
+   ],
+   "creado": "2026-11-08T17:28:26-06:00",
+   "actualizado": "2026-11-08T17:28:26-06:00",
+   "fecha_datos": null,
+   "origen_fecha": "git",
+   "commits": 1,
+   "bytes": 1405079,
+   "palabras": 340,
+   "interactivo": 6,
+   "estado": "vigente",
+   "nota": "",
+   "hash": "ec8f15b8bcfa7f49ef6ccc2d9b310565b966165a",
+   "miniatura": "_miniaturas/atlas_participacion_sencillo_v1_2.jpg?v=ec8f15b8",
    "duplicados": []
   },
   {
@@ -89,8 +134,8 @@
    ],
    "tags": [
     "Simulacro",
-    "Sede",
-    "Ruta"
+    "Ruta",
+    "Sede"
    ],
    "creado": "2026-11-05T08:58:13-06:00",
    "actualizado": "2026-11-05T11:10:08-06:00",
@@ -225,8 +270,8 @@
    ],
    "tecnologia": [],
    "tags": [
-    "Laboratorio",
     "Transformer",
+    "Laboratorio",
     "Attention",
     "Catastro"
    ],
@@ -840,8 +885,8 @@
    ],
    "tags": [
     "Despacho",
-    "Sede",
-    "Ruta"
+    "Ruta",
+    "Sede"
    ],
    "creado": "2026-09-30T07:21:44-06:00",
    "actualizado": "2026-09-30T07:28:12-06:00",
@@ -1097,8 +1142,8 @@
     "Chart.js"
    ],
    "tags": [
-    "Exterior",
     "Asamblea",
+    "Exterior",
     "D'Hondt",
     "Riesgo"
    ],
