@@ -1010,7 +1010,7 @@ td.hc{font-weight:700;text-align:right}
       <div class="chartbox"><canvas id="cComp"></canvas></div></div>
   </div>
   <div class="card" style="margin-top:14px"><h3>Historial electoral del territorio<button class="info" data-i="t_hist" aria-label="Ver explicación">i</button></h3>
-    <div class="sub">Volatilidad = índice de Pedersen respecto a la elección anterior del mismo tipo (mitad de la suma de cambios absolutos en %).</div>
+    <div class="sub">Elecciones en orden cronológico (de la más antigua a la más reciente). Volatilidad = índice de Pedersen respecto a la elección anterior del mismo tipo (mitad de la suma de cambios absolutos en %).</div>
     <div class="scroll"><table id="tHist"></table></div></div>
 </section>
 
@@ -1167,6 +1167,13 @@ const TXTDARK=new Set(["NUEVAS IDEAS","CD","FUERZA SOLIDARIA","NUESTRO TIEMPO","
 const SHORT={PRES14A:"Pres 14 (1ª)",PRES14B:"Pres 14 (2ª)",ASAM15:"Asam 15",CONC15:"Conc 15",ASAM18:"Asam 18",CONC18:"Conc 18",
  PRES19:"Pres 19",ASAM21:"Asam 21",CONC21:"Conc 21",PARL21:"Parl 21",PRES24:"Pres 24",ASAM24:"Asam 24",CONC24:"Conc 24",PARL24:"Parl 24"};
 const TIPON={PRES:"Presidente",ASAM:"Asamblea",CONC:"Concejos",PARL:"PARLACEN"};
+// ---- orden cronológico estricto (fecha de la elección; mismo día: Presidente, Asamblea, Concejos, PARLACEN)
+const FECHA0={PRES14A:"2014-02-02",PRES14B:"2014-03-09",ASAM15:"2015-03-01",CONC15:"2015-03-01",ASAM18:"2018-03-04",CONC18:"2018-03-04",PRES19:"2019-02-03",
+  ASAM21:"2021-02-28",CONC21:"2021-02-28",PARL21:"2021-02-28",PRES24:"2024-02-04",ASAM24:"2024-02-04",PARL24:"2024-02-04",CONC24:"2024-03-03"};
+const TORD={PRES:0,ASAM:1,CONC:2,PARL:3};
+D.elecciones.sort((a,b)=>(FECHA0[a.id]||"").localeCompare(FECHA0[b.id]||"")||TORD[a.tipo]-TORD[b.tipo]);
+const fdate0=d=>{const M=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];const [y,m,dd]=(d||"--").split("-");return d?`${+dd} ${M[+m-1]} ${y}`:"";};
+const optLab=e=>`${e.et} · ${fdate0(FECHA0[e.id])}`;
 const E=D.elecciones, P=D.partidos, NP=P.length, PI={}; P.forEach((p,i)=>PI[p]=i);
 const EI={}; E.forEach((e,i)=>EI[e.id]=i);
 const SINPART=new Set(["PARL24"]);
@@ -1296,15 +1303,15 @@ seg("pMode","pMode");seg("pAgg","pAgg");seg("qMode","qMode");seg("qAgg","qAgg");
 function fillElecSelects(){
   const L=elecs();
   const fillMain=(id,key,l,def)=>{if(!l.find(e=>e.id===S[key]))S[key]=(l.find(e=>e.id===def)||l[l.length-1]||{}).id||null;
-    $(id).innerHTML=l.length?l.map(e=>`<option value="${e.id}" ${e.id===S[key]?"selected":""}>${e.et}</option>`).join(""):`<option value="">(sin elecciones)</option>`;$(id).disabled=!l.length;};
+    $(id).innerHTML=l.length?l.map(e=>`<option value="${e.id}" ${e.id===S[key]?"selected":""}>${optLab(e)}</option>`).join(""):`<option value="">(sin elecciones)</option>`;$(id).disabled=!l.length;};
   // base: solo del mismo tipo por defecto; otros tipos como referencia; opción "sin comparación"
   const fillBase=(id,key,mainKey,pool)=>{const m=S[mainKey];const me=m?E[EI[m]]:null;
     const same=pool.filter(e=>me&&e.id!==m&&e.tipo===me.tipo),other=pool.filter(e=>me&&e.id!==m&&e.tipo!==me.tipo);
     const valid=[...same,...other].map(e=>e.id);
     if(S[key]!==""&&!valid.includes(S[key])){const prev=same.filter(e=>EI[e.id]<EI[m]);S[key]=(prev.slice(-1)[0]||same.slice(-1)[0]||{}).id||"";}
     $(id).innerHTML=`<option value="" ${S[key]===""?"selected":""}>— Sin comparación —</option>`+
-      (same.length?`<optgroup label="Mismo tipo (${me?TIPON[me.tipo]:""})">`+same.map(e=>`<option value="${e.id}" ${e.id===S[key]?"selected":""}>${e.et}</option>`).join("")+`</optgroup>`:"")+
-      (other.length?`<optgroup label="Otro tipo (solo referencial)">`+other.map(e=>`<option value="${e.id}" ${e.id===S[key]?"selected":""}>${e.et}</option>`).join("")+`</optgroup>`:"");};
+      (same.length?`<optgroup label="Mismo tipo (${me?TIPON[me.tipo]:""})">`+same.map(e=>`<option value="${e.id}" ${e.id===S[key]?"selected":""}>${optLab(e)}</option>`).join("")+`</optgroup>`:"")+
+      (other.length?`<optgroup label="Otro tipo (solo referencial)">`+other.map(e=>`<option value="${e.id}" ${e.id===S[key]?"selected":""}>${optLab(e)}</option>`).join("")+`</optgroup>`:"");};
   const LP=L.filter(e=>!SINPART.has(e.id));
   fillMain("pEl","pEl",LP,"PRES24");fillBase("pBase","pBase","pEl",LP);
   const comp=e=>NAC[e.id].p[PI[S.party]]>0;const LQ=L.filter(comp);
@@ -1454,7 +1461,7 @@ function renderResumen(){
   const prevOf={};let lastT={};E.forEach(e=>{prevOf[e.id]=lastT[e.tipo];lastT[e.tipo]=e.id;});
   const ped=(a,b)=>{if(!a||!b||!a.val||!b.val)return NaN;let s=0;for(let j=0;j<NP;j++)s+=Math.abs(a.p[j]/a.val-b.p[j]/b.val);return s/2;};
   let h=`<tr><th>Elección</th><th class="r">Centros</th><th class="r">JRV</th><th class="r">Padrón est.${ib("h_padron")}</th><th class="r">Votantes${ib("h_vot")}</th><th class="r">Participación${ib("h_part")}</th><th class="r">vs nac.${ib("h_vsnac")}</th><th>1° lugar</th><th>2° lugar</th><th class="r">Margen${ib("h_margen")}</th><th class="r">NI %</th><th class="r">Volatilidad${ib("h_vol")}</th></tr>`;
-  L.slice().reverse().forEach(e=>{const a=A[e.id];if(!a.n){h+=`<tr><td>${e.et}</td><td colspan="11" class="empty">sin datos en este ámbito</td></tr>`;return;}
+  L.forEach(e=>{const a=A[e.id];if(!a.n){h+=`<tr><td>${e.et}</td><td colspan="11" class="empty">sin datos en este ámbito</td></tr>`;return;}
     const r=[...a.p].map((v,j)=>({p:P[j],v})).sort((x,y)=>y.v-x.v);
     const pv=prevOf[e.id]?ped(a,A[prevOf[e.id]]):NaN, sp=SINPART.has(e.id);
     FX["hp_"+e.id]=sp?`<h5>${e.et}</h5><p>PARLACEN 2024 se votó el mismo día que Asamblea 2024 y el archivo no trae nulos ni abstenciones; su participación es la de Asamblea 2024.</p>`:
@@ -1518,13 +1525,14 @@ function partidosActivos(){
   // partidos con votos en el ámbito en alguna de las elecciones filtradas
   const cs=scope(),L=elecs(),tot={},run={};
   L.forEach(e=>{const a=agg(e.id,cs);P.forEach((p,j)=>{if(NAC[e.id].p[j]>0){(run[p]=run[p]||[]).push(SHORT[e.id]);if(a.p[j]>0)tot[p]=(tot[p]||0)+a.p[j]/a.val;}});});
-  return {ord:Object.keys(tot).filter(p=>tot[p]>0).sort((a,b)=>tot[b]-tot[a]),run};
+  const first={};L.forEach((e,i)=>P.forEach((p,j)=>{if(NAC[e.id].p[j]>0&&first[p]==null)first[p]=i;}));
+  return {ord:Object.keys(tot).filter(p=>tot[p]>0).sort((a,b)=>first[a]-first[b]||tot[b]-tot[a]),run,first};
 }
 function renderChips(){
   const {ord,run}=partidosActivos();
   if(ord.length&&!ord.includes(S.party)){S.party=ord.includes("NUEVAS IDEAS")?"NUEVAS IDEAS":ord[0];S.qBase=null;fillElecSelects();}
   $("chips").innerHTML=ord.map(p=>`<button class="chip ${p===S.party?"on":""}" data-p="${p}" title="Compitió en: ${run[p].join(", ")}"><span class="sw" style="background:${pc(p)}"></span>${p}<span style="font-weight:500;color:#8a90a0;font-size:10.5px">${run[p].length}</span></button>`).join("")+
-    `<div class="optnote" style="flex-basis:100%">${ord.length} partidos compitieron en ${scopeName()} en las ${elecs().length} elecciones filtradas. El número indica en cuántas compitió; los partidos sin candidatura en esos años no aparecen.</div>`;
+    `<div class="optnote" style="flex-basis:100%">${ord.length} partidos compitieron en ${scopeName()} en las ${elecs().length} elecciones filtradas, ordenados por fecha de su primera participación (y luego por votos). El número indica en cuántas compitió; los partidos sin candidatura en esos años no aparecen.</div>`;
   document.querySelectorAll("#chips .chip").forEach(b=>b.onclick=()=>{S.party=b.dataset.p;S.qBase=null;fillElecSelects();renderChips();render();});
 }
 function renderPartidos(force){
@@ -2065,8 +2073,8 @@ const FECHA={PRES14A:"2014-02-02",PRES14B:"2014-03-09",ASAM15:"2015-03-01",CONC1
 const MESES=["ene","feb","mar","abr","may","jun","jul","ago","sep","oct","nov","dic"];
 const fdate=d=>{const [y,m,dd]=d.split("-");return `${+dd} ${MESES[+m-1]} ${y}`;};
 const fmtK=n=>!isFinite(n)?"—":Math.abs(n)>=1e6?(n/1e6).toFixed(2)+" M":Math.abs(n)>=1e4?Math.round(n/1e3)+" mil":fmt(n);
-const H={rio:"votos",rioT:"ASAM",pair:"ASAM15>ASAM24"};
-const PAIRS=[["ASAM15","ASAM24"],["ASAM21","ASAM24"],["ASAM18","ASAM21"],["PRES14A","PRES24"],["PRES19","PRES24"],["PRES14B","PRES19"],["CONC15","CONC24"],["CONC21","CONC24"],["CONC18","CONC21"]];
+const H={rio:"votos",rioT:"ASAM",pair:"ASAM21>ASAM24"};
+const PAIRS=[["PRES14A","PRES14B"],["PRES14B","PRES19"],["ASAM15","ASAM18"],["CONC15","CONC18"],["PRES19","PRES24"],["ASAM18","ASAM21"],["CONC18","CONC21"],["ASAM21","ASAM24"],["CONC21","CONC24"],["PRES14A","PRES24"],["ASAM15","ASAM24"],["CONC15","CONC24"]].sort((a,b)=>EI[a[0]]-EI[b[0]]||EI[a[1]]-EI[b[1]]);
 $("hPair").innerHTML=PAIRS.map(p=>`<option value="${p[0]}>${p[1]}">${E[EI[p[0]]].et} → ${E[EI[p[1]]].et}</option>`).join("");
 $("hPair").value=H.pair;$("hPair").onchange=e=>{H.pair=e.target.value;render();};
 $("hRioT").onchange=e=>{H.rioT=e.target.value;render();};
