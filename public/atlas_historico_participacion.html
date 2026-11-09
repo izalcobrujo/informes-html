@@ -709,6 +709,8 @@ nav button.on{background:var(--cyan);color:#001b71}
 .fc.on{background:var(--navy);border-color:var(--navy);color:#fff}.fc.on .k{color:#9fb0e0}
 .fc:disabled{opacity:.35;cursor:not-allowed}
 .fc.yr{padding:6px 9px}
+.filters.compact .fbox{display:none}.filters.compact .navbar{border-top:0;padding-top:0}
+.nb.flt{display:none;background:#fff;color:var(--navy)}.filters.compact .nb.flt{display:inline-block}
 .navbar{flex-basis:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px;border-top:1px solid var(--line2);padding-top:8px}
 .nb{font-family:var(--font);font-size:12px;font-weight:800;padding:7px 13px;border-radius:8px;border:1px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer;white-space:nowrap}
 .nb:hover{background:var(--cyan);border-color:var(--cyan);color:#001b71}
@@ -781,6 +783,13 @@ tr.click{cursor:pointer}tr.click:hover td{background:#f3f8ff}
 .met ul{padding-left:18px}
 footer{text-align:center;color:var(--ink3);font-size:11.5px;padding:20px;border-top:1px solid var(--line);background:#fff}
 .leaflet-container{font-family:var(--font)}
+/* los mapas no se montan sobre la barra de filtros fija */
+#map,#map2,#map3,#map4,.mini .mm{position:relative;z-index:0;isolation:isolate}
+.legend{max-height:46%;overflow:auto}
+.leaflet-bottom.leaflet-left .legend{max-height:260px;max-width:300px}
+.legend.multi{display:flex!important;flex-wrap:wrap;gap:4px 12px;max-width:none;max-height:none}
+.legend.multi .t{flex-basis:100%;margin-bottom:0}
+.legend .cols{display:grid;grid-template-columns:1fr 1fr;gap:0 10px}
 .pop b{color:var(--navy)}.pop{font-size:12px;min-width:210px}
 .pop .row{display:flex;justify-content:space-between;gap:10px}
 .empty{color:var(--ink3);font-style:italic;padding:14px 0}
@@ -908,6 +917,7 @@ td.hc{font-weight:700;text-align:right}
     <div class="fchips" id="fTipoC"></div><div class="fchips" id="fAnioC"></div></div>
   <div class="fbox fend"><span class="zst" id="zst">Zonas: cargando…</span></div>
   <div class="navbar">
+    <button class="nb flt" id="bFlt" title="Mostrar los filtros de territorio y elecciones">⚙ Mostrar filtros</button>
     <button class="nb" id="bBack" title="Volver a la vista anterior (deshacer el último cambio de filtro)">← Regresar</button>
     <button class="nb" id="bUp" title="Subir un nivel territorial">↑ Subir un nivel</button>
     <button class="nb clr" id="bReset" title="Quitar todos los filtros y volver a la vista nacional">✕ Limpiar filtros</button>
@@ -1584,7 +1594,7 @@ function renderPartidos(force){
        <div class="row"><span>Cambio</span><b>${pp(u.a.sh(j)-u.z.sh(j))}</b></div>`}<div class="row"><span>% del padrón</span><span>${pct(u.a.p[j]/u.a.pad)}</span></div></div>`;},
     u=>drill(u.lv,u.k), S.cen);
   if(mode==="ganador"){const cnt={};units.forEach(u=>{if(u.a.n)cnt[u.win]=(cnt[u.win]||0)+1;});
-    M.leg.innerHTML=`<div class="t">Ganador · ${SHORT[e]}</div>`+Object.entries(cnt).sort((x,y)=>y[1]-x[1]).map(([k,v])=>`<div class="row"><span class="sw" style="background:${pc(k)}"></span>${k} <span style="margin-left:auto;color:#8a90a0">${v}</span></div>`).join("");}
+    M.leg.innerHTML=`<div class="t">Ganador · ${SHORT[e]}</div><div class="cols">`+Object.entries(cnt).sort((x,y)=>y[1]-x[1]).map(([k,v])=>`<div class="row"><span class="sw" style="background:${pc(k)}"></span>${k} <span style="margin-left:auto;color:#8a90a0">${v}</span></div>`).join("")+`</div>`;}
   else if(mode==="delta")M.leg.innerHTML=`<div class="t">${p}: cambio en % válidos</div><div class="ramp" style="background:linear-gradient(90deg,${DIV_NEG},${DIV_MID},${DIV_POS})"></div><div class="ends"><span>−30 pp</span><span>0</span><span>+30 pp</span></div><div style="color:#8a90a0;margin-top:3px">${SHORT[e]} vs ${SHORT[b]}</div>`;
   else M.leg.innerHTML=`<div class="t">${p} · ${mode==="padron"?"% del padrón":"% válidos"} · ${SHORT[e]}</div><div class="ramp" style="background:linear-gradient(90deg,${ramp.join(",")});box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)"></div><div class="ends"><span>0%</span><span>${pctS(hi/2)}</span><span>≥${pctS(hi)}</span></div><div style="color:#8a90a0;margin-top:3px">Escala ${S.qScale==="propia"?"propia de "+p:"común"}</div>`;
   // trayectoria
@@ -1749,7 +1759,7 @@ function evName(){return EV.var==="part"?"Participación estimada":EV.var==="sha
 function evLegend(L){
   if(EV.var==="part")return `<div class="t">Participación estimada</div><div class="ramp" style="background:linear-gradient(90deg,${SEQ.join(",")})"></div><div class="ends"><span>≤20%</span><span>50%</span><span>≥80%</span></div>`;
   if(EV.var==="ganador"){const s=new Set();L.forEach(e=>mapUnits(EV.agg,scope()).forEach(u=>{const a=agg(e.id,u.cs);if(a.val)s.add(evWin(a));}));
-    return `<div class="t">Partido ganador</div>`+[...s].map(p=>`<div class="row"><span class="sw" style="background:${pc(p)}"></span>${p}</div>`).join("");}
+    return `<div class="t">Partido ganador</div><div class="cols">`+[...s].map(p=>`<div class="row"><span class="sw" style="background:${pc(p)}"></span>${p}</div>`).join("")+`</div>`;}
   const hi=evHi(),r=partyRamp(EV.party);
   return `<div class="t">${evName()}</div><div class="ramp" style="background:linear-gradient(90deg,${r.join(",")});box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)"></div><div class="ends"><span>0%</span><span>${pctS(hi/2)}</span><span>≥${pctS(hi)}</span></div><div style="color:#8a90a0;margin-top:3px">Escala ${EV.scale==="propia"?"propia del partido":"común"} · igual en todos los años</div>`;}
 function evPop(u,eid){const a=u.a,e=E[EI[eid]];
@@ -1817,7 +1827,7 @@ function renderMult(L){
     `<button class="chip" data-e="__all">Todas</button><button class="chip" data-e="__none">Ninguna</button>`;
   $("evChips").querySelectorAll(".chip").forEach(b=>b.onclick=()=>{const k=b.dataset.e;
     if(k==="__all")EV.sel=new Set(L.map(e=>e.id));else if(k==="__none")EV.sel=new Set();else{EV.sel.has(k)?EV.sel.delete(k):EV.sel.add(k);}render();});
-  $("evLegend").innerHTML=`<div class="legend" style="display:inline-block;box-shadow:none;border:1px solid var(--line)">${evLegend(L)}</div>`;
+  $("evLegend").innerHTML=`<div class="legend ${EV.var==="ganador"?"multi":""}" style="display:inline-block;box-shadow:none;border:1px solid var(--line)">${evLegend(L).replace('<div class="cols">','<div style="display:contents">')}</div>`;
   const cs=scope(),box=$("mult");box.innerHTML="";
   const sel=L.filter(e=>EV.sel.has(e.id));
   if(!sel.length){box.innerHTML=`<div class="empty">Active al menos una elección.</div>`;return;}
@@ -2209,6 +2219,11 @@ Object.assign(INFO,{
 
 /* ===================== render ===================== */
 document.addEventListener("click",ev=>{const tr=ev.target.closest("tr.click");if(tr&&tr.dataset.lv)drill(tr.dataset.lv,+tr.dataset.k);});
+/* ---- barra de filtros compacta al bajar ---- */
+(function(){const F=document.querySelector(".filters");let forced=false;
+  const upd=()=>{if(forced)return;F.classList.toggle("compact",window.scrollY>260);};
+  window.addEventListener("scroll",upd,{passive:true});
+  $("bFlt").onclick=()=>{forced=true;F.classList.remove("compact");const off=()=>{if(window.scrollY<120||Math.abs(window.scrollY-y0)>400){forced=false;window.removeEventListener("scroll",off);upd();}};const y0=window.scrollY;window.addEventListener("scroll",off,{passive:true});};})();
 /* ---- historial de navegación ---- */
 const NAVH=[];let NAVLAST=null,NAVRESTORE=false;
 const navSnap=()=>JSON.stringify({dep:S.dep,mun:S.mun,dis:S.dis,cen:S.cen,tipo:S.tipo,anios:[...S.anios].sort(),party:S.party});

@@ -720,6 +720,7 @@ h2 .n{width:32px;height:32px;border-radius:10px;background:var(--navy);color:#ff
 .mapwrap{display:grid;grid-template-columns:1fr 300px;gap:14px}
 @media(max-width:900px){.mapwrap{grid-template-columns:1fr}}
 #map{height:560px;border-radius:14px;border:1px solid var(--line)}
+#map{position:relative;z-index:0;isolation:isolate}
 .legend{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px 14px;font-size:13.5px}
 .legend .t{font-weight:800;color:var(--navy);margin-bottom:6px}
 .legend .r{display:flex;align-items:center;gap:8px;margin:5px 0}
