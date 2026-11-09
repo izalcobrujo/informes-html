@@ -783,6 +783,17 @@ tr.click{cursor:pointer}tr.click:hover td{background:#f3f8ff}
 .met ul{padding-left:18px}
 footer{text-align:center;color:var(--ink3);font-size:11.5px;padding:20px;border-top:1px solid var(--line);background:#fff}
 .leaflet-container{font-family:var(--font)}
+/* ficha flotante única para todos los mapas (no se corta ni se tapa) */
+#tip{position:fixed;z-index:6000;pointer-events:none;background:#fff;border:1px solid #d8deea;border-left:4px solid #00ADEF;border-radius:9px;box-shadow:0 8px 26px rgba(0,27,113,.22);
+  padding:7px 10px;font-family:"Montserrat",sans-serif;font-size:11.5px;line-height:1.4;color:#1a1a1a;max-width:250px;min-width:170px;display:none}
+#tip .pop{min-width:0!important;font-size:11.5px}
+#tip b:first-child{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;color:#001b71;line-height:1.25}
+#tip hr{margin:3px 0!important}
+#tip b:first-child+br{display:none}
+#tip .row{display:flex;justify-content:space-between;gap:8px;white-space:nowrap}
+#tip .row span:first-child{overflow:hidden;text-overflow:ellipsis}
+#tip .sw{width:9px;height:9px}
+
 /* los mapas no se montan sobre la barra de filtros fija */
 #map,#map2,#map3,#map4,.mini .mm{position:relative;z-index:0;isolation:isolate}
 .legend{max-height:46%;overflow:auto}
@@ -1388,7 +1399,7 @@ function drawPoints(M,units,colorFn,popFn,onClick,highlight){
     polyU.forEach(u=>{const col=colorFn(u);if(!col)return;ZF[u.k].forEach(f=>fc.features.push({type:"Feature",geometry:f.geometry,properties:{_u:u,_c:col}}));});
     L.geoJSON(fc,{style:f=>{const sel=highlight===f.properties._u.k;const c=f.properties._c,yel=c==="#ffff00"||c==="#dcde17";
         return {fillColor:c,fillOpacity:.86,color:sel?"#e8002a":(yel?"#777":"#ffffff"),weight:sel?2.8:.5,opacity:sel?1:.85};},
-      onEachFeature:(f,l)=>{const u=f.properties._u;l.bindTooltip(()=>popFn(u),{sticky:true,className:"pop",direction:"auto",offset:[12,0]});l.on("click",()=>onClick(u));}}).addTo(M.lyr);
+      onEachFeature:(f,l)=>{const u=f.properties._u;tipBind(l,()=>popFn(u));l.on("click",()=>onClick(u));}}).addTo(M.lyr);
   }
   units.filter(u=>!(u.poly&&ZF[u.k])).sort((a,b)=>b.r-a.r).forEach(u=>{
     if(u.x==null||isNaN(u.x))return;
@@ -1396,12 +1407,21 @@ function drawPoints(M,units,colorFn,popFn,onClick,highlight){
     const yel=col==="#ffff00"||col==="#dcde17";
     const m=L.circleMarker([u.y,u.x],{radius:u.r,color:highlight&&highlight===u.k&&u.lv==="cen"?"#e8002a":(yel?"#555":"#33405e"),
       weight:highlight&&highlight===u.k&&u.lv==="cen"?3:(yel?1:.6),opacity:highlight&&highlight===u.k?1:.6,fillColor:col,fillOpacity:.92,dashArray:u.ap?"2,2":null});
-    m.bindTooltip(()=>popFn(u),{sticky:true,className:"pop",direction:"auto",offset:[12,0]});
+    tipBind(m,()=>popFn(u));
     m.on("click",()=>onClick(u));
     m.addTo(M.lyr);
   });
 }
 
+
+/* ---- ficha flotante ---- */
+const TIP=document.createElement("div");TIP.id="tip";document.body.appendChild(TIP);
+function tipMove(e){if(!e)return;const pad=14,w=TIP.offsetWidth,h=TIP.offsetHeight,vw=innerWidth,vh=innerHeight;
+  let x=e.clientX+pad,y=e.clientY+pad;if(x+w>vw-6)x=e.clientX-w-pad;if(y+h>vh-6)y=e.clientY-h-pad;TIP.style.left=Math.max(6,x)+"px";TIP.style.top=Math.max(6,y)+"px";}
+function tipShow(html,e){TIP.innerHTML=html;TIP.style.display="block";tipMove(e);}
+function tipHide(){TIP.style.display="none";}
+function tipBind(l,fn){l.on("mouseover",ev=>tipShow(fn(),ev.originalEvent));l.on("mousemove",ev=>tipMove(ev.originalEvent));l.on("mouseout",tipHide);l.on("click",tipHide);}
+window.addEventListener("scroll",tipHide,{passive:true});
 /* ===================== charts ===================== */
 const CH={};
 Chart.defaults.animation=false;Chart.defaults.font.family="Montserrat, sans-serif";Chart.defaults.font.size=11;Chart.defaults.color="#4b5163";
@@ -1587,7 +1607,7 @@ function renderPartidos(force){
     return {...u,a,z,win,v,r:radius(a.pad,u.lv)};});
   drawPoints(M,units.filter(u=>u.a.n&&u.a.val&&(mode!=="delta"||u.z.val)),
     u=>mode==="ganador"?pc(u.win):mode==="delta"?divCol(u.v,.3):(isNaN(u.v)?"#d5d8df":rampN(ramp,u.v/hi)),
-    u=>{const r=[...u.a.p].map((v,k)=>({p:P[k],v})).filter(x=>x.v>0).sort((x,y)=>y.v-x.v).slice(0,5);
+    u=>{const r=[...u.a.p].map((v,k)=>({p:P[k],v})).filter(x=>x.v>0).sort((x,y)=>y.v-x.v).slice(0,3);
       return `<div class="pop"><b>${u.n}</b><br><span style="color:#8a90a0">${u.sub} · ${SHORT[e]}</span><hr style="border:0;border-top:1px solid #eee;margin:4px 0">`+
       r.map(x=>`<div class="row"><span><span class="sw" style="background:${pc(x.p)}"></span> ${x.p===p?"<b>"+x.p+"</b>":x.p}</span><span>${pct(x.v/u.a.val)}</span></div>`).join("")+
       `<hr style="border:0;border-top:1px solid #eee;margin:4px 0">${noB?"":`<div class="row"><span>${p} ${SHORT[b]}</span><span>${pct(u.z.sh(j))}</span></div>
@@ -1763,7 +1783,7 @@ function evLegend(L){
   const hi=evHi(),r=partyRamp(EV.party);
   return `<div class="t">${evName()}</div><div class="ramp" style="background:linear-gradient(90deg,${r.join(",")});box-shadow:inset 0 0 0 1px rgba(0,0,0,.15)"></div><div class="ends"><span>0%</span><span>${pctS(hi/2)}</span><span>≥${pctS(hi)}</span></div><div style="color:#8a90a0;margin-top:3px">Escala ${EV.scale==="propia"?"propia del partido":"común"} · igual en todos los años</div>`;}
 function evPop(u,eid){const a=u.a,e=E[EI[eid]];
-  const r=[...a.p].map((v,k)=>({p:P[k],v})).filter(x=>x.v>0).sort((x,y)=>y.v-x.v).slice(0,4);
+  const r=[...a.p].map((v,k)=>({p:P[k],v})).filter(x=>x.v>0).sort((x,y)=>y.v-x.v).slice(0,3);
   return `<div class="pop"><b>${u.n}</b><br><span style="color:#8a90a0">${u.sub} · ${e.et}</span><hr style="border:0;border-top:1px solid #eee;margin:4px 0">
    <div class="row"><span>Participación</span><b>${pct(a.part)}</b></div>`+r.map(x=>`<div class="row"><span><span class="sw" style="background:${pc(x.p)}"></span> ${x.p===EV.party&&evIsParty()?"<b>"+x.p+"</b>":x.p}</span><span>${pct(x.v/a.val)}</span></div>`).join("")+
    (evIsParty()?`<div class="row"><span>${EV.party} % del padrón</span><span>${pct(a.p[PI[EV.party]]/a.pad)}</span></div>`:"")+`</div>`;}

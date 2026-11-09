@@ -742,6 +742,17 @@ h2 .n{width:32px;height:32px;border-radius:10px;background:var(--navy);color:#ff
 footer{text-align:center;color:var(--ink3);font-size:12.5px;padding:22px;border-top:1px solid var(--line);background:#fff}
 .pop{font-family:var(--font);font-size:12.5px;min-width:200px}.pop b{color:var(--navy)}.pop .row{display:flex;justify-content:space-between;gap:10px}
 .zst{font-size:12px;color:var(--ink3)}
+/* ficha flotante única para todos los mapas (no se corta ni se tapa) */
+#tip{position:fixed;z-index:6000;pointer-events:none;background:#fff;border:1px solid #d8deea;border-left:4px solid #00ADEF;border-radius:9px;box-shadow:0 8px 26px rgba(0,27,113,.22);
+  padding:7px 10px;font-family:"Montserrat",sans-serif;font-size:11.5px;line-height:1.4;color:#1a1a1a;max-width:250px;min-width:170px;display:none}
+#tip .pop{min-width:0!important;font-size:11.5px}
+#tip b:first-child{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:12px;color:#001b71;line-height:1.25}
+#tip hr{margin:3px 0!important}
+#tip b:first-child+br{display:none}
+#tip .row{display:flex;justify-content:space-between;gap:8px;white-space:nowrap}
+#tip .row span:first-child{overflow:hidden;text-overflow:ellipsis}
+#tip .sw{width:9px;height:9px}
+
 </style>
 </head>
 <body>
@@ -943,6 +954,15 @@ function renderWins(){
     return `<div class="win"><div class="d">${fdate(e.id)}</div><div class="t">${e.et}</div><div class="w" style="background:${c};color:${txtOn(c)}"><span>${w.p}</span><span>${pct(w.v/a.val)}</span></div>
      ${s?`<div class="s2"><span><span class="sw" style="background:${pc(s.p)}"></span>${s.p}</span><b>${pct(s.v/a.val)}</b></div>`:""}</div>`;}).join("");
 }
+
+/* ---- ficha flotante ---- */
+const TIP=document.createElement("div");TIP.id="tip";document.body.appendChild(TIP);
+function tipMove(e){if(!e)return;const pad=14,w=TIP.offsetWidth,h=TIP.offsetHeight,vw=innerWidth,vh=innerHeight;
+  let x=e.clientX+pad,y=e.clientY+pad;if(x+w>vw-6)x=e.clientX-w-pad;if(y+h>vh-6)y=e.clientY-h-pad;TIP.style.left=Math.max(6,x)+"px";TIP.style.top=Math.max(6,y)+"px";}
+function tipShow(html,e){TIP.innerHTML=html;TIP.style.display="block";tipMove(e);}
+function tipHide(){TIP.style.display="none";}
+function tipBind(l,fn){l.on("mouseover",ev=>tipShow(fn(),ev.originalEvent));l.on("mousemove",ev=>tipMove(ev.originalEvent));l.on("mouseout",tipHide);l.on("click",tipHide);}
+window.addEventListener("scroll",tipHide,{passive:true});
 /* ---------- 5. mapa ---------- */
 const map=L.map("map",{preferCanvas:true,zoomSnap:.25}).setView([13.72,-88.9],8.5);
 L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",{maxZoom:16,attribution:"Tiles © Esri"}).addTo(map);
@@ -1005,7 +1025,7 @@ function renderMap(fit){
     else{const xs=u.cs.map(i=>C[i]).filter(c=>c.x!=null);if(!xs.length)return;
       const y=xs.reduce((s,c)=>s+c.y,0)/xs.length,x=xs.reduce((s,c)=>s+c.x,0)/xs.length;
       l=L.circleMarker([y,x],{...style,color:"#33405e",weight:.6,radius:u.lv==="cen"?Math.max(4,Math.min(13,Math.sqrt(a.pad)/10)):Math.max(5,Math.min(22,Math.sqrt(a.pad)/25))});}
-    l.bindTooltip(()=>pop(u,a),{sticky:true,direction:"auto"});
+    tipBind(l,()=>pop(u,a));
     l.on("click",()=>{if(u.lv==="cen")goZona(u.k);else goDist(u.k);});
     l.addTo(lyr);});
   if(m==="ganador")leg=`<div class="t">${ttl}</div>`+Object.entries(cnt).sort((a,b)=>b[1]-a[1]).map(([p,n])=>`<div class="r"><i style="background:${pc(p)}"></i>${p} <span style="margin-left:auto;color:#8a90a0">${n} ${n===1?"zona":"zonas"}</span></div>`).join("");
