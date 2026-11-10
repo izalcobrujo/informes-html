@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-08T17:43:32-06:00",
+ "generado": "2026-11-09T20:28:14-06:00",
  "dominio": "https://dashboard-datos.web.app",
  "colores": {
   "Logística y simulacros": "#0e7490",
@@ -24,6 +24,46 @@
   }
  ],
  "informes": [
+  {
+   "ruta": "Prueba1_v1.1_Logistica.html",
+   "slug": "prueba1_v1_1_logistica",
+   "archivo": "Prueba1_v1.1_Logistica.html",
+   "carpeta": "",
+   "titulo": "Prueba 1 · v1.1 · Logística de paquetes y JRV · Simulacro 01/2027",
+   "descripcion": "Prueba 1 · v1.1 — Paquetes y JRV",
+   "secciones": [
+    "Prueba 1 · v1.1 — Paquetes y JRV"
+   ],
+   "categoria": "Padrón y centros",
+   "categorias_sec": [
+    "Logística y simulacros"
+   ],
+   "tipo": "Mapa",
+   "territorio": [],
+   "anios": [
+    "2027"
+   ],
+   "tecnologia": [
+    "Leaflet"
+   ],
+   "tags": [
+    "Simulacro",
+    "JRV"
+   ],
+   "creado": "2026-11-09T20:25:40-06:00",
+   "actualizado": "2026-11-09T20:25:40-06:00",
+   "fecha_datos": null,
+   "origen_fecha": "git",
+   "commits": 1,
+   "bytes": 53266,
+   "palabras": 202,
+   "interactivo": 3,
+   "estado": "vigente",
+   "nota": "",
+   "hash": "052de0b700c6f9e4919058207d32b9457e238e8f",
+   "miniatura": "_miniaturas/prueba1_v1_1_logistica.jpg?v=052de0b7",
+   "duplicados": []
+  },
   {
    "ruta": "atlas_historico_participacion.html",
    "slug": "atlas_historico_participacion",
@@ -54,17 +94,17 @@
     "Participación"
    ],
    "creado": "2026-11-08T17:16:22-06:00",
-   "actualizado": "2026-11-08T17:28:26-06:00",
+   "actualizado": "2026-11-09T09:58:35-06:00",
    "fecha_datos": null,
    "origen_fecha": "git",
-   "commits": 2,
-   "bytes": 1746373,
-   "palabras": 767,
+   "commits": 4,
+   "bytes": 1749334,
+   "palabras": 770,
    "interactivo": 18,
    "estado": "vigente",
    "nota": "",
-   "hash": "47f943c70eb3ede5fbbd30eb39de1bac187e4911",
-   "miniatura": "_miniaturas/atlas_historico_participacion.jpg?v=47f943c7",
+   "hash": "645d9bdbc31f062d086b67f8c97bfe8a6f044be9",
+   "miniatura": "_miniaturas/atlas_historico_participacion.jpg?v=645d9bdb",
    "duplicados": []
   },
   {
@@ -99,17 +139,17 @@
     "Electoral"
    ],
    "creado": "2026-11-08T17:28:26-06:00",
-   "actualizado": "2026-11-08T17:28:26-06:00",
+   "actualizado": "2026-11-09T09:58:35-06:00",
    "fecha_datos": null,
    "origen_fecha": "git",
-   "commits": 1,
-   "bytes": 1405079,
+   "commits": 3,
+   "bytes": 1406708,
    "palabras": 340,
    "interactivo": 6,
    "estado": "vigente",
    "nota": "",
-   "hash": "ec8f15b8bcfa7f49ef6ccc2d9b310565b966165a",
-   "miniatura": "_miniaturas/atlas_participacion_sencillo_v1_2.jpg?v=ec8f15b8",
+   "hash": "a42760c899ee7778ef297da70918072b15f41a7b",
+   "miniatura": "_miniaturas/atlas_participacion_sencillo_v1_2.jpg?v=a42760c8",
    "duplicados": []
   },
   {
@@ -134,8 +174,8 @@
    ],
    "tags": [
     "Simulacro",
-    "Ruta",
-    "Sede"
+    "Sede",
+    "Ruta"
    ],
    "creado": "2026-11-05T08:58:13-06:00",
    "actualizado": "2026-11-05T11:10:08-06:00",
@@ -885,8 +925,8 @@
    ],
    "tags": [
     "Despacho",
-    "Ruta",
-    "Sede"
+    "Sede",
+    "Ruta"
    ],
    "creado": "2026-09-30T07:21:44-06:00",
    "actualizado": "2026-09-30T07:28:12-06:00",
@@ -1061,8 +1101,8 @@
    ],
    "tecnologia": [],
    "tags": [
-    "Electoral",
-    "Coalición"
+    "Coalición",
+    "Electoral"
    ],
    "creado": "2026-09-02T11:00:11-06:00",
    "actualizado": "2026-09-02T11:37:18-06:00",
@@ -1142,8 +1182,8 @@
     "Chart.js"
    ],
    "tags": [
-    "Asamblea",
     "Exterior",
+    "Asamblea",
     "D'Hondt",
     "Riesgo"
    ],
@@ -1308,8 +1348,8 @@
    ],
    "tags": [
     "Legislativa",
-    "Conducta",
     "Asamblea",
+    "Conducta",
     "Voto"
    ],
    "creado": "2026-09-02T11:00:11-06:00",
