@@ -108,7 +108,7 @@ function hav(a,b){const R=6371,r=Math.PI/180,dla=(b[0]-a[0])*r,dlo=(b[1]-a[1])*r
 function hm(min){const h=Math.floor(min/60),m=Math.round(min%60);return String(h%24).padStart(2,"0")+":"+String(m).padStart(2,"0");}
 function durtxt(min){const h=Math.floor(min/60),m=Math.round(min%60);return (h?h+"h ":"")+m+"m";}
 function jrvOf(c){return esc==="sin"?c.jrv.sin:c.jrv.r20;}
-function gmc(c){return `https://www.google.com/maps/search/?api=1&query=${c.lat},${c.lng}`;}
+function gmc(c){const s=sedeDe(c);return `https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}`;}function sedeDe(c){if(c.oi===0)return CN;for(const r of DATA.rutas)for(const s of r.sedes)if(s.oi===c.oi)return s;return c;}
 function gmroute(r){const w=r.sedes.map(s=>s.lat+","+s.lng).join("|");return `https://www.google.com/maps/dir/?api=1&origin=${CN.lat},${CN.lng}&destination=${CN.lat},${CN.lng}&waypoints=${w}&travelmode=driving`;}
 async function routeOne(r){
   const coords=[[CN.lng,CN.lat],...r.sedes.map(s=>[s.lng,s.lat]),[CN.lng,CN.lat]];
@@ -159,14 +159,14 @@ function selR(id){sel=id;const r=DATA.rutas.find(x=>x.id===id);const st=start();
     <div style="font-size:11px;color:var(--mut);margin-bottom:4px">Salida CNPRE ${hm(st)} · regreso ${r.tot!=null?hm(st+r.tot):"…"} · <a class="lk" target="_blank" href="${gmroute(r)}">ruta en Maps</a></div>`;
   r.sedes.forEach((s,i)=>{const cs=bySede[s.oi]||[];const tj=cs.reduce((a,c)=>a+(jrvOf(c).cant||0),0);
     h+=`<div class="sede"><div class="sh"><span>${i+1}. ${s.nombre} <span style="color:var(--mut);font-weight:500">· ${s.ncen} paq · llega ${r.arr?hm(st+r.arr[i]):'…'}</span></span><span style="color:var(--amb)">${tj} JRV</span></div>`;
-    cs.forEach(c=>{const j=jrvOf(c);h+=`<div class="cen"><div><div class="nm">${c.nombre}</div><div class="d">${c.distrito||''} · <a class="lk" target="_blank" href="${gmc(c)}">Maps</a></div></div><div class="jv"><b>JRV ${j.ini!=null?j.ini:'—'}</b><small>${j.ini}–${j.fin} (${j.cant})</small></div></div>`;});
+    cs.forEach(c=>{const j=jrvOf(c);h+=`<div class="cen"><div><div class="nm">${c.nombre}</div><div class="d">${c.distrito||''} · <a class="lk" target="_blank" href="${gmc(c)}">Maps sede</a></div></div><div class="jv"><b>JRV ${j.ini!=null?j.ini:'—'}</b><small>${j.ini}–${j.fin} (${j.cant})</small></div></div>`;});
     h+=`</div>`;});
   h+=`</div>`;document.getElementById("ficha").innerHTML=h;document.getElementById("detempty").style.display="none";document.getElementById("ficha").style.display="block";listR();document.getElementById("right").scrollTop=0;}
 function csv(rows){return "﻿"+rows.map(r=>r.map(x=>{x=(x==null?"":String(x));return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;}).join(",")).join("\n");}
 function dl(n,c){const b=new Blob([c],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;a.click();}
-document.getElementById("dlJrv").onclick=()=>{const rows=[["Codigo","Centro","Sede","Distrito","Departamento","JRV_ini_sinregla","JRV_fin_sinregla","Cant_sinregla","JRV_ini_regla20","JRV_fin_regla20","Cant_regla20","Electores2027","Google_Maps"]];
+document.getElementById("dlJrv").onclick=()=>{const rows=[["Codigo","Centro","Sede","Distrito","Departamento","JRV_ini_sinregla","JRV_fin_sinregla","Cant_sinregla","JRV_ini_regla20","JRV_fin_regla20","Cant_regla20","Electores2027","Maps_sede"]];
   DATA.centros.forEach(c=>rows.push([c.cod,c.nombre,c.sede,c.distrito,c.depto,c.jrv.sin.ini,c.jrv.sin.fin,c.jrv.sin.cant,c.jrv.r20.ini,c.jrv.r20.fin,c.jrv.r20.cant,c.jrv.elec,gmc(c)]));dl("Prueba1_v1.3_JRV.csv",csv(rows));};
-document.getElementById("dlCen").onclick=()=>{const rows=[["Codigo","Centro","Sede","Distrito","Departamento","Km_sede","Lat","Lng","Google_Maps"]];
+document.getElementById("dlCen").onclick=()=>{const rows=[["Codigo","Centro","Sede","Distrito","Departamento","Km_sede","Lat","Lng","Maps_sede"]];
   DATA.centros.forEach(c=>rows.push([c.cod,c.nombre,c.sede,c.distrito,c.depto,c.dkm,c.lat,c.lng,gmc(c)]));dl("Prueba1_v1.3_Centros.csv",csv(rows));};
 document.getElementById("dlRut").onclick=()=>{const st=start();const rows=[["Ruta","Sedes","Paquetes","Km_iv","Duracion_min","Salida","Regreso","Google_Maps"]];
   DATA.rutas.forEach(r=>rows.push([r.id,r.sedes.map(s=>s.nombre).join(" | "),r.paquetes,(r.km!=null?r.km:""),(r.tot!=null?r.tot:r.min),hm(st),(r.tot!=null?hm(st+r.tot):""),gmroute(r)]));dl("Prueba1_v1.3_Rutas.csv",csv(rows));};
