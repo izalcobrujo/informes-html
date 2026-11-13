@@ -134,10 +134,10 @@ function draw(fit){gRut.clearLayers();gPts.clearLayers();const pts=[[CN.lat,CN.l
   if(fit&&pts.length)map.fitBounds(pts,{padding:[40,40]});}
 function start(){const [h,m]=document.getElementById("inHora").value.split(":").map(Number);return (h||0)*60+(m||0);}
 function finish(){return Math.max(...DATA.rutas.map(r=>r.tot!=null?r.tot:r.min));}
-function jrvTotal(){let t=0;DATA.centros.forEach(c=>t+=(jrvOf(c).cant||0));return t;}
+function jrvTotal(){return DATA.centros.length;} // 1 JRV por centro en la prueba
 function kpis(){const st=start(),fin=finish();
   document.getElementById("kpis").innerHTML=
-   [["Centros",100,""],["Paquetes",100,""],["JRV ("+(esc==="sin"?"sin regla":"regla 20")+")",jrvTotal(),"jr"],["Sedes",M.nsedes,""],
+   [["Centros",100,""],["Paquetes",100,""],["JRV de la prueba",jrvTotal(),"jr"],["Sedes",M.nsedes,""],
     ["Rutas",M.nrutas,""],["Vehículos",M.nrutas,""],["Inicio",hm(st),"hot"],["Fin · "+durtxt(fin),hm(st+fin),"hot"]]
    .map(([l,v,cl])=>`<div class="kpi ${cl}"><div class="v">${v}</div><div class="l">${l}</div></div>`).join("");
   document.getElementById("rtlbl").textContent=`${M.nrutas} rutas · 1 veh/ruta · fin ${hm(st+fin)} (${durtxt(fin)})`;}
@@ -157,17 +157,17 @@ function selR(id){sel=id;const r=DATA.rutas.find(x=>x.id===id);const st=start();
      <div class="box"><div class="b">${r.km!=null?r.km:"…"}</div><div class="k">Km i/v${r.real===false?" est":""}</div></div>
      <div class="box"><div class="b">${r.tot!=null?durtxt(r.tot):"…"}</div><div class="k">Duración</div></div></div>
     <div style="font-size:11px;color:var(--mut);margin-bottom:4px">Salida CNPRE ${hm(st)} · regreso ${r.tot!=null?hm(st+r.tot):"…"} · <a class="lk" target="_blank" href="${gmroute(r)}">ruta en Maps</a></div>`;
-  r.sedes.forEach((s,i)=>{const cs=bySede[s.oi]||[];const tj=cs.reduce((a,c)=>a+(jrvOf(c).cant||0),0);
-    h+=`<div class="sede"><div class="sh"><span>${i+1}. ${s.nombre} <span style="color:var(--mut);font-weight:500">· ${s.ncen} paq · llega ${r.arr?hm(st+r.arr[i]):'…'}</span></span><span style="color:var(--amb)">${tj} JRV</span></div>`;
-    cs.forEach(c=>{const j=jrvOf(c);h+=`<div class="cen"><div><div class="nm">${c.nombre}</div><div class="d">${c.distrito||''} · <a class="lk" target="_blank" href="${gmc(c)}">Maps sede</a></div></div><div class="jv"><b>JRV ${j.ini!=null?j.ini:'—'}</b><small>${j.ini}–${j.fin} (${j.cant})</small></div></div>`;});
+  r.sedes.forEach((s,i)=>{const cs=bySede[s.oi]||[];const tj=cs.length;
+    h+=`<div class="sede"><div class="sh"><span>${i+1}. ${s.nombre} <span style="color:var(--mut);font-weight:500">· ${s.ncen} paq · llega ${r.arr?hm(st+r.arr[i]):'…'} · <a class="lk" target="_blank" href="https://www.google.com/maps/search/?api=1&query=${s.lat},${s.lng}">Maps sede</a></span></span><span style="color:var(--amb)">${tj} JRV</span></div>`;
+    cs.forEach(c=>{const j=jrvOf(c);h+=`<div class="cen"><div><div class="nm">${c.nombre}</div><div class="d">${c.distrito||''}</div></div><div class="jv"><b>JRV ${j.ini!=null?j.ini:'—'}</b></div></div>`;});
     h+=`</div>`;});
   h+=`</div>`;document.getElementById("ficha").innerHTML=h;document.getElementById("detempty").style.display="none";document.getElementById("ficha").style.display="block";listR();document.getElementById("right").scrollTop=0;}
 function csv(rows){return "﻿"+rows.map(r=>r.map(x=>{x=(x==null?"":String(x));return /[",\n]/.test(x)?'"'+x.replace(/"/g,'""')+'"':x;}).join(",")).join("\n");}
 function dl(n,c){const b=new Blob([c],{type:"text/csv;charset=utf-8"});const a=document.createElement("a");a.href=URL.createObjectURL(b);a.download=n;a.click();}
-document.getElementById("dlJrv").onclick=()=>{const rows=[["Codigo","Centro","Sede","Distrito","Departamento","JRV_ini_sinregla","JRV_fin_sinregla","Cant_sinregla","JRV_ini_regla20","JRV_fin_regla20","Cant_regla20","Electores2027","Maps_sede"]];
-  DATA.centros.forEach(c=>rows.push([c.cod,c.nombre,c.sede,c.distrito,c.depto,c.jrv.sin.ini,c.jrv.sin.fin,c.jrv.sin.cant,c.jrv.r20.ini,c.jrv.r20.fin,c.jrv.r20.cant,c.jrv.elec,gmc(c)]));dl("Prueba1_v1.3_JRV.csv",csv(rows));};
-document.getElementById("dlCen").onclick=()=>{const rows=[["Codigo","Centro","Sede","Distrito","Departamento","Km_sede","Lat","Lng","Maps_sede"]];
-  DATA.centros.forEach(c=>rows.push([c.cod,c.nombre,c.sede,c.distrito,c.depto,c.dkm,c.lat,c.lng,gmc(c)]));dl("Prueba1_v1.3_Centros.csv",csv(rows));};
+document.getElementById("dlJrv").onclick=()=>{const rows=[["Codigo","Centro","Sede","Distrito","Departamento","JRV_prueba_sinregla","JRV_prueba_regla20"]];
+  DATA.centros.forEach(c=>rows.push([c.cod,c.nombre,c.sede,c.distrito,c.depto,c.jrv.sin.ini,c.jrv.r20.ini]));dl("Prueba1_v1.3_JRV.csv",csv(rows));};
+document.getElementById("dlCen").onclick=()=>{const rows=[["Codigo","Centro","Sede","Distrito","Departamento","Km_sede","Lat","Lng"]];
+  DATA.centros.forEach(c=>rows.push([c.cod,c.nombre,c.sede,c.distrito,c.depto,c.dkm,c.lat,c.lng]));dl("Prueba1_v1.3_Centros.csv",csv(rows));};
 document.getElementById("dlRut").onclick=()=>{const st=start();const rows=[["Ruta","Sedes","Paquetes","Km_iv","Duracion_min","Salida","Regreso","Google_Maps"]];
   DATA.rutas.forEach(r=>rows.push([r.id,r.sedes.map(s=>s.nombre).join(" | "),r.paquetes,(r.km!=null?r.km:""),(r.tot!=null?r.tot:r.min),hm(st),(r.tot!=null?hm(st+r.tot):""),gmroute(r)]));dl("Prueba1_v1.3_Rutas.csv",csv(rows));};
 document.getElementById("inEsc").addEventListener("change",e=>{esc=e.target.value;kpis();if(sel!=null)selR(sel);});
