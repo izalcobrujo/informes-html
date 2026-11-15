@@ -75,6 +75,7 @@ h3:first-child{margin-top:2px}
 .sedes td:first-child{font-weight:600}
 .veh{display:flex;align-items:center;gap:4px;font-weight:800;font-size:11.5px;color:#fff;padding:3px 8px;border-radius:999px;border:2px solid #fff;box-shadow:0 3px 10px rgba(15,27,51,.3);white-space:nowrap;transform:translate(-50%,-50%)}
 .veh.sin{opacity:.6;border-style:dashed}
+.veh.fin{opacity:.38;transform:translate(-50%,-50%) scale(.82);box-shadow:none;filter:saturate(.4)}
 .sd{border-radius:50%;border:2.5px solid #fff;box-shadow:0 1px 6px rgba(15,27,51,.3);transition:background .3s,transform .3s}
 .sd.ok{transform:scale(1.15)}
 .lbl{background:transparent;border:0;box-shadow:none;font-weight:700;font-size:11.5px;color:#26324a;text-shadow:0 0 3px #fff,0 0 3px #fff,0 0 3px #fff}
@@ -113,7 +114,7 @@ h3:first-child{margin-top:2px}
     <div class="opts">
       <label><input type="checkbox" id="seguir" checked> Seguir al vehículo (con una ruta elegida)</label>
       <label><input type="checkbox" id="traza" checked> Ver recorrido completo</label>
-      <span class="leg"><span><i></i>con GPS</span><span><i class="d"></i>reconstruido (sin señal)</span><span>◆ entrega</span></span>
+      <span class="leg"><span><i></i>con GPS</span><span><i class="d"></i>reconstruido (sin señal)</span><span>◆ entrega</span><span style="opacity:.5">🚚 ✓ = ruta que ya terminó sus entregas</span></span>
     </div>
   </div>
   <aside class="side">
@@ -147,6 +148,7 @@ RS.forEach((r) => {
   r.seg.forEach(acum);
   r.t0 = r.pts.length ? r.pts[0][0] : r.ini; r.t1 = r.pts.length ? r.pts[r.pts.length - 1][0] : r.fin;
   r.entregas = r.paradas.map((p) => p.hecho).filter(Boolean);
+  r.ultEntrega = Math.max(...r.entregas);
 });
 function acum(s) { s.cum = [0]; for (let i = 1; i < s.c.length; i++) s.cum.push(s.cum[i - 1] + hav(s.c[i - 1], s.c[i])); s.len = s.cum[s.cum.length - 1] || 0; }
 let pendientesOSRM = 0;
@@ -246,12 +248,16 @@ function frame(t) {
     if (!vis(r)) { if (vmk[r.id]) { gV.removeLayer(vmk[r.id]); delete vmk[r.id]; } if (trail[r.id]) { gTrail.removeLayer(trail[r.id]); delete trail[r.id]; } return; }
     const p = posEn(r, T);
     if (!p) { if (vmk[r.id]) { gV.removeLayer(vmk[r.id]); delete vmk[r.id]; } if (trail[r.id]) trail[r.id].setLatLngs([]); return; }
-    const html = `<div class="veh${p.rec ? ' sin' : ''}" style="background:${r.col}">🚚 ${r.id}${p.fin ? ' ✓' : ''}</div>`;
+    // ruta finalizada (ya entregó en todas sus sedes): se atenúa para que resalte lo que sigue en curso
+    const termino = T >= r.ultEntrega;
+    const html = `<div class="veh${p.rec && !termino ? ' sin' : ''}${termino ? ' fin' : ''}" style="background:${r.col}">🚚 ${r.id}${termino ? ' ✓' : ''}</div>`;
     if (!vmk[r.id]) vmk[r.id] = L.marker(p.ll, { icon: L.divIcon({ className: '', html, iconSize: [0, 0] }), zIndexOffset: 1000 }).addTo(gV).on('click', () => elegir(r.id));
     else { vmk[r.id].setLatLng(p.ll); const el = vmk[r.id].getElement(); if (el && el.innerHTML !== html) el.innerHTML = html; }
-    const cam = camino(r, T);
-    if (!trail[r.id]) trail[r.id] = L.polyline(cam, { color: r.col, weight: 4, opacity: 0.9, interactive: false }).addTo(gTrail);
-    else trail[r.id].setLatLngs(cam);
+    vmk[r.id].setZIndexOffset(termino ? 200 : 1000);
+    const cam = camino(r, T), est = termino ? { opacity: 0.22, weight: 3 } : { opacity: 0.9, weight: 4 };
+    if (!trail[r.id]) trail[r.id] = L.polyline(cam, { color: r.col, ...est, interactive: false }).addTo(gTrail);
+    else { trail[r.id].setLatLngs(cam); trail[r.id].setStyle(est); }
+    if (!termino) trail[r.id].bringToFront();
   });
   pintarSedes(T);
   if (SEL && $('#seguir').checked && PLAY) { const r = RS.find((x) => x.id === SEL), p = posEn(r, T); if (p && !map.getBounds().pad(-0.2).contains(p.ll)) map.panTo(p.ll, { animate: true, duration: 0.6 }); }
@@ -262,7 +268,8 @@ function pintarSedes(t) {
   Object.values(sedeMk).forEach(({ m, x }) => {
     const el = m.getElement(); if (!el || !x) return;
     const d = el.firstChild, hecho = x.p.hecho && x.p.hecho <= t, cam = !hecho && x.p.salio && x.p.salio <= t;
-    d.style.background = hecho ? '#12a150' : cam ? '#e8a100' : '#b8c2d3';
+    const rutaFin = t >= x.r.ultEntrega;
+    d.style.background = hecho ? (rutaFin ? '#8fd3ab' : '#12a150') : cam ? '#e8a100' : '#b8c2d3';
     d.classList.toggle('ok', !!hecho);
     if (hecho && PLAY && !yaAvisado[x.p.sede] && t - x.p.hecho < 900) { yaAvisado[x.p.sede] = 1; aviso(`<b>${hm(x.p.hecho)}</b> · ${esc(x.r.id)} entregó en <b>${esc(x.p.sede)}</b>`, x.r.col); }
   });
