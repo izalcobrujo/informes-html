@@ -1,5 +1,5 @@
 {
- "generado": "2026-11-09T20:28:14-06:00",
+ "generado": "2026-11-15T07:09:43-06:00",
  "dominio": "https://dashboard-datos.web.app",
  "colores": {
   "Logística y simulacros": "#0e7490",
@@ -25,14 +25,47 @@
  ],
  "informes": [
   {
+   "ruta": "repeticion_entrega_prueba1.html",
+   "slug": "repeticion_entrega_prueba1",
+   "archivo": "repeticion_entrega_prueba1.html",
+   "carpeta": "",
+   "titulo": "Prueba 1 · Repetición y evaluación de la entrega",
+   "descripcion": "Prueba 1 · Repetición de la entrega",
+   "secciones": [
+    "Prueba 1 · Repetición de la entrega"
+   ],
+   "categoria": "Otros",
+   "categorias_sec": [],
+   "tipo": "Mapa",
+   "territorio": [],
+   "anios": [],
+   "tecnologia": [
+    "Leaflet"
+   ],
+   "tags": [],
+   "creado": "2026-11-15T06:59:36-06:00",
+   "actualizado": "2026-11-15T06:59:36-06:00",
+   "fecha_datos": null,
+   "origen_fecha": "git",
+   "commits": 1,
+   "bytes": 276293,
+   "palabras": 33,
+   "interactivo": 4,
+   "estado": "vigente",
+   "nota": "",
+   "hash": "b8d4be231333d8f8e7d31456c63ce435bdb8e003",
+   "miniatura": "_miniaturas/repeticion_entrega_prueba1.jpg?v=b8d4be23",
+   "duplicados": []
+  },
+  {
    "ruta": "Prueba1_v1.1_Logistica.html",
    "slug": "prueba1_v1_1_logistica",
    "archivo": "Prueba1_v1.1_Logistica.html",
    "carpeta": "",
-   "titulo": "Prueba 1 · v1.1 · Logística de paquetes y JRV · Simulacro 01/2027",
-   "descripcion": "Prueba 1 · v1.1 — Paquetes y JRV",
+   "titulo": "Prueba 1 · v1.3 · Logística de paquetes y JRV · Simulacro 01/2027",
+   "descripcion": "Prueba 1 · v1.3 — Paquetes y JRV",
    "secciones": [
-    "Prueba 1 · v1.1 — Paquetes y JRV"
+    "Prueba 1 · v1.3 — Paquetes y JRV"
    ],
    "categoria": "Padrón y centros",
    "categorias_sec": [
@@ -51,17 +84,17 @@
     "JRV"
    ],
    "creado": "2026-11-09T20:25:40-06:00",
-   "actualizado": "2026-11-09T20:25:40-06:00",
+   "actualizado": "2026-11-13T10:09:40-06:00",
    "fecha_datos": null,
    "origen_fecha": "git",
-   "commits": 1,
-   "bytes": 53266,
-   "palabras": 202,
+   "commits": 6,
+   "bytes": 54419,
+   "palabras": 275,
    "interactivo": 3,
    "estado": "vigente",
    "nota": "",
-   "hash": "052de0b700c6f9e4919058207d32b9457e238e8f",
-   "miniatura": "_miniaturas/prueba1_v1_1_logistica.jpg?v=052de0b7",
+   "hash": "cbd9224f90867227be3ad806ab4b904c2c471815",
+   "miniatura": "_miniaturas/prueba1_v1_1_logistica.jpg?v=cbd9224f",
    "duplicados": []
   },
   {
@@ -174,8 +207,8 @@
    ],
    "tags": [
     "Simulacro",
-    "Sede",
-    "Ruta"
+    "Ruta",
+    "Sede"
    ],
    "creado": "2026-11-05T08:58:13-06:00",
    "actualizado": "2026-11-05T11:10:08-06:00",
@@ -310,8 +343,8 @@
    ],
    "tecnologia": [],
    "tags": [
-    "Transformer",
     "Laboratorio",
+    "Transformer",
     "Attention",
     "Catastro"
    ],
@@ -925,8 +958,8 @@
    ],
    "tags": [
     "Despacho",
-    "Sede",
-    "Ruta"
+    "Ruta",
+    "Sede"
    ],
    "creado": "2026-09-30T07:21:44-06:00",
    "actualizado": "2026-09-30T07:28:12-06:00",
@@ -1012,8 +1045,8 @@
    "tags": [
     "Centro de votación",
     "Transmisión",
-    "Sede",
-    "Ruta"
+    "Ruta",
+    "Sede"
    ],
    "creado": "2026-09-11T10:30:20-06:00",
    "actualizado": "2026-09-11T11:13:40-06:00",
@@ -1101,8 +1134,8 @@
    ],
    "tecnologia": [],
    "tags": [
-    "Coalición",
-    "Electoral"
+    "Electoral",
+    "Coalición"
    ],
    "creado": "2026-09-02T11:00:11-06:00",
    "actualizado": "2026-09-02T11:37:18-06:00",
@@ -1182,8 +1215,8 @@
     "Chart.js"
    ],
    "tags": [
-    "Exterior",
     "Asamblea",
+    "Exterior",
     "D'Hondt",
     "Riesgo"
    ],
